@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="googlebot" content="noindex,indexifembedded" />
+    <title>A to Z Digital Marketing Glossary | Eryc Tri Juni S - Digital Marketing Specialist</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="preload" href="https://ErycTheGreat.github.io/eryc.my.id-asset/fonts/jetbrains-mono-600.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    
+   
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 2rem;
+            overflow: hidden;
+        }
+
+        /* 3. Replaced Font Awesome with styling for the inline SVG */
+        .icon-svg {
+            width: 2.6rem;
+            height: 2.6rem;
+            fill: #e73c5d;
+            margin-right: 30px;
+        }
+
+
+		/* 1. Define your custom local font */
+			@font-face {
+			font-family: 'JetBrains Mono Local';
+			font-style: normal;
+			font-weight: 600; /* Matches your 600 weight */
+			font-display: swap; 
+			/* 2. Point this to your actual GitHub Pages URL */
+			src: url('https://ErycTheGreat.github.io/eryc.my.id-asset/font/jetbrains-mono-600.woff2') format('woff2');
+		}
+
+        .text {
+            font-family: 'JetBrains Mono Local', monospace;
+            font-size: 2.8rem;
+            /*font-weight: 600;*/
+            color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            /* font-display: swap is already handled by the Google Fonts URL parameter, but keeping it here is safe */
+        }
+
+        .icon-text {
+            display: flex;
+            align-items: center;
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                flex-direction: column;
+                font-size: 2.2rem;
+                overflow: hidden;
+            }
+
+            .icon-svg {
+                width: 1.9rem;
+                height: 1.9rem;
+                margin-right: 20px;
+            }
+
+            .text {
+                font-size: 2.1rem;
+            }
+        }
+
+        /* Blinking cursor effect */
+        .blinking-cursor {
+            display: inline-block;
+            width: 24px;
+            height: 0.14em;
+            background-color: #f1f5f9;
+            animation: blink 1s infinite;
+            vertical-align: text-bottom;            
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            50.1%, 100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <div class="icon-text">
+               <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 110">
+				<path d="M 25 15 v 60 H 10 L 35 100 L 60 75 H 45 V 15 H 25 z" />
+				
+				<path d="M 86 10 L 73 44 h 9 l 3 -8 h 10 l 3 8 h 9 L 94 10 H 86 z M 90 22 l -4 10 h 8 z" />
+				
+				<path d="
+					M 86 54 h 8 v 10 h -8 z 
+					M 70 66 h 40 v 8 h -40 z 
+					M 90 66 L 68 102 h 11 L 96 66 z 
+					M 90 66 L 112 102 h -11 L 84 66 z
+				" />
+				</svg>
+                <h1 class="text" itemprop="headline">Glossαгү<span class="blinking-cursor"></span></h1>
+            </div>
+        </div>
+    </div>
+    <noscript>
+        <p style="text-align: center; font-size: 1.5rem; color: #333; margin-top: 20px;">This is a brief description about myself. Feel free to explore more about my services.</p>
+    </noscript>
+</body>
+</html>
