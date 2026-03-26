@@ -75,7 +75,18 @@ const response = await fetch(targetUrl, {
     cacheEverything: true
   }
 });
-    const contentType = response.headers.get("content-type") || "";
+
+	if (response.status === 301 || response.status === 302) {
+  const newHeaders = new Headers(response.headers);
+  newHeaders.delete("Location"); // 🔥 THIS IS THE KEY
+
+  return new Response(response.body, {
+    status: 200,
+    headers: newHeaders
+  });
+}
+    
+	  const contentType = response.headers.get("content-type") || "";
 
     if (!contentType.includes("text/html")) {
         return response;
