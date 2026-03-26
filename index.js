@@ -183,6 +183,7 @@ export default {
                 "https://www.slideshare.net/ErycTriJuniS",
                 "https://id.quora.com/profile/Eryc-Tri-Juni-S",
                 "https://www.youtube.com/@ErycTriJuniS"
+				"https://github.com/ErycTheGreat"
               ]
             },
             {
