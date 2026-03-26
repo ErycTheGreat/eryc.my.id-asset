@@ -1,47 +1,33 @@
 export default {
-  async fetch(request) {
+  async fetch(request, env) { // 1. FIXED: Added 'env' here
     const url = new URL(request.url);
     const host = url.hostname;
+    const path = url.pathname; // 2. FIXED: Defined 'path'
     const canonicalHost = "www.eryc.my.id";
 
     // 1. FORCE NAKED TO WWW & KILL "/home"
     if (host !== canonicalHost) {
-      return Response.redirect(`https://${canonicalHost}${url.pathname}`, 301);
+      return Response.redirect(`https://${canonicalHost}${path}${url.search}`, 301);
     }
-    if (url.pathname === "/home" || url.pathname === "/home/") {
+    if (path === "/home" || path === "/home/") {
       return Response.redirect(`https://${canonicalHost}/`, 301);
     }
 
     // 2. SITEMAP
-    if (url.pathname === "/sitemap.xml") {
+    if (path === "/sitemap.xml") {
       const lastmod = new Date().toISOString().split('T')[0];
       const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/mortgage-broker", "/case-studies/seo/sound-rentals", "/case-studies/seo/vet-clinic"];
       
-      let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
-      sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-      pages.forEach(path => {
-        sitemap += `  <url>\n    <loc>https://${canonicalHost}${path}</loc>\n`;
-        sitemap += `    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n`;
-        sitemap += `    <priority>${path === "/" ? "1.0" : "0.7"}</priority>\n  </url>\n`;
+      let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+      pages.forEach(p => {
+        sitemap += `  <url>\n    <loc>https://${canonicalHost}${p}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>${p === "/" ? "1.0" : "0.7"}</priority>\n  </url>\n`;
       });
       sitemap += '</urlset>';
-
-      return new Response(sitemap, {
-        status: 200,
-        headers: {
-          "Content-Type": "application/xml; charset=UTF-8",
-          "Cache-Control": "public, max-age=86400"
-        }
-      });
+      return new Response(sitemap, { headers: { "Content-Type": "application/xml; charset=UTF-8", "Cache-Control": "public, max-age=86400" } });
     }
-
     // 3. ROBOTS.TXT
-    if (url.pathname === "/robots.txt") {
-      const robotsTxt = `User-agent: *\nAllow: /\n\nSitemap: https://${canonicalHost}/sitemap.xml`;
-      return new Response(robotsTxt, {
-        status: 200,
-        headers: { "Content-Type": "text/plain" }
-      });
+    if (path === "/robots.txt") {
+      return new Response(`User-agent: *\nAllow: /\n\nSitemap: https://${canonicalHost}/sitemap.xml`, { headers: { "Content-Type": "text/plain" } });
     }
 
 // =================================================================
@@ -81,23 +67,22 @@ if (url.pathname.startsWith("/dropbox/")) {
 // =================================================================
 
 
-    // 4. THE BLAZING FAST BYPASS
-    if (url.pathname !== "/") {
-      return fetch(request);
+   // 4. THE BYPASS (For all pages EXCEPT homepage)
+    // We fetch from env.ORIGIN_URL to avoid the infinite loop
+    if (path !== "/") {
+      return fetch(`${env.ORIGIN_URL}${path}${url.search}`, request);
     }
 
-   // 5. FETCH FROM ORIGIN (The fix for the loop)
-    // We point directly to your Google Sites URL defined in wrangler.toml
-    const originResponse = await fetch(`${env.ORIGIN_URL}${path}${url.search}`, request);
+  // 5. HOMEPAGE ONLY: FETCH AND REWRITE
+    const response = await fetch(`${env.ORIGIN_URL}${path}${url.search}`, request);
+    const contentType = response.headers.get("content-type") || "";
 
-    // If it's not an HTML page (like a CSS file or image from Google), just return it
-    const contentType = originResponse.headers.get("content-type") || "";
-    if (!contentType.includes("text/html") || path !== "/") {
-        return originResponse;
+    if (!contentType.includes("text/html")) {
+        return response;
     }
 
     const domain = "https://www.eryc.my.id";
-    const canonicalUrl = domain + url.pathname;
+    const canonicalUrl = domain + path;
 
     // The entire <head> payload (Meta + JSON-LD)
     const customHeaderContent = `
@@ -255,22 +240,23 @@ if (url.pathname.startsWith("/dropbox/")) {
    // 3. DIRECT HTML INJECTION (Server-Side)
       const accessibleTextContent = `
       <div style="clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;">
-      ${rawHtmlPayload}
+        <header><h1>Digital Marketing Specialist in Malang</h1></header>
+        <main><h2>P.S. THIS SITE: 100% [GOOGLE SITES]</h2><p>"I Help Business Fix or Get Noticed @ low-cost"</p></main>
       </div>
     `;
 
     // 6. DECLARE REWRITER AND INJECT PAYLOAD
     let rewriter = new HTMLRewriter()
-        .on("head", {
-            element(element) {
-                element.append(customHeaderContent, { html: true });
-            }
-        })
-        .on("body", {
-            element(element) {
-                element.append(accessibleTextContent, { html: true }); // Swapped to append
-            }
-        });
+        .on("head", { element(el) { el.append(customHeaderContent, { html: true }); } })
+        .on("body", { element(el) { el.append(accessibleTextContent, { html: true }); } });
+
+    let finalHeaders = new Headers(response.headers);
+    finalHeaders.delete("Content-Length");
+
+    return new Response(rewriter.transform(response).body, {
+      status: response.status,
+      headers: finalHeaders
+    });
 
     // Strip content-length to prevent truncation since we are adding a massive payload
     let newHeaders = new Headers(response.headers);
