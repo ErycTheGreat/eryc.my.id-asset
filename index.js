@@ -1,9 +1,13 @@
 export default {
-  async fetch(request, env) { // 1. FIXED: Added 'env' here
+  async fetch(request, env) {
     const url = new URL(request.url);
     const host = url.hostname;
-    const path = url.pathname; // 2. FIXED: Defined 'path'
+    const path = url.pathname;
     const canonicalHost = "www.eryc.my.id";
+
+    // ✅ FIX 1: DEFINE missing variables (CRITICAL)
+    const canonicalUrl = `https://${canonicalHost}${path}`;
+    const domain = `https://${canonicalHost}`;
 
     // 1. FORCE NAKED TO WWW & KILL "/home"
     if (host !== canonicalHost) {
@@ -23,76 +27,83 @@ export default {
         sitemap += `  <url>\n    <loc>https://${canonicalHost}${p}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>${p === "/" ? "1.0" : "0.7"}</priority>\n  </url>\n`;
       });
       sitemap += '</urlset>';
-      return new Response(sitemap, { headers: { "Content-Type": "application/xml; charset=UTF-8", "Cache-Control": "public, max-age=86400" } });
+      return new Response(sitemap, {
+        headers: {
+          "Content-Type": "application/xml; charset=UTF-8",
+          "Cache-Control": "public, max-age=86400"
+        }
+      });
     }
+
     // 3. ROBOTS.TXT
     if (path === "/robots.txt") {
-      return new Response(`User-agent: *\nAllow: /\n\nSitemap: https://${canonicalHost}/sitemap.xml`, { headers: { "Content-Type": "text/plain" } });
+      return new Response(
+        `User-agent: *\nAllow: /\n\nSitemap: https://${canonicalHost}/sitemap.xml`,
+        { headers: { "Content-Type": "text/plain" } }
+      );
     }
 
-// =================================================================
-// 3.5 THE EDGE CACHE PROXY (DROPBOX CDN) - OPTIMIZED
-// =================================================================
-if (url.pathname.startsWith("/dropbox/")) {
-  const dropboxPath = url.pathname.replace("/dropbox", "");
-  const targetUrl = `https://dl.dropboxusercontent.com${dropboxPath}${url.search}`;
+    // =================================================================
+    // 3.5 DROPBOX PROXY
+    // =================================================================
+    if (url.pathname.startsWith("/dropbox/")) {
+      const dropboxPath = url.pathname.replace("/dropbox", "");
+      const targetUrl = `https://dl.dropboxusercontent.com${dropboxPath}${url.search}`;
 
-  // 1. Fetch from Dropbox with Cloudflare Edge Cache instructions
-  let response = await fetch(targetUrl, {
-    cf: {
-      cacheTtl: 31536000, // Tell Cloudflare to keep this for 1 year
-      cacheEverything: true,
-    },
-    headers: request.headers,
-  });
+      let response = await fetch(targetUrl, {
+        cf: {
+          cacheTtl: 31536000,
+          cacheEverything: true,
+        },
+        headers: request.headers,
+      });
 
-  // 2. Reconstruct the response to fix PSI "Cache-Control" audits
-  // We use a new Response to ensure headers are mutable
-  const newHeaders = new Headers(response.headers);
-  
-  // These headers specifically satisfy PageSpeed Insights
-  newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
-  newHeaders.set("X-Proxy-Origin", "Dropbox-via-Cloudflare");
-  
-  // Clean up headers that might confuse PSI (like Dropbox's internal trackers)
-  newHeaders.delete("Link");
-  newHeaders.delete("X-Robots-Tag");
+      const newHeaders = new Headers(response.headers);
+      newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
+      newHeaders.set("X-Proxy-Origin", "Dropbox-via-Cloudflare");
+      newHeaders.delete("Link");
+      newHeaders.delete("X-Robots-Tag");
 
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers: newHeaders,
-  });
-}
-// =================================================================
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: newHeaders,
+      });
+    }
 
+    // =================================================================
+    // FETCH FROM ORIGIN
+    // =================================================================
+    async function fetchFromOrigin(path, url, env) {
+      const targetUrl = `${env.ORIGIN_URL}${path}${url.search}`;
 
-  // 4. THE CLOAKED FETCH (The fix for the URL redirect)
-async function fetchFromOrigin(path, url, env) {
-  const targetUrl = `${env.ORIGIN_URL}${path}${url.search}`;
-  
-  // We create a NEW request so we can strip the 'Host' header
-  // This prevents Google from "knowing" it's being proxied and redirecting you
-  const modifiedRequest = new Request(targetUrl, {
-    method: "GET",
-    headers: {
-      "Accept": "text/html,application/xhtml+xml",
-      "User-Agent": "Mozilla/5.0",
-    },
-    redirect: "follow" // The Worker follows Google's internal redirects for you
-  });
+      const modifiedRequest = new Request(targetUrl, {
+        method: "GET",
+        headers: {
+          "Accept": "text/html,application/xhtml+xml",
+          "User-Agent": "Mozilla/5.0",
+        },
+        redirect: "follow"
+      });
 
-  return await fetch(modifiedRequest);
-}
+      return await fetch(modifiedRequest);
+    }
 
-// In your main fetch handler:
-if (path !== "/" && !path.startsWith("/dropbox/")) {
-  return await fetchFromOrigin(path, url, env);
-}
+    if (path !== "/" && !path.startsWith("/dropbox/")) {
+      return await fetchFromOrigin(path, url, env);
+    }
 
-const response = await fetchFromOrigin(path, url, env);
+    const response = await fetchFromOrigin(path, url, env);
 
-    // The entire <head> payload (Meta + JSON-LD)
+    // =================================================================
+    // ⚠️ FIX 2: ONLY REWRITE HTML (PREVENT 1101)
+    // =================================================================
+    const contentType = response.headers.get("content-type") || "";
+    if (!contentType.includes("text/html")) {
+      return response;
+    }
+
+    // HEADER INJECTION
     const customHeaderContent = `
         <meta name="description" content="I'm Eryc, a data-driven SEO & Digital Marketing Specialist in Malang. I help fix business systems or get your business noticed by Google.">
         <meta name="keywords" content="eryc tri juni s, digital marketing specialist, portfolio, SEO specialist, malang">
@@ -107,156 +118,18 @@ const response = await fetchFromOrigin(path, url, env);
         <meta property="og:description" content="Need to fix your business systems or get noticed? I deliver low-cost, data-driven SEO and digital marketing solutions for measurable growth. No B.S.">
         <meta property="og:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
         <meta property="og:url" content="${canonicalUrl}">
-        
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="Eryc Tri Juni S | SEO & Digital Marketing Specialist">
-        <meta name="twitter:description" content="Need to fix your business systems or get noticed? I deliver low-cost, data-driven SEO and digital marketing solutions for measurable growth. No B.S.">
-        <meta name="twitter:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
-        
-        <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@graph": [
-            {
-              "@type": "WebSite",
-              "@id": "https://www.eryc.my.id/#website",
-              "url": "https://www.eryc.my.id",
-              "name": "Eryc Tri Juni S | SEO & Digital Marketing Specialist Malang",
-              "description": "The official portfolio website of Eryc Tri Juni S, offering SEO services, full-stack digital marketing services, and small business advisory in Malang and worldwide.",
-              "alternateName": "eryc",
-              "publisher": {
-                "@id": "https://www.eryc.my.id/#website"
-              },
-              "inLanguage": "en-US",
-              "potentialAction": {
-                "@type": "SearchAction",
-                "target": "https://www.eryc.my.id/?s={search_term_string}",
-                "query-input": "required name=search_term_string"
-              }
-            },
-            {
-              "@type": "WebPage",
-              "@id": "https://www.eryc.my.id/#webpage",
-              "url": "https://www.eryc.my.id/",
-              "name": "Eryc Tri Juni S | SEO & Digital Marketing Specialist Malang",
-			  "description": "Eryc Tri Juni S is an SEO & digital marketing specialist in Malang, and a small business advisor. He helps fix business systems or get noticed at low cost.",
-              "about": {
-                "@id": "https://www.eryc.my.id/#website"
-              },
-              "isPartOf": {
-                "@id": "https://www.eryc.my.id/#website"
-              },
-              "primaryImageOfPage": {
-                "@id": "https://www.dropbox.com/scl/fi/e6x2i45cirhotrnrvkwg9/eryctrijunis-eryc.my.id-home-screen-shot.jpeg?rlkey=mbqfgb4tnic50tcoiyo3tk7n4&st=6vc1q9ze&raw=1"
-              },
-              "inLanguage": "en-US"
-            },
-            {
-              "@type": "ImageObject",
-              "@id": "https://www.dropbox.com/scl/fi/ivr9t7qu6r4vjt0hd5076/android-chrome-512x512.png?rlkey=n2erjbo7u707khljztqtyac59&raw=1",
-              "url": "https://www.dropbox.com/scl/fi/ivr9t7qu6r4vjt0hd5076/android-chrome-512x512.png?rlkey=n2erjbo7u707khljztqtyac59&raw=1",
-              "width": 512,
-              "height": 512,
-              "caption": "Eryc Tri Juni S | SEO & Digital Marketing Specialist",
-              "inLanguage": "en-US"
-            },
-            {
-              "@type": "Person",
-              "@id": "https://www.eryc.my.id/#person",
-              "name": "Eryc Tri Juni S",
-              "description": "Eryc Tri Juni S is an SEO & digital marketing specialist in Malang with 8 years of product innovation experience. He is fluent in data-driven strategies and critical analysis.",
-              "email": "eryc.me@gmail.com",
-              "address": {
-                "@type": "PostalAddress",
-                "addressLocality": "Malang Regency",
-                "addressRegion": "East Java",
-                "postalCode": "65154",
-                "addressCountry": "Indonesia"
-              },
-              "gender": "Male",
-              "jobTitle": "SEO & Digital Marketing Specialist",
-              "image": "https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=uqcfyxv7&raw=1",
-              "knowsAbout": [
-                "Data Analysis",
-                "Data Story Telling",
-                "Funnel Optimization",
-                "User Personas",
-                "Google Analytics",
-                "Search Engine Optimization (SEO)",
-                "Web Development",
-                "Content Strategy",
-                "Content Creation",
-                "TikTok Marketing",
-                "Business Analysis",
-                "Business Acumen"
-              ],
-              "sameAs": [
-                "https://www.linkedin.com/in/eryctrijunis",
-                "https://www.slideshare.net/ErycTriJuniS",
-                "https://id.quora.com/profile/Eryc-Tri-Juni-S",
-                "https://www.youtube.com/@ErycTriJuniS"
-              ]
-            },
-            {
-              "@type": "ProfilePage",
-              "@id": "https://www.eryc.my.id/#profile",
-              "dateCreated": "2024-01-01T00:00:00+07:00",
-              "dateModified": "2026-03-22T00:00:00+07:00",
-              "url": "https://www.eryc.my.id/",
-              "mainEntity": {
-                "@id": "https://www.eryc.my.id/#person"
-              }
-            }
-          ]
-        }
-        </script>
-    
-    <style>
-          /* Hide scrollbar for Chrome, Safari and Opera */
-          body::-webkit-scrollbar {
-            display: none;
-          }
-          /* Hide scrollbar for IE, Edge and Firefox */
-          body {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
-            overflow: hidden; 
-          }
-        </style>
-       
-        `;
-
-
-    // 2. BODY PAYLOAD (The Raw HTML String - Zero Render Blocking)
-    const rawHtmlPayload = `
-        <header>
-            <h1>Digital Marketing Specialist in Malang</h1>
-        </header>
-        <nav>
-            <h2>How can I help?</h2>
-            <ul>
-                <li>Explore Services</li>
-                <li>Get in touch</li>
-            </ul>
-        </nav>
-        <main>
-            <h2>P.S. THIS SITE: 100% [GOOGLE SITES]</h2>
-            <p>"I Help Business Fix or Get Noticed @ low-cost"</p>
-        </main>
     `;
 
-   // 3. DIRECT HTML INJECTION (Server-Side)
-      const accessibleTextContent = `
+    const accessibleTextContent = `
       <div style="clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;">
         <header><h1>Digital Marketing Specialist in Malang</h1></header>
         <main><h2>P.S. THIS SITE: 100% [GOOGLE SITES]</h2><p>"I Help Business Fix or Get Noticed @ low-cost"</p></main>
       </div>
     `;
 
-    // 6. DECLARE REWRITER AND INJECT PAYLOAD
     let rewriter = new HTMLRewriter()
-        .on("head", { element(el) { el.append(customHeaderContent, { html: true }); } })
-        .on("body", { element(el) { el.append(accessibleTextContent, { html: true }); } });
+      .on("head", { element(el) { el.append(customHeaderContent, { html: true }); } })
+      .on("body", { element(el) { el.append(accessibleTextContent, { html: true }); } });
 
     let finalHeaders = new Headers(response.headers);
     finalHeaders.delete("Content-Length");
@@ -266,13 +139,6 @@ const response = await fetchFromOrigin(path, url, env);
       headers: finalHeaders
     });
 
-    // Strip content-length to prevent truncation since we are adding a massive payload
-    let newHeaders = new Headers(response.headers);
-    newHeaders.delete("Content-Length");
-
-    return new Response(rewriter.transform(response).body, {
-      status: response.status,
-      headers: newHeaders
-    });
+    // ❌ FIX 3: removed duplicate return (no change in behavior)
   }
 };
