@@ -1,30 +1,53 @@
 export default {
-  async fetch(request, env) {
+  async fetch(request) {
     const url = new URL(request.url);
     const host = url.hostname;
     const canonicalHost = "www.eryc.my.id";
-    const domain = `https://${canonicalHost}`;
 
-    // 1. FORCED REDIRECTS (Naked to WWW & /home cleanup)
+    // 1. FORCE NAKED TO WWW & KILL "/home"
     if (host !== canonicalHost) {
-      return Response.redirect(`${domain}${url.pathname}${url.search}`, 301);
+      return Response.redirect(`https://${canonicalHost}${url.pathname}`, 301);
     }
     if (url.pathname === "/home" || url.pathname === "/home/") {
-      return Response.redirect(`${domain}/`, 301);
+      return Response.redirect(`https://${canonicalHost}/`, 301);
     }
 
-    // 2. STATIC ROUTES (Sitemap & Robots)
+    // 2. SITEMAP
     if (url.pathname === "/sitemap.xml") {
-      return generateSitemap(canonicalHost);
-    }
-    if (url.pathname === "/robots.txt") {
-      const robotsTxt = `User-agent: *\nAllow: /\n\nSitemap: ${domain}/sitemap.xml`;
-      return new Response(robotsTxt, { headers: { "Content-Type": "text/plain" } });
+      const lastmod = new Date().toISOString().split('T')[0];
+      const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/mortgage-broker", "/case-studies/seo/sound-rentals", "/case-studies/seo/vet-clinic"];
+      
+      let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
+      sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+      pages.forEach(path => {
+        sitemap += `  <url>\n    <loc>https://${canonicalHost}${path}</loc>\n`;
+        sitemap += `    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n`;
+        sitemap += `    <priority>${path === "/" ? "1.0" : "0.7"}</priority>\n  </url>\n`;
+      });
+      sitemap += '</urlset>';
+
+      return new Response(sitemap, {
+        status: 200,
+        headers: {
+          "Content-Type": "application/xml; charset=UTF-8",
+          "Cache-Control": "public, max-age=86400"
+        }
+      });
     }
 
-    // 3. DROPBOX PROXY
-    if (url.pathname.startsWith("/dropbox/")) {
-      const dropboxPath = url.pathname.replace("/dropbox", "");
+    // 3. ROBOTS.TXT
+    if (url.pathname === "/robots.txt") {
+      const robotsTxt = `User-agent: *\nAllow: /\n\nSitemap: https://${canonicalHost}/sitemap.xml`;
+      return new Response(robotsTxt, {
+        status: 200,
+        headers: { "Content-Type": "text/plain" }
+      });
+    }
+	
+	// 3.5 THE DROPBOX CDN PROXY
+	const path = url.pathname;
+    if (path.startsWith("/dropbox/")) {
+      const dropboxPath = path.replace("/dropbox", "");
       const targetUrl = `https://dl.dropboxusercontent.com${dropboxPath}${url.search}`;
       let dropboxRes = await fetch(targetUrl, {
         cf: { cacheTtl: 31536000, cacheEverything: true },
@@ -36,31 +59,24 @@ export default {
       return new Response(dropboxRes.body, { status: dropboxRes.status, headers: newHeaders });
     }
 
-    // 4. THE FETCH (FETCH ONLY ONCE)
-    const targetUrl = env.ORIGIN_URL + url.pathname + url.search;
-    const modifiedHeaders = new Headers(request.headers);
-    modifiedHeaders.set("Host", new URL(env.ORIGIN_URL).hostname); 
-
-    let response = await fetch(targetUrl, {
-      headers: modifiedHeaders,
-      redirect: "manual", 
-      cf: { cacheTtl: 300, cacheEverything: true }
-    });
-
-    // Handle Google's redirect attempts
-    if (response.status === 301 || response.status === 302) {
-      const newHeaders = new Headers(response.headers);
-      newHeaders.delete("Location"); 
-      return new Response(response.body, { status: 200, headers: newHeaders });
+    // 4. THE BLAZING FAST BYPASS
+    if (url.pathname !== "/") {
+      return fetch(request);
     }
 
-    // 5. HTML REWRITER (Inject your exact original payloads)
+    // 5. HOMEPAGE ONLY: Stream the SEO payload using native compression
+    const response = await fetch(request);
     const contentType = response.headers.get("content-type") || "";
-    if (contentType.includes("text/html")) {
-      const canonicalUrl = domain + url.pathname;
-      
-      // RESTORED: Your exact original <head> content
-      const customHeaderContent = `
+
+    if (!contentType.includes("text/html")) {
+        return response;
+    }
+
+    const domain = "https://www.eryc.my.id";
+    const canonicalUrl = domain + url.pathname;
+
+    // The entire <head> payload (Meta + JSON-LD)
+    const customHeaderContent = `
         <meta name="description" content="I'm Eryc, a data-driven SEO & Digital Marketing Specialist in Malang. I help fix business systems or get your business noticed by Google.">
         <meta name="keywords" content="eryc tri juni s, digital marketing specialist, portfolio, SEO specialist, malang">
         <meta name="author" content="Eryc Tri Juni S">
@@ -106,7 +122,7 @@ export default {
               "@id": "https://www.eryc.my.id/#webpage",
               "url": "https://www.eryc.my.id/",
               "name": "Eryc Tri Juni S | SEO & Digital Marketing Specialist Malang",
-              "description": "Eryc Tri Juni S is an SEO & digital marketing specialist in Malang, and a small business advisor. He helps fix business systems or get noticed at low cost.",
+			  "description": "Eryc Tri Juni S is an SEO & digital marketing specialist in Malang, and a small business advisor. He helps fix business systems or get noticed at low cost.",
               "about": {
                 "@id": "https://www.eryc.my.id/#website"
               },
@@ -144,7 +160,18 @@ export default {
               "jobTitle": "SEO & Digital Marketing Specialist",
               "image": "https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=uqcfyxv7&raw=1",
               "knowsAbout": [
-                "Data Analysis", "Data Story Telling", "Funnel Optimization", "User Personas", "Google Analytics", "Search Engine Optimization (SEO)", "Web Development", "Content Strategy", "Content Creation", "TikTok Marketing", "Business Analysis", "Business Acumen"
+                "Data Analysis",
+                "Data Story Telling",
+                "Funnel Optimization",
+                "User Personas",
+                "Google Analytics",
+                "Search Engine Optimization (SEO)",
+                "Web Development",
+                "Content Strategy",
+                "Content Creation",
+                "TikTok Marketing",
+                "Business Analysis",
+                "Business Acumen"
               ],
               "sameAs": [
                 "https://www.linkedin.com/in/eryctrijunis",
@@ -166,47 +193,53 @@ export default {
           ]
         }
         </script>
-      `;
+    `;
 
-      // RESTORED: Your exact original Body Payload
-      const rawHtmlPayload = `
-        <header><h1>Digital Marketing Specialist in Malang</h1></header>
-        <nav><h2>How can I help?</h2><ul><li>Explore Services</li><li>Get in touch</li></ul></nav>
-        <main><h2>P.S. THIS SITE: 100% [GOOGLE SITES]</h2><p>"I Help Business Fix or Get Noticed @ low-cost"</p></main>
-      `;
+    // 2. BODY PAYLOAD (The Raw HTML String - Zero Render Blocking)
+    const rawHtmlPayload = `
+        <header>
+            <h1>Digital Marketing Specialist in Malang</h1>
+        </header>
+        <nav>
+            <h2>How can I help?</h2>
+            <ul>
+                <li>Explore Services</li>
+                <li>Get in touch</li>
+            </ul>
+        </nav>
+        <main>
+            <h2>P.S. THIS SITE: 100% [GOOGLE SITES]</h2>
+            <p>"I Help Business Fix or Get Noticed @ low-cost"</p>
+        </main>
+    `;
 
+   // 3. DIRECT HTML INJECTION (Server-Side)
       const accessibleTextContent = `
-        <div style="clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;">
-        ${rawHtmlPayload}
-        </div>
-      `;
+      <div style="clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;">
+      ${rawHtmlPayload}
+      </div>
+    `;
 
-      let rewriter = new HTMLRewriter()
-        .on("head", { element(e) { e.append(customHeaderContent, { html: true }); } })
-        .on("body", { element(e) { e.append(accessibleTextContent, { html: true }); } });
+    // 6. DECLARE REWRITER AND INJECT PAYLOAD
+    let rewriter = new HTMLRewriter()
+        .on("head", {
+            element(element) {
+                element.append(customHeaderContent, { html: true });
+            }
+        })
+        .on("body", {
+            element(element) {
+                element.append(accessibleTextContent, { html: true }); // Swapped to append
+            }
+        });
 
-      let newHeaders = new Headers(response.headers);
-      newHeaders.delete("Content-Length");
-      newHeaders.delete("X-Frame-Options"); 
+    // Strip content-length to prevent truncation since we are adding a massive payload
+    let newHeaders = new Headers(response.headers);
+    newHeaders.delete("Content-Length");
 
-      return new Response(rewriter.transform(response).body, {
-        status: response.status,
-        headers: newHeaders
-      });
-    }
-
-    return response;
+    return new Response(rewriter.transform(response).body, {
+      status: response.status,
+      headers: newHeaders
+    });
   }
 };
-
-// HELPER FUNCTION: To generate your sitemap
-function generateSitemap(host) {
-  const lastmod = new Date().toISOString().split('T')[0];
-  const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/mortgage-broker", "/case-studies/seo/sound-rentals", "/case-studies/seo/vet-clinic"];
-  let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-  pages.forEach(path => {
-    sitemap += `  <url>\n    <loc>https://${host}${path}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <priority>${path === "/" ? "1.0" : "0.7"}</priority>\n  </url>\n`;
-  });
-  sitemap += '</urlset>';
-  return new Response(sitemap, { headers: { "Content-Type": "application/xml" } });
-}
