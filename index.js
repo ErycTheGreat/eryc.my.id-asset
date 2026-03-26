@@ -67,22 +67,30 @@ if (url.pathname.startsWith("/dropbox/")) {
 // =================================================================
 
 
-   // 4. THE BYPASS (For all pages EXCEPT homepage)
-    // We fetch from env.ORIGIN_URL to avoid the infinite loop
-    if (path !== "/") {
-      return fetch(`${env.ORIGIN_URL}${path}${url.search}`, request);
-    }
+  // 4. THE CLOAKED FETCH (The fix for the URL redirect)
+async function fetchFromOrigin(path, url, env) {
+  const targetUrl = `${env.ORIGIN_URL}${path}${url.search}`;
+  
+  // We create a NEW request so we can strip the 'Host' header
+  // This prevents Google from "knowing" it's being proxied and redirecting you
+  const modifiedRequest = new Request(targetUrl, {
+    method: "GET",
+    headers: {
+      "Accept": "text/html,application/xhtml+xml",
+      "User-Agent": "Mozilla/5.0",
+    },
+    redirect: "follow" // The Worker follows Google's internal redirects for you
+  });
 
-  // 5. HOMEPAGE ONLY: FETCH AND REWRITE
-    const response = await fetch(`${env.ORIGIN_URL}${path}${url.search}`, request);
-    const contentType = response.headers.get("content-type") || "";
+  return await fetch(modifiedRequest);
+}
 
-    if (!contentType.includes("text/html")) {
-        return response;
-    }
+// In your main fetch handler:
+if (path !== "/" && !path.startsWith("/dropbox/")) {
+  return await fetchFromOrigin(path, url, env);
+}
 
-    const domain = "https://www.eryc.my.id";
-    const canonicalUrl = domain + path;
+const response = await fetchFromOrigin(path, url, env);
 
     // The entire <head> payload (Meta + JSON-LD)
     const customHeaderContent = `
