@@ -1,5 +1,5 @@
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const url = new URL(request.url);
     const host = url.hostname;
     const canonicalHost = "www.eryc.my.id";
@@ -65,7 +65,15 @@ export default {
     }
 
     // 5. HOMEPAGE ONLY: Stream the SEO payload using native compression
-    const response = await fetch(request);
+    const targetUrl = env.ORIGIN_URL + url.pathname + url.search;
+
+const response = await fetch(targetUrl, {
+  headers: request.headers,
+  cf: {
+    cacheTtl: 300,
+    cacheEverything: true
+  }
+});
     const contentType = response.headers.get("content-type") || "";
 
     if (!contentType.includes("text/html")) {
