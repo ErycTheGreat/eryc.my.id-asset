@@ -69,6 +69,7 @@ export default {
 
 const response = await fetch(targetUrl, {
   headers: request.headers,
+  redirect: "manual",
   cf: {
     cacheTtl: 300,
     cacheEverything: true
