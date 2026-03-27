@@ -1,5 +1,5 @@
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const url = new URL(request.url);
     const host = url.hostname;
     const canonicalHost = "www.eryc.my.id";
@@ -60,20 +60,30 @@ export default {
     }
 
     // 4. THE BLAZING FAST BYPASS
-    if (url.pathname !== "/") {
-      return fetch(request);
+   if (url.pathname !== "/") {
+      // Use the environment variable for direct routing
+      const originRequest = new Request(env.ORIGIN_URL + url.pathname, request);
+      return fetch(originRequest);
     }
 
-    // 5. HOMEPAGE ONLY: Stream the SEO payload using native compression
-    const response = await fetch(request);
+   // 5. HOMEPAGE ONLY: Stream the SEO payload with Edge Caching
+    // Fetch directly from the origin to cut out the DNS middleman
+    const originHomepage = env.ORIGIN_URL + "/";
+    const response = await fetch(originHomepage, {
+      headers: request.headers,
+      // Tell Cloudflare's Edge to cache the raw HTML for 60 seconds
+      // This stops the Worker from working so hard on every single click
+      cf: {
+        cacheTtl: 60,
+        cacheEverything: true,
+      }
+    });
+
     const contentType = response.headers.get("content-type") || "";
 
     if (!contentType.includes("text/html")) {
         return response;
     }
-
-    const domain = "https://www.eryc.my.id";
-    const canonicalUrl = domain + url.pathname;
 
     // The entire <head> payload (Meta + JSON-LD)
     const customHeaderContent = `
