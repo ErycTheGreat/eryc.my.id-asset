@@ -66,7 +66,8 @@ export default {
       }
 
       const newHeaders = new Headers(ghRes.headers);
-      newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
+     // UPGRADE: Added stale-while-revalidate for aggressive local caching
+      newHeaders.set("Cache-Control", "public, max-age=31536000, stale-while-revalidate=86400, immutable");
       newHeaders.set("X-Proxy-Origin", "GitHub-via-Cloudflare");
 
       // CRITICAL OVERRIDE: Expanded to match the files in your video
