@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+	<meta name="googlebot" content="noindex,indexifembedded" />
+	<title>Eryc Tri Juni S - Cyberpunk ASCII Art Logo | Digital Marketing Specialist</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="/assets/font/jetbrains-mono-500.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+	<link rel="preload" href="/assets/font/ibm-vga-9x16.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="stylesheet" href="style.css">
+    <style>
+	
+		/*  Define your custom local font */
+			@font-face {
+			font-family: 'JetBrains Mono Local';
+			font-style: normal;
+			font-weight: 500;
+			font-display: swap; 
+			src: url('/assets/font/jetbrains-mono-500.woff2') format('woff2');
+		}
+
+		@font-face {
+			font-family: 'PxPlus IBM VGA9 Local';
+			font-style: normal;
+			font-display: swap; 
+			src: url('/assets/font/ibm-vga-9x16.woff2') format('woff2');
+		}
+		
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Hide scrollbars for the entire page */
+        }
+
+        @keyframes buzz {
+            70% {
+                opacity: 0.60;
+            }
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column; /* Center vertically on smaller screens */
+            animation: buzz 0.01s infinite alternate;
+        }
+
+        .ascii-art {
+            font-family: 'PxPlus IBM VGA9 Local', monospace;
+            font-size: 4.2vw; /* Responsive font size based on viewport width */
+            margin-top: 15vh;
+			line-height: 0.8; /* Prevent stretching */
+			animation: flicker linear infinite 3.2s 1s;
+			
+        }
+
+        .no-margin {
+            margin: 0;
+			 /* GRADIENT SETTINGS */
+			background:
+			linear-gradient(
+			90deg, 
+			#0c2f4f 0%, 
+			#2e6fa8 25%, 
+			#4386c3 45%, 
+			#4386c3 50%, 
+			#4386c3 55%, 
+			#2e6fa8 75%, 
+			#0c2f4f 100% );
+			background-clip: text;
+			-webkit-background-clip: text;
+			color: transparent; 
+			-webkit-text-fill-color: transparent;
+			
+			filter: brightness(1.25) saturate(1.2);
+			
+
+        }
+		
+		@keyframes flicker {
+
+  /* completely off */
+  0%, 8%, 14%, 18%, 22%, 26%, 30%, 60%, 62%, 64%, 66%, 100% {
+    color:#091427;
+    text-shadow:none;
+  }
+
+  /* weak spark */
+  9% {
+    color:#22d3ee;
+    text-shadow:0 0 6px #22d3ee;
+  }
+
+  /* dies again */
+  10% { color:#091427; text-shadow:none; }
+
+  /* second attempt */
+  15% {
+    color:#38bdf8;
+    
+      text-shadow:
+0 0 2px #ffffff,
+0 0 4px #7fd4ff,
+0 0 8px #4386c3,
+0 0 14px #1bc7fb;
+  }
+
+  16% { color:#091427; text-shadow:none; }
+
+  /* fast patz patz burst */
+  19% { color:#22d3ee; text-shadow:0 0 6px #22d3ee; }
+  19.5% { color:#091427; text-shadow:none; }
+  20% { color:#22d3ee; text-shadow:0 0 8px #38bdf8; }
+  20.5% { color:#091427; text-shadow:none; }
+
+  /* stronger flash */
+  23% {
+    color:#67e8f9;
+    text-shadow:
+  0 0 2px #e0f7ff,
+  0 0 4px #38bdf8,
+  0 0 8px #22d3ee,
+  0 0 14px #00eaff;
+  }
+
+  /* quickly dies */
+  24% { color:#091427; text-shadow:none; }
+
+  /* one short working moment */
+  31% {
+    color:inherit;
+    text-shadow:
+0 0 2px #ffffff,
+0 0 6px #7fd4ff,
+0 0 12px #4386c3,
+0 0 18px #1bc7fb;
+  }
+
+  /* broken again */
+  33% { color:#091427; text-shadow:none; }
+
+  /* random glitch attempt */
+  61% {
+    color:#22d3ee;
+    text-shadow:0 0 8px #38bdf8;
+  }
+
+  63% { color:#091427; text-shadow:none; }
+
+}
+		
+		.digital-text, .marketer-text {
+			position: absolute;
+			font-family: 'JetBrains Mono Local', monospace;
+			font-size: 3vw;
+			font-weight: 700;
+			color: #f1f5f9;
+			letter-spacing: 0.5vw;
+		}
+
+		.digital-text {
+			top: 31vh; /* Adjust vertical positioning */
+			left: 48vw; /* Adjust horizontal positioning */
+		}
+
+		.marketer-text {
+			top: 38vh; /* Positioned below "Digital" */
+			left: 47vw; /* Adjust as needed */
+		}
+		
+
+        @media screen and (max-width: 420px) and (min-resolution: 3dppx) {
+        .ascii-art {
+            letter-spacing: -0.28em;
+			line-height: 1;
+            }
+        	
+		}
+		 @media screen and (max-width: 420px) and (min-resolution: 2.75dppx) {
+		.ascii-art {
+            font-size: 4vw; /* Responsive font size based on viewport width */
+            margin-top: 8vh;
+		    /*line-height: 0.8; /* Prevent stretching */
+			
+			line-height: 1;
+            }
+        
+		.digital-text, .marketer-text {
+			position: absolute;
+			font-size: 3.6vw;
+			font-weight: 800;
+			color: #f1f5f9;
+			letter-spacing: 0.5vw;
+			}
+
+		.digital-text {
+			top: 20vh; /* Adjust vertical positioning */
+			left: 47vw; /* Adjust horizontal positioning */
+			}
+
+		.marketer-text {
+			top: 28vh; /* Positioned below "Digital" */
+			left: 46vw; /* Adjust as needed */
+			}	 
+		 }
+		
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="ascii-art">
+    <pre class="no-margin">
+╔═══╗  
+║╔══╝  
+║╚══╦══╦╗─╔╦══╗
+║╔══╣╔═╣║─║║╔═╝
+║╚══╣║─║╚═╝║╚═╗
+╚═══╩╝─╚═╗╔╩══╝
+───────╔═╝║
+───────╚══╝
+    </pre>
+    <div class="digital-text">Digital</div>
+    <div class="marketer-text" style="color: #e73c5d;">マーケター</div>
+	
+</div>
+    </div>
+	 //<script>
+     // document.addEventListener("DOMContentLoaded", function () {
+	 //	let asciiArt = document.querySelector(".ascii-art pre");
+	 //	let dpr = window.devicePixelRatio;
+     //
+	 //	if (asciiArt && dpr === 3.0) {
+	 //		asciiArt.style.fontSize = "4.5vw"; // Reduce font size for DPR 3.0
+	 //		asciiArt.style.letterSpacing = "-0.35em"; // Adjust spacing
+	 //	}
+	 //	});	  
+     //</script>
+</body>
+</html>
