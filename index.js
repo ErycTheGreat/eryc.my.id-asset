@@ -1,5 +1,4 @@
 export default {
-  // Removed 'env' as we are relying on your Cloudflare DNS CNAME again
   async fetch(request) {
     const url = new URL(request.url);
     const host = url.hostname;
@@ -51,7 +50,7 @@ export default {
       const dropboxPath = path.replace("/dropbox", "");
       const targetUrl = `https://dl.dropboxusercontent.com${dropboxPath}${url.search}`;
       let dropboxRes = await fetch(targetUrl, {
-        cf: { cacheTtl: 31536000, cacheEverything: true },
+        cf: { cacheTtl: 31536000, cacheEverything: true }, // Keep caching here!
         headers: request.headers,
       });
       const newHeaders = new Headers(dropboxRes.headers);
@@ -62,19 +61,12 @@ export default {
 
     // 4. THE BLAZING FAST BYPASS
     if (url.pathname !== "/") {
-      // REVERTED to your original code. This forces the request through Cloudflare's CNAME
-      // pointing to ghs.googlehosted.com, preventing the Google Sites redirect loop.
       return fetch(request);
     }
 
-    // 5. HOMEPAGE ONLY: Stream the SEO payload with Edge Caching
-    // We apply the caching rules directly to the standard request!
-    const response = await fetch(request, {
-      cf: {
-        cacheTtl: 60,
-        cacheEverything: true,
-      }
-    });
+    // 5. HOMEPAGE ONLY: Stream the SEO payload using native compression
+    // Reverted to simple fetch so HTMLRewriter can stream instantly without buffering
+    const response = await fetch(request);
 
     const contentType = response.headers.get("content-type") || "";
 
@@ -245,7 +237,7 @@ export default {
         })
         .on("body", {
             element(element) {
-                element.append(accessibleTextContent, { html: true }); // Swapped to append
+                element.append(accessibleTextContent, { html: true }); 
             }
         });
 
