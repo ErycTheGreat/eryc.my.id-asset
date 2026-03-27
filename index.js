@@ -43,8 +43,8 @@ export default {
         headers: { "Content-Type": "text/plain" }
       });
     }
-    
-   // 3.5 THE GITHUB ASSET PROXY (Nested Folder Support)
+	
+	// 3.5 THE GITHUB ASSET PROXY (Nested Folder Support)
     const path = url.pathname;
     if (path.startsWith("/assets/")) {
       // This strips "/assets/" but KEEPS your subdirectories (e.g., "font/ibm-vga.woff2")
@@ -90,9 +90,7 @@ export default {
     }
 
     // 5. HOMEPAGE ONLY: Stream the SEO payload using native compression
-    // Reverted to simple fetch so HTMLRewriter can stream instantly without buffering
     const response = await fetch(request);
-
     const contentType = response.headers.get("content-type") || "";
 
     if (!contentType.includes("text/html")) {
@@ -104,7 +102,7 @@ export default {
 
     // The entire <head> payload (Meta + JSON-LD)
     const customHeaderContent = `
-   
+	
         <meta name="description" content="I'm Eryc, a data-driven SEO & Digital Marketing Specialist in Malang. I help fix business systems or get your business noticed by Google.">
         <meta name="keywords" content="eryc tri juni s, digital marketing specialist, portfolio, SEO specialist, malang">
         <meta name="author" content="Eryc Tri Juni S">
@@ -150,7 +148,7 @@ export default {
               "@id": "https://www.eryc.my.id/#webpage",
               "url": "https://www.eryc.my.id/",
               "name": "Eryc Tri Juni S | SEO & Digital Marketing Specialist Malang",
-              "description": "Eryc Tri Juni S is an SEO & digital marketing specialist in Malang, and a small business advisor. He helps fix business systems or get noticed at low cost.",
+			  "description": "Eryc Tri Juni S is an SEO & digital marketing specialist in Malang, and a small business advisor. He helps fix business systems or get noticed at low cost.",
               "about": {
                 "@id": "https://www.eryc.my.id/#website"
               },
@@ -206,7 +204,7 @@ export default {
                 "https://www.slideshare.net/ErycTriJuniS",
                 "https://id.quora.com/profile/Eryc-Tri-Juni-S",
                 "https://www.youtube.com/@ErycTriJuniS",
-                "https://github.com/ErycTheGreat"
+				"https://github.com/ErycTheGreat"
               ]
             },
             {
@@ -258,7 +256,7 @@ export default {
         })
         .on("body", {
             element(element) {
-                element.append(accessibleTextContent, { html: true }); 
+                element.append(accessibleTextContent, { html: true }); // Swapped to append
             }
         });
 
