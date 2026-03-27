@@ -58,6 +58,7 @@ export default {
       
       let ghRes = await fetch(targetUrl, {
         cf: { cacheTtl: 31536000, cacheEverything: true }, 
+        
       });
 
       // Failsafe: If you have a typo in your URL, don't cache a 404 error
@@ -66,8 +67,7 @@ export default {
       }
 
       const newHeaders = new Headers(ghRes.headers);
-     // UPGRADE: Added stale-while-revalidate for aggressive local caching
-      newHeaders.set("Cache-Control", "public, max-age=31536000, stale-while-revalidate=86400, immutable");
+      newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
       newHeaders.set("X-Proxy-Origin", "GitHub-via-Cloudflare");
 
       // CRITICAL OVERRIDE: Expanded to match the files in your video
@@ -104,8 +104,7 @@ export default {
 
     // The entire <head> payload (Meta + JSON-LD)
     const customHeaderContent = `
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   
         <meta name="description" content="I'm Eryc, a data-driven SEO & Digital Marketing Specialist in Malang. I help fix business systems or get your business noticed by Google.">
         <meta name="keywords" content="eryc tri juni s, digital marketing specialist, portfolio, SEO specialist, malang">
         <meta name="author" content="Eryc Tri Juni S">
