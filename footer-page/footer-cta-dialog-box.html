@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<meta name="googlebot" content="noindex,indexifembedded" />
+	<title>Let's Talk | Feel Free to Ask Me Anything | Eryc Tri Juni S</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link as="font" crossorigin="" fetchpriority="high" href="https://ErycTheGreat.github.io/eryc.my.id-asset/font/white-rabbit.woff2" rel="preload" type="font/woff2">
+	<link href="https://ErycTheGreat.github.io/eryc.my.id-asset/footer-page/avatar-blue-nobg.webp" rel="preload" type="image/webp">
+	<link href="https://ErycTheGreat.github.io/eryc.my.id-asset/footer-page/cta-footer-bg.webp" rel="preload" type="image/webp">
+    <style>
+	
+	/*  Define your custom local font */
+		    @font-face {
+		    font-family: 'White Rabbit Local';
+		    font-style: normal;
+		    font-weight: 400; /* Matches your normal weight */
+		    font-display: swap; 
+		    /* 2. Point this to your actual GitHub Pages URL */
+		    src: url('https://ErycTheGreat.github.io/eryc.my.id-asset/font/white-rabbit.woff2') format('woff2');
+		}
+		
+        body {
+            font-family: 'White Rabbit Local', sans-serif;
+            background-color: transparent;
+            color: #fff;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+
+        }
+
+        .dialog-box {
+            position: relative;
+            background-image: url('https://ErycTheGreat.github.io/eryc.my.id-asset/footer-page/cta-footer-bg.webp');
+            background-size: cover;
+			background-repeat: no-repeat;
+            background-attachment: fixed;
+            /*border: double #4386c3;*/
+            border-radius: 2vw;
+            padding: 1vw; /* Increased padding to make it bigger */
+            margin-bottom: 0;
+            justify-content: center;
+            display: flex;
+            align-items: center;
+			min-width: 64vw;
+			min-height: 24vw;
+			
+			 
+			
+			/*box-shadow:
+				inset 0 0 1px rgba(0,187,169,0.15),
+				0 0 25px rgba(0,187,169,0.15);*/
+        }
+
+        .dialog-box::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+            z-index: 1;
+			
+			background-image:
+				repeating-linear-gradient(
+					0deg,
+					transparent,
+					transparent 1px,
+					rgba(67,134,195,0.35) 1px,
+					rgba(4,18,45,0.25) 2px
+				),
+				repeating-linear-gradient(
+					90deg,
+					transparent,
+					transparent 2px,
+					rgba(67,134,195,0.35) 2px,
+					rgba(4,18,45,0.15) 3px
+				);
+
+			pointer-events:none;
+			opacity:0.5;
+			
+			clip-path: polygon(
+				2vw 0,
+				calc(100% - 2vw) 0,
+				100% 2vw,
+				100% calc(100% - 2vw),
+				calc(100% - 2vw) 100%,
+				2vw 100%,
+				0 calc(100% - 2vw),
+				0 2vw
+			);
+			
+			
+        }
+		
+		.dialog-box::after{
+			content:"";
+			position:absolute;
+			inset:0;
+
+			
+		}
+
+        .content-container {
+            z-index: 2;
+            display: flex;
+            align-items: center;
+        }
+
+        .avatar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 3vw; /* Increased margin to match dialog box size */
+        }
+
+		.avatar-frame {
+		position: relative;
+		width: 15.5vw;
+		height: 15.5vw;
+		
+		/* 1. Make background transparent to prevent any bleed-through into the center */
+		background: transparent;
+		
+		clip-path: polygon(99% 99%, 15% 99%, 1% 99%, 1% 87%, 1% 9%, 9% 1%, 99% 1%);
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		
+		contain: layout paint;
+		}
+		
+		.avatar-inner {
+		position: relative; /* CRITICAL: This keeps the SVG border locked inside */
+		width: 94%;
+		height: 94%;
+		background-color: transparent;
+		
+		/* Your awesome scanlines! */
+		/*background-image:
+			repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,0.15) 1px, rgba(0,0,0,0.15) 2px),
+			repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 3px);*/
+		
+		backdrop-filter: none;
+		-webkit-backdrop-filter: none;
+
+		/* Your complex shape */
+		clip-path: polygon(
+			94% 59%, 98% 65%, 98% 87%, 94% 92%, 94% 96%, 90% 96%, 88% 98%, 86% 98%, 84% 96%,
+			50% 96%, 43% 90%, 41% 92%, 21% 92%, 15% 99%, 1% 99%, 1% 87%, 1% 9%,
+			9% 1%, 94% 1%, 94% 11%, 90% 15%, 94% 20%
+		);
+
+		overflow: hidden;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 2;   /* avatar layer */
+	}
+		
+        /* =========================================
+	   NEW SVG BORDER STYLES
+	   ========================================= */
+	.inner-glow-border {
+    position: absolute;
+    width: 94%;  /* Matches the inner div exactly */
+    height: 94%; /* Matches the inner div exactly */
+    
+    /* This perfectly centers the border directly over your photo */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    z-index: 3; /* top layer */
+    pointer-events: none; /* Lets you click through it */
+    overflow: visible; /* Prevents the glow from being chopped off */
+}
+
+.inner-glow-border polygon {
+    fill: none; 
+    
+    /* THE MAGIC FIX: This links directly to the SVG gradient ID we just made */
+    stroke: url(#cyber-gradient); 
+    
+    stroke-width: 0.8; 
+    
+    /* Keep the neon glow as a solid bright color so the shadow doesn't get muddy */
+    filter: drop-shadow(0 0 3px #4386c3); 
+	z-index:3;    /* top layer */
+}
+
+.gap-fill {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* behind avatar */ /* Keeps it strictly behind your inner border line */
+    pointer-events: none; /* Ensures you can still click the avatar */
+}
+
+		.avatar{
+			width:100%;
+			height:100%;
+			object-fit:cover;
+			opacity:0.4;
+			transition: opacity 0.4s ease;
+			
+			filter:
+				blur(6px)
+				contrast(1.2)
+				brightness(1.2);
+			transition:
+				opacity 0.4s ease,
+				filter 0.6s ease;
+		}
+
+		.avatar.loaded{
+			opacity:1;
+			filter:none;
+		}
+
+        .name {
+            font-size: 1.6vw; /* Increased font size */
+            font-weight: normal;
+            color: #cbd5e1;
+            margin-top: 1.6vw; /* Increased margin */
+            transform: scale(1.4);
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+			text-align: left;
+        }
+
+        .options-header {
+			position: relative;
+			margin-top: 2.5vw;
+			margin-bottom: 3vw;
+            font-size: 2.6vw; /* Increased font size */
+            color: #4386c3;
+            font-weight: normal;
+            letter-spacing: 0.8vw; /* Increased letter spacing */
+			text-align: left;
+			z-index:0;
+			
+			background: linear-gradient(90deg, #1bc7fb 30%, #4386c3 70%);
+											-webkit-background-clip: text;
+											-webkit-text-fill-color: transparent;
+
+											/* refined neon core */
+											text-shadow:
+												0 0 0.035em #ffffff,
+												0 0 0.15em #ffffff,
+												0 0 0.5em rgba(0,255,255,0.75),
+												0 0 0.9em rgba(0,255,255,0.55);
+
+											animation: crtFlicker 0.035s infinite;	
+        }
+		
+		@keyframes crtFlicker {
+												0%   { opacity: 1; }
+												10%  { opacity: 0.85; }
+												20%  { opacity: 1; }
+												30%  { opacity: 0.78; }
+												40%  { opacity: 0.95; }
+												55%  { opacity: 0.82; }
+												70%  { opacity: 1; }
+												85%  { opacity: 0.88; }
+												100% { opacity: 1; }
+										  }
+					.options-header::after {
+												content: "";
+												position: absolute;
+												inset: 0;
+												pointer-events: none;
+												z-index:2;
+												background: repeating-linear-gradient(
+													to bottom,
+													rgba(4,18,45,0.6) 0px,
+													rgba(4,18,45,0.6) 1px,
+													transparent 1px,
+													transparent 2px
+												);
+
+												mix-blend-mode: multiply;
+												opacity: 0.45;
+												
+											}
+
+        .option {
+            font-family: 'White Rabbit Local', sans-serif;
+            font-size: 2.4vw; /* Increased font size */
+            color: #fff;
+            text-decoration: none;
+            margin: 2.5vw 0; /* Increased margin */
+            line-height: 100%;
+            position: relative;
+            letter-spacing: 0.8vw; /* Increased letter spacing */
+			text-align: left;
+			
+			animation: watchdog-glitch-v2 0.75s infinite linear;
+        }
+		
+		@keyframes watchdog-glitch-v2 {
+    /* 0% to 45%: Perfect stability as the arrow approaches */
+    0%, 45% {
+        /*text-shadow:  							0 0 0.035em #f1f5f9,
+												0 0 0.15em #f1f5f9,
+												0 0 0.5em rgba(0,255,255,0.75),
+												0 0 0.9em rgba(0,255,255,0.55);*/
+        transform: translate(0, 0) skewX(0deg) scale(1);
+        color: inherit;
+        filter: blur(0px);
+    }
+
+    /* 48%: The Pre-Shock jitter */
+    48% {
+        text-shadow: 2px 0 0px #00fcf4, -2px 0 0px #ff0055;
+        transform: translate(-1px, 0) skewX(-5deg) scale(1);
+    }
+
+    /* 50%: IMPACT! 
+       - Characters are squashed to half-height (scaleY 0.5) and violently skewed.
+       - Blinding white electrical flash (color & massive white shadow).
+       - Blur added to simulate signal loss. */
+    50% {
+        text-shadow: 5px 0 0px #00fcf4, -5px 0 0px #ff0055, 0 0 20px #ffffff;
+        transform: translate(-4px, 2px) skewX(-30deg) scaleY(0.5) scaleX(1.1);
+        color: #ffffff; 
+        filter: blur(1px); 
+    }
+
+    /* 52%: REBOUND! 
+       - Characters over-correct and stretch too tall (scaleY 1.3).
+       - Colors invert and split aggressively the other direction. */
+    52% {
+        text-shadow: -6px 0 0px #00fcf4, 6px 0 0px #ff0055;
+        transform: translate(4px, -1px) skewX(20deg) scaleY(1.3) scaleX(0.9);
+        color: #00fcf4; /* Flashes bright cyan before settling */
+        filter: blur(0px);
+    }
+
+    /* 55%: Stabilizing... */
+    55% {
+        text-shadow: -2px 0 0px #00fcf4, 2px 0 0px #ff0055;
+        transform: translate(-1px, 0) skewX(-5deg) scale(1);
+        color: inherit;
+    }
+
+    /* 60% to 100%: Instantly locked back to normal */
+    60%, 100% {
+        text-shadow: 0 0 10px #00bba9;
+        transform: translate(0, 0) skewX(0deg) scale(1);
+        color: inherit;
+        filter: blur(0px);
+    }
+}
+
+        .option:hover {
+            text-shadow: 0 0px 10px, 0 0 1em #cbd5e1, 0 0 0.5em #f1f5f9,
+      0 0 0.1em #fff, 0 4px 1px #3b4149;
+            animation: none;
+        }
+
+        .rpgSlide {
+            position: absolute;
+            left: -1.5vw; /* Increased position */
+            opacity: 1;
+            animation: rpgSlide 0.75s infinite;
+			color: #ffffff;
+			
+			text-shadow:
+					0 0 4px #ffffff;
+					0 0 10px #4386c3;
+        }
+
+       @keyframes rpgSlide {
+				0%   { transform: translateX(0px); }
+				50%  { transform: translateX(4px); } /* Adjust this number to make it jump further */
+				100% { transform: translateX(0px); }
+			}
+
+        @media screen and (max-width: 420px) {
+					
+					  body {
+						 margin-top:0;
+						 
+					 }
+					
+					 .dialog-box {
+						 
+					padding: 5vw;
+					min-width: 80vw;
+					min-height: 30vw;
+					
+					}
+					
+					.options-container {
+			
+					margin-left:1.8vw;
+			
+					}
+					.avatar-container {
+					margin-right: 2.2vw;
+					
+					}
+					.avatar-frame{
+						width:21vw;
+						height:21vw;
+						
+
+						clip-path: polygon(99% 99%, 15% 99%, 1% 99%, 1% 87%, 1% 9%, 9% 1%, 99% 1%);
+
+						display:flex;
+						align-items:center;
+						justify-content:center;
+						
+						contain: layout paint;
+					}
+
+		.avatar-inner{
+			width:94%;
+			height:94
+			
+
+			clip-path: polygon(
+			94% 59%, 98% 65%, 98% 87%, 94% 92%, 94% 96%, 90% 96%, 88% 98%, 86% 98%, 84% 96%,
+			50% 96%, 43% 90%, 41% 92%, 21% 92%, 15% 99%, 1% 99%, 1% 87%, 1% 9%,
+			9% 1%, 94% 1%, 94% 11%, 90% 15%, 94% 20%
+			);
+
+			overflow:hidden;
+		}
+
+		.avatar{
+			width:100%;
+			height:100%;
+			object-fit:cover;
+		}
+		.avatar.loaded{
+			opacity:1;
+			filter:none;
+		}
+					.options-header {
+					font-size: 4vw;
+					margin-top: -3vw;
+					margin-bottom:4vw;
+					
+									  
+					}
+					
+						
+					.option {
+						font-size: 3.7vw;
+					  
+					}
+							
+					 .rpgSlide {
+					font-size: 3.2vw;
+					left: -2.3vw; /* Adjust size using vw units */
+					}
+					
+					 .sentence {
+					font-size: 3.1vw; /* Adjust size using vw units */
+					 }
+					 
+					.linked-text {
+					font-size: 2.9vw; /* Adjust size using vw units */ 
+					}
+		}
+	
+    </style>
+</head>
+<body>
+    <div class="dialog-box">
+        <div class="content-container">
+            <div class="avatar-container">
+
+			<div class="avatar-frame">
+    
+    <svg class="gap-fill" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <defs>
+            <mask id="gap-mask">
+                <rect width="100" height="100" fill="white" />
+                <g transform="translate(3, 3) scale(0.94)">
+                    <polygon points="94,59 98,65 98,87 94,92 94,96 90,96 88,98 86,98 84,96 50,96 43,90 41,92 21,92 15,99 1,99 1,87 1,9 9,1 94,1 94,11 90,15 94,20" fill="black" />
+                </g>
+            </mask>
+        </defs>
+        <rect width="100" height="100" fill="rgba(4, 18, 45, 0.85)" mask="url(#gap-mask)" />
+    </svg>
+
+    <div class="avatar-inner">
+        <img
+            src="avatar-placeholder.webp"
+            data-src="https://ErycTheGreat.github.io/eryc.my.id-asset/footer-page/avatar-blue-nobg.webp"
+            class="avatar lazy-avatar"
+            alt="eryc-tri-juni-s-blue-avatar">
+    </div>
+    
+    <svg class="inner-glow-border" viewBox="0 0 100 100" preserveAspectRatio="none">
+    
+    <defs>
+        <linearGradient id="cyber-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#4386c3" />
+            <stop offset="50%" stop-color="#4386c3" />
+            <stop offset="100%" stop-color="#4386c3" />
+        </linearGradient>
+    </defs>
+
+    <polygon points="94,59 98,65 98,87 94,92 94,96 90,96 88,98 86,98 84,96 50,96 43,90 41,92 21,92 15,99 1,99 1,87 1,9 9,1 94,1 94,11 90,15 94,20" />
+</svg>
+
+</div>
+		</div>
+            <div class="options-container">
+                <p class="options-header">>_ Feel free to ask</p>
+                <a href="https://wa.me/6282220888819" class="option">
+                    <span class="rpgSlide">▶</span>&nbsp;Let's talk
+                </a>
+            </div>
+        </div>
+    </div>
+	<script>
+	// Lazy Load Image Script
+    const avatar = document.querySelector(".lazy-avatar");
+    const img = new Image();
+    img.src = avatar.dataset.src;
+
+    img.onload = () => {
+        avatar.src = img.src;
+        avatar.classList.add("loaded");
+    };
+</script>
+</body>
+</html>
+
