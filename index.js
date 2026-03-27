@@ -43,9 +43,9 @@ export default {
         headers: { "Content-Type": "text/plain" }
       });
     }
-	
-	// 3.5 THE DROPBOX CDN PROXY
-	const path = url.pathname;
+    
+    // 3.5 THE DROPBOX CDN PROXY
+    const path = url.pathname;
     if (path.startsWith("/dropbox/")) {
       const dropboxPath = path.replace("/dropbox", "");
       const targetUrl = `https://dl.dropboxusercontent.com${dropboxPath}${url.search}`;
@@ -60,13 +60,13 @@ export default {
     }
 
     // 4. THE BLAZING FAST BYPASS
-   if (url.pathname !== "/") {
+    if (url.pathname !== "/") {
       // Use the environment variable for direct routing
       const originRequest = new Request(env.ORIGIN_URL + url.pathname, request);
       return fetch(originRequest);
     }
 
-   // 5. HOMEPAGE ONLY: Stream the SEO payload with Edge Caching
+    // 5. HOMEPAGE ONLY: Stream the SEO payload with Edge Caching
     // Fetch directly from the origin to cut out the DNS middleman
     const originHomepage = env.ORIGIN_URL + "/";
     const response = await fetch(originHomepage, {
@@ -85,9 +85,13 @@ export default {
         return response;
     }
 
+    // ---> RESTORED VARIABLES HERE <---
+    const domain = "https://www.eryc.my.id";
+    const canonicalUrl = domain + url.pathname;
+
     // The entire <head> payload (Meta + JSON-LD)
     const customHeaderContent = `
-	<style>
+    <style>
       html, body {
       overflow: hidden !important;
       }
@@ -137,7 +141,7 @@ export default {
               "@id": "https://www.eryc.my.id/#webpage",
               "url": "https://www.eryc.my.id/",
               "name": "Eryc Tri Juni S | SEO & Digital Marketing Specialist Malang",
-			  "description": "Eryc Tri Juni S is an SEO & digital marketing specialist in Malang, and a small business advisor. He helps fix business systems or get noticed at low cost.",
+              "description": "Eryc Tri Juni S is an SEO & digital marketing specialist in Malang, and a small business advisor. He helps fix business systems or get noticed at low cost.",
               "about": {
                 "@id": "https://www.eryc.my.id/#website"
               },
@@ -193,7 +197,7 @@ export default {
                 "https://www.slideshare.net/ErycTriJuniS",
                 "https://id.quora.com/profile/Eryc-Tri-Juni-S",
                 "https://www.youtube.com/@ErycTriJuniS",
-				"https://github.com/ErycTheGreat"
+                "https://github.com/ErycTheGreat"
               ]
             },
             {
