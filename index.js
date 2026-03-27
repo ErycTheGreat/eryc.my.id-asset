@@ -79,11 +79,7 @@ export default {
 
     // The entire <head> payload (Meta + JSON-LD)
     const customHeaderContent = `
-    <style>
-      html, body {
-      overflow: hidden !important;
-      }
-    </style>
+   
         <meta name="description" content="I'm Eryc, a data-driven SEO & Digital Marketing Specialist in Malang. I help fix business systems or get your business noticed by Google.">
         <meta name="keywords" content="eryc tri juni s, digital marketing specialist, portfolio, SEO specialist, malang">
         <meta name="author" content="Eryc Tri Juni S">
