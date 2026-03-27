@@ -44,6 +44,46 @@ export default {
       });
     }
     
+   // 3.5 THE GITHUB ASSET PROXY (Nested Folder Support)
+    const path = url.pathname;
+    if (path.startsWith("/assets/")) {
+      // This strips "/assets/" but KEEPS your subdirectories (e.g., "font/ibm-vga.woff2")
+      const filePath = path.replace("/assets/", "");
+      
+      const githubUser = "ErycTheGreat"; 
+      const githubRepo = "eryc.my.id-asset"; // Snagged this from your video!
+      const branch = "main"; 
+      
+      const targetUrl = `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${branch}/${filePath}`;
+      
+      let ghRes = await fetch(targetUrl, {
+        cf: { cacheTtl: 31536000, cacheEverything: true }, 
+        headers: request.headers,
+      });
+
+      // Failsafe: If you have a typo in your URL, don't cache a 404 error
+      if (!ghRes.ok) {
+        return new Response("Asset not found on GitHub", { status: 404 });
+      }
+
+      const newHeaders = new Headers(ghRes.headers);
+      newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
+      newHeaders.set("X-Proxy-Origin", "GitHub-via-Cloudflare");
+
+      // CRITICAL OVERRIDE: Expanded to match the files in your video
+      const lowerPath = filePath.toLowerCase();
+      if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
+      else if (lowerPath.endsWith(".css")) newHeaders.set("Content-Type", "text/css");
+      else if (lowerPath.endsWith(".html")) newHeaders.set("Content-Type", "text/html; charset=UTF-8");
+      else if (lowerPath.endsWith(".json")) newHeaders.set("Content-Type", "application/json");
+      else if (lowerPath.endsWith(".svg")) newHeaders.set("Content-Type", "image/svg+xml");
+      else if (lowerPath.endsWith(".webp")) newHeaders.set("Content-Type", "image/webp");
+      else if (lowerPath.endsWith(".woff")) newHeaders.set("Content-Type", "font/woff");
+      else if (lowerPath.endsWith(".woff2")) newHeaders.set("Content-Type", "font/woff2");
+
+      return new Response(ghRes.body, { status: 200, headers: newHeaders });
+    }
+
     // 4. THE BLAZING FAST BYPASS
     if (url.pathname !== "/") {
       return fetch(request);
