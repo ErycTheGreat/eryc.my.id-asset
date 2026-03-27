@@ -1,5 +1,6 @@
 export default {
-  async fetch(request, env) {
+  // Removed 'env' as we are relying on your Cloudflare DNS CNAME again
+  async fetch(request) {
     const url = new URL(request.url);
     const host = url.hostname;
     const canonicalHost = "www.eryc.my.id";
@@ -61,18 +62,14 @@ export default {
 
     // 4. THE BLAZING FAST BYPASS
     if (url.pathname !== "/") {
-      // Use the environment variable for direct routing
-      const originRequest = new Request(env.ORIGIN_URL + url.pathname, request);
-      return fetch(originRequest);
+      // REVERTED to your original code. This forces the request through Cloudflare's CNAME
+      // pointing to ghs.googlehosted.com, preventing the Google Sites redirect loop.
+      return fetch(request);
     }
 
     // 5. HOMEPAGE ONLY: Stream the SEO payload with Edge Caching
-    // Fetch directly from the origin to cut out the DNS middleman
-    const originHomepage = env.ORIGIN_URL + "/";
-    const response = await fetch(originHomepage, {
-      headers: request.headers,
-      // Tell Cloudflare's Edge to cache the raw HTML for 60 seconds
-      // This stops the Worker from working so hard on every single click
+    // We apply the caching rules directly to the standard request!
+    const response = await fetch(request, {
       cf: {
         cacheTtl: 60,
         cacheEverything: true,
@@ -85,7 +82,6 @@ export default {
         return response;
     }
 
-    // ---> RESTORED VARIABLES HERE <---
     const domain = "https://www.eryc.my.id";
     const canonicalUrl = domain + url.pathname;
 
