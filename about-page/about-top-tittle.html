@@ -1,124 +1,460 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta content="noindex,indexifembedded" name="googlebot">
-	<title>About Me | Eryc Tri Juni S - Digital Marketing Specialist</title>
 	<meta content="width=device-width, initial-scale=1.0" name="viewport">
-	<link href="https://www.eryc.my.id/assets/font/jetbrains-mono-600.woff2" rel="preload" type="font/woff2">
+	<title>Eryc Tri Juni S about</title><!-- Add your external resources here if Google Sites allows them -->
+	<!-- Example: -->
+	<link href="https://www.eryc.my.id/assets/font/jetbrains-mono-500.woff2" rel="preload" type="font/woff2">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="https://ErycTheGreat.github.io/eryc.my.id-asset/font/white-rabbit.woff2" rel="preload" type="font/woff2">
+	<link href="https://www.eryc.my.id/assets/about-page/terminal.js" rel="preload"><!-- <link rel="stylesheet" href="styles/all.css"> -->
+	<link href="styles/main.css" rel="stylesheet">
 	<style>
-	       
-	           /* Define your custom local font */
+	             
+	               *{
+	                 margin: 0;
+	                 padding: 0;
+	                 box-sizing: border-box;
+	               }
+	               
+	               /* Define your custom local font */
 	               @font-face {
 	               font-family: 'JetBrains Mono Local';
 	               font-style: normal;
-	               font-weight: 600; /* Matches your 600 weight */
+	               font-weight: 500; /* Matches your 600 weight */
 	               font-display: swap; 
 	               /* 2. Point this to your actual GitHub Pages URL */
-	               src: url('https://www.eryc.my.id/assets/font/jetbrains-mono-600.woff2') format('woff2');
+	               src: url('https://www.eryc.my.id/assets/font/jetbrains-mono-500.woff2') format('woff2');
+	               }
+	               @font-face {
+	               font-family: 'White Rabbit Local';
+	               font-style: normal;
+	               font-display: swap; 
+	               /* 2. Point this to your actual GitHub Pages URL */
+	               src: url('https://www.eryc.my.id/assets/font/white-rabbit.woff2') format('woff2');
+	               }
+
+	               ::-webkit-scrollbar-track {
+	                 box-shadow: inset 0 0 0px rgba(0, 0, 0, 0.3);
+	                 -webkit-box-shadow: inset 0 0 0px rgba(0, 0, 0, 0.3);
+	                 background-color: transparent;
+	               }
+
+	               ::-webkit-scrollbar {
+	                 width: 1px;
+	                 background-color: transparent;
+	               }
+
+	               ::-webkit-scrollbar-thumb {
+	                 border-radius: 10px;
+	                 box-shadow: inset 0 0 0px rgba(0, 0, 0, .3);
+	                 -webkit-box-shadow: inset 0 0 0px rgba(0, 0, 0, .3);
+	                 background-color: transparent;
+	               }
+
+	               .white {
+	                 color: rgb(238, 238, 238);
+	               }
+
+	               .blue {
+	                 color: #00bba9;
+	               }
+
+	               a {
+	                 text-decoration: none;
+	                 color: rgb(238, 238, 238);
+	               }
+
+	               body {
+	                 background-color: #050522;
+	                 height: 92vh;
+	                 padding: 0;
+	                 margin: 0;
+	                 font-family: 'JetBrains Mono local', monospace;
+	                 display: flex;
+	                 align-items: center;
+	                 justify-content: center;
+	               }
+
+	               .container {
+	         position: relative; /* Required for pseudo-elements */
+	         display: flex;
+	         flex-direction: column;
+	         width: 100%;
+	         max-width: 500px;
+	         height: 100%;
+	         overflow: hidden;
+	         /*border-radius: 6px;*/
+	         cursor: text;
+	         background-color: transparent; /* Make the terminal background transparent */
+	         z-index: 1; /* Ensure the terminal content is above the pseudo-elements */
+	       }
+
+	       /* ::before for the "border" */
+	       .container::before {
+	         content: '';
+	         position: absolute;
+	         top: 0;
+	         left: 0;
+	         width: 100%;
+	         height: 100%;
+	         clip-path: polygon(0 3%, 3% 0, 97% 0, 97% 22%, 100% 25%, 100% 48%, 97% 51%, 97% 97%, 46% 97%, 43% 100%, 0 100%);
+	         background-color: #05122d; /* Border color */
+	         z-index: -1; /* Place it behind the terminal content */
+	       }
+
+	       /* ::after for the "mask" */
+	       .container::after {
+	         content: '';
+	         position: absolute;
+	         top: 2px; /* Adjust to control border thickness */
+	         left: 2px; /* Adjust to control border thickness */
+	         width: calc(100% - 4px); /* Adjust to control border thickness */
+	         height: calc(100% - 4px); /* Adjust to control border thickness */
+	         clip-path: polygon(0 3%, 3% 0, 97% 0, 97% 22%, 100% 25%, 100% 48%, 97% 51%, 97% 97%, 46% 97%, 43% 100%, 0 100%);
+	         background-color: #050522; /* Terminal background color */
+	         z-index: -1; /* Place it above the ::before element */
+	         
+	       }
+
+	               .menu {
+	                 margin-top:1px;
+	                 margin-left:1px;
+	                 display: flex;
+	                 align-items: center;
+	                 text-align: center;
+	                 flex-direction: row;
+	                 width: 96.5%;
+	                 height: 24px;
+	                 background-color: #05122d;
+	                 padding: 0 2%; /* Adjust the padding percentage as needed */
+	                 cursor: default;
+	                 clip-path: polygon(100% 0%, 100% 68%, 100% 100%, 0 100%, 0% 41%, 3% 0);
+	               }
+
+	               .menu .button {
+	                 width: 12px; /* Adjust the width to make the buttons visible */
+	                 height: 12px; /* Adjust the height to make the buttons visible */
+	                 border-radius: 50%;
+	                 margin-right: 8px; /* Adjust the margin to separate the buttons */
+	                 cursor: pointer;
+	               }
+
+	               .red {
+	                 background-color: #1e0525;
+	               }
+	               .yellow {
+	                 background-color: #1c111d;
+	               }
+	               .green {
+	                 background-color: #041d18;
+	               }
+
+	               div.title {
+	                 flex: 1;
+	                 text-align: center;
+					 
+	               }
+
+	               .menu h1 {
+	                 font-size: 3.7vw; /* Use viewport width (vw) for font size */
+	                 color: #00bba9;
+					 letter-spacing: 1px;
+					 font-weight:normal;
+	               }
+
+	               .buttons-flex {
+	                 position: absolute;
+	                 display: flex;
+	                 flex-direction: row;
+	               }
+	               
+	   /* --- BLOCK CURSOR CSS ADDITIONS --- */
+	   .input-container {
+	       position: relative;
+	       width: 100%;
+	       display: flex;
+	       align-items: center;
+	       overflow: hidden;
+	   }
+
+	   .input-mirror-wrapper {
+	       position: absolute;
+	       left: 0;
+	       display: flex;
+	       align-items: center;
+	       pointer-events: none; /* Let clicks pass through to the invisible real input */
+	       color: rgb(247, 252, 160); /* Matches your yellow input text */
+	       font-size: 4vw;
+	       font-family: 'JetBrains Mono local', monospace;
+	       white-space: pre; /* Keeps spacing accurate */
+	   }
+
+	   /* The new ::after cursor */
+	   .text-before-cursor::after {
+	       content: "";
+	       display: inline-block;
+	       width: 0.45em; 
+	       height: 1.2em; 
+	       background-color: #00bba9; 
+	       
+	       /* --- The Alignment Fix --- */
+	       vertical-align: middle; 
+	       transform: translateY(-0.1em); /* Nudges it up perfectly! */
+	       /* ------------------------- */
+	       
+	       animation: blink 1s step-end infinite;
+	       box-shadow: 0 0 5px rgba(0, 187, 169, 0.4); 
+	   }
+
+	   @keyframes blink {
+	       0%, 100% { opacity: 1; }
+	       50% { opacity: 0; }
+	   }
+
+	   /* Override the native input to make the text and native caret invisible */
+	   input {
+	       color: transparent !important; 
+	       caret-color: transparent !important; 
+	       z-index: 2; /* Keeps it on top so you can still click and type */
+	       padding-right: 0.6em;
+	   }
+	   input::selection {
+	       background: rgba(0, 187, 169, 0.3); /* Keeps text highlighting visible */
+	       color: transparent;
+	   }
+	   /* --- END BLOCK CURSOR CSS --- */
+	   
+	   .ghost-suggestion {
+	       position: absolute;
+	       left: 0;
+	       color: #00bba9;
+	       opacity: 0.35; 
+	       pointer-events: none; 
+	       white-space: pre;
+	       z-index: 0;
+	       font-size: 4vw; /* Matches your custom input size */
+	       font-family: 'JetBrains Mono local', monospace;
+	   }
+	               
+	               #matrixCanvas {
+	               position: fixed;
+	               top: 0;
+	               left: 0;
+	               width: 100%;
+	               height: 92vh;
+	               z-index: 2;
+	               display: none;
+	               /*border-radius: 6px;*/
 	           }
 	           
-	           body {
-	               margin: 0;
-	               padding: 0;
-	               overflow: hidden; /* Hide scrollbars for the entire page */
-	           }
+	.spinner {
+	   position: relative;
+	   
+	   /* 1. This aligns the entire line perfectly with your ">" commands below! */
+	   margin-left: 2%; 
+	   
+	   /* 2. This controls the gap between the "|" and the "ERYC-OS" text */
+	   padding-left: 1.2em; 
+	}
 
-	           .container {
-	               width: 100%;
-	               height: 100%;
-	               display: flex;
-	               align-items: center;
-	               justify-content: center;
-	           }
+	.spinner::before {
+	   content: '|'; 
+	   position: absolute;
+	   
+	   /* 3. Locks the spinner to the exact start of the paragraph's edge */
+	   left: 0; 
+	   top: 5.5px; 
+	   
+	   color: #cbd5e1;
+	   transform: translateZ(0); 
+	   -webkit-font-smoothing: antialiased;
+	   animation: perfect-pipe 0.6s infinite steps(1); 
+	}
 
-	           .title {
-	               display: flex;
-	               align-items: center;
-	               justify-content: center;
-	               text-align: center;
-	               font-size: 2rem;
-	               overflow: hidden;
-	           }
-
-	           .fa {
-	               font-size: 2.6rem;
-	               color: #00bba9;
-	               margin-right: 30px;
-	           }
-
-	           .text {
-	               font-family: 'JetBrains Mono local', monospace;
-	               font-size: 2.8rem;
-	               font-weight: 600;
-	               color: #f1f5f9;
-	               margin: 0;
-	               padding: 0;
-	           }
-
-	           .icon-text {
-	               display: flex;
-	               align-items: center;
-	           }
-
-	           @media (max-width: 480px) {
-	               .title {
-	                   flex-direction: column;
-	                   font-size: 2.2rem;
-	                   overflow: hidden;
+	@keyframes perfect-pipe {
+	   0%   { content: '|'; }
+	   25%  { content: '/'; }
+	   50%  { content: '-'; }
+	   75%  { content: '\\'; }
+	   100% { content: '|'; }
+	}
+	           /* Media query for ? view but it need or desktop version not works */
+	               @media screen and (min-width: 768px) {
 	               }
 
-	               .fa {
-	                   font-size: 1.9rem;
-	                   margin-right: 20px;
+	               @media screen and (min-width: 420px) {
+	                 .buttons-flex {
+	                   position: unset;
+	                   display: flex;
+	                   flex-direction: row;
+	                 }
+	                  
+	                 .container {
+	                   height: 100%;
+	                 }
 	               }
 
-	               .text {
-	                   font-size: 2.1rem;
+	               @media screen and (max-width: 480px) {
+	                 .menu h1 {
+	                   /*display: none;*/
+	                 }
+	                 
+	                
 	               }
-	           }
 
-	           /* Blinking cursor effect */
-	           .blinking-cursor {
-	               display: inline-block;
-	               width: 24px;
-	               height: 0.14em;
-	               background-color: #f1f5f9;
-	               animation: blink 1s infinite;
-	               vertical-align: text-bottom;            
-	           }
+	               #app {
+	                 display: flex;
+	                 flex-direction: column;
+	                 background-color: transparent;
+	                 width: 100%;
+	                 height: 100%;
+	                 padding: 4%; /* Adjust the padding percentage as needed */
+	                 overflow: auto;
+	               }
 
-	           @keyframes blink {
-	               0%, 50% {
-	                   opacity: 1;
+	               p {
+	                 font-size: 3.6vw; /* Use viewport width (vw) for font size */
+	                 color: rgb(203, 213, 225);
+	                 padding: 2% 0; /* Adjust the padding percentage as needed */
 	               }
-	               50.1%, 100% {
-	                   opacity: 0;
+
+	               h2 {
+	                 font-size: 3.8vw; /* Use viewport width (vw) for font size */
+	                 color: rgb(238, 238, 238);
 	               }
-	           }
+
+	     p.code {
+	     display: grid;
+	     grid-template-columns: 100px 1fr; /* 100px width for the command column, 1fr takes the rest */
+	     gap: 5px; /* Space between command and definition */
+	     margin-left: 2%;
+	     align-items: start; /* Keeps text at the top if the definition wraps to a second line */
+	   }
+	   span.cmd-name {
+	     color: #00bba9; /* Keeps your terminal green */
+	   }
+	   span.text {
+	     margin-left: 0;
+	     color: #fff;
+	   }
+
+	               p.path {
+	                 color: #F7FCA0;
+	               }
+
+	               p.path span {
+	                 color: #818cf8;
+	               }
+
+	               p.path span + span {
+	                 color: #9CEAF3;
+	               }
+
+	               .sucess {
+	                 color: #00bba9;
+	               }
+
+	               .error {
+	                 color: #e73c5d;
+	               }
+
+	               p.response {
+	                 color: rgb(238, 238, 238);
+	               }
+
+	               input {
+	                 border: none;
+	                 background-color: unset;
+	                 color: rgb(247, 252, 160);
+	                 width: 100%;
+	                 font-size: 4vw; /* Use viewport width (vw) for font size */
+	                 font-family: 'JetBrains Mono local', monospace;
+	               }
+
+	               input:focus {
+	                 border: none; 
+	                 outline: none;
+	                 box-shadow: none;
+	                 background-color: unset;
+	               }
+
+	               .type {
+	                 display: flex;
+	                 align-items: center;
+	                 padding: 2% 0; /* Adjust the padding percentage as needed */
+	               }
+
+	               .type2 {
+	                 display: flex;
+	                 align-items: center;
+	                 padding: 2% 0; /* Adjust the padding percentage as needed */
+	               }
+
+	               .icone {
+	                 color: #00bba9;
+	                 padding-right: 2%;
+	               }
+
+	               .icone.error {
+	                 color: #e73c5d;
+	               }
+	               
+	               .scan-grid {
+	                   display: grid;
+	                   grid-template-columns: 8ch 1fr; /* Col 1 is exactly 14 characters wide, Col 2 takes the rest */
+	                   align-items: start; /* Keeps the label at the top even if the right side wraps to 3 lines */
+	                   width: 100%;
+	               }
+
+	               .scan-label {
+	                   white-space: pre; /* Forces the browser to respect our exact spacebar formatting */
+	               }
+	               .clickable-cmd {
+	                   color: #00bba9; /* --- THE FIX: Forces the resting state back to green --- */
+	                   cursor: pointer; /* Turns the mouse into a pointing hand */
+	                   transition: all 0.2s ease-in-out;
+	               }
+
+	               /* 1. Prepares the cursor to be moved */
+	               .rpg-cursor {
+	                   display: inline-block; /* REQUIRED for the transform animation to work! */
+	               }
+
+	               /* 2. When hovering the command, trigger the animation ONLY on the cursor */
+	               .clickable-cmd:hover .rpg-cursor {
+	                   animation: rpgSlide 0.6s infinite;
+	               }
+
+	               /* 3. Your custom animation! */
+	               @keyframes rpgSlide {
+	                   0%   { transform: translateX(0px); }
+	                   50%  { transform: translateX(5px); } /* Adjust to 6px if you want a wider jump! */
+	                   100% { transform: translateX(0px); }
+	               }
+	               
 	</style>
 </head>
 <body>
+	<canvas id="matrixCanvas"></canvas>
 	<div class="container">
-		<div class="title">
-			<div class="icon-text">
-				<svg class="fa" height="1em" viewbox="0 0 512 512" width="1em" xmlns="http://www.w3.org/2000/svg">
-				<defs>
-					<mask id="info-mask">
-						<rect fill="white" height="512" width="512"></rect>
-						<g transform="translate(-153.6, -180) scale(1.6)">
-							<path d="M216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24z" fill="black"></path>
-						</g>
-						<g transform="translate(-153.6, -140) scale(1.6)">
-							<path d="M232 128 h48 v48 h-48 z" fill="black"></path>
-						</g>
-					</mask>
-				</defs>
-				<circle cx="256" cy="256" mask="url(#info-mask)" r="256"></circle></svg>
-				<h1 class="text" itemprop="headline">Λbout me<span class="blinking-cursor"></span></h1>
+		<div class="menu">
+			<div class="buttons-flex">
+				<div class="button red"></div>
+				<div class="button yellow"></div>
+				<div class="button green"></div>
+			</div>
+			<div class="title">
+				<a href="https://www.linkedin.com/in/eryctrijunis" target="_blank">
+				<h1><i class='fa fa-terminal'></i> terminal</h1></a>
 			</div>
 		</div>
-	</div><noscript>
-	<p style="text-align: center; font-size: 1.5rem; color: #333; margin-top: 20px;">This is a brief description about myself. Feel free to explore more about my services.</p></noscript>
+		<div id="app">
+			<!-- Your content goes here -->
+		</div>
+	</div>
+	<script defer src="https://www.eryc.my.id/assets/about-page/terminal.js">
+	</script>
 </body>
 </html>
