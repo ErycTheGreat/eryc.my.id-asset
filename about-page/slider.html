@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta content="noindex,indexifembedded" name="googlebot">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<title>Qualification | Eryc Tri Juni S - Digital Marketing Specialist</title>
+	<link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">
+	<link href="https://www.eryc.my.id/assets/font/jetbrains-mono-500.woff2" rel="preload" type="font/woff2">
+	<link href="https://www.eryc.my.id/assets/font/libre-barcode-39.woff2" rel="preload" type="font/woff2">
+	<link rel="preload" as="image" href="https://www.eryc.my.id/assets/image/cert-ga.webp" type="image/webp" fetchpriority="high">
+	<link rel="preload" as="image" href="https://www.eryc.my.id/assets/image/cert-gads.webp" type="image/webp" fetchpriority="high">
+	<link rel="preload" as="image" href="https://www.eryc.my.id/assets/image/cert-looker.webp" type="image/webp" fetchpriority="high">
+	<link rel="preload" as="image" href="https://www.eryc.my.id/assets/image/cert-semrush.webp" type="image/webp" fetchpriority="high">
+	<link href="https://www.eryc.my.id/assets/about-page/slider.js" rel="preload"><!-- <link rel="stylesheet" href="styles/all.css"> -->
+	<style>
+	   * {
+	   margin: 0;
+	   padding: 0;
+	   box-sizing: border-box;
+	   }
+	   
+	   @font-face {
+	   font-family: 'JetBrains Mono Local';
+	   font-style: normal;
+	   font-weight: 500; /* Matches your 600 weight */
+	   font-display: swap; 
+	   /* 2. Point this to your actual GitHub Pages URL */
+	   src: url('https://www.eryc.my.id/assets/font/jetbrains-mono-500.woff2') format('woff2');
+	   }
+	    @font-face {
+	   font-family: 'Libre Barcode 39 Local';
+	   font-style: normal;
+	   font-weight: 400; /* Matches your 600 weight */
+	   font-display: swap; 
+	   /* 2. Point this to your actual GitHub Pages URL */
+	   src: url('https://www.eryc.my.id/assets/font/libre-barcode-39.woff2') format('woff2');
+	   }
+	   
+	   body {
+	   width: 100%;
+	   height: 100vh;
+	   display: flex;
+	   align-items: center;
+	   justify-content: center;
+	   position: relative; /* Required for pseudo-element positioning */
+	   overflow: hidden;
+	   }
+
+	   body::before {
+	   content: '';
+	   position: absolute;
+	   top: 10%; /* Start 5% from the top */
+	   left: 0;
+	   width: 100%;
+	   height: 80%; /* Cover 80% of the height */
+	   background: linear-gradient(90deg, #050522 21px, transparent 1%) center,
+	   linear-gradient(#050522 21px, transparent 1%) center,
+	   #aaa;
+	   background-size: 22px 22px;
+	   z-index: -1; /* Place it behind the content */
+	   }
+
+	   /* Add this new pseudo-element for the corner squares */
+	   body::after {
+	   content: '';
+	   position: absolute;
+	   top: 10%;
+	   left: 0;
+	   width: 100%;
+	   height: 80%;
+	   pointer-events: none;
+	   z-index: 1; /* Ensure it's above the grid background */
+	   }
+
+	   /* Corner squares */
+	   body::after {
+	   content: '';
+	   position: absolute;
+	   top: 10%; /* Match the grid background */
+	   left: 1px;
+	   width: 100%;
+	   height: 80%; /* Match the grid background */
+	   pointer-events: none;
+	   z-index: 1;
+	   background:
+	   /* Top-left corner - positioned 10px from left and 10px from top */
+	   linear-gradient(to bottom, #f1f5f9 2px, transparent 2px) 15px 10px,
+	   linear-gradient(to right, #f1f5f9 2px, transparent 2px) 15px 10px,
+
+	   /* Top-right corner - positioned 10px from right and 10px from top */
+	   linear-gradient(to bottom, #f1f5f9 2px, transparent 2px) calc(100% - 18px) 10px,
+	   linear-gradient(to left, #f1f5f9 2px, transparent 2px) calc(100% - 18px) 10px,
+
+	   /* Bottom-left corner - positioned 10px from left and 10px from bottom */
+	   linear-gradient(to top, #f1f5f9 2px, transparent 2px) 15px calc(100% - 10px),
+	   linear-gradient(to right, #f1f5f9 2px, transparent 2px) 15px calc(100% - 10px),
+
+	   /* Bottom-right corner - positioned 10px from right and 10px from bottom */
+	   linear-gradient(to top, #f1f5f9 2px, transparent 2px) calc(100% - 18px) calc(100% - 10px),
+	   linear-gradient(to left, #f1f5f9 2px, transparent 2px) calc(100% - 18px) calc(100% - 10px);
+
+	   background-size:
+	   46px 46px, /* Double the offset to center properly */
+	   46px 46px,
+	   46px 46px,
+	   46px 46px,
+	   46px 46px,
+	   46px 46px,
+	   46px 46px,
+	   46px 46px;
+
+	   background-repeat: no-repeat;
+	   }
+
+	   .wrapper {
+	   display: grid;
+	   grid-template-columns: repeat(12, 1fr);
+	   width: 100%;
+	   height: 100vh;
+	   align-items: center;
+	   justify-content: center;
+	   padding: 20px;
+	   }
+	   .text-container {
+	   grid-column: span 3;
+	   display: flex;
+	   flex-direction: column;
+	   align-items: center;
+	   text-align: center;
+	   }
+	   .title {
+	   display: flex;
+	   align-items: center;
+	   justify-content: center;
+	   font-size: 2rem;
+	   }
+	   
+	  .text {
+		font-family: 'Libre Barcode 39 Text', system-ui; /* Points to the Google Font instead */
+		font-size: 2rem;
+		font-weight: 500;
+		color: #f1f5f9;
+		background-color: #050522;
+		margin-left:-10px;
+		}
+
+	   .custom-paragraph {
+	   font-family: 'JetBrains Mono Local', monospace;
+	   font-size: 0.8rem;
+	   color: #94a3b8;
+	   margin-top: 20px;
+	   text-align: justify;
+	   }
+	   .slider {
+	   grid-column: span 9;
+	   display: flex;
+	   align-items: center;
+	   justify-content: flex-start;
+	   overflow: hidden;
+	   height: 80vh;
+	   }
+	   .slide-track {
+	   display: flex;
+	   width: max-content;
+	   }
+	   .slide {
+	   width: 33vw;
+	   height: 25vh;
+	   display: flex;
+	   align-items: center;
+	   justify-content: center;
+	   }
+	   .slide img {
+	   width: 60%;
+	   height: auto;
+	   }
+	   @media (max-width: 480px) {
+
+	   body::before {
+	   top: 0; 
+	   left: 0;
+	   height: 100%; /* Cover 80% of the height */ 
+	   }
+	   body::after {
+	   height:99%;
+	   top: 0; /* Match the grid background */
+	   background:
+	   /* Top-left corner - positioned 10px from left and 10px from top */
+	   linear-gradient(to bottom, #cbd5e1 2px, transparent 2px) 9px 10px,
+	   linear-gradient(to right, #cbd5e1 2px, transparent 2px) 9px 10px,
+
+	   /* Top-right corner - positioned 10px from right and 10px from top */
+	   linear-gradient(to bottom, #cbd5e1 2px, transparent 2px) calc(100% - 12px) 10px,
+	   linear-gradient(to left, #cbd5e1 2px, transparent 2px) calc(100% - 12px) 10px,
+
+	   /* Bottom-left corner - positioned 10px from left and 10px from bottom */
+	   linear-gradient(to top, #cbd5e1 2px, transparent 2px) 9px calc(100% - 10px),
+	   linear-gradient(to right, #cbd5e1 2px, transparent 2px) 9px calc(100% - 10px),
+
+	   /* Bottom-right corner - positioned 10px from right and 10px from bottom */
+	   linear-gradient(to top, #cbd5e1 2px, transparent 2px) calc(100% - 12px) calc(100% - 10px),
+	   linear-gradient(to left, #cbd5e1 2px, transparent 2px) calc(100% - 12px) calc(100% - 10px);
+
+	   background-size:
+	   23px 23px, /* Double the offset to center properly */
+	   23px 23px,
+	   23px 23px,
+	   23px 23px,
+	   23px 23px,
+	   23px 23px,
+	   23px 23px,
+	   23px 23px;
+
+	   background-repeat: no-repeat;
+	   }
+
+	   .wrapper {
+	   grid-template-columns: repeat(4, 1fr);
+	   }
+	   .text-container {
+	   grid-column: span 4;
+	   order: 1;
+	   }
+
+	   .text {
+	   margin-top:-1px;
+	   margin-left:4%;
+	   font-size: 1.6rem;
+
+	   }
+
+
+	   .slider {
+	   grid-column: span 4;
+	   order: 2;
+	   height: 75vh;
+	   }
+	   .slide { width: 40vw; height: 20vh; }
+	   .slide img { width: 70%; transform: translateY(-0.5px);}
+	   }
+	</style>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="text-container">
+			<div class="title">
+			<h2 class="text" itemprop="headline">QUALIFICATION</h2>
+			</div><!--<p class="custom-paragraph">~ Reference & Certification papers can be provided upon request. For authenticity purposes only.</p>-->
+		</div>
+		<div class="slider">
+			<div class="slide-track">
+				<div class="slide"><img alt="" src="https://www.eryc.my.id/assets/image/cert-ga.webp"></div>
+				<div class="slide"><img alt="" src="https://www.eryc.my.id/assets/image/cert-gads.webp"></div>
+				<div class="slide"><img alt="" src="https://www.eryc.my.id/assets/image/cert-looker.webp"></div>
+				<div class="slide"><img alt="" src="https://www.eryc.my.id/assets/image/cert-semrush.webp"></div>
+			</div>
+		</div>
+	</div>
+	<script defer src="https://www.eryc.my.id/assets/about-page/slider.js">
+	</script>
+</body>
+</html>
