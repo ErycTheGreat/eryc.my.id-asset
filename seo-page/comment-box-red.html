@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="googlebot" content="noindex,indexifembedded" />
+<title>Digital Marketing Pitfalls</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link as="font" crossorigin="" fetchpriority="high" href="https://www.eryc.my.id/assets/font/jetbrains-mono-500.woff2" rel="preload" type="font/woff2">
+	<link href="https://www.eryc.my.id/assets/image/avatar-mask-reds.webp" rel="preload" type="image/webp" fetchpriority="high">
+
+<style>
+
+@font-face {
+	   font-family: 'JetBrains Mono Local';
+	   font-style: normal;
+	   font-weight: 500; /* Matches your 600 weight */
+	   font-display: swap; 
+	   /* 2. Point this to your actual GitHub Pages URL */
+	   src: url('https://www.eryc.my.id/assets/font/jetbrains-mono-500.woff2') format('woff2');
+	   }
+
+body {
+    font-family:'JetBrains Mono Local',sans-serif;
+    background-color:transparent;
+    color:#fff;
+    text-align:center;
+    padding:0;
+    margin:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    overflow:hidden;
+    flex-direction:column;
+}
+
+.text-box {
+    position:relative;
+    width:calc(100% - 15%);
+    
+    background-color:transparent;
+
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+
+    border-radius:6px;
+    padding:0px 10px 18px 10px;
+    box-sizing:border-box;
+    margin-left:11%;
+    margin-right:4%;
+    font-size:3vw;
+    display:flex;
+    flex-direction:row;
+
+    clip-path:polygon(0 0,95% 0,100% 0,100% 75%,94% 90%,15% 90%,1% 100%,5% 90%,0 90%);
+    
+    pointer-events:none;
+}
+
+
+/* RED CYBERPUNK DEPTH PANEL */
+
+.text-box::before{
+
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:6px;
+    z-index:0;
+
+    /* dark transparent crimson layer between #060522 and #1e0525 */
+    background-color: rgba(30,5,37,0.45);
+
+    background-image:
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 1px,
+            rgba(231,60,93,0.14) 1px,
+            rgba(6,5,34,0.75) 2px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 1px,
+            rgba(231,60,93,0.14) 1px,
+            rgba(6,5,34,0.8) 2px
+        );
+
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+
+.text-box .right-side {
+    flex:1;
+    text-align:left;
+
+    color:#ff3b5c;
+
+    font-weight:300;
+    letter-spacing:1px;
+    line-height:1.5;
+
+    text-shadow:1px 1px 2px rgba(0,0,0,0.95);
+
+    text-rendering:optimizeLegibility;
+    -webkit-font-smoothing:antialiased;
+
+    position:relative;
+    z-index:1;
+}
+
+.dialog-box {
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    margin-top:-1px;
+    margin-left:2px;
+}
+
+.avatar-container {
+    width:10%;
+    display:flex;
+    align-items:center;
+    margin-right:5px;
+}
+
+.avatar {
+    width:100%;
+    height:auto;
+    border-radius:50%;
+    margin-left:5px;
+}
+
+.options-container {
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+.options-header {
+    font-size:3vw;
+    color:#cbd5e1;
+    font-weight:normal;
+    letter-spacing:2px;
+}
+
+@media screen and (max-width:480px){
+
+.options-header{
+    font-size:2.5vw;
+}
+
+.avatar{
+    width:100%;
+    height:auto;
+    border-radius:50%;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="text-box">
+<div class="right-side">
+<p>
+The AI revolution has changed how people search as never before—Google no longer dominates the doorway to information. <span style="color:#cbd5e1;">SEO isn’t dead yet;</span> the doorways have just multiplied—beyond Google, beyond search engines_
+</p>
+</div>
+</div>
+
+<div class="dialog-box">
+
+<div class="avatar-container">
+<img src="https://www.eryc.my.id/assets/image/avatar-mask-reds.webp"
+alt="eryc-tri-juni-s-red-avatar"
+class="avatar"
+loading="lazy">
+</div>
+
+<div class="options-container">
+<p class="options-header">~Eryc</p>
+</div>
+
+</div>
+
+</body>
+</html>
