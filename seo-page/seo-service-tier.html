@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<link href="https://www.eryc.my.id/assets/font/white-rabbit.woff2" rel="preload" type="font/woff2">
+	<link href="https://www.eryc.my.id/assets/font/jetbrains-mono-500.woff2" rel="preload" type="font/woff2">
+	<title>Service Tier Selector</title>
+	<style>
+
+	@font-face {
+	font-family: 'JetBrains Mono Local';
+	font-style: normal;
+	font-weight: 500; /* Matches your 600 weight */
+	font-display: swap; 
+	/* 2. Point this to your actual GitHub Pages URL */
+	src: url('https://www.eryc.my.id/assets/font/jetbrains-mono-500.woff2') format('woff2');
+	}
+	
+	@font-face {
+	font-family: 'White Rabbit Local';
+	font-style: normal;
+	font-display: swap; 
+	/* 2. Point this to your actual GitHub Pages URL */
+	src: url('https://www.eryc.my.id/assets/font/white-rabbit.woff2') format('woff2');
+	}
+
+	/* Add this CSS for the tabs */
+	.tab-container {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 1.5em;
+
+	}
+
+	.tab {
+	/*font-family: 'White Rabbit Local', sans-serif;*/
+	font-size:1em;
+	flex: 1;
+	text-align: center;
+	padding-bottom: 0.5em;
+	cursor: pointer;
+	border-bottom: 2px solid #333;
+	font-weight: 500;
+	transition: border-color 0.3s ease, color 0.3s ease;
+	color: #333;
+
+	}
+
+	   .tab.active {
+	border-bottom: 2px solid transparent;
+	border-image: linear-gradient(90deg, #00bba9, #4386c3) 1;
+
+	background: linear-gradient(90deg, #00bba9, #4386c3);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+
+	/* For future compatibility */
+	background-clip: text;
+	color: transparent;
+	}
+
+
+	   
+
+	   /* Rest of your existing CSS remains the same */
+	   body {
+	       font-family: 'JetBrains Mono Local', monospace;
+	       color: #cbd5e1;
+	       margin: 0;
+	       padding: 0;
+	       display: flex;
+	       justify-content: center;
+	       align-items: center;
+	       height: 100%;
+	       background-color: transparent;
+	       overflow: hidden;
+	   }
+
+	   .container {
+	position: relative; /* REQUIRED */
+	max-width: 600px;
+	width: 95vw;
+	height: 89vh;
+	padding: 2em;
+	border-radius: 0; /* remove round corner for sharp cyber look */
+	box-shadow: none; /* optional: cleaner */
+	border: none; /* remove default border */
+	overflow: hidden; /* prevents overflow artifacts */
+	}
+
+	/* Cyberpunk Border Layer */
+	.container::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	clip-path: polygon(
+	0 3%, 
+	3% 0, 
+	97% 0, 
+	97% 22%, 
+	100% 25%, 
+	100% 48%, 
+	97% 51%, 
+	97% 97%, 
+	46% 97%, 
+	43% 100%, 
+	0 100%
+	);
+	background: linear-gradient(135deg, #00bba9, #4386c3); /* border color */
+	z-index: -2;
+	}
+
+	/* Inner Mask Layer */
+	.container::after {
+	content: '';
+	position: absolute;
+	inset: 2px; /* controls border thickness */
+	clip-path: polygon(
+	0 3%, 
+	3% 0, 
+	97% 0, 
+	97% 22%, 
+	100% 25%, 
+	100% 48%, 
+	97% 51%, 
+	97% 97%, 
+	46% 97%, 
+	43% 100%, 
+	0 100%
+	);
+	background-color: #050522; /* inside background */
+	z-index: -1;
+	}
+
+	   .tier-selector {
+	       display: flex;
+	       flex-direction: row;
+	       gap: 1em;
+	       margin-bottom: 1.5em;
+	       justify-content: space-between;
+	   }
+
+	   .tier-option {
+	       display: flex;
+	       flex-direction: column;
+	       align-items: center;
+	       gap: 0.5em;
+	       padding: 0.5em;
+	       cursor: pointer;
+	       flex: 1;
+	       text-align: center;
+	   }
+
+	   /* SPLIT ARC CYBER RING */
+
+	/* === POWERED SPLIT ARC CYBER RING === */
+
+	.tier-option input[type="radio"] {
+	appearance: none;
+	-webkit-appearance: none;
+
+	margin: 0;
+	width: 24px;
+	height: 24px;
+
+	border-radius: 50%;
+	cursor: pointer;
+	position: relative;
+	transition: all 0.3s ease;
+
+	/* Stronger diagonal half split */
+	background:
+	conic-gradient(
+	from -45deg,
+	#00f5d4 0deg,
+	#4386c3 180deg,
+	transparent 180deg 360deg
+	);
+
+	/* Thicker ring */
+	-webkit-mask:
+	radial-gradient(circle at center, transparent 55%, black 56%);
+	mask:
+	radial-gradient(circle at center, transparent 55%, black 56%);
+
+	/* Subtle idle glow */
+	box-shadow:
+	0 0 6px rgba(0,187,169,0.5);
+	}
+
+
+	/* === CHECKED STATE === */
+
+	.tier-option input[type="radio"]:checked {
+
+	background:
+	conic-gradient(
+	from -45deg,
+	#00f5d4,
+	#4386c3,
+	#1bc7fb,
+	#00f5d4
+	);
+
+	-webkit-mask:
+	radial-gradient(circle at center, transparent 55%, black 56%);
+	mask:
+	radial-gradient(circle at center, transparent 55%, black 56%);
+
+	/* MUCH stronger glow */
+	box-shadow:
+	0 0 10px #00f5d4,
+	0 0 20px #4386c3,
+	0 0 35px #1bc7fb,
+	0 0 60px rgba(234,179,8,0.5);
+
+	animation: rotateRing 1.8s linear infinite;
+	}
+
+
+	/* === Inner Shine === */
+
+	.tier-option input[type="radio"]::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: 50%;
+	pointer-events: none;
+
+	background: radial-gradient(
+	circle at 30% 30%,
+	rgba(255,255,255,0.9),
+	transparent 35%
+	);
+
+	opacity: 0;
+	transition: opacity 0.3s ease;
+	}
+
+	.tier-option input[type="radio"]:checked::before {
+	opacity: 0.6;
+	}
+
+
+	/* === Rotation === */
+
+	@keyframes rotateRing {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
+	}
+	   .tier-option label {
+	       display: flex;
+	       flex-direction: column;
+	       gap: 0.5em;
+	       cursor: pointer;
+	       align-items: center;
+	   }
+
+	/* Glow effect for text when radio button is active */
+	.tier-option input[type="radio"]:checked + label .tier-name,
+	.tier-option input[type="radio"]:checked + label .tier-price {
+
+	background: linear-gradient(90deg, #00bba9, #4386c3);
+
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	filter: brightness(1.15);
+	background-clip: text;
+	color: transparent;
+	}
+
+	/* Default text styling */
+	.tier-option .tier-name {
+	font-size: 0.9em;
+	font-weight: 500;
+	color: #333; /* Default color */
+	transition: color 0.3s ease, text-shadow 0.3s ease; /* Smooth transition */
+	}
+
+	.tier-option .tier-price {
+	font-size: 1.3em;
+	color: #333; /* Default color */
+	font-weight: 500;
+	margin-top: -0.2em;
+	transition: color 0.3s ease, text-shadow 0.3s ease; /* Smooth transition */
+	}
+
+	   .separator {
+	       /*border-bottom: 1px solid #00bba9;*/
+	       background: linear-gradient(135deg, #00bba9, #4386c3);
+	       margin: 1em 0;
+	       height: 10px; /* Adjust height to match clip-path design */
+	       clip-path: polygon(0 0, 0 100%, 10% 100%, calc(10% + 4px) 2px, 100% 2px, 100% 0);
+	   }
+
+	   .tier-details {
+	       display: flex;
+	       flex-direction: column;
+	       gap: 1em;
+	   }
+
+	   .features {
+	       list-style: none;
+	       padding: 0;
+	       margin: 1em 0;             
+	   }
+
+	   .features li {
+	       display: flex;
+	       align-items: center;
+	       justify-content: space-between;
+	       gap: 0.5em;
+	       margin-bottom: 0.5em;
+	       
+	   }
+
+	   .features li::before {
+	content: "";
+	display: inline-block;
+	width: 0.9em;
+	height: 0.9em;
+	order: 2;
+	margin-right: 0;
+	background: linear-gradient(90deg, #00bba9, #4386c3);
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath d='M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z'/%3E%3C/svg%3E") no-repeat center / contain;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath d='M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z'/%3E%3C/svg%3E") no-repeat center / contain;
+	}
+
+	   .features li:first-child::before {
+	       content: none;
+	   }
+	   
+	   
+	           
+	   .button-wrapper {
+	       position: fixed;
+	       bottom: 2.25em;
+	       left: 50%;
+	       transform: translateX(-50%);
+	       display: flex;
+	       gap: 1em;
+	       z-index: 1000;
+	       width: 90%;
+	       max-width: 600px;
+	       
+	       
+	   }
+
+	   .continue-button, .message-button {
+	       flex: 1;
+	       display: flex;
+	       align-items: center;
+	       justify-content: center;
+	       gap: 0.7em;
+	       padding: 0.5em;
+	       font-size: 1em;
+	       /*border-radius: 4px;*/
+	       cursor: pointer;
+	       border: none;
+	       transition: background-color 0.3s ease;
+	       width: 100%;
+	   }
+
+	   .continue-button {
+	       background-color: transparent;
+	       color: #4386c3;
+	   }
+
+	   /*.continue-button:hover {
+	       background-color: #0056b3;
+	   }*/
+
+	   .message-button {
+	       background-color: #04122d;
+	       color: #00bba9;
+	       flex: 0.9;
+	       
+	       padding: 0.75em;
+	       clip-path: polygon(
+	           23px 0,
+	           100% 0,
+	           calc(100% - 23px) 100%,
+	           0 100%
+	       );
+	   }
+
+	   /*.message-button:hover {
+	       background-color: #128c7e;
+	   }*/
+
+	   .select-service-tier {
+	       /*font-family: 'White Rabbit Local', sans-serif;*/
+	       font-size: 1em;
+	       font-weight: 600;
+	       margin-bottom: 1em;
+	       text-align: left;
+	   }
+
+	   .delivery-line {
+	       display: flex;
+	       justify-content: space-between;
+	       align-items: center;
+	       width: 100%;
+	   }
+
+	   .delivery-line .delivery-text {
+	       order: 1;
+	   }
+
+	   .delivery-line .delivery-days {
+	       order: 2;
+	   }
+
+	   details {
+	       /*background-color: #091427;*/
+	       /*border: 1px solid #00bba9;*/
+	       border-radius: 4px;
+	       cursor: pointer;
+	       padding: 0.75em;
+	       margin: 0.5em 0;
+	       color: #00bba9;
+	       position:relative;
+	   }
+	   
+	   details::after {
+	       content: "";
+	       position: absolute;
+	       bottom: 0;
+	       left: 0;
+	       width: 105%;
+	       height: 15px;
+
+	     background: linear-gradient(
+	       90deg,
+	       #00bba9 50%,
+	       #4386c3 100%
+	   );
+
+	       clip-path: polygon(
+	           0 calc(100% - 12px),
+	           0 100%,
+	           calc(100% - 30px) 100%,
+	           calc(100% - 30px) 110%,
+	           calc(100% - 20px) 110%,
+	           calc(100% - 20px) calc(100% - 8px),
+	           calc(100% - 30px) calc(100% - 18px),
+	           calc(100% - 10px) calc(100% - 18px),
+	           calc(100% - 20px) calc(100% - 8px),
+	           calc(100% - 20px) 110%,
+	           calc(100% - 30px) 110%,
+	           calc(100% - 30px) calc(100% - 2px),
+	           10px calc(100% - 2px)
+	       );
+
+	       z-index: 1;
+	       }
+	   
+
+	   summary {
+	       display: flex;
+	       justify-content: space-between;
+	       align-items: center;
+	       list-style: none;
+	       font-weight: 500;
+	       
+	       background: linear-gradient(90deg, #00bba9, #4386c3);
+	       -webkit-background-clip: text;
+	       -webkit-text-fill-color: transparent;
+	       background-clip: text;
+	       color: transparent;
+	       
+	   }
+
+	   summary::marker {
+	       display: none;
+	   }
+
+	   summary::-webkit-details-marker {
+	       display: none;
+	   }
+
+	   /*summary::after {
+	       content: "\f078";
+	       font-family: "Font Awesome 6 Free";
+	       font-weight: 900;
+	       font-size: 0.8em;
+	       color: #00bba9;
+	       transition: transform 0.3s ease;
+	   }
+
+	   details[open] summary::after {
+	       content: "\f077";
+	   }*/
+
+	   .dropdown-item {
+	       display: flex;
+	       justify-content: space-between;
+	       align-items: center;
+	       width: 95%;
+	       padding: 0.5em;
+	       padding-right: 0.25em;
+	       cursor: pointer;
+	       color: #cbd5e1;
+	   }
+
+	   /*.dropdown-item:hover {
+	       background-color: #eab308;
+	       color: #1d111d;
+	   }*/
+
+	   .dropdown-item.active {
+	       background-color: #04122d;
+	       border-left: 2px solid #00bba9;
+	       color: #00bba9;
+	   }
+
+	   .dropdown-item.active::before {
+	       content: "✓";
+	       color: #00bba9;
+	       margin-right: 0.1em;
+	       font-weight: bold;
+	   }
+
+	   .clock-symbol {
+	       font-size: 1.5em;
+	       line-height: 1;
+	       display: flex;
+	       align-items: center;
+	       justify-content: center;
+	       height: 100%;
+	       margin-top: 0.4em;
+	       color: #1bc7fb;
+	   }
+
+	   .delivery-text {
+	       display: flex;
+	       flex-direction: column;
+	       justify-content: center;
+	       
+	   }
+
+	   .delivery-info {
+	       display: flex;
+	       align-items: flex-start;
+	       gap: 0.5em;
+	       margin-bottom: 1em;
+	       font-size: 0.9em;
+	       color: #1bc7fb;
+	   }
+
+	   #delivery-date {
+	       font-weight: 500;
+	       font-size: 1em;
+	   }
+
+	   .revision-text {
+	       font-size: 0.9em;
+	       color: #7d8b9e;
+	       margin-top: 0.4em;
+	   }
+
+	   /* New CSS for On-Page SEO specific adjustments */
+	   .features .no-checkmark::before {
+	       content: none !important;
+	   }
+
+	   .features .align-right {
+	       text-align: right;
+	   }
+	   
+	       @media screen and (min-width: 768px) {
+	                           
+	                           }
+
+	       @media screen and (min-width: 480px) {
+	                                   
+	                           }
+
+	       @media screen and (max-width: 480px) {
+	   
+	       .tab-container {        
+	           margin-top:-1.25em;             
+	       }
+	       
+	       
+	       .container { 
+	       height: 89vh;
+	       }
+	       
+	       
+	       .tier-option .tier-name {
+	           font-size: 0.7em;
+	           
+	       }
+
+	       .tier-option .tier-price {
+	           font-size: 1.3em;
+	           
+	       }
+	       
+	       .features {
+	   
+	       margin-top: -0.1em;
+	       }
+	       
+	       .features li {
+	       
+	       font-size:0.86em;
+	       
+	       }
+	       
+	       details {
+	       
+	       margin-top: -1.3em;
+	       margin-bottom: -0.15em;
+	       }
+	       
+	       summary {
+	       
+	       font-size: 0.9em;
+	       }
+	       .dropdown-item {
+	       font-size: 0.9em;   
+	           
+	       }
+	       .clock-symbol {
+	       
+	       margin-top: 0.5em;
+	   }
+	       
+	                       
+	       .delivery-info {
+	           font-size: 0.85em;
+	       }
+	       
+	       .revision-text {
+	           font-size: 0.85em;
+	       }
+
+	       .button-wrapper {
+	           
+	           bottom: 1.3em;
+	       }           
+	   }
+	   
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="tab-container">
+			<div class="tab active" onclick="switchTab('technical')">
+				TECHNICAL
+			</div>
+			<div class="tab" onclick="switchTab('onpage')">
+				ON-PAGE
+			</div>
+			<div class="tab" onclick="switchTab('cwv')">
+				CWV SEO
+			</div></div>
+		<div class="select-service-tier">
+			Select Service Tier
+		</div>
+		<div class="tier-selector">
+			<div class="tier-option">
+				<input checked id="starter" name="tier" onchange="updateTier()" type="radio" value="Starter"> <label for="starter"><span class="tier-name">Starter</span> <span class="tier-price">$49</span></label>
+			</div>
+			<div class="tier-option">
+				<input id="standard" name="tier" onchange="updateTier()" type="radio" value="Standard"> <label for="standard"><span class="tier-name">Standard</span> <span class="tier-price">$199</span></label>
+			</div>
+			<div class="tier-option">
+				<input id="advanced" name="tier" onchange="updateTier()" type="radio" value="Advanced"> <label for="advanced"><span class="tier-name">Advanced</span> <span class="tier-price">$449</span></label>
+			</div>
+		</div>
+		<div class="separator"></div>
+		<div class="tier-details" id="tier-details">
+			<ul class="features" id="features">
+				</ul><details id="add-ons-section">
+				<summary>
+					Optional add-ons (1)
+				</summary>
+				<div class="dropdown-item" onclick="selectAddOn()">
+					<span>Fast 1 Day Delivery</span> <span id="fast-delivery-price">+$20</span>
+				</div>
+			</details><div class="delivery-info">
+				<span class="clock-symbol">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="1em" height="1em" fill="currentColor">
+                        <path d="M256 0a256 256 0 1 1 0 512A256 256 0 1 1 256 0zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/>
+                    </svg>
+                </span>
+				<div class="delivery-text">
+					<span id="delivery-date">2 days delivery - Mar 13, 2025</span>
+					<div class="revision-text">
+						Revisions may occur after this date.
+					</div>
+				</div>
+			</div>
+		</div>
+	</div><div class="button-wrapper">
+		<button class="message-button" onclick="window.open('https://wa.me/6282220888819', '_blank')">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="1.2em" height="1.2em" fill="currentColor">
+                <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157.1zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+            </svg> Message
+        </button> 
+        <button class="continue-button" onclick="handleContinue()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="1.2em" height="1.2em" fill="currentColor">
+                <path d="M111.4 295.9l-35.4 15.1-17.5 74.4c-2.6 10.8 5.6 21.4 16.6 21.4h55.2c10.8 0 19.9-8.2 21.6-18.8l10.8-63.5c1.1-6.5 6.8-11.3 13.4-11.3h22.7c60.3 0 102.3-26.2 113.8-78.4 4.6-20.9 2.5-39-5.3-53.7-13.9 17.6-35.8 31.5-65.7 31.5h-52.9c-14.4 0-26.6 10.9-28.5 25.1l-18.1 90.7c-.5 2.6-2.8 4.5-5.5 4.5h-25.2zm20-221.7L96.2 240c-1.3 5.4 2.8 10.5 8.3 10.5h43.3c10.8 0 19.9-8.2 21.6-18.8l12-70.5c1.1-6.5 6.8-11.3 13.4-11.3h36.7c58.7 0 96.6 24 104.9 71.9 4 23.3-1 44-12.8 58.7 13.5-12.3 22.3-29.3 24.8-49.8 10-82.6-47-122.9-126.9-122.9h-81c-8.9 0-16.5 6.5-18.2 15.3l-1.1 5.4z"/>
+            </svg> Continue ($49)
+        </button>
+	</div>
+	<script defer src="https://www.eryc.my.id/assets/seo-page/service-tier.js"></script>	
+</body>
+</html>
