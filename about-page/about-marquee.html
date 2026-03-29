@@ -1,0 +1,154 @@
+			<!DOCTYPE html>
+			<html lang="en">
+			<head>
+				<meta charset="UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<link as="font" crossorigin="" fetchpriority="high" href="https://www.eryc.my.id/assets/font/jetbrains-mono-500.woff2" rel="preload" type="font/woff2">
+				<link href="https://www.eryc.my.id/assets/about-page/marquee.js" rel="preload"><!-- <link rel="stylesheet" href="styles/all.css"> -->
+				<title>Responsive Marquee</title>
+				<style>
+					@font-face {
+				   font-family: 'JetBrains Mono Local';
+				   font-style: normal;
+				   font-weight: 500; /* Matches your 600 weight */
+				   font-display: swap; 
+				   /* 2. Point this to your actual GitHub Pages URL */
+				   src: url('https://www.eryc.my.id/assets/font/jetbrains-mono-500.woff2') format('woff2');
+				   }
+					body {
+						background: #04122d;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						height: 100vh;
+						margin: 0;
+						overflow: hidden;
+						position: relative;
+					}
+					.marquee-container {
+						width: 100vw;
+						overflow: hidden;
+						position: relative; /* display: flex and justify-content: center MUST be deleted */
+						background: #04122d;
+						box-shadow: 2px 2px 10px #04122d;
+						padding: 0.5em 0;
+					}
+					
+					.marquee-track {
+						display: flex;
+						flex-wrap: nowrap;
+						width: max-content;
+						will-change: transform;
+						backface-visibility: hidden; /* Stops the GPU from rounding pixels */			
+						filter: brightness(1.15);
+					}
+					
+					body::after {
+						content: '';
+						position: absolute;
+						display: block;
+						background-image: 
+							repeating-linear-gradient(0deg, #23277600, #23277600 1px, #040a2444 1px, #040a2444 3px),
+							repeating-linear-gradient(90deg, #23277600, #23277600 2px, #040a2444 2px, #040a2444 3px);
+						width: 100%;
+						height: 100%;
+						top: 0;
+						left: 0;
+						z-index: 1;
+						pointer-events: none; /* Allow clicks and touches to pass through */
+					}
+					.marquee {
+						font-family: 'JetBrains Mono Local', monospace;
+						letter-spacing: 2px;
+						text-transform: uppercase;
+						font-size: 0.9em;
+						font-weight: bold;
+						color: #4386c3;
+						width: fit-content; /* Adjust width to fit content */
+						text-align: center;
+						position: relative;
+						white-space: nowrap;
+						animation: buzz 0.05s infinite alternate;
+						will-change: transform;
+						
+						padding-right: 0;
+						flex-shrink: 0;      /* This prevents the browser from squishing the text */
+						
+					}
+					
+					
+					.marquee-group {
+						display: flex;
+						flex-wrap: nowrap;
+						width: max-content;
+						flex-shrink: 0;
+						backface-visibility: hidden; /* Stops the GPU from rounding pixels */
+					}
+					
+					
+					@keyframes buzz {
+						70% { opacity: 0.65; }
+					}
+					
+					.marquee a {
+						color: #e73c5d;
+						text-decoration: none;
+						animation: blink 1s infinite alternate;
+					}
+					@keyframes blink {
+						0% { opacity: 1; }
+						50% { opacity: 0; }
+						100% { opacity: 1; }
+					}
+					.line-glow {
+						content: '';
+						position: fixed; /* Use fixed positioning to make it independent of scrolling */
+						display: block;
+						top: 50%; /* Center vertically */
+						left: 0; /* Start from the left edge of the viewport */
+						height: 100%;
+						min-width: 3px;
+						background-color: #4386c3;
+						box-shadow: 0 0 20px #4386c3;
+						animation: line-glow 7s linear infinite; /* Adjusted duration for smooth back-and-forth */
+						transform: translateY(-50%); /* Center vertically */
+						pointer-events: none; /* Ensure it doesn't interfere with interactions */
+						will-change: transform;
+					}
+					@keyframes line-glow {
+			0% { transform: translateX(0) translateY(-50%); }
+			50% { transform: translateX(100vw) translateY(-50%); }
+			100% { transform: translateX(0) translateY(-50%); }
+		}
+					@media (max-width: 480px) {
+						.line-glow {
+				animation-duration: 5s;
+			}
+						
+					}
+				</style>
+			</head>
+			<body>		
+		<div class="marquee-container">
+	<div class="marquee-track">
+			<div class="marquee-group">
+			<div class="marquee">Feeling lost in translation? No worries—I’ve got your back. <a href="https://www.eryc.my.id/glossary" target="_blank">Click here!</a>&nbsp;</div>
+			<div class="marquee">Feeling lost in translation? No worries—I’ve got your back. <a href="https://www.eryc.my.id/glossary" target="_blank">Click here!</a>&nbsp;</div>
+			<div class="marquee">Feeling lost in translation? No worries—I’ve got your back. <a href="https://www.eryc.my.id/glossary" target="_blank">Click here!</a>&nbsp;</div>
+		</div>
+		<div class="marquee-group" aria-hidden="true">
+			<div class="marquee">Feeling lost in translation? No worries—I’ve got your back. <a href="https://www.eryc.my.id/glossary" target="_blank">Click here!</a>&nbsp;</div>
+			<div class="marquee">Feeling lost in translation? No worries—I’ve got your back. <a href="https://www.eryc.my.id/glossary" target="_blank">Click here!</a>&nbsp;</div>
+			<div class="marquee">Feeling lost in translation? No worries—I’ve got your back. <a href="https://www.eryc.my.id/glossary" target="_blank">Click here!</a>&nbsp;</div>
+		</div>
+	</div>
+</div>
+	<div class="line-glow"></div> <!-- Moved outside the marquee-container -->
+			
+
+<script defer src="https://www.eryc.my.id/assets/about-page/marquee.js">
+	</script>
+
+
+			</body>
+			</html>
