@@ -40,11 +40,17 @@ If you want to see what is truly possible on a free Google Site, explore these c
 
 ## == Showcases
 
-*(Replace the links below with actual screenshots or GIF recordings of your site in action)*
+<div align="left">
+  <strong>[ Terminal Preview ]</strong><br>
+  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/terminal.webp" alt="Terminal Preview">
+</div>
 
-**[ Terminal Preview ]** ![Terminal Preview]((https://github.com/ErycTheGreat/eryc.my.id-asset/image/terminal.webp))
+<br><br>
 
-**[ RPG Dialog Preview ]** ![RPG Dialog Preview](https://via.placeholder.com/800x400?text=RPG+Dialog+Preview)
+<div align="left">
+  <strong>[ RPG Dialog Preview ]</strong><br>
+  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/rpg-dialog.webp" alt="Terminal Preview">
+</div>
 
 ---
 
