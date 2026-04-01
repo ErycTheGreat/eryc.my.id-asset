@@ -1,102 +1,96 @@
-╔══════════════════════════════╗
-║                              ║
-║        H O S T I N G         ║
-║        G U I D E  v1.0       ║
-║                              ║
-╚══════════════════════════════╝
-
-✦ Store files in Google Sites.
-✦ NO paid hosting needed.
-
-
-================================
-❖ [1] GOOGLE DRIVE (BEST)
 ================================
 
-┌─[ STEP 1 ] Upload to Drive
-│
-├─[ STEP 2 ] Copy share link
-│  ↳ Example:
-│  drive.google.com/file/d/
-│  YOUR_ID/view?usp=sharing
-│
-└─[ STEP 3 ] Convert link
+       H O S T I N G
+       G U I D E v1.0
 
-  [✗] CHANGE THIS:
+================================
+
+* Store files in Google Sites.
+* NO paid hosting needed.
+
+
+--------------------------------
+[1] GOOGLE DRIVE (BEST)
+--------------------------------
+
+[ STEP 1 ] Upload to Drive
+
+[ STEP 2 ] Copy share link
+> Example:
+  drive.google.com/file/d/
+  YOUR_ID/view?usp=sharing
+
+[ STEP 3 ] Convert link
+
+  [x] CHANGE THIS:
       .../file/d/YOUR_ID/view...
 
-  [✓] TO THIS:
+  [v] TO THIS:
       .../uc?export=view&id=ID
 
 
-➤ QUICK WAY:
- ▪ Copy the FILE_ID (after /d/)
- ▪ Replace with:
-   drive.google.com/uc?export=
-   view&id=FILE_ID
+> QUICK WAY:
+  * Copy FILE_ID (after /d/)
+  * Replace with:
+    drive.google.com/uc?export=
+    view&id=FILE_ID
 
 
-╔══════════════════════════════╗
-║ DIRECT DOWNLOAD LINK         ║
-╚══════════════════════════════╝
-➤ drive.google.com/uc?id=
+--- DIRECT DOWNLOAD LINK ---
+> drive.google.com/uc?id=
   YOUR_ID_HERE&export=download
 
 
-╔══════════════════════════════╗
-║ WHY THIS WORKS               ║
-╚══════════════════════════════╝
-✦ Default = opens Drive page  
-✦ Modified = gives direct file
+--- WHY THIS WORKS ---
+* Default  = opens Drive page
+* Modified = gives direct file
 
-[✗] Opens webpage → WRONG  
-[✓] Shows ONLY file → CORRECT
+[x] Opens webpage   -> WRONG
+[v] Shows ONLY file -> CORRECT
 
 
-================================
-❖ [2] DROPBOX (ALT)
-================================
+--------------------------------
+[2] DROPBOX (ALT)
+--------------------------------
 
-┌─[ STEP 1 ] Upload to Dropbox
-│
-├─[ STEP 2 ] Copy link
-│  ↳ Example:
-│  dropbox.com/s/folder/img?dl=0
-│
-└─[ STEP 3 ] Convert link
+[ STEP 1 ] Upload to Dropbox
 
-  [✗] CHANGE THIS:
+[ STEP 2 ] Copy link
+> Example:
+  dropbox.com/s/folder/img?dl=0
+
+[ STEP 3 ] Convert link
+
+  [x] CHANGE THIS:
       .../folder/img.jpg?dl=0
 
-  [✓] TO THIS:
+  [v] TO THIS:
       .../folder/img.jpg?raw=1
 
 
-➤ QUICK WAY:
- ▪ Just delete "dl=0"
- ▪ Replace with "raw=1"
+> QUICK WAY:
+  * Just delete "dl=0"
+  * Replace with "raw=1"
 
 
-╔══════════════════════════════╗
-║ FASTER DROPBOX VERSION       ║
-╚══════════════════════════════╝
-[✗] CHANGE THIS:
+--- FASTER DROPBOX VERSION ---
+[x] CHANGE THIS:
     www.dropbox.com/s/folder/
     image.jpg?dl=0
 
-[✓] TO THIS:
+[v] TO THIS:
     dl.dropboxusercontent.com/s/
     folder/image.jpg
 
-➤ QUICK WAY:
- ▪ Change "www.dropbox.com" 
-   → "dl.dropboxusercontent.com"
- ▪ Remove "?dl=0" or "?raw=1"
+> QUICK WAY:
+  * Change "www.dropbox.com" 
+    -> "dl.dropboxusercontent.com"
+  * Remove "?dl=0" or "?raw=1"
 
 
-================================
-❖ [3] PERF BOOST (OPTIONAL)
-================================
+--------------------------------
+[3] PERF BOOST (OPTIONAL)
+--------------------------------
 
 <link rel="preconnect" 
  href="https://dl.dropbox...">
@@ -106,51 +100,48 @@
 <img src="YOUR_URL" 
  fetchpriority="high">
 
-➤ QUICK EXPLANATION:
- ▪ preconnect = prep connection
- ▪ preload = force early load
- ▪ fetchpriority = mark important
- Result: Image loads faster!
+> QUICK EXPLANATION:
+  * preconnect = prep connection
+  * preload = force early load
+  * fetchpriority = mark important
+  Result: Image loads faster!
 
 
-================================
-❖ [4] IMPORTANT WARNING
-================================
+--------------------------------
+[4] IMPORTANT WARNING
+--------------------------------
 
-➤ Google Drive:
- [+] Stable & SEO friendly
- [+] Recommended
- [-] Slightly slower
+> Google Drive:
+  [+] Stable & SEO friendly
+  [+] Recommended
+  [-] Slightly slower
 
-➤ Dropbox:
- [+] Faster (sometimes)
- [-] Can hurt PageSpeed score
- [-] Not designed for hosting
-
-
-================================
-❖ [5] SIMPLE DECISION
-================================
-
-✦ G-Drive → Real projects/SEO  
-✦ Dropbox → Speed testing
+> Dropbox:
+  [+] Faster (sometimes)
+  [-] Can hurt PageSpeed score
+  [-] Not designed for hosting
 
 
-╔══════════════════════════════╗
-║ FINAL CHECK                  ║
-╚══════════════════════════════╝
+--------------------------------
+[5] SIMPLE DECISION
+--------------------------------
+
+* G-Drive -> Real projects/SEO
+* Dropbox -> Speed testing
+
+
+--- FINAL CHECK ---
 Open link in mobile browser:
 
-[✓] See ONLY file → GOOD
-[✗] See a webpage → WRONG
+[v] See ONLY file -> GOOD
+[x] See a webpage -> WRONG
 
 
-   ╔═══╗ マーケター
-   ║╔══╝ Digital
-   ║╚══╦══╦╗ ╔╦══╗
-   ║╔══╣╔═╣║ ║║╔═╝
-   ║╚══╣║ ║╚═╝║╚═╗
-   ╚═══╩╝ ╚═╗╔╩══╝
-          ╔═╝║
-          ╚══╝
-          END
+────────╔═══╗─マーケター
+────────║╔══╝──Digital
+────────║╚══╦══╦╗─╔╦══╗
+────────║╔══╣╔═╣║─║║╔═╝
+────────║╚══╣║─║╚═╝║╚═╗
+────────╚═══╩╝─╚═╗╔╩══╝
+───────────────╔═╝║
+───────────────╚══╝
