@@ -42,7 +42,7 @@ If you want to see what is truly possible on a free Google Site, explore these c
 
 *(Replace the links below with actual screenshots or GIF recordings of your site in action)*
 
-**[ Terminal Preview ]** ![Terminal Preview](https://via.placeholder.com/800x400?text=Terminal+Preview)
+**[ Terminal Preview ]** ![Terminal Preview]([https://via.placeholder.com/800x400?text=Terminal+Preview](https://github.com/ErycTheGreat/eryc.my.id-asset/image/terminal.webp))
 
 **[ RPG Dialog Preview ]** ![RPG Dialog Preview](https://via.placeholder.com/800x400?text=RPG+Dialog+Preview)
 
