@@ -56,8 +56,6 @@
 [ STEP 1 ] Upload to Dropbox
 
 [ STEP 2 ] Copy link
-> Example:
-  dropbox.com/s/folder/img?dl=0
 
 [ STEP 3 ] Convert link
 
@@ -82,14 +80,58 @@
     dl.dropboxusercontent.com/s/
     folder/image.jpg
 
+
+--------------------------------
+[3] GITHUB RAW (DEVELOPERS)
+--------------------------------
+
+[ STEP 1 ] Upload to Public Repo
+
+[ STEP 2 ] Open file in GitHub
+
+[ STEP 3 ] Click "Raw" button
+> Or change the URL manually:
+
+  [x] CHANGE THIS:
+      github.com/user/repo/blob/
+      main/image.jpg
+
+  [v] TO THIS:
+      raw.githubusercontent.com/
+      user/repo/main/image.jpg
+
 > QUICK WAY:
-  * Change "www.dropbox.com" 
-    -> "dl.dropboxusercontent.com"
-  * Remove "?dl=0" or "?raw=1"
+  * Change to raw.github...
+  * Delete the "/blob/" part
+  * Great for JS and CSS files!
 
 
 --------------------------------
-[3] PERF BOOST (OPTIONAL)
+[4] INFINITYFREE (REAL HOSTING)
+--------------------------------
+
+[ STEP 1 ] Create free account
+
+[ STEP 2 ] Open File Manager
+> Go inside the "htdocs" folder
+
+[ STEP 3 ] Upload your file
+
+[ STEP 4 ] Use the direct link
+> Example:
+  your-site.epizy.com/image.jpg
+
+
+--- INFINITYFREE WARNING ---
+[x] DO NOT use it only as a CDN
+    for images. They might suspend
+    your account.
+[v] BEST FOR uploading custom
+    HTML, CSS, and JS projects.
+
+
+--------------------------------
+[5] PERF BOOST (OPTIONAL)
 --------------------------------
 
 <link rel="preconnect" 
@@ -108,26 +150,34 @@
 
 
 --------------------------------
-[4] IMPORTANT WARNING
+[6] IMPORTANT WARNING
 --------------------------------
 
 > Google Drive:
   [+] Stable & SEO friendly
-  [+] Recommended
   [-] Slightly slower
 
 > Dropbox:
   [+] Faster (sometimes)
   [-] Can hurt PageSpeed score
-  [-] Not designed for hosting
+
+> GitHub Raw:
+  [+] Extremely fast & reliable
+  [-] Repo must be public
+
+> InfinityFree:
+  [+] Real server environment
+  [-] Strict rules on hotlinking
 
 
 --------------------------------
-[5] SIMPLE DECISION
+[7] SIMPLE DECISION
 --------------------------------
 
 * G-Drive -> Real projects/SEO
-* Dropbox -> Speed testing
+* Dropbox -> Quick speed tests
+* GitHub  -> Code assets (JS/CSS)
+* Infinity-> Full HTML projects
 
 
 --- FINAL CHECK ---
@@ -145,3 +195,5 @@ Open link in mobile browser:
 ────────╚═══╩╝─╚═╗╔╩══╝
 ───────────────╔═╝║
 ───────────────╚══╝
+
+END
