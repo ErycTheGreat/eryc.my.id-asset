@@ -12,9 +12,7 @@ export default {
       return Response.redirect(`https://${canonicalHost}/`, 301);
     }
 
-  // ====================================================================
-    // 2. SITEMAP
-    // ====================================================================
+  // 2. SITEMAP
     if (url.pathname === "/sitemap.xml" |
 
 | url.pathname === "/sitemap.xml/") {
