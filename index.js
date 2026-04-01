@@ -12,9 +12,11 @@ export default {
       return Response.redirect(`https://${canonicalHost}/`, 301);
     }
 
-    // 2. SITEMAP
-    if (url.pathname === "/sitemap.xml") {
-      const lastmod = new Date().toISOString().split('T')[0];
+   // 2. SITEMAP
+    if (url.pathname === "/sitemap.xml" |
+
+| url.pathname === "/sitemap.xml/") {
+      const lastmod = new Date().toISOString().split('T');
       const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/mortgage-broker", "/case-studies/seo/sound-rentals", "/case-studies/seo/vet-clinic"];
       
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -22,7 +24,7 @@ export default {
       pages.forEach(path => {
         sitemap += `  <url>\n    <loc>https://${canonicalHost}${path}</loc>\n`;
         sitemap += `    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n`;
-        sitemap += `    <priority>${path === "/" ? "1.0" : "0.7"}</priority>\n  </url>\n`;
+        sitemap += `    <priority>${path === "/"? "1.0" : "0.7"}</priority>\n  </url>\n`;
       });
       sitemap += '</urlset>';
 
@@ -34,7 +36,6 @@ export default {
         }
       });
     }
-
     // 3. ROBOTS.TXT
     if (url.pathname === "/robots.txt") {
       const robotsTxt = `User-agent: *\nAllow: /\n\nSitemap: https://${canonicalHost}/sitemap.xml`;
