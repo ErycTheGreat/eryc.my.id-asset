@@ -27,7 +27,7 @@ Google Sites is notoriously bad for technical SEO. To bypass this, I utilized Cl
 
 If you want to see what is truly possible on a free Google Site, explore these custom components:
 
-* **[>] The Cyberpunk Terminal (About Page)** A fully functional command-line interface embedded directly into the page. Features include keyboard navigation, tab auto-complete, and syntax hint shadow text.  
+* **[>] The Cyberpunk Terminal (About Page)** A fully functional command-line interface embedded directly into the page. Features include keyboard navigation, tab auto-complete, and inline suggestion.  
   *Easter Egg:* Try typing `sudo`.
 
 * **[>] 16-Bit RPG Dialog Engine (SEO Page)** A retro, SNES-style interactive dialog system that replaces traditional static text blocks. It explains SEO and digital marketing systems through an interactive game-like interface.
