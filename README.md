@@ -67,7 +67,7 @@ If you find this useful or interesting:
 
 Have a nice day.
 
-```▰▰▰▰▰▰▰▰
+```▰▰▰▰▰▰▰▰▰▰▰
 ────────╔═══╗─マーケター
 ────────║╔══╝──Digital
 ────────║╚══╦══╦╗─╔╦══╗
