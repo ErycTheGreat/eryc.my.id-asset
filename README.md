@@ -70,7 +70,7 @@ If you want to see what is truly possible on a free Google Site, explore these c
 
 <div align="left">
   <strong>[ Service Tier Preview ]</strong><br>
-  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/service-tier.webp" alt="Service-tier Preview">
+  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/services-tier.webp" alt="Service-tier Preview">
 </div>
 
 ---
