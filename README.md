@@ -41,6 +41,13 @@ If you want to see what is truly possible on a free Google Site, explore these c
 ## == Showcases
 
 <div align="left">
+  <strong>[ Home-page Preview ]</strong><br>
+  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/home-page.webp" alt="Home-page Preview">
+</div>
+
+<br><br>
+
+<div align="left">
   <strong>[ Terminal Preview ]</strong><br>
   <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/terminal.webp" alt="Terminal Preview">
 </div>
@@ -49,7 +56,7 @@ If you want to see what is truly possible on a free Google Site, explore these c
 
 <div align="left">
   <strong>[ RPG Dialog Preview ]</strong><br>
-  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/rpg-dialog.webp" alt="Terminal Preview">
+  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/rpg-dialog.webp" alt="RPG-dialog Preview">
 </div>
 
 ---
