@@ -12,11 +12,9 @@ export default {
       return Response.redirect(`https://${canonicalHost}/`, 301);
     }
 
-  // 2. SITEMAP
-    if (url.pathname === "/sitemap.xml" |
-
-| url.pathname === "/sitemap.xml/") {
-      const lastmod = new Date().toISOString().split('T');
+ // 2. SITEMAP
+    if (url.pathname === "/sitemap.xml" || url.pathname === "/sitemap.xml/") {
+      const lastmod = new Date().toISOString().split('T')[0];
       const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/mortgage-broker", "/case-studies/seo/sound-rentals", "/case-studies/seo/vet-clinic"];
       
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
