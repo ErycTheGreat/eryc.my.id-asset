@@ -1,25 +1,24 @@
-╔════════════════════════════════╗
-║                                ║
-║     █▀█ █▀ █▀ █▀▀ ▀█▀          ║
-║     █▀█ ▄█ ▄█ ██▄  █           ║
-║                                ║
-║    HOSTING GUIDE  V.1.0        ║
-║                                ║
-╚════════════════════════════════╝
+╔══════════════════════════════╗
+║                              ║
+║        H O S T I N G         ║
+║        G U I D E  v1.0       ║
+║                              ║
+╚══════════════════════════════╝
 
 ✦ Store files in Google Sites.
 ✦ NO paid hosting needed.
 
-▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+
+================================
 ❖ [1] GOOGLE DRIVE (BEST)
-▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+================================
 
 ┌─[ STEP 1 ] Upload to Drive
 │
 ├─[ STEP 2 ] Copy share link
 │  ↳ Example:
 │  drive.google.com/file/d/
-│  YOUR_ID_HERE/view?usp=sharing
+│  YOUR_ID/view?usp=sharing
 │
 └─[ STEP 3 ] Convert link
 
@@ -37,26 +36,26 @@
    view&id=FILE_ID
 
 
-╭━━━━━━━━━━━━━━━━━━━━━━━╮
-│ DIRECT DOWNLOAD LINK  │
-╰━━━━━━━━━━━━━━━━━━━━━━━╯
+╔══════════════════════════════╗
+║ DIRECT DOWNLOAD LINK         ║
+╚══════════════════════════════╝
 ➤ drive.google.com/uc?id=
   YOUR_ID_HERE&export=download
 
 
-╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮
-│ WHY THIS WORKS               │
-╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯
+╔══════════════════════════════╗
+║ WHY THIS WORKS               ║
+╚══════════════════════════════╝
 ✦ Default = opens Drive page  
 ✦ Modified = gives direct file
 
-[✗] Opens a webpage → WRONG  
+[✗] Opens webpage → WRONG  
 [✓] Shows ONLY file → CORRECT
 
 
-▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+================================
 ❖ [2] DROPBOX (ALT)
-▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+================================
 
 ┌─[ STEP 1 ] Upload to Dropbox
 │
@@ -78,9 +77,9 @@
  ▪ Replace with "raw=1"
 
 
-╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮
-│ FASTER DROPBOX VERSION       │
-╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯
+╔══════════════════════════════╗
+║ FASTER DROPBOX VERSION       ║
+╚══════════════════════════════╝
 [✗] CHANGE THIS:
     www.dropbox.com/s/folder/
     image.jpg?dl=0
@@ -95,9 +94,9 @@
  ▪ Remove "?dl=0" or "?raw=1"
 
 
-▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+================================
 ❖ [3] PERF BOOST (OPTIONAL)
-▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+================================
 
 <link rel="preconnect" 
  href="https://dl.dropbox...">
@@ -114,9 +113,9 @@
  Result: Image loads faster!
 
 
-▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+================================
 ❖ [4] IMPORTANT WARNING
-▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+================================
 
 ➤ Google Drive:
  [+] Stable & SEO friendly
@@ -129,28 +128,29 @@
  [-] Not designed for hosting
 
 
-▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+================================
 ❖ [5] SIMPLE DECISION
-▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+================================
 
 ✦ G-Drive → Real projects/SEO  
 ✦ Dropbox → Speed testing
 
 
-╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮
-│ FINAL CHECK                  │
-╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯
+╔══════════════════════════════╗
+║ FINAL CHECK                  ║
+╚══════════════════════════════╝
 Open link in mobile browser:
 
 [✓] See ONLY file → GOOD
 [✗] See a webpage → WRONG
 
-──╔═══╗─マーケター
-──║╔══╝──Digital
-──║╚══╦══╦╗─╔╦══╗
-──║╔══╣╔═╣║─║║╔═╝
-──║╚══╣║─║╚═╝║╚═╗
-──╚═══╩╝─╚═╗╔╩══╝
-─────────╔═╝║
-─────────╚══╝
-         END
+
+   ╔═══╗ マーケター
+   ║╔══╝ Digital
+   ║╚══╦══╦╗ ╔╦══╗
+   ║╔══╣╔═╣║ ║║╔═╝
+   ║╚══╣║ ║╚═╝║╚═╗
+   ╚═══╩╝ ╚═╗╔╩══╝
+          ╔═╝║
+          ╚══╝
+          END
