@@ -15,9 +15,9 @@
 ✦ WITHOUT paid hosting using Google Drive or Dropbox.
 
 
-```▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰```
+▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
 ❖ [1] GOOGLE DRIVE METHOD (RECOMMENDED)
-```▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰```
+▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
 
 ┌─[ STEP 1 ] Upload file to Google Drive
 │
@@ -44,9 +44,9 @@
   <img src="https://drive.google.com/uc?export=view&id=YOUR_FILE_ID_HERE">
 
 
-╭━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╮
-│  DIRECT DOWNLOAD LINK                                       │
-╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯
+```╭━━━━━━━━━━━━━━━━━━━━━━━╮
+   │  DIRECT DOWNLOAD LINK │
+   ╰━━━━━━━━━━━━━━━━━━━━━━━╯```
 ➤ https://drive.google.com/uc?id=YOUR_FILE_ID_HERE&export=download
 
 
