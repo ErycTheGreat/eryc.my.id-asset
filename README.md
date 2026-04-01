@@ -56,7 +56,7 @@ If you want to see what is truly possible on a free Google Site, explore these c
 
 <div align="left">
   <strong>[ Glossary Preview ]</strong><br>
-  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/glossary.webp" alt="Terminal Preview">
+  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/glossary.webp" alt="Glossary Preview">
 </div>
 
 <br><br>
