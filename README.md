@@ -1,8 +1,8 @@
 # >> Pushing Google Sites Beyond Its Limits
 **By Eryc Tri Juni S. — SEO & Digital Marketing Specialist**
 
-> **Google Sites:** "A simple, locked-down drag-and-drop builder."  
-> **Power user:** "Hold my Cloudflare edge router."
+> **Google :** "A simple, locked-down drag-and-drop builder."  
+> **User :** "Hold my Cloudflare edge router."
 
 A portfolio built entirely on Google Sites, reengineered to overcome its native SEO and structural limitations.
 
