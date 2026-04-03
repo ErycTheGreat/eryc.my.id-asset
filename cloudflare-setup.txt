@@ -1,0 +1,32 @@
+# CLOUDFLARE EDGE ROUTER SETUP
+To replicate this architecture, your Cloudflare zone must be configured precisely. If standard optimization features are left on, Google Sites will reject the proxy, resulting in infinite redirect loops or broken iframes.
+
+Follow these steps in your Cloudflare Dashboard:
+
+## STEP 1: DNS & Proxy Configuration
+You cannot use a CNAME for the root domain, but the Worker needs a target to trigger the 301 redirect. 
+1. Go to **DNS > Records**.
+2. Add an **A Record** for your root domain (`@`) and point it to a dummy IP: `192.0.2.1`.
+3. Add a **CNAME Record** for `www` and point it to `ghs.googlehosted.com`.
+4. **CRITICAL:** Ensure the "Proxy status" for both records is toggled ON (Orange Cloud). If it is Grey, the Worker will not execute.
+
+## STEP 2: SSL/TLS Encryption (Prevent Infinite Loops)
+Google Sites forces HTTPS. If Cloudflare tries to connect via HTTP, it triggers the "ERR_TOO_MANY_REDIRECTS" error.
+1. Go to **SSL/TLS > Overview**.
+2. Set the encryption mode to **Full** or **Full (Strict)**. Do not use Flexible.
+
+## STEP 3: Disable Auto-Optimizations (Protect the Payload)
+Cloudflare's native speed tools will corrupt Google Sites' proprietary rendering JavaScript and your custom JSON-LD injections.
+1. Go to **Speed > Optimization > Content Optimization**.
+2. Find **Rocket Loader** and toggle it **OFF**. (If left on, your iframe widgets and navigation will freeze).
+3. Find **Auto Minify** and uncheck JavaScript, CSS, and HTML. (If left on, it may corrupt your schema markup syntax).
+
+## STEP 4: Worker Route Mapping
+Tell Cloudflare to intercept all traffic using your Worker script.
+1. Go to **Workers & Pages** and select your deployed Worker.
+2. Go to the **Triggers** tab.
+3. Under **Routes**, click Add Route.
+4. Enter: `*eryc.my.id/*` (Replace with your own domain, but keep the wildcards `*`).
+5. Select the matching zone from the dropdown and save.
+
+Your edge router is now actively bypassing Google Sites' native limitations.
