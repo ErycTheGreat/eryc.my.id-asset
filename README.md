@@ -41,56 +41,64 @@ Google Sites keeps things simple by design. This project uses Cloudflare edge ro
 
 Nothing unusual—unless you’re using Google Sites :
 
-<div align="left">
-* **[>] Fixed-Viewport Landing (Home Page)** A zero-scroll, full-screen landing experience with animated background, glitch ASCII art, and a dialog-driven navigation system.
-</div>
-<div align="center">  <strong>[ Home-page Preview ]</strong><br>
-  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/home-page.webp" alt="Home-page Preview">
-</div>
-
-<br><br>
-
-<div align="left">
-* **[>] The Cyberpunk Terminal (About Page)** A fully functional in-browser CLI with keyboard navigation, tab autocomplete, and inline suggestions.  
-  *Easter Egg:* Try typing `sudo`.
-</div>
-<div align="center">
-  <strong>[ Terminal Preview ]</strong><br>
-  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/terminal.webp" alt="Terminal Preview">
-</div>
-
-<br><br>
-
-<div align="left">
-
-* **[>] Digital Marketing Glossary (Glossary Page)** A responsive dictionary interface with live search and auto-scroll navigation for fast term discovery.
-</div>
-<div align="center">
-  <strong>[ Glossary Preview ]</strong><br>
-  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/glossary.webp" alt="Glossary Preview">
-</div>
-
-<br><br>
-
-<div align="left">
-
-* **[>] 16-Bit RPG Dialog Engine (SEO Page)** A retro-style interactive dialog system that replaces static content with a game-like SEO explanation flow.
-</div>
-<div align="center">
-  <strong>[ RPG Dialog Preview ]</strong><br>
-  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/rpg-dialog.webp" alt="RPG-dialog Preview">
-</div>
-
-<br><br>
-
-<div align="left">
-
-* **[>] Upwork-Style Service Tiers (Services Page)** A pixel-accurate Upwork-style pricing UI, connected to a custom Google Apps Script backend for structured lead capture.
-</div>
-<div align="center">  
-  <strong>[ Service Tier Preview ]</strong><br>
-  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/services-tier.webp" alt="Service-tier Preview">
-</div>
+<table>
+  <tr>
+    <td>
+      <ul>
+        <li><b>[>] Fixed-Viewport Landing (Home Page)</b> A zero-scroll, full-screen landing experience with animated background, glitch ASCII art, and a dialog-driven navigation system.</li>
+      </ul>
+      <div align="center">
+        <strong>[ Home-page Preview ]</strong><br>
+        <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/home-page.webp" alt="Home-page Preview">
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <ul>
+        <li><b>[>] The Cyberpunk Terminal (About Page)</b> A fully functional in-browser CLI with keyboard navigation, tab autocomplete, and inline suggestions.<br>
+        <i>Easter Egg:</i> Try typing <code>sudo</code>.</li>
+      </ul>
+      <div align="center">
+        <strong>[ Terminal Preview ]</strong><br>
+        <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/terminal.webp" alt="Terminal Preview">
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <ul>
+        <li><b>[>] Digital Marketing Glossary (Glossary Page)</b> A responsive dictionary interface with live search and auto-scroll navigation for fast term discovery.</li>
+      </ul>
+      <div align="center">
+        <strong>[ Glossary Preview ]</strong><br>
+        <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/glossary.webp" alt="Glossary Preview">
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <ul>
+        <li><b>[>] 16-Bit RPG Dialog Engine (SEO Page)</b> A retro-style interactive dialog system that replaces static content with a game-like SEO explanation flow.</li>
+      </ul>
+      <div align="center">
+        <strong>[ RPG Dialog Preview ]</strong><br>
+        <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/rpg-dialog.webp" alt="RPG Dialog Preview">
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <ul>
+        <li><b>[>] Upwork-Style Service Tiers (Services Page)</b> A pixel-accurate Upwork-style pricing UI, connected to a custom Google Apps Script backend for structured lead capture.</li>
+      </ul>
+      <div align="center">
+        <strong>[ Service Tier Preview ]</strong><br>
+        <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/services-tier.webp" alt="Service Tier Preview">
+      </div>
+    </td>
+  </tr>
+</table>
 
 ---
 
