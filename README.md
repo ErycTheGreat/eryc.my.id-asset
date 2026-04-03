@@ -103,9 +103,9 @@ The system focuses on:
 - Enabling full-feature functionality within constrained environments  
 - Enforcing SEO control at the edge via Cloudflare Workers  
   
-Built on Google Sites, but not tied to it. If a platform allows embedded HTML, it can be extended. This applies to platforms like [WordPress.com](https://wordpress.com), [Wix](https://wix.com), and [Weebly](https://weebly.com).  
+Built on Google Sites, but not tied to it. If a platform allows embedded HTML, it can be extended. This applies to platforms like [WordPress.com](https://wordpress.com), [Wix](https://wix.com), and [Weebly](https://weebly.com). 
+The same architectural direction is now visible in [@Emdash](https://github.com/emdash-cms/emdash).
 
-Similar patterns are emerging in edge-native platforms like [Cloudflare Emdash](https://github.com/generalaction/emdash).
 ---
 
 ## Credits & Inspiration
