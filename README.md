@@ -1,31 +1,33 @@
-# >> Pushing Google Sites Beyond Its Limits
+# :: Pushing Google Sites Beyond Its Limits
 **By Eryc Tri Juni S. — SEO & Digital Marketing Specialist**
 
 > **Google:** "A simple, locked-down drag-and-drop builder."  
 > **User:** "Hold my Cloudflare edge router."
 
-A portfolio built entirely on Google Sites, reengineered to overcome its native SEO and structural limitations.
+A portfolio built entirely on Google Sites, re-engineered for SEO and structural control.
 
-This repository contains the custom components and edge routing logic behind that system:
+This repository contains the system behind it:
 
 - Modular HTML/CSS/JS embeds  
 - Cloudflare Workers for edge-level SEO control  
-- GitHub as a CDN for assets and logic  
+- GitHub-backed asset proxy via Cloudflare Workers
 
-*Constraints aren’t limits. They’re an engineering problems.*
+*Constraints aren’t limits. They’re engineering problems.*
+
 >> **Live Website:** [www.eryc.my.id](https://www.eryc.my.id)
 
 ---
 
-## == Under the Hood: The SEO Stack
+## :: Under the Hood: The SEO/GEO Stack
 
-Google Sites is notoriously bad for technical SEO. To bypass this, I utilized Cloudflare edge routing to implement the following features that the platform normally blocks:
+Google Sites keeps things simple by design. This project uses Cloudflare edge routing to unlock features that, elsewhere, wouldn’t need unlocking:
 
-* Custom Title Tags
-* Dynamic Meta Descriptions
-* Valid JSON-LD Markup
-* Custom `sitemap.xml`
-* Custom `robots.txt`
+- Custom Title Tags
+- Dynamic Meta Descriptions
+- Valid JSON-LD Markup
+- Custom `sitemap.xml`
+- Custom `robots.txt`
+- Custom `llm.txt`
 
 ---
 
