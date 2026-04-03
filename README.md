@@ -102,8 +102,7 @@ The system focuses on:
 - Eliminating the need for paid hosting   
 - Enabling fully functional features within restricted platforms  
 
-While built on Google Sites, the approach is not platform-specific.  
-Any CMS that supports embedded HTML can apply the same system.
+While built on Google Sites, the approach is not platform-specific. Any CMS that supports embedded HTML can apply the same system.
 
 ---
 
