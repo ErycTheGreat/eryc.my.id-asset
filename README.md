@@ -33,16 +33,18 @@ Google Sites keeps things simple by design. This project uses Cloudflare edge ro
 
 ## Showcases
 
-If you want to see what is truly possible on a free Google Site, explore these custom components:
-
-
 * **[>] Optimized Asset Delivery (GitHub-backed Edge Proxy)** Assets are served from GitHub as the origin, with Cloudflare Workers acting as an edge proxy layer (`/asset/...`). This enables full control over caching, headers, and file delivery—bypassing Google Sites’ native limitations entirely.
 
 ---
 
 ## Interactive Highlights 
 
+If you want to see what is truly possible on a free Google Site, explore these custom components:
+
 <div align="left">
+
+* **[>] Fixed-Viewport Landing (Home Page)** A zero-scroll, full-screen landing experience with animated background, glitch ASCII art, and a dialog-driven navigation system.
+
   <strong>[ Home-page Preview ]</strong><br>
   <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/home-page.webp" alt="Home-page Preview">
 </div>
@@ -51,7 +53,7 @@ If you want to see what is truly possible on a free Google Site, explore these c
 
 <div align="left">
 
-* **[>] The Cyberpunk Terminal (About Page)** A fully functional command-line interface embedded directly into the page. Features include keyboard navigation, tab auto-complete, and inline suggestion.  
+* **[>] The Cyberpunk Terminal (About Page)** A fully functional in-browser CLI with keyboard navigation, tab autocomplete, and inline suggestions.  
   *Easter Egg:* Try typing `sudo`.
 
   <strong>[ Terminal Preview ]</strong><br>
@@ -62,7 +64,7 @@ If you want to see what is truly possible on a free Google Site, explore these c
 
 <div align="left">
 
-* **[>] Digital Marketing Glossary (Glossary Page)** A highly responsive dictionary index to explain complex digital marketing terminology. Features an auto-scroll functionality integrated with a live search bar.
+* **[>] Digital Marketing Glossary (Glossary Page)** A responsive dictionary interface with live search and auto-scroll navigation for fast term discovery.
 
   <strong>[ Glossary Preview ]</strong><br>
   <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/glossary.webp" alt="Glossary Preview">
@@ -72,7 +74,7 @@ If you want to see what is truly possible on a free Google Site, explore these c
 
 <div align="left">
 
-* **[>] 16-Bit RPG Dialog Engine (SEO Page)** A retro, SNES-style interactive dialog system that replaces traditional static text blocks. It explains SEO and digital marketing systems through an interactive game-like interface.
+* **[>] 16-Bit RPG Dialog Engine (SEO Page)** A retro-style interactive dialog system that replaces static content with a game-like SEO explanation flow.
 
   <strong>[ RPG Dialog Preview ]</strong><br>
   <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/rpg-dialog.webp" alt="RPG-dialog Preview">
@@ -81,6 +83,9 @@ If you want to see what is truly possible on a free Google Site, explore these c
 <br><br>
 
 <div align="left">
+
+* **[>] Upwork-Style Service Tiers (Services Page)** A pixel-accurate Upwork-style pricing UI, connected to a custom Google Apps Script backend for structured lead capture.
+  
   <strong>[ Service Tier Preview ]</strong><br>
   <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/services-tier.webp" alt="Service-tier Preview">
 </div>
