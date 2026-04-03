@@ -113,6 +113,7 @@ Nothing unusual—unless you’re using Google Sites :
     </td>
   </tr>
 </table>
+
 ---
 
 ## Core Principles
