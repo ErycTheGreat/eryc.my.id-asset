@@ -36,7 +36,7 @@ Google Sites keeps things simple by design. This project uses Cloudflare edge ro
 If you want to see what is truly possible on a free Google Site, explore these custom components:
 
 
-* **[>] Optimized Asset Delivery (GitHub CDN)** A custom asset loading pipeline using a GitHub repository (`raw.githubusercontent.com/...`). This completely bypasses Google Sites' native storage limits while maintaining lightning-fast load times.
+* **[>] Optimized Asset Delivery (GitHub-backed Edge Proxy)** Assets are served from GitHub as the origin, with Cloudflare Workers acting as an edge proxy layer. (`yourdomain.com/asset/...`). This enables full control over caching, headers, and file delivery—bypassing Google Sites’ native limitations entirely.
 
 ---
 
