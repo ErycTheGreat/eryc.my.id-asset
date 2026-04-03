@@ -39,7 +39,7 @@ Google Sites keeps things simple by design. This project uses Cloudflare edge ro
 
 ## Interactive Highlights 
 
-If you want to see what is truly possible on a free Google Site, explore these custom components:
+Nothing unusual—unless you’re using Google Sites :
 
 <div align="left">
 
