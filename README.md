@@ -43,7 +43,7 @@ Nothing unusual—unless you’re using Google Sites:
 
 <table>
   <tr>
-    <td valign="top" width="33%">
+    <td valign="top" width="50%">
       <b>Fixed-Viewport Landing (Home)</b><br>
       A zero-scroll, full-screen landing experience.
       <ul>
@@ -54,7 +54,7 @@ Nothing unusual—unless you’re using Google Sites:
       <br>
       <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/home-page.webp" alt="Home-page Preview" width="100%">
     </td>
-    <td valign="top" width="33%">
+    <td valign="top" width="50%">
       <b>The Cyberpunk Terminal (About)</b><br>
       A fully functional in-browser CLI.
       <ul>
@@ -63,9 +63,12 @@ Nothing unusual—unless you’re using Google Sites:
         <li>Inline suggestions</li>
         <li>Easter Egg: <code>sudo</code></li>
       </ul>
+      <br>
       <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/terminal.webp" alt="Terminal Preview" width="100%">
     </td>
-    <td valign="top" width="33%">
+  </tr>
+  <tr>
+    <td valign="top" width="50%">
       <b>Digital Marketing Glossary</b><br>
       A responsive dictionary interface.
       <ul>
@@ -76,9 +79,7 @@ Nothing unusual—unless you’re using Google Sites:
       <br>
       <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/glossary.webp" alt="Glossary Preview" width="100%">
     </td>
-  </tr>
-  <tr>
-    <td valign="top" width="33%">
+    <td valign="top" width="50%">
       <b>16-Bit RPG Engine (SEO)</b><br>
       A retro-style interactive dialog system.
       <ul>
@@ -89,7 +90,9 @@ Nothing unusual—unless you’re using Google Sites:
       <br>
       <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/rpg-dialog.webp" alt="RPG-dialog Preview" width="100%">
     </td>
-    <td valign="top" width="33%">
+  </tr>
+  <tr>
+    <td valign="top" width="50%">
       <b>Upwork-Style Tiers (Services)</b><br>
       A pixel-accurate Upwork pricing UI.
       <ul>
@@ -100,7 +103,7 @@ Nothing unusual—unless you’re using Google Sites:
       <br>
       <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/services-tier.webp" alt="Service-tier Preview" width="100%">
     </td>
-    <td valign="top" width="33%">
+    <td valign="top" width="50%">
       <b>System Architecture</b><br>
       Expanding beyond native constraints.
       <ul>
@@ -113,7 +116,8 @@ Nothing unusual—unless you’re using Google Sites:
     </td>
   </tr>
 </table>
---
+
+---
 
 ## Core Principles
 
