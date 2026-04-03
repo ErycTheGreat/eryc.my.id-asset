@@ -92,7 +92,7 @@ Nothing unusual—unless you’re using Google Sites :
 
 ---
 
-## The Mission
+## Core Principles
 
 This repository contains modular HTML, CSS, and JavaScript components designed to operate within drag-and-drop CMS environments.
 
