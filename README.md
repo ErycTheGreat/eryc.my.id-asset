@@ -129,7 +129,7 @@ Nothing unusual—unless you’re using Google Sites :
 - Unlock advanced functionality within highly constrained platforms  
 - Enforce technical SEO at the edge via Cloudflare Workers  
 
-**Compatibility** Built on Google Sites, but not tied to it. *If a platform accepts embedded HTML, it can be extended.* This architecture can be applied to [WordPress.com](https://wordpress.com), [Wix](https://wix.com), [Weebly](https://weebly.com), [Squarespace](https://www.squarespace.com), [Webflow](https://webflow.com), and similar closed-ecosystem platforms.
+**Compatibility** Built on Google Sites, but not tied to it. *If a platform accepts embedded HTML, it can be extended.* This architecture can be applied to [Wix](https://wix.com), [Webflow](https://webflow.com), [Weebly](https://weebly.com), [WordPress.com](https://wordpress.com), [Squarespace](https://www.squarespace.com), and similar closed-ecosystem platforms.
 
 > [!NOTE]
 > **Architectural Context:** This edge-native approach aligns closely with the direction of modern, emerging edge CMS platforms like [Emdash](https://github.com/emdash-cms/emdash) (@emdash-cms/emdash).
