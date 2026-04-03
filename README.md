@@ -90,7 +90,7 @@ Nothing unusual—unless you’re using Google Sites :
   <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/services-tier.webp" alt="Service-tier Preview">
 </div>
 
----
+--
 
 ## Core Principles
 
@@ -103,7 +103,7 @@ Nothing unusual—unless you’re using Google Sites :
 
 **Compatibility** Built on Google Sites, but not tied to it. *If a platform accepts embedded HTML, it can be extended.* This architecture can be applied to [WordPress.com](https://wordpress.com), [Wix](https://wix.com), [Weebly](https://weebly.com), [Squarespace](https://www.squarespace.com), [Webflow](https://webflow.com), and similar closed-ecosystem platforms.
 
-> [!TIP]
+> [!NOTE]
 > **Architectural Context:** This edge-native approach aligns closely with the direction of modern, emerging edge CMS platforms like [Emdash](https://github.com/emdash-cms/emdash) (@emdash-cms/emdash).
 
 ---
@@ -125,7 +125,8 @@ If you find this approach useful, interesting, or completely insane:
 Have a great day.
 
 ---
-```▰▰▰▰▰▰▰▰▰▰▰
+
+```text
 ────────╔═══╗─マーケター
 ────────║╔══╝──Digital
 ────────║╚══╦══╦╗─╔╦══╗
