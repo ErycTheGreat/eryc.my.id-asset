@@ -119,14 +119,14 @@ Nothing unusual—unless you’re using Google Sites :
 
   <tr>
     <td>
-      <ol start="5">
+      <ol start="6">
         <li><b>[>] Clipboard-Integrated Code Blocks</b> A responsive code viewer built for technical documentation. Bypasses standard text limitations by injecting custom syntax highlighting and native clipboard copying directly into the iframe.</li>
       </ol>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <strong>[ Service Tier Preview ]</strong><br><br/>
+      <strong>[ Code Snippet Preview ]</strong><br><br/>
       <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/code-snippet.webp" alt="Code Snippet Preview">
     </td>
   </tr>
