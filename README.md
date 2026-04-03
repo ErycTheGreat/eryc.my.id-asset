@@ -104,7 +104,8 @@ The system focuses on:
 - Enforcing SEO control at the edge via Cloudflare Workers  
   
 Built on Google Sites, but not tied to it. If a platform allows embedded HTML, it can be extended. This applies to platforms like [WordPress.com](https://wordpress.com), [Wix](https://wix.com), and [Weebly](https://weebly.com). 
-The same architectural direction is now visible in [@Emdash](https://github.com/emdash-cms/emdash).
+
+The same architectural direction is now visible in [Emdash](https://github.com/emdash-cms/emdash) (@emdash-cms/emdash)—an edge-native approach that aligns closely with what this project explores.
 
 ---
 
