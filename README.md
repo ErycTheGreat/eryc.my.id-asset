@@ -145,12 +145,10 @@ Nothing unusual—unless you’re using Google Sites :
 
 ## Support the Build
 
-If you find this approach useful, interesting, or completely insane:
+If you find this approach useful, interesting, or completely useless:
 
 - Share the project  
 - Bookmark the live site  
-
-Have a great day.
 
 ---
 
