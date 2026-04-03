@@ -35,6 +35,10 @@ Google Sites keeps things simple by design. This project uses Cloudflare edge ro
 
 * **[>] Optimized Asset Delivery (GitHub-backed Edge Proxy)** Assets are served from GitHub as the origin, with Cloudflare Workers acting as an edge proxy layer (`/asset/...`). This enables full control over caching, headers, and file delivery—bypassing Google Sites’ native limitations entirely.
 
+* **[>] Responsive Widget Sandboxing (Decoupled Logic)** Fully responsive HTML/CSS UI components operating inside Google Sites' native iframes. To bypass inline script limitations, the core JavaScript logic is completely decoupled and executed remotely from a GitHub CDN.
+
+* **[>] Live SEO Telemetry (Looker Studio Integration)** An embedded, real-time analytics dashboard aggregating live data streams directly from Google Search Console (GSC) and PageSpeed Insights (PSI) for continuous performance monitoring.
+
 ---
 
 ## Interactive Highlights 
