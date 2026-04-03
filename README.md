@@ -94,18 +94,17 @@ Nothing unusual—unless you’re using Google Sites :
 
 ## Core Principles
 
-This repository contains modular HTML, CSS, and JavaScript components designed to operate within drag-and-drop CMS environments.
+**Scope** This repository contains modular HTML, CSS, and JavaScript components engineered specifically for drag-and-drop CMS environments. The system is designed to:
 
-The system focuses on:
+- Optimize embedded code execution  
+- Remove dependencies on paid infrastructure  
+- Unlock advanced functionality within highly constrained platforms  
+- Enforce technical SEO at the edge via Cloudflare Workers  
 
-- Optimizing embedded code execution  
-- Removing dependency on paid infrastructure  
-- Enabling full-feature functionality within constrained environments  
-- Enforcing SEO control at the edge via Cloudflare Workers  
-  
-Built on Google Sites, but not tied to it. If a platform allows embedded HTML, it can be extended. This applies to platforms like [WordPress.com](https://wordpress.com), [Wix](https://wix.com), and [Weebly](https://weebly.com). 
+**Compatibility** Built on Google Sites, but not tied to it. *If a platform accepts embedded HTML, it can be extended.* This architecture can be applied to [WordPress.com](https://wordpress.com), [Wix](https://wix.com), [Weebly](https://weebly.com), [Squarespace](https://www.squarespace.com), [Webflow](https://webflow.com), and similar closed-ecosystem platforms.
 
-The same architectural direction is now visible in [Emdash](https://github.com/emdash-cms/emdash) (@emdash-cms/emdash)—an edge-native approach that aligns closely with what this project explores.
+> [!TIP]
+> **Architectural Context:** This edge-native approach aligns closely with the direction of modern, emerging edge CMS platforms like [Emdash](https://github.com/emdash-cms/emdash) (@emdash-cms/emdash).
 
 ---
 
