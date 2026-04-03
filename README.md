@@ -120,7 +120,7 @@ Nothing unusual—unless you’re using Google Sites :
   <tr>
     <td>
       <ol start="6">
-        <li><b>[>] Clipboard-Integrated Code Blocks</b> A responsive code viewer built for technical documentation. Bypasses standard text limitations by injecting custom syntax highlighting and native clipboard copying directly into the iframe.</li>
+        <li><b> Clipboard-Integrated Code Blocks</b> A responsive code viewer built for technical documentation. Bypasses standard text limitations by injecting custom syntax highlighting and native clipboard copying directly into the iframe.</li>
       </ol>
     </td>
   </tr>
