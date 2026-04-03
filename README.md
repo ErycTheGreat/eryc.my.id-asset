@@ -39,85 +39,58 @@ Google Sites keeps things simple by design. This project uses Cloudflare edge ro
 
 ## Interactive Highlights 
 
-Nothing unusual—unless you’re using Google Sites:
+Nothing unusual—unless you’re using Google Sites :
 
-<table>
-  <tr>
-    <td valign="top" width="50%">
-      <b>Fixed-Viewport Landing (Home)</b><br>
-      A zero-scroll, full-screen landing experience.
-      <ul>
-        <li>Animated background</li>
-        <li>Glitch ASCII art</li>
-        <li>Dialog navigation</li>
-      </ul>
-      <br>
-      <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/home-page.webp" alt="Home-page Preview" width="100%">
-    </td>
-    <td valign="top" width="50%">
-      <b>The Cyberpunk Terminal (About)</b><br>
-      A fully functional in-browser CLI.
-      <ul>
-        <li>Keyboard navigation</li>
-        <li>Tab autocomplete</li>
-        <li>Inline suggestions</li>
-        <li>Easter Egg: <code>sudo</code></li>
-      </ul>
-      <br>
-      <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/terminal.webp" alt="Terminal Preview" width="100%">
-    </td>
-  </tr>
-  <tr>
-    <td valign="top" width="50%">
-      <b>Digital Marketing Glossary</b><br>
-      A responsive dictionary interface.
-      <ul>
-        <li>Live search bar</li>
-        <li>Auto-scroll navigation</li>
-        <li>Fast term discovery</li>
-      </ul>
-      <br>
-      <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/glossary.webp" alt="Glossary Preview" width="100%">
-    </td>
-    <td valign="top" width="50%">
-      <b>16-Bit RPG Engine (SEO)</b><br>
-      A retro-style interactive dialog system.
-      <ul>
-        <li>Game-like explanation flow</li>
-        <li>Replaces static content</li>
-        <li>SNES-style aesthetics</li>
-      </ul>
-      <br>
-      <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/rpg-dialog.webp" alt="RPG-dialog Preview" width="100%">
-    </td>
-  </tr>
-  <tr>
-    <td valign="top" width="50%">
-      <b>Upwork-Style Tiers (Services)</b><br>
-      A pixel-accurate Upwork pricing UI.
-      <ul>
-        <li>Apps Script backend integration</li>
-        <li>Structured lead capture</li>
-        <li>Bypasses native forms</li>
-      </ul>
-      <br>
-      <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/services-tier.webp" alt="Service-tier Preview" width="100%">
-    </td>
-    <td valign="top" width="50%">
-      <b>System Architecture</b><br>
-      Expanding beyond native constraints.
-      <ul>
-        <li>Edge routing active</li>
-        <li>GitHub CDN stable</li>
-        <li>Modular embeds</li>
-      </ul>
-      <br>
-      <i>*(More custom components in development...)*</i>
-    </td>
-  </tr>
-</table>
+<div align="left">
 
----
+* **[>] Fixed-Viewport Landing (Home Page)** A zero-scroll, full-screen landing experience with animated background, glitch ASCII art, and a dialog-driven navigation system.
+
+  <strong>[ Home-page Preview ]</strong><br>
+  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/home-page.webp" alt="Home-page Preview">
+</div>
+
+<br><br>
+
+<div align="left">
+
+* **[>] The Cyberpunk Terminal (About Page)** A fully functional in-browser CLI with keyboard navigation, tab autocomplete, and inline suggestions.  
+  *Easter Egg:* Try typing `sudo`.
+
+  <strong>[ Terminal Preview ]</strong><br>
+  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/terminal.webp" alt="Terminal Preview">
+</div>
+
+<br><br>
+
+<div align="left">
+
+* **[>] Digital Marketing Glossary (Glossary Page)** A responsive dictionary interface with live search and auto-scroll navigation for fast term discovery.
+
+  <strong>[ Glossary Preview ]</strong><br>
+  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/glossary.webp" alt="Glossary Preview">
+</div>
+
+<br><br>
+
+<div align="left">
+
+* **[>] 16-Bit RPG Dialog Engine (SEO Page)** A retro-style interactive dialog system that replaces static content with a game-like SEO explanation flow.
+
+  <strong>[ RPG Dialog Preview ]</strong><br>
+  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/rpg-dialog.webp" alt="RPG-dialog Preview">
+</div>
+
+<br><br>
+
+<div align="left">
+
+* **[>] Upwork-Style Service Tiers (Services Page)** A pixel-accurate Upwork-style pricing UI, connected to a custom Google Apps Script backend for structured lead capture.
+  
+  <strong>[ Service Tier Preview ]</strong><br>
+  <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/services-tier.webp" alt="Service-tier Preview">
+</div>
+
+--
 
 ## Core Principles
 
