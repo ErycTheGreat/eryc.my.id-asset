@@ -98,10 +98,11 @@ This repository contains modular HTML, CSS, and JavaScript components designed t
 
 The system focuses on:
 
-- Improving performance of embedded code  
-- Eliminating the need for paid hosting   
-- Enabling fully functional features within restricted platforms  
-
+- Optimizing embedded code execution  
+- Removing dependency on paid infrastructure  
+- Enabling full-feature functionality within constrained environments  
+- Enforcing SEO control at the edge via Cloudflare Workers  
+  
 While built on Google Sites, the approach is not platform-specific. Any CMS that supports embedded HTML can apply the same system.
 
 ---
