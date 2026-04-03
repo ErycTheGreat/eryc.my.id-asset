@@ -1,4 +1,4 @@
-# :: Pushing Google Sites Beyond Its Limits
+# Pushing Google Sites Beyond Its Limits
 **By Eryc Tri Juni S. — SEO & Digital Marketing Specialist**
 
 > **Google:** "A simple, locked-down drag-and-drop builder."  
@@ -18,7 +18,7 @@ This repository contains the system behind it:
 
 ---
 
-## :: Under the Hood: The SEO/GEO Stack
+## Under the Hood: The SEO/GEO Stack
 
 Google Sites keeps things simple by design. This project uses Cloudflare edge routing to unlock features that, elsewhere, wouldn’t need unlocking:
 
@@ -31,7 +31,7 @@ Google Sites keeps things simple by design. This project uses Cloudflare edge ro
 
 ---
 
-## == Showcases
+## Showcases
 
 If you want to see what is truly possible on a free Google Site, explore these custom components:
 
@@ -40,7 +40,7 @@ If you want to see what is truly possible on a free Google Site, explore these c
 
 ---
 
-## == Interactive Highlights 
+## Interactive Highlights 
 
 <div align="left">
   <strong>[ Home-page Preview ]</strong><br>
@@ -87,7 +87,7 @@ If you want to see what is truly possible on a free Google Site, explore these c
 
 ---
 
-## == The Mission
+## The Mission
 
 This repository contains the modular HTML, CSS, and JavaScript components I used to overcome platform limitations. My goal was to enable:
 
@@ -99,14 +99,14 @@ If all of this can be built natively on Google Sites, then the limitation is not
 
 ---
 
-## == Credits & Inspiration
+## Credits & Inspiration
 
 * **Cyberpunk Terminal:** Inspired by the open-source terminal portfolio created by [@heberleonard2](https://github.com/heberleonard2/terminal-style-portfolio-page). 
 * **ASCII Art Animations:** The amazing ASCII art animations used in this project were created by **1mposter**. You can check out more of their incredible work on their [Website](https://www.1mposter.com/), [Foundation](https://foundation.app/@1mposter), and [Objkt](https://objkt.com/@1mposter).
 
 ---
 
-## == Support the Build
+## Support the Build
 
 If you find this approach useful, interesting, or completely insane:
 
