@@ -1,12 +1,18 @@
-# >> Pushing Google Sites to the Absolute Limit
+# >> Pushing Google Sites Beyond Its Limits
 **By Eryc Tri Juni S. — SEO & Digital Marketing Specialist**
 
-> "I can't call myself a true SEO Specialist until I can force even a heavily restricted platform like Google Sites to be fully SEO-ready."
+> **Google Sites:** "A simple, locked-down drag-and-drop builder."  
+> **Power user:** "Hold my Cloudflare edge router."
 
-I just launched my portfolio, built 100% on Google Sites. Instead of settling for standard, rigid templates, I wanted to explore exactly how far custom interactive elements could go using pure HTML, CSS, JavaScript, and Cloudflare Edge Routing to solve the platform's native SEO limitations. I am also leveraging GitHub as a virtual CDN to host my JavaScript logic and visual assets.
+A portfolio built entirely on Google Sites, reengineered to overcome its native SEO and structural limitations.
 
-Everything you see here is responsive, functional, and built to demonstrate what this platform can actually do when pushed completely beyond its intended limits.
+This repository contains the custom components and edge routing logic behind that system:
 
+- Modular HTML/CSS/JS embeds  
+- Cloudflare Workers for edge-level SEO control  
+- GitHub as a CDN for assets and logic  
+
+*Constraints aren’t limits. They’re an engineering problems.*
 >> **Live Website:** [www.eryc.my.id](https://www.eryc.my.id)
 
 ---
@@ -23,22 +29,16 @@ Google Sites is notoriously bad for technical SEO. To bypass this, I utilized Cl
 
 ---
 
-## == Interactive Highlights
+## == Showcases
 
 If you want to see what is truly possible on a free Google Site, explore these custom components:
 
-* **[>] The Cyberpunk Terminal (About Page)** A fully functional command-line interface embedded directly into the page. Features include keyboard navigation, tab auto-complete, and inline suggestion.  
-  *Easter Egg:* Try typing `sudo`.
-
-* **[>] 16-Bit RPG Dialog Engine (SEO Page)** A retro, SNES-style interactive dialog system that replaces traditional static text blocks. It explains SEO and digital marketing systems through an interactive game-like interface.
-
-* **[>] Digital Marketing Glossary (Glossary Page)** A highly responsive dictionary index to explain complex digital marketing terminology. Features an auto-scroll functionality integrated with a live search bar.
 
 * **[>] Optimized Asset Delivery (GitHub CDN)** A custom asset loading pipeline using a GitHub repository (`raw.githubusercontent.com/...`). This completely bypasses Google Sites' native storage limits while maintaining lightning-fast load times.
 
 ---
 
-## == Showcases
+## == Interactive Highlights 
 
 <div align="left">
   <strong>[ Home-page Preview ]</strong><br>
@@ -48,6 +48,10 @@ If you want to see what is truly possible on a free Google Site, explore these c
 <br><br>
 
 <div align="left">
+
+* **[>] The Cyberpunk Terminal (About Page)** A fully functional command-line interface embedded directly into the page. Features include keyboard navigation, tab auto-complete, and inline suggestion.  
+  *Easter Egg:* Try typing `sudo`.
+
   <strong>[ Terminal Preview ]</strong><br>
   <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/terminal.webp" alt="Terminal Preview">
 </div>
@@ -55,6 +59,9 @@ If you want to see what is truly possible on a free Google Site, explore these c
 <br><br>
 
 <div align="left">
+
+* **[>] Digital Marketing Glossary (Glossary Page)** A highly responsive dictionary index to explain complex digital marketing terminology. Features an auto-scroll functionality integrated with a live search bar.
+
   <strong>[ Glossary Preview ]</strong><br>
   <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/glossary.webp" alt="Glossary Preview">
 </div>
@@ -62,6 +69,9 @@ If you want to see what is truly possible on a free Google Site, explore these c
 <br><br>
 
 <div align="left">
+
+* **[>] 16-Bit RPG Dialog Engine (SEO Page)** A retro, SNES-style interactive dialog system that replaces traditional static text blocks. It explains SEO and digital marketing systems through an interactive game-like interface.
+
   <strong>[ RPG Dialog Preview ]</strong><br>
   <img src="https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/image/rpg-dialog.webp" alt="RPG-dialog Preview">
 </div>
