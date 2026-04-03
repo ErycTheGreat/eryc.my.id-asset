@@ -44,9 +44,9 @@ Nothing unusual—unless you’re using Google Sites :
 <table>
   <tr>
     <td>
-      <ul>
-        <li><b>[>] Fixed-Viewport Landing (Home Page)</b> A zero-scroll, full-screen landing experience with animated background, glitch ASCII art, and a dialog-driven navigation system.</li>
-      </ul>
+      <ol start="1">
+        <li><b> Fixed-Viewport Landing (Home Page)</b> A zero-scroll, full-screen landing experience with animated background, glitch ASCII art, and a dialog-driven navigation system.</li>
+      </ol>
     </td>
   </tr>
   <tr>
@@ -58,10 +58,10 @@ Nothing unusual—unless you’re using Google Sites :
 
   <tr>
     <td>
-      <ul>
-        <li><b>[>] The Cyberpunk Terminal (About Page)</b> A fully functional in-browser CLI with keyboard navigation, tab autocomplete, and inline suggestions.<br>
+      <ol start="2">
+        <li><b> The Cyberpunk Terminal (About Page)</b> A fully functional in-browser CLI with keyboard navigation, tab autocomplete, and inline suggestions.<br>
         <i>Easter Egg:</i> Try typing <code>sudo</code>.</li>
-      </ul>
+      </ol>
     </td>
   </tr>
   <tr>
@@ -73,9 +73,9 @@ Nothing unusual—unless you’re using Google Sites :
 
   <tr>
     <td>
-      <ul>
-        <li><b>[>] Digital Marketing Glossary (Glossary Page)</b> A responsive dictionary interface with live search and auto-scroll navigation for fast term discovery.</li>
-      </ul>
+      <ol start="3">
+        <li><b> Digital Marketing Glossary (Glossary Page)</b> A responsive dictionary interface with live search and auto-scroll navigation for fast term discovery.</li>
+      </ol>
     </td>
   </tr>
   <tr>
@@ -87,9 +87,9 @@ Nothing unusual—unless you’re using Google Sites :
 
   <tr>
     <td>
-      <ul>
-        <li><b>[>] 16-Bit RPG Dialog Engine (SEO Page)</b> A retro-style interactive dialog system that replaces static content with a game-like SEO explanation flow.</li>
-      </ul>
+      <ol start="4">
+        <li><b> 16-Bit RPG Dialog Engine (SEO Page)</b> A retro-style interactive dialog system that replaces static content with a game-like SEO explanation flow.</li>
+      </ol>
     </td>
   </tr>
   <tr>
@@ -101,9 +101,9 @@ Nothing unusual—unless you’re using Google Sites :
 
   <tr>
     <td>
-      <ul>
-        <li><b>[>] Upwork-Style Service Tiers (Services Page)</b> A pixel-accurate Upwork-style pricing UI, connected to a custom Google Apps Script backend for structured lead capture.</li>
-      </ul>
+      <ol start="5">
+        <li><b> Upwork-Style Service Tiers (Services Page)</b> A pixel-accurate Upwork-style pricing UI, connected to a custom Google Apps Script backend for structured lead capture.</li>
+      </ol>
     </td>
   </tr>
   <tr>
