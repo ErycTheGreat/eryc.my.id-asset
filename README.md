@@ -148,6 +148,9 @@ Nothing unusual—unless you’re using Google Sites :
 > [!NOTE]
 > **Architectural Context:** This edge-native approach aligns closely with the direction of modern, emerging edge CMS platforms like [Emdash](https://github.com/emdash-cms/emdash) (@emdash-cms/emdash).
 
+> [!IMPORTANT]  
+> **Looking for the Edge Router logic?** > All Cloudflare Worker scripts (HTML injection, Asset Proxy, URL normalization) and the step-by-step deployment guide are located in the **[`/cloudflare-worker`](https://github.com/ErycTheGreat/eryc.my.id-asset/tree/main/cloudflare-worker)** directory.
+
 ---
 
 ## Credits & Inspiration
