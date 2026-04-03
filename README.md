@@ -94,13 +94,16 @@ Nothing unusual—unless you’re using Google Sites :
 
 ## The Mission
 
-This repository contains the modular HTML, CSS, and JavaScript components I used to overcome platform limitations. My goal was to enable:
+This repository contains modular HTML, CSS, and JavaScript components designed to operate within drag-and-drop CMS environments.
 
-- Better loading performance  
-- Scalable code implementation  
-- Creative freedom inside a highly restricted system  
+The system focuses on:
 
-If all of this can be built natively on Google Sites, then the limitation is not the platform—it's the execution. This project is an attempt to show the real potential hiding behind the drag-and-drop interface.
+- Improving performance of embedded code  
+- Eliminating the need for paid hosting   
+- Enabling fully functional features within restricted platforms  
+
+While built on Google Sites, the approach is not platform-specific.  
+Any CMS that supports embedded HTML can apply the same system.
 
 ---
 
