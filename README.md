@@ -146,7 +146,7 @@ Nothing unusual—unless you’re using Google Sites :
 **Compatibility** Built on Google Sites, but not tied to it. *If a platform accepts embedded HTML, it can be extended.* This architecture can be applied to [Wix](https://wix.com), [Webflow](https://webflow.com), [Weebly](https://weebly.com), [WordPress.com](https://wordpress.com), [Squarespace](https://www.squarespace.com), and similar closed-ecosystem platforms.
 
 > [!NOTE]
-> **Architectural Context:** This edge-native approach aligns closely with the direction of modern, emerging edge CMS platforms like [Emdash](https://github.com/emdash-cms/emdash) (@emdash-cms/emdash).
+> **Architectural Context:** This edge-native approach aligns closely with the direction of modern, emerging edge CMS platforms like [Emdash](https://github.com/emdash-cms/emdash).
 
 > [!IMPORTANT]  
 > **Looking for the Edge Router logic?** > All Cloudflare Worker scripts (HTML injection, Asset Proxy, URL normalization) and the step-by-step deployment guide are located in the **[`/cloudflare-worker`](https://github.com/ErycTheGreat/eryc.my.id-asset/tree/main/cloudflare-worker)** directory.
