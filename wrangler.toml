@@ -7,4 +7,6 @@ routes = [
   { pattern = "www.eryc.my.id/*", zone_name = "eryc.my.id" },
   { pattern = "eryc.my.id/*", zone_name = "eryc.my.id" },
   { pattern = "www.eryc.my.id/assets/*", zone_name = "eryc.my.id" }
+  { pattern = "*eryc.my.id/assets/llm.txt", zone_name = "eryc.my.id" }
+  { pattern = "*eryc.my.id/assets/sitemap.xml", zone_name = "eryc.my.id" }
 ]
