@@ -134,7 +134,7 @@ export default {
               "url": "https://www.eryc.my.id",
               "name": "Eryc Tri Juni S | SEO & Digital Marketing Specialist Malang",
               "description": "The official portfolio website of Eryc Tri Juni S, offering SEO services, full-stack digital marketing services, and small business advisory in Malang and worldwide.",
-              "alternateName": "eryc",
+              "alternateName": "eryc seo malang",
               "publisher": {
                 "@id": "https://www.eryc.my.id/#website"
               },
