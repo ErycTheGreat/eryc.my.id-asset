@@ -113,6 +113,7 @@ export default {
       
         <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug"> 
         <link rel="canonical" href="${canonicalUrl}">
+        <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llm.txt">
         <link rel="author" href="${domain}/about">
             
         <meta property="og:type" content="website">
