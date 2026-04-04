@@ -42,6 +42,8 @@ export default {
         headers: { "Content-Type": "text/plain" }
       });
     }
+
+    if (url.pathname === "/llm.txt") return fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llm.txt");
     
    // 3.5 THE GITHUB ASSET PROXY (Nested Folder Support)
     const path = url.pathname;
