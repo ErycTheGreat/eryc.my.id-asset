@@ -15,6 +15,13 @@ export default {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
     }
     // ----------------------------------------------------
+
+	// --- 0.2 INDEXNOW API KEY VERIFICATION (ADD THIS HERE) ---
+    if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
+      return new Response("3d66934eab674a3496effb0a0651a038", {
+        status: 200,
+        headers: { "Content-Type": "text/plain" }
+      });
 	  
 	// 0. DIRECT XML RETURN (Must be the very first thing in the script!)
     if (url.pathname.endsWith("/sitemap.xml")) {
