@@ -36,14 +36,62 @@ export default {
     }
     // 3. ROBOTS.TXT
     if (url.pathname === "/robots.txt") {
-      const robotsTxt = `User-agent: *\nAllow: /\n\nSitemap: https://${canonicalHost}/sitemap.xml`;
+      // Explicitly calling out AI bots and vital GEO files
+      const robotsTxt = `
+		# Explicitly ALLOW AI Crawlers for GEO
+		User-agent: OAI-SearchBot
+		Allow: /
+		Allow: /llm.txt
+		Allow: /llms.txt
+		Allow: /sitemap.xml
+
+		User-agent: ChatGPT-User
+		Allow: /
+		Allow: /llm.txt
+		Allow: /llms.txt
+		Allow: /sitemap.xml
+
+		User-agent: Claude-Web
+		Allow: /
+		Allow: /llm.txt
+		Allow: /llms.txt
+		Allow: /sitemap.xml
+
+		User-agent: PerplexityBot
+		Allow: /
+		Allow: /llm.txt
+		Allow: /llms.txt
+		Allow: /sitemap.xml
+
+		User-agent: Google-Extended
+		Allow: /
+		Allow: /llm.txt
+		Allow: /llms.txt
+		Allow: /sitemap.xml
+
+		# Standard fallback for general search engines
+		User-agent: *
+		Allow: /
+		Allow: /llm.txt
+		Allow: /llms.txt
+		Allow: /sitemap.xml
+
+		Sitemap: https://${canonicalHost}/sitemap.xml
+			  `.trim();
+
       return new Response(robotsTxt, {
         status: 200,
-        headers: { "Content-Type": "text/plain" }
+        headers: { 
+          "Content-Type": "text/plain",
+          "Cache-Control": "public, max-age=86400" // Cache at edge for 24 hours
+        }
       });
     }
 
-    if (url.pathname === "/llm.txt" || url.pathname === "/llms.txt") return fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llm.txt");
+    // 4. LLM.TXT ROUTING
+    if (url.pathname === "/llm.txt" || url.pathname === "/llms.txt") {
+      return fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llm.txt");
+    }
     
    // 3.5 THE GITHUB ASSET PROXY (Nested Folder Support)
     const path = url.pathname;
