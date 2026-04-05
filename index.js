@@ -1,10 +1,35 @@
 export default {
   async fetch(request) {
     const url = new URL(request.url);
-    const host = url.hostname;
-    const canonicalHost = "www.eryc.my.id";
+
+	// 0. DIRECT XML RETURN (Must be the very first thing in the script!)
+    if (url.pathname.endsWith("/sitemap.xml")) {
+      const canonicalHost = "www.eryc.my.id";
+      const lastmod = new Date().toISOString().split('T')[0];
+      const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/mortgage-broker", "/case-studies/seo/sound-rentals", "/case-studies/seo/vet-clinic"];
+      
+      let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
+      sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+      pages.forEach(path => {
+        sitemap += `  <url>\n    <loc>https://${canonicalHost}${path}</loc>\n`;
+        sitemap += `    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n`;
+        sitemap += `    <priority>${path === "/"? "1.0" : "0.7"}</priority>\n  </url>\n`;
+      });
+      sitemap += '</urlset>';
+
+      return new Response(sitemap, {
+        status: 200,
+        headers: {
+          "Content-Type": "application/xml; charset=UTF-8",
+          // Keep the cache control so Cloudflare edge handles the heavy lifting
+          "Cache-Control": "public, max-age=86400"
+        }
+      });
+    }
 
     // 1. FORCE NAKED TO WWW & KILL "/home"
+	const host = url.hostname;
+    const canonicalHost = "www.eryc.my.id";
     if (host !== canonicalHost) {
       return Response.redirect(`https://${canonicalHost}${url.pathname}`, 301);
     }
