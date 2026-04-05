@@ -2,6 +2,20 @@ export default {
   async fetch(request) {
     const url = new URL(request.url);
 
+	// --- 0.1 AI BOT TRACKER (Must be at the very top!) ---
+    const userAgent = request.headers.get("User-Agent") || "";
+    const isAIBot = userAgent.includes("OAI-SearchBot") || 
+                    userAgent.includes("ChatGPT-User") || 
+                    userAgent.includes("Claude-Web") || 
+                    userAgent.includes("PerplexityBot") ||
+                    userAgent.includes("Google-Extended");
+
+    if (isAIBot) {
+        // Logs to your Cloudflare Worker Dashboard -> Logs tab
+        console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
+    }
+    // ----------------------------------------------------
+	  
 	// 0. DIRECT XML RETURN (Must be the very first thing in the script!)
     if (url.pathname.endsWith("/sitemap.xml")) {
       const canonicalHost = "www.eryc.my.id";
