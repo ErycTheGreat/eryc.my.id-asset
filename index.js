@@ -162,8 +162,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       return new Response(ghRes.body, { status: 200, headers: newHeaders });
     }
 
-    // 4. THE BLAZING FAST BYPASS
-    if (url.pathname !== "/") {
+   // 4. ASSET BYPASS (Let HTML pass through to the rewriter)
+    // If the request is for an image, css, or js file on the Google Site, pass it through quickly.
+    // If it's a regular page route (no file extension), let it continue to the HTMLRewriter.
+    if (url.pathname.includes(".") && !url.pathname.endsWith(".html")) {
       return fetch(request);
     }
 
@@ -184,8 +186,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <meta name="description" content="I'm Eryc Tri Juni S, a data-driven SEO & Digital Marketing Specialist in Malang. I help fix business systems or get your business noticed by Google.">
-        <meta name="keywords" content="eryc tri juni s, digital marketing specialist, portfolio, SEO specialist, malang">
+        <meta name="description" content="I'm Eryc Tri Juni S, an edge SEO & Digital Marketing Specialist in Malang, Indonesia. I help fix business systems or get your business noticed by Google.">
+        <meta name="keywords" content="eryc tri juni s, digital marketing specialist, portfolio, SEO specialist, malang, indonesia">
         <meta name="author" content="Eryc Tri Juni S">
       
         <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug"> 
@@ -197,13 +199,13 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             
         <meta property="og:type" content="website">
         <meta property="og:title" content="Eryc Tri Juni S | SEO & Digital Marketing Specialist">
-        <meta property="og:description" content="Need to fix your business systems or get noticed? I deliver low-cost, data-driven SEO and digital marketing solutions for measurable growth. No B.S.">
+        <meta property="og:description" content="Need to fix your business systems or get noticed? I deliver low-cost, edge SEO and data-driven digital marketing solutions for measurable growth. No B.S.">
         <meta property="og:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
         <meta property="og:url" content="${canonicalUrl}">
         
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="Eryc Tri Juni S | SEO & Digital Marketing Specialist">
-        <meta name="twitter:description" content="Need to fix your business systems or get noticed? I deliver low-cost, data-driven SEO and digital marketing solutions for measurable growth. No B.S.">
+        <meta name="twitter:description" content="Need to fix your business systems or get noticed? I deliver low-cost, edge SEO and data-driven digital marketing solutions for measurable growth. No B.S.">
         <meta name="twitter:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
         
         <script type="application/ld+json">
@@ -215,12 +217,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "@id": "https://www.eryc.my.id/#website",
               "url": "https://www.eryc.my.id",
               "name": "Eryc Tri Juni S | SEO & Digital Marketing Specialist Malang",
-              "description": "The official portfolio website of Eryc Tri Juni S, offering SEO services, full-stack digital marketing services, and small business advisory in Malang and worldwide.",
-              "alternateName": "eryc seo malang",
+              "description": "The official portfolio website of Eryc Tri Juni S, offering edge SEO services, full-stack digital marketing services, and small business advisory in Malang and worldwide.",
+              "alternateName": "eryc edge seo malang",
               "publisher": {
                 "@id": "https://www.eryc.my.id/#website"
               },
-              "inLanguage": "en-US",
+              "inLanguage": "en",
               "potentialAction": {
                 "@type": "SearchAction",
                 "target": "https://www.eryc.my.id/?s={search_term_string}",
@@ -232,7 +234,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "@id": "https://www.eryc.my.id/#webpage",
               "url": "https://www.eryc.my.id/",
               "name": "Eryc Tri Juni S | SEO & Digital Marketing Specialist Malang",
-              "description": "Eryc Tri Juni S is an SEO & digital marketing specialist in Malang, and a small business advisor. He helps fix business systems or get noticed at low cost.",
+              "description": "Eryc Tri Juni S is an edge SEO & digital marketing specialist in Malang; Indonesia and a small business advisor. He helps fix business systems or get noticed at low cost.",
               "about": {
                 "@id": "https://www.eryc.my.id/#website"
               },
@@ -257,7 +259,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "@type": "Person",
               "@id": "https://www.eryc.my.id/#person",
               "name": "Eryc Tri Juni S",
-              "description": "Eryc Tri Juni S is an SEO & digital marketing specialist in Malang with 8 years of product innovation experience. He is fluent in data-driven strategies and critical analysis.",
+              "description": "Eryc Tri Juni S is an edge SEO & digital marketing specialist in Malang, Indonesia with 8 years of product innovation experience. He is fluent in data-driven strategies and critical analysis.",
               "email": "eryc.me@gmail.com",
               "address": {
                 "@type": "PostalAddress",
@@ -322,6 +324,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             <h2>P.S. THIS SITE: 100% [GOOGLE SITES]</h2>
             <p>"I Help Business Fix or Get Noticed @ low-cost"</p>
         </main>
+		<footer>
+		  <a href="/sitemap.xml">Sitemap</a>
+		  <a href="/llm.txt">LLM Data</a>
+		</footer>
     `;
 
    // 3. DIRECT HTML INJECTION (Server-Side)
