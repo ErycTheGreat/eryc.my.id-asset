@@ -207,6 +207,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <meta name="author" content="Eryc Tri Juni S">
       
         <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug"> 
+		<meta name="yandex-verification" content="275f3c061328554a" />
         <link rel="canonical" href="${canonicalUrl}">
         <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llm.txt">
         <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llms.txt">
