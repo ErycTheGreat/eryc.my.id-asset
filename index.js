@@ -22,6 +22,7 @@ export default {
         status: 200,
         headers: { "Content-Type": "text/plain" }
       });
+	}
 	  
 	// 0. DIRECT XML RETURN (Must be the very first thing in the script!)
     if (url.pathname.endsWith("/sitemap.xml")) {
