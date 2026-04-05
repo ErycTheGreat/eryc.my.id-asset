@@ -37,29 +37,6 @@ export default {
       return Response.redirect(`https://${canonicalHost}/`, 301);
     }
 
- // 2. SITEMAP
-    if (url.pathname === "/sitemap.xml" || url.pathname === "/sitemap.xml/") {
-      const lastmod = new Date().toISOString().split('T')[0];
-      const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/mortgage-broker", "/case-studies/seo/sound-rentals", "/case-studies/seo/vet-clinic"];
-      
-      let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
-      sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-      pages.forEach(path => {
-        sitemap += `  <url>\n    <loc>https://${canonicalHost}${path}</loc>\n`;
-        sitemap += `    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n`;
-        sitemap += `    <priority>${path === "/"? "1.0" : "0.7"}</priority>\n  </url>\n`;
-      });
-      sitemap += '</urlset>';
-
-      return new Response(sitemap, {
-        status: 200,
-        headers: {
-          "Content-Type": "application/xml; charset=UTF-8",
-          "Cache-Control": "public, max-age=86400"
-        }
-      });
-    }
-	
     // 3. ROBOTS.TXT
     if (url.pathname === "/robots.txt") {
       const robotsTxt = `
