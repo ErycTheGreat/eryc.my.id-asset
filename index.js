@@ -104,9 +104,21 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       });
     }
 
-    // LLM.TXT ROUTING
+   // LLM.TXT ROUTING & STRICT HEADERS
     if (url.pathname === "/llm.txt" || url.pathname === "/llms.txt") {
-      return fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llm.txt");
+      // Fetch the raw text from GitHub
+      const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llm.txt");
+      
+      // Rebuild the response with forced headers so bots never get the wrong content-type
+      return new Response(githubResponse.body, {
+        status: 200,
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          // s-maxage tells Cloudflare Edge to cache for 2 hours (7200s)
+          // max-age tells the Bot's browser not to cache it locally, ensuring it always asks Cloudflare for the freshest edge version
+          "Cache-Control": "public, s-maxage=7200, max-age=0" 
+        }
+      });
     }
 
        
