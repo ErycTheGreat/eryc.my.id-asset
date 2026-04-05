@@ -8,3 +8,11 @@ routes = [
   { pattern = "eryc.my.id/*", zone_name = "eryc.my.id" },
   { pattern = "www.eryc.my.id/assets/*", zone_name = "eryc.my.id" }
 ]
+
+# --- AI BOT TRACKING LOGS ---
+[observability]
+[observability.logs]
+enabled = true
+# Set this to false so your logs don't get spammed with every single normal user visit. 
+# It will ONLY log when your specific console.log() is triggered by an AI bot.
+invocation_logs = false
