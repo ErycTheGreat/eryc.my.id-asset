@@ -199,30 +199,31 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     currentEmbedCode = e.getAttribute("data-code");
                 }
             })
-            // 3. Catch the Google iframe and inject the HTML instantly
+           // 3. Catch the Google iframe and inject the HTML instantly
             .on("iframe.YMEQtf", {
                 element(e) {
                     if (currentEmbedCode) {
-                        // 🚨 FIX 2: Inject <base target="_top"> so links escape the iframe
-                        let patchedCode = currentEmbedCode.replace(
-                            /<head>/i, 
-                            "<head><base target='_top'>"
-                        );
+                        // 🚨 NUCLEAR FIX: Force every single link to break out of the iframe
+                        
+                        // Hack A: Literally rewrite all HTML anchor tags to include target="_top"
+                        let patchedCode = currentEmbedCode.replace(/<a /gi, '<a target="_top" ');
+                        
+                        // Hack B: Inject a tiny JS fallback just in case the link is dynamically generated
+                        patchedCode += `<script>
+                            document.addEventListener('click', function(e) {
+                                let link = e.target.closest('a');
+                                if (link) link.setAttribute('target', '_top');
+                            });
+                        </script>`;
 
                         e.removeAttribute("src"); // Stop the slow external load
                         e.removeAttribute("sandbox"); // Remove Google's sandbox restrictions
-                        e.setAttribute("srcdoc", patchedCode); // Inject patched code directly
+                        e.setAttribute("srcdoc", patchedCode); // Inject the nuclear code
                         
                         currentEmbedCode = null; // Reset for the next widget
                     }
                 }
             });
-
-        return new Response(humanRewriter.transform(response).body, {
-            status: response.status,
-            headers: newHeaders
-        });
-    }
     // 🛑 EVERYTHING BELOW THIS LINE ONLY RUNS FOR BOTS 🛑
 	  
     const domain = "https://www.eryc.my.id";
