@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<title>Copy Button for Google Sites</title>
+	<link href="https://www.eryc.my.id/assets/font/white-rabbit.woff2" rel="preload" type="font/woff2">
+	<link href="https://www.eryc.my.id/assets/font/jetbrains-mono-500.woff2" rel="preload" type="font/woff2">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css" rel="stylesheet">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+	<style>
+	
+	   @font-face {
+		font-family: 'JetBrains Mono Local';
+		font-style: normal;
+		font-weight: 500; /* Matches your 600 weight */
+		font-display: swap; 
+		/* 2. Point this to your actual GitHub Pages URL */
+		src: url('https://www.eryc.my.id/assets/font/jetbrains-mono-500.woff2') format('woff2');
+		}
+		
+		@font-face {
+		font-family: 'White Rabbit Local';
+		font-style: normal;
+		font-display: swap; 
+		/* 2. Point this to your actual GitHub Pages URL */
+		src: url('https://www.eryc.my.id/assets/font/white-rabbit.woff2') format('woff2');
+		}
+	
+	   body {
+	     font-family: 'White Rabbit Local', sans-serif;
+	     /*background-color: #05122d;*/
+	     margin: 0;
+	     text-align: left;
+	     color: #cbd5e1; /* Set default text color to white */
+	     height: auto;
+	     overflow: hidden;
+	                     
+	   }
+	   .container {
+	     max-width: 100%;
+	     min-height: 100%;
+	     margin: auto;
+	     background: transparent;
+	     padding: 0;
+	     border-radius: 8px;
+	     border: 1px solid #transparent;
+	     position: relative;
+	     
+	     
+	   }
+	   .code-wrapper {
+	     position: relative;
+	     border-radius: 8px;
+	     /*background: #060522;*/
+	     /*padding: 1px;*/
+	   }
+	   
+	  pre {             
+     overflow-x: auto; 
+     overflow-y: auto; 
+     font-size: 1em;
+     margin: 0;
+     text-align: left; /* <-- FIX: Set to left so the table aligns properly */
+     white-space: pre; 
+     tab-size: 4; 
+     scrollbar-width: none; 
+     -ms-overflow-style: none; 
+   }
+
+	   /* Hide scrollbar for Chrome, Safari, and Opera */
+	   pre::-webkit-scrollbar {
+	     display: none;
+	   }
+	   
+	   code {
+	     display: block;
+	     padding: 10px;
+	     color: #cbd5e1;
+	     font-family: 'White Rabbit Local', sans-serif;
+	   }
+	   
+	   /*pre code .hljs-ln-code{
+	     display: block;
+	     padding-left: 2em !important; /* Adjust indent manually */
+	   /*  text-indent:  -2em !important;
+	   }*/
+
+	   
+	   
+	   
+	   .language-label {
+	     position: absolute;
+	     top: 10px;
+	     left: 50%;
+	     transform: translateX(-50%);
+	     background: #04122d;
+	     color: #00bba9;
+	     padding: 5px 14px;
+	     font-size: 12px;
+	     border-radius: 6px;
+	     white-space: nowrap;
+	   }
+
+	   @keyframes fadeOut {
+	     to {
+	       opacity: 0;
+	       display: none;
+	     }
+	   }
+
+	   /* Custom Highlight.js colors */
+	   .hljs {
+	     background: #050522; /* Background color */
+	     color: #cbd5e1; /* Default text color */
+	   }
+	   .hljs-tag,
+	   .hljs-name {
+	     color: #e73c5d; /* Red for HTML tags and names */
+	   }
+	   .hljs-attr {
+	     color: #4386c3; /* Blue for attributes */
+	   }
+	   .hljs-string {
+	     color: #00bba9; /* Green for strings */
+	   }
+	   .hljs-comment {
+	     color: #7D8B9E !important; /* Force comment color */
+	   }
+
+	   /* Line numbers */
+	   .hljs-ln-numbers {
+	     text-align: right;
+	     color: #7D8B9E !important; /* Light gray for line numbers */
+	     padding-right: 15px !important; /* Force padding-right */
+	     border-right: 1px solid #transparent !important; /* Separator line */
+	     font-size: 0.84em !important; /* Match your desired font size */
+	   }
+	   
+	   .hljs-ln-code {
+	     font-size: 0.84em !important; /* Match your desired font size */
+	     line-height: 1.5 !important; /* Adjust as needed */
+	     
+	     /*padding-left: 15px !important; /* Add space between line numbers and code */
+	     /*text-indent:  -15px;*/
+	     
+	     white-space: pre-wrap; /* Wrap lines and preserve indentation */
+	     tab-size: 1; /* Set the width of tabs to 4 spaces */
+	     word-wrap: break-word; /* Break long words if necessary */
+	   }
+
+	   /* Ensure <h1> and <p> tags are white */
+	   .container h1,
+	   .container p {
+	     color: #cbd5e1 !important; /* Force white color */
+	   }
+	   
+	.ascii-gradient {
+	display: table;
+	margin: 0 auto;
+	text-align: left;
+	filter: brightness(1.05);
+
+	background: linear-gradient(
+	0deg,
+	#4386c3,
+	#1bc7fb,
+	#00bba9,
+	#4386c3
+	);
+
+	background-size: 100% 300%;
+	animation: gradientMove 6s linear infinite;
+
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	}
+
+	@keyframes gradientMove {
+	0%   { background-position: 0% 0%; }
+	100% { background-position: 0% 600%; }
+	}
+
+	.section-header {
+	display: block;
+	margin: 30px 0 15px;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	color: #7D8B9E;
+	}
+
+	.section-header .brand {
+	color: #00e5ff;
+	text-shadow:
+	0 0 4px #00e5ff,
+	0 0 10px rgba(0,229,255,.4);
+	}
+
+	.teal-gradient {
+	background: linear-gradient(90deg, #00bba9, #4386c3);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent !important;
+	-webkit-text-fill-color: transparent;
+	display: inline;
+	}
+	/* RPG Cursor Animation */
+	.rpg-arrow {
+	position: relative; /* Required for the transform animation to work */
+	animation: rpgSlide 0.75s infinite;
+	}
+
+	@keyframes rpgSlide {
+	0%   { left: 0px; }
+	50%  { left: 5px; } /* Adjust this number to make it jump further */
+	100% { left: 0px; }
+	}
+
+	/* Seamless Neon Pulse (Breathing Glow) */
+	.neon-pulse {
+	position: relative;
+	font-family: 'JetBrains Mono Local', monospace;
+	color: #cbd5e1; /* Matches your teal accent color */
+	animation: breathGlow 2.5s ease-in-out infinite;
+	margin-left: 4px;
+	}
+
+	@keyframes breathGlow {
+	0%, 100% { 
+	opacity: 0.85; 
+	text-shadow: 0 0 2px rgba(0, 187, 169, 0.1); 
+	}
+	50% { 
+	opacity: 1; 
+	text-shadow: 0 0 8px rgba(0, 187, 169, 0.8), 0 0 14px rgba(0, 187, 169, 0.4); 
+	}
+	}
+	       
+	/* Media query for ? view but it need or desktop version not works */
+	   @media screen and (min-width: 768px) {
+	   }
+
+	   @media screen and (min-width: 480px) {
+	       
+	       
+	               
+	   }
+
+	/* DPR 3 and above */
+	@media screen and (max-width: 420px) and (min-resolution: 3dppx) {
+	.ascii-gradient {
+	font-size: 4vw;
+	letter-spacing: -0.48em;
+	line-height: 1.05;
+	}
+	}
+
+	/* DPR between 2.75 and <3 */
+	@media screen and (max-width: 420px) 
+	and (min-resolution: 2.75dppx) 
+	and (max-resolution: 2.99dppx) {
+
+	.ascii-gradient {
+	font-size: 4vw;
+	letter-spacing: -0.11em;
+	line-height: 1.05;
+	}
+	}
+	       
+	   
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="code-wrapper">
+			<span class="language-label"></span>
+			<pre><span class="ascii-gradient">
+
+
+
+─██████╗─██████╗──██████╗─  
+─██╔═══╝─██╔═══╝─██╔═══██╗
+─██████╗─████╗───██║───██║
+─╚═══██║─██╔═╝───██║───██║
+─██████║─██████╗─╚██████╔╝
+─╚═════╝─╚═════╝──╚═════╝─ 
+</span><code class="nohighlight"> 
+<span class="teal-gradient">██</span><span class="teal-gradient"> SE0</span><span style="color:#7D8B9E;"> ╌╌ TERMS_EXPLAINED </span><span class="teal-gradient">██</span>  
+
+<span class="teal-gradient">⌈ TECHNICAL SEO ⌋</span>  
+<span class="teal-gradient">┏━◢</span> 
+<span style="color:#4386c3">BACKBONE</span><span style="color:#7D8B9E;"> ╌╌ Google Can Access It</span>  
+<span class="teal-gradient">┃</span><span style="color:#cbd5e1;">  接 Access 巡 Crawl   描 Render</span>  
+<span class="teal-gradient">┃</span><span style="color:#7D8B9E;">  欠 no 404 遅 latency 破 failure</span>  
+
+<span class="teal-gradient">⌈ ON-PAGE SEO ⌋</span>  
+<span class="teal-gradient">┏━◢</span>
+<span style="color:#4386c3">MESSAGE</span><span style="color:#7D8B9E;"> ╌╌ Google Understands It</span>  
+<span class="teal-gradient">┃</span><span style="color:#cbd5e1;">  構 Structure   意 Intent  明 Clarity</span>  
+<span class="teal-gradient">┃</span><span style="color:#7D8B9E;">  弱 Weak signal 雑 Noise      </span>  
+
+<span class="teal-gradient">⌈ CORE_WEB_VITAL SEO ⌋</span>  
+<span class="teal-gradient">┏━◢</span>
+<span style="color:#4386c3">PERFORMANCE</span><span style="color:#7D8B9E;"> ╌╌ Users Enjoy It</span>  
+<span class="teal-gradient">┃</span><span style="color:#cbd5e1;">  速 Speed  定 Stability  流 Flow</span>  
+<span class="teal-gradient">┃</span><span style="color:#7D8B9E;">  極 Fast feels premium</span>  
+
+<span style="color:#1bc7fb;">NEXT_STEP</span>  
+<span style="color:#1bc7fb;"><span class="rpg-arrow">▶▶</span></span><span class="neon-pulse" style="color:#cbd5e1;"> Choose Your Service Tier</span>
+</code></pre>
+		</div>
+	</div>
+	<script>
+	   
+	   hljs.highlightAll();
+	   hljs.initLineNumbersOnLoad({
+	   //  singleLine: false, // Ensure multi-line code is handled correctly
+	   });
+	   
+	   
+	   // Language label
+	   document.addEventListener("DOMContentLoaded", function () {
+	    const codeBlock = document.querySelector("code");
+	    const languageLabel = document.querySelector(".language-label");
+
+	     if (codeBlock) {
+	       let detectedLanguage = codeBlock.className.match(/language-(\w+)/);
+	       languageLabel.textContent = detectedLanguage ? detectedLanguage[1].toUpperCase() : "Search Engine Optimization";
+	     }
+	   });
+	   
+	</script>
+</body>
+</html>
