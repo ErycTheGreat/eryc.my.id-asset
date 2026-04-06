@@ -329,11 +329,18 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     `;
 
     // C. DECLARE HTMLREWRITER
-    let rewriter = new HTMLRewriter()
+  let rewriter = new HTMLRewriter()
+        // Target and remove the native Google Sites description
+        .on('meta[name="description"]', {
+            element(e) { e.remove(); }
+        })
+        // Target and remove the native Google Sites OG Title
+        .on('meta[property="og:title"]', {
+            element(e) { e.remove(); }
+        })
+        // Inject your master payload
         .on("head", {
-            element(element) {
-                element.append(customHeaderContent, { html: true });
-            }
+            element(e) { e.append(customHeaderContent, { html: true }); }
         });
 
     // D. DYNAMIC BODY INJECTION (ONLY happens if it's a bot AND a KV payload exists)
