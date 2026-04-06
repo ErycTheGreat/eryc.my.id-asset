@@ -228,14 +228,21 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     const canonicalUrl = domain + url.pathname;
 	
 	
-
-    // A. FETCH THE BOT PAYLOAD FROM KV DATABASE BASED ON URL PATH
-    // (e.g., if path is "/", it looks for the key "/" in your KV)
-      let botPayload = null;
+    // A. FETCH THE BOT PAYLOAD FROM KV DATABASE (WITH SAFETY NET)
+    let botPayload = null;
     if (isBot) {
-        // Remove trailing slash unless it's the root homepage "/"
-        const cleanPath = url.pathname.replace(/\/$/, "") || "/";
-        botPayload = await env.SEO_PAYLOADS.get(cleanPath); 
+        try {
+            // 1. Check if the KV database is actually linked to the Worker!
+            if (env && env.SEO_PAYLOADS) {
+                const cleanPath = url.pathname.replace(/\/$/, "") || "/";
+                botPayload = await env.SEO_PAYLOADS.get(cleanPath); 
+            } else {
+                console.error("CRITICAL: SEO_PAYLOADS KV Namespace is not bound to this Worker!");
+            }
+        } catch (error) {
+            // 2. If KV fails, swallow the error so the bot still gets a 200 OK status!
+            console.error("KV Fetch Error:", error);
+        }
     }
 
     // B. HEAD INJECTION (Always injected, good for all pages)
