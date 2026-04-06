@@ -176,11 +176,14 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         return response;
     }
 
-	// 🏎️ THE HUMAN FAST-LANE BYPASS (UPGRADED INSTANT EMBEDS)
+	// 🏎️ THE HUMAN FAST-LANE BYPASS (ULTIMATE EDITION)
     if (!isBot) {
         let newHeaders = new Headers(response.headers);
         newHeaders.delete("Content-Length"); 
         
+        // 🚨 FIX 1: Nuke Google's strict Security Policy so your custom JS can run
+        newHeaders.delete("Content-Security-Policy");
+
         let currentEmbedCode = null;
 
         let humanRewriter = new HTMLRewriter()
@@ -200,9 +203,17 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             .on("iframe.YMEQtf", {
                 element(e) {
                     if (currentEmbedCode) {
+                        // 🚨 FIX 2: Inject <base target="_top"> so links escape the iframe
+                        let patchedCode = currentEmbedCode.replace(
+                            /<head>/i, 
+                            "<head><base target='_top'>"
+                        );
+
                         e.removeAttribute("src"); // Stop the slow external load
-                        e.setAttribute("srcdoc", currentEmbedCode); // Inject code directly
-                        currentEmbedCode = null; // Reset for the next widget on the page
+                        e.removeAttribute("sandbox"); // Remove Google's sandbox restrictions
+                        e.setAttribute("srcdoc", patchedCode); // Inject patched code directly
+                        
+                        currentEmbedCode = null; // Reset for the next widget
                     }
                 }
             });
