@@ -3,17 +3,16 @@ export default {
     const url = new URL(request.url);
 
     // --- 0.1 BOT TRACKER & DETECTION ---
-    const userAgent = request.headers.get("User-Agent") || "";
-    const isAIBot = /OAI-SearchBot|ChatGPT-User|Claude-Web|PerplexityBot|Google-Extended/i.test(userAgent);
-    
-    // Expanded to catch SEO Crawlers for Dynamic Rendering
-    const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot/i.test(userAgent);
-    const isBot = isAIBot || isSEOBot;
+    const userAgent = request.headers.get("User-Agent") || "";
+    const isAIBot = /OAI-SearchBot|ChatGPT-User|Claude-Web|PerplexityBot|Google-Extended/i.test(userAgent);
+    const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|seooptimer|siteaudit|seositecheckup/i.test(userAgent);
+    const isSocialBot = /facebookexternalhit|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot/i.test(userAgent);
+    const isBot = isAIBot || isSEOBot || isSocialBot;
 
-    if (isAIBot) {
-        console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
-    }
-    // ----------------------------------------------------
+    if (isAIBot) {
+        console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
+    }
+    // ----------------------------------------------------
 
     // --- 0.2 INDEXNOW API KEY VERIFICATION ---
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
@@ -177,6 +176,18 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         return response;
     }
 
+	// 🏎️ THE HUMAN FAST-LANE BYPASS
+    // If this is a real human, serve the raw Google Site immediately. Zero latency.
+    if (!isBot) {
+        let newHeaders = new Headers(response.headers);
+        newHeaders.delete("Content-Length"); 
+        return new Response(response.body, {
+            status: response.status,
+            headers: newHeaders
+        });
+    }
+    // 🛑 EVERYTHING BELOW THIS LINE ONLY RUNS FOR BOTS 🛑
+	  
     const domain = "https://www.eryc.my.id";
     const canonicalUrl = domain + url.pathname;
 	
