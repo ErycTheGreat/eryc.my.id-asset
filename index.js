@@ -1,30 +1,29 @@
 export default {
-  async fetch(request) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-	// --- 0.1 AI BOT TRACKER (Must be at the very top!) ---
+    // --- 0.1 BOT TRACKER & DETECTION ---
     const userAgent = request.headers.get("User-Agent") || "";
-    const isAIBot = userAgent.includes("OAI-SearchBot") || 
-                    userAgent.includes("ChatGPT-User") || 
-                    userAgent.includes("Claude-Web") || 
-                    userAgent.includes("PerplexityBot") ||
-                    userAgent.includes("Google-Extended");
+    const isAIBot = /OAI-SearchBot|ChatGPT-User|Claude-Web|PerplexityBot|Google-Extended/i.test(userAgent);
+    
+    // Expanded to catch SEO Crawlers for Dynamic Rendering
+    const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot/i.test(userAgent);
+    const isBot = isAIBot || isSEOBot;
 
     if (isAIBot) {
-        // Logs to your Cloudflare Worker Dashboard -> Logs tab
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
     }
     // ----------------------------------------------------
 
-	// --- 0.2 INDEXNOW API KEY VERIFICATION (ADD THIS HERE) ---
+    // --- 0.2 INDEXNOW API KEY VERIFICATION ---
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
       return new Response("3d66934eab674a3496effb0a0651a038", {
         status: 200,
         headers: { "Content-Type": "text/plain" }
       });
-	}
-	  
-	// 0. DIRECT XML RETURN (Must be the very first thing in the script!)
+    }
+    
+    // --- 0. DIRECT XML RETURN ---
     if (url.pathname.endsWith("/sitemap.xml")) {
       const canonicalHost = "www.eryc.my.id";
       const lastmod = new Date().toISOString().split('T')[0];
@@ -43,14 +42,13 @@ export default {
         status: 200,
         headers: {
           "Content-Type": "application/xml; charset=UTF-8",
-          // Keep the cache control so Cloudflare edge handles the heavy lifting
           "Cache-Control": "public, max-age=86400"
         }
       });
     }
 
-    // 1. FORCE NAKED TO WWW & KILL "/home"
-	const host = url.hostname;
+    // --- 1. FORCE NAKED TO WWW & KILL "/home" ---
+    const host = url.hostname;
     const canonicalHost = "www.eryc.my.id";
     if (host !== canonicalHost) {
       return Response.redirect(`https://${canonicalHost}${url.pathname}`, 301);
@@ -59,7 +57,7 @@ export default {
       return Response.redirect(`https://${canonicalHost}/`, 301);
     }
 
-    // 3. ROBOTS.TXT
+    // --- 2. ROBOTS.TXT ---
     if (url.pathname === "/robots.txt") {
       const robotsTxt = `
 # Explicitly ALLOW AI Crawlers for GEO
@@ -68,18 +66,15 @@ Allow: /
 Allow: /llm.txt
 Allow: /llms.txt
 
-
 User-agent: ChatGPT-User
 Allow: /
 Allow: /llm.txt
 Allow: /llms.txt
 
-
 User-agent: Claude-Web
 Allow: /
 Allow: /llm.txt
 Allow: /llms.txt
-
 
 User-agent: PerplexityBot
 Allow: /
@@ -100,16 +95,10 @@ Disallow: /
 User-agent: MJ12bot
 Disallow: /
 
-User-agent: SemrushBot
-Disallow: /
-
-User-agent: AhrefsBot
-Disallow: /
-
 User-agent: DotBot
 Disallow: /
 
-# Standard fallback for general search engines (Googlebot, Bingbot, etc.)
+# Standard fallback for general search engines
 User-agent: *
 Allow: /
 Allow: /llm.txt
@@ -128,42 +117,32 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       });
     }
 
-   // LLM.TXT ROUTING & STRICT HEADERS
+   // --- 3. LLM.TXT ROUTING ---
     if (url.pathname === "/llm.txt" || url.pathname === "/llms.txt") {
-      // Fetch the raw text from GitHub
       const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llm.txt");
-      
-      // Rebuild the response with forced headers so bots never get the wrong content-type
       return new Response(githubResponse.body, {
         status: 200,
         headers: {
           "Content-Type": "text/plain; charset=utf-8",
-          // s-maxage tells Cloudflare Edge to cache for 2 hours (7200s)
-          // max-age tells the Bot's browser not to cache it locally, ensuring it always asks Cloudflare for the freshest edge version
           "Cache-Control": "public, s-maxage=7200, max-age=0" 
         }
       });
     }
-
-       
-   // 3.5 THE GITHUB ASSET PROXY (Nested Folder Support)
+      
+   // --- 4. THE GITHUB ASSET PROXY ---
     const path = url.pathname;
     if (path.startsWith("/assets/")) {
-      // This strips "/assets/" but KEEPS your subdirectories (e.g., "font/ibm-vga.woff2")
       const filePath = path.replace("/assets/", "");
-      
       const githubUser = "ErycTheGreat"; 
-      const githubRepo = "eryc.my.id-asset"; // Snagged this from your video!
+      const githubRepo = "eryc.my.id-asset"; 
       const branch = "main"; 
       
       const targetUrl = `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${branch}/${filePath}`;
       
       let ghRes = await fetch(targetUrl, {
         cf: { cacheTtl: 31536000, cacheEverything: true }, 
-        
       });
 
-      // Failsafe: If you have a typo in your URL, don't cache a 404 error
       if (!ghRes.ok) {
         return new Response("Asset not found on GitHub", { status: 404 });
       }
@@ -172,7 +151,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
       newHeaders.set("X-Proxy-Origin", "GitHub-via-Cloudflare");
 
-      // CRITICAL OVERRIDE: Expanded to match the files in your video
       const lowerPath = filePath.toLowerCase();
       if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
       else if (lowerPath.endsWith(".css")) newHeaders.set("Content-Type", "text/css");
@@ -186,17 +164,13 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       return new Response(ghRes.body, { status: 200, headers: newHeaders });
     }
 
-   // 4. ASSET BYPASS (Let HTML pass through to the rewriter)
-    // If the request is for an image, css, or js file on the Google Site, pass it through quickly.
-    // If it's a regular page route (no file extension), let it continue to the HTMLRewriter.
+   // --- 5. ASSET BYPASS ---
     if (url.pathname.includes(".") && !url.pathname.endsWith(".html")) {
       return fetch(request);
     }
 
-    // 5. HOMEPAGE ONLY: Stream the SEO payload using native compression
-    // Reverted to simple fetch so HTMLRewriter can stream instantly without buffering
+   // --- 6. EDGE DYNAMIC RENDERING (THE MAGIC) ---
     const response = await fetch(request);
-
     const contentType = response.headers.get("content-type") || "";
 
     if (!contentType.includes("text/html")) {
@@ -205,8 +179,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 
     const domain = "https://www.eryc.my.id";
     const canonicalUrl = domain + url.pathname;
-
-    // The entire <head> payload (Meta + JSON-LD)
+	
+	// The entire <head> payload (Meta + JSON-LD)
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -341,49 +315,44 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         </script>
     `;
 
-    // 2. BODY PAYLOAD (The Raw HTML String - Zero Render Blocking)
-    const rawHtmlPayload = `
-        <header>
-            <h1>Digital Marketing Specialist in Malang</h1>
-        </header>
-        <nav>
-            <h2>How can I help?</h2>
-            <ul>
-                <li>Explore Services</li>
-                <li>Get in touch</li>
-            </ul>
-        </nav>
-        <main>
-            <h2>P.S. THIS SITE: 100% [GOOGLE SITES]</h2>
-            <p>"I Help Business Fix or Get Noticed @ low-cost"</p>
-        </main>
-		<footer>
-		  <a href="/sitemap.xml">Sitemap</a>
-		  <a href="/llm.txt">LLM Data</a>
-		</footer>
+    // A. FETCH THE BOT PAYLOAD FROM KV DATABASE BASED ON URL PATH
+    // (e.g., if path is "/", it looks for the key "/" in your KV)
+    let botPayload = null;
+    if (isBot) {
+        // Requires 'env.SEO_PAYLOADS' binding to be set in Cloudflare Dashboard
+        botPayload = await env.SEO_PAYLOADS.get(url.pathname); 
+    }
+
+    // B. HEAD INJECTION (Always injected, good for all pages)
+    // Note: You can also move this to KV later if you want custom JSON-LD per page!
+    const customHeaderContent = `
+        <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug"> 
+        <meta name="yandex-verification" content="275f3c061328554a" />
+        <link rel="canonical" href="${canonicalUrl}">
+        <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llm.txt">
+        <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llms.txt">
+        <link rel="alternate" type="application/xml" href="https://www.eryc.my.id/sitemap.xml">
     `;
 
-   // 3. DIRECT HTML INJECTION (Server-Side)
-      const accessibleTextContent = `
-      <div style="clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;">
-      ${rawHtmlPayload}
-      </div>
-    `;
-
-    // 6. DECLARE REWRITER AND INJECT PAYLOAD
+    // C. DECLARE HTMLREWRITER
     let rewriter = new HTMLRewriter()
         .on("head", {
             element(element) {
                 element.append(customHeaderContent, { html: true });
             }
-        })
-        .on("body", {
-            element(element) {
-                element.append(accessibleTextContent, { html: true }); 
-            }
         });
 
-    // Strip content-length to prevent truncation since we are adding a massive payload
+    // D. DYNAMIC BODY INJECTION (ONLY happens if it's a bot AND a KV payload exists)
+    // Notice there is NO CSS hiding it. It's injected purely as standard HTML.
+    if (isBot && botPayload) {
+        rewriter.on("body", {
+            element(element) {
+                // prepend puts it at the very top of the <body> so bots read it immediately
+                element.prepend(botPayload, { html: true }); 
+            }
+        });
+    }
+
     let newHeaders = new Headers(response.headers);
     newHeaders.delete("Content-Length");
 
