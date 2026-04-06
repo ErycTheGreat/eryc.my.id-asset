@@ -176,52 +176,17 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         return response;
     }
 
-// 🏎️ THE HUMAN FAST-LANE BYPASS (THE FINAL UNLOCKED EDITION)
+   // --- 2. 🏎️ THE HUMAN FAST-LANE BYPASS ---
+    // If this is a real human, serve the raw Google Site immediately. Zero latency.
     if (!isBot) {
         let newHeaders = new Headers(response.headers);
         newHeaders.delete("Content-Length"); 
-        
-        // 🚨 CRITICAL FIX 1: Nuke Google's strict Security Policy so your custom JS can run
-        newHeaders.delete("Content-Security-Policy");
-
-        let currentEmbedCode = null;
-
-        let humanRewriter = new HTMLRewriter()
-            // 1. Safely hide the loading spinners using CSS
-            .on("head", {
-                element(e) {
-                    e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
-                }
-            })
-            // 2. Catch the wrapper div that holds your raw code
-            .on("div[data-code]", {
-                element(e) {
-                    currentEmbedCode = e.getAttribute("data-code");
-                }
-            })
-            // 3. Catch the Google iframe sitting right inside that div
-            .on("iframe.YMEQtf", {
-                element(e) {
-                    if (currentEmbedCode) {
-                        // 🚨 CRITICAL FIX 2: Remove the sandbox so links and JS actually work
-                        e.removeAttribute("sandbox"); 
-                        
-                        // Kill the slow external network request
-                        e.removeAttribute("src");
-                        
-                        // Inject the raw code directly so it renders instantly
-                        e.setAttribute("srcdoc", currentEmbedCode);
-                        
-                        currentEmbedCode = null; 
-                    }
-                }
-            });
-
-        return new Response(humanRewriter.transform(response).body, {
+        return new Response(response.body, {
             status: response.status,
             headers: newHeaders
         });
     }
+    // ------------------------------------------------------
 
     // 🛑 EVERYTHING BELOW THIS LINE ONLY RUNS FOR BOTS 🛑
 	  
