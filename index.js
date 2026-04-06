@@ -176,7 +176,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         return response;
     }
 
-	// 🏎️ THE HUMAN FAST-LANE BYPASS
+	// 🏎️ THE HUMAN FAST-LANE BYPASS (UPGRADED INSTANT EMBEDS)
     if (!isBot) {
         let newHeaders = new Headers(response.headers);
         newHeaders.delete("Content-Length"); 
@@ -184,25 +184,25 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         let currentEmbedCode = null;
 
         let humanRewriter = new HTMLRewriter()
-            // 1. Catch the wrapper div that holds your raw code
+            // 1. Hide the Google Sites loading spinner permanently
+            .on("div.EmVfjc", {
+                element(e) {
+                    e.setAttribute("style", "display: none !important;");
+                }
+            })
+            // 2. Catch the wrapper div that holds your raw HTML string
             .on("div[data-code]", {
                 element(e) {
-                    // Save the raw HTML string stored in the data-code attribute
                     currentEmbedCode = e.getAttribute("data-code");
                 }
             })
-            // 2. Catch the Google iframe sitting right inside that div
+            // 3. Catch the Google iframe and inject the HTML instantly
             .on("iframe.YMEQtf", {
                 element(e) {
                     if (currentEmbedCode) {
-                        // Kill the slow external network request
-                        e.removeAttribute("src");
-                        
-                        // Inject the raw code directly so it renders instantly
-                        e.setAttribute("srcdoc", currentEmbedCode);
-                        
-                        // Clear the variable for the next embed on the page
-                        currentEmbedCode = null; 
+                        e.removeAttribute("src"); // Stop the slow external load
+                        e.setAttribute("srcdoc", currentEmbedCode); // Inject code directly
+                        currentEmbedCode = null; // Reset for the next widget on the page
                     }
                 }
             });
