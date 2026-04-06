@@ -184,10 +184,11 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 
     // A. FETCH THE BOT PAYLOAD FROM KV DATABASE BASED ON URL PATH
     // (e.g., if path is "/", it looks for the key "/" in your KV)
-    let botPayload = null;
+      let botPayload = null;
     if (isBot) {
-        // Requires 'env.SEO_PAYLOADS' binding to be set in Cloudflare Dashboard
-        botPayload = await env.SEO_PAYLOADS.get(url.pathname); 
+        // Remove trailing slash unless it's the root homepage "/"
+        const cleanPath = url.pathname.replace(/\/$/, "") || "/";
+        botPayload = await env.SEO_PAYLOADS.get(cleanPath); 
     }
 
     // B. HEAD INJECTION (Always injected, good for all pages)
