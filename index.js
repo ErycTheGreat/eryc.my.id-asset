@@ -184,14 +184,20 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         let currentEmbedCode = null;
 
         let humanRewriter = new HTMLRewriter()
-            // 1. Catch the wrapper div that holds your raw code
+            // 1. Safely hide the loading spinners using CSS so Google's JS doesn't panic
+            .on("head", {
+                element(e) {
+                    e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
+                }
+            })
+            // 2. Catch the wrapper div that holds your raw code
             .on("div[data-code]", {
                 element(e) {
                     // Save the raw HTML string stored in the data-code attribute
                     currentEmbedCode = e.getAttribute("data-code");
                 }
             })
-            // 2. Catch the Google iframe sitting right inside that div
+            // 3. Catch the Google iframe sitting right inside that div
             .on("iframe.YMEQtf", {
                 element(e) {
                     if (currentEmbedCode) {
