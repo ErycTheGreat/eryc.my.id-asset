@@ -5,7 +5,7 @@ const alphabetLinks = document.querySelectorAll('.alphabet-index a:not(.inactive
 const alphabetIndex = document.getElementById('alphabetIndex');
 const scrollLeftBtn = document.getElementById('scrollLeftBtn');
 const scrollRightBtn = document.getElementById('scrollRightBtn');
-const container = document.querySelector('.container'); // 🚨 NEW: We must target the container for scrolling!
+const container = document.querySelector('.container');
 
 // 1. Unified Search & Filter Logic
 searchInput.addEventListener('input', () => {
@@ -35,7 +35,6 @@ searchInput.addEventListener('input', () => {
 		section.style.display = hasMatchingItems ? '' : 'none';
 	});
 
-	// Handle the Custom Cyberpunk 404 Message
 	const noResultsMessage = document.getElementById('noResultsMessage');
 	if (!resultsFound && filter.trim() !== '') {
 		noResultsMessage.style.display = 'block';
@@ -43,10 +42,13 @@ searchInput.addEventListener('input', () => {
 		noResultsMessage.style.display = 'none';
 	}
 
-	// 🚨 FIX: Auto-scroll to first result using scrollIntoView
+	// Force scroll to first result using Hard Math
 	const firstVisibleSection = document.querySelector('.glossary-section:not([style*="display: none"])');
 	if (firstVisibleSection && filter.trim() !== '') {
-		firstVisibleSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		container.scrollTo({ 
+            top: firstVisibleSection.offsetTop - 130, 
+            behavior: 'smooth' 
+        });
 	}
 });
 
@@ -60,15 +62,14 @@ if (scrollLeftBtn && scrollRightBtn && alphabetIndex) {
 	});
 }
 
-// 3. Highlight Alphabet Index on Scroll
+// 3. Highlight Alphabet Index on Scroll (Using Hard Math)
 const updateHighlightedIndex = () => {
 	let current = '';
+	const scrollPos = container.scrollTop;
 	
 	sections.forEach(section => {
-		// 🚨 FIX: Use getBoundingClientRect to check if the section is near the top of the screen
-		const rect = section.getBoundingClientRect();
-		// If the section is within the top 150px of the viewport, mark it as active
-		if (rect.top <= 150 && rect.bottom >= 150) {
+        // If the container's scroll position passes the top of the section (minus our 130px header buffer)
+		if (section.offsetTop - 140 <= scrollPos) {
 			current = section.getAttribute('id');
 		}
 	});
@@ -82,7 +83,7 @@ const updateHighlightedIndex = () => {
 	});
 };
 
-// Function to keep active letter visible in the carousel
+// Keep active letter visible in the carousel
 const scrollToVisible = (link) => {
 	const linkPosition = link.getBoundingClientRect();
 	const indexPosition = alphabetIndex.getBoundingClientRect();
@@ -94,7 +95,7 @@ const scrollToVisible = (link) => {
 	}
 };
 
-// 4. Smooth Anchor Scrolling on Alphabet Click
+// 4. Smooth Anchor Scrolling on Alphabet Click (Using Hard Math)
 alphabetLinks.forEach(link => {
 	link.addEventListener('click', function(e) {
 		e.preventDefault();
@@ -102,35 +103,34 @@ alphabetLinks.forEach(link => {
 		const targetSection = document.getElementById(targetId);
 		
 		if (targetSection) {
-			// 🚨 FIX: Uses modern scrollIntoView so it works perfectly inside the container
-			targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			// Find the exact pixel height of the letter, subtract the 130px header, and force the scroll
+			container.scrollTo({
+                top: targetSection.offsetTop - 130,
+                behavior: 'smooth'
+            });
 		}
 	});
 });
 
-// 5. Clean Accordion Logic (Only ONE loop needed)
+// 5. Clean Accordion Logic
 glossaryItems.forEach(item => {
 	const heading = item.querySelector('h3');
 	
 	heading.addEventListener('click', () => {
-		// Close all other descriptions
 		glossaryItems.forEach(otherItem => {
 			if (otherItem !== item) {
 				otherItem.classList.remove('active');
 			}
 		});
-		// Toggle the clicked one (Let CSS handle the actual display animation!)
 		item.classList.toggle('active');
 	});
 });
 
-// 6. Event Listeners
-// 🚨 FIX: Listen to the .container scrolling, NOT the window!
+// 6. Event Listeners attached explicitly to the container
 if (container) {
 	container.addEventListener('scroll', updateHighlightedIndex);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-	// Trigger the first calculation to highlight 'A'
 	updateHighlightedIndex();
 });
