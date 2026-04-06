@@ -176,15 +176,18 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         return response;
     }
 
-// 🏎️ THE HUMAN FAST-LANE BYPASS
+// 🏎️ THE HUMAN FAST-LANE BYPASS (THE FINAL UNLOCKED EDITION)
     if (!isBot) {
         let newHeaders = new Headers(response.headers);
         newHeaders.delete("Content-Length"); 
         
+        // 🚨 CRITICAL FIX 1: Nuke Google's strict Security Policy so your custom JS can run
+        newHeaders.delete("Content-Security-Policy");
+
         let currentEmbedCode = null;
 
         let humanRewriter = new HTMLRewriter()
-            // 1. Safely hide the loading spinners using CSS so Google's JS doesn't panic
+            // 1. Safely hide the loading spinners using CSS
             .on("head", {
                 element(e) {
                     e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
@@ -193,7 +196,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             // 2. Catch the wrapper div that holds your raw code
             .on("div[data-code]", {
                 element(e) {
-                    // Save the raw HTML string stored in the data-code attribute
                     currentEmbedCode = e.getAttribute("data-code");
                 }
             })
@@ -201,13 +203,15 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             .on("iframe.YMEQtf", {
                 element(e) {
                     if (currentEmbedCode) {
+                        // 🚨 CRITICAL FIX 2: Remove the sandbox so links and JS actually work
+                        e.removeAttribute("sandbox"); 
+                        
                         // Kill the slow external network request
                         e.removeAttribute("src");
                         
                         // Inject the raw code directly so it renders instantly
                         e.setAttribute("srcdoc", currentEmbedCode);
                         
-                        // Clear the variable for the next embed on the page
                         currentEmbedCode = null; 
                     }
                 }
