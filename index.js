@@ -3,16 +3,16 @@ export default {
     const url = new URL(request.url);
 
     // --- 0.1 BOT TRACKER & DETECTION ---
-    const userAgent = request.headers.get("User-Agent") || "";
-    const isAIBot = /OAI-SearchBot|ChatGPT-User|Claude-Web|PerplexityBot|Google-Extended/i.test(userAgent);
-    const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|seooptimer|siteaudit|seositecheckup/i.test(userAgent);
-    const isSocialBot = /facebookexternalhit|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot/i.test(userAgent);
-    const isBot = isAIBot || isSEOBot || isSocialBot;
+    const userAgent = request.headers.get("User-Agent") || "";
+    const isAIBot = /OAI-SearchBot|ChatGPT-User|Claude-Web|PerplexityBot|Google-Extended/i.test(userAgent);
+    const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|seooptimer|siteaudit|seositecheckup/i.test(userAgent);
+    const isSocialBot = /facebookexternalhit|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot/i.test(userAgent);
+    const isBot = isAIBot || isSEOBot || isSocialBot;
 
-    if (isAIBot) {
-        console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
-    }
-    // ----------------------------------------------------
+    if (isAIBot) {
+        console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
+    }
+    // ----------------------------------------------------
 
     // --- 0.2 INDEXNOW API KEY VERIFICATION ---
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
@@ -22,7 +22,7 @@ export default {
       });
     }
     
-    // --- 0. DIRECT XML RETURN ---
+   // --- 0. DIRECT XML RETURN ---
     if (url.pathname.endsWith("/sitemap.xml")) {
       const canonicalHost = "www.eryc.my.id";
       const lastmod = new Date().toISOString().split('T')[0];
@@ -116,7 +116,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       });
     }
 
-    // --- 3. LLM.TXT ROUTING ---
+   // --- 3. LLM.TXT ROUTING ---
     if (url.pathname === "/llm.txt" || url.pathname === "/llms.txt") {
       const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llm.txt");
       return new Response(githubResponse.body, {
@@ -128,7 +128,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       });
     }
       
-    // --- 4. THE GITHUB ASSET PROXY ---
+   // --- 4. THE GITHUB ASSET PROXY ---
     const path = url.pathname;
     if (path.startsWith("/assets/")) {
       const filePath = path.replace("/assets/", "");
@@ -163,12 +163,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       return new Response(ghRes.body, { status: 200, headers: newHeaders });
     }
 
-    // --- 5. ASSET BYPASS ---
+   // --- 5. ASSET BYPASS ---
     if (url.pathname.includes(".") && !url.pathname.endsWith(".html")) {
       return fetch(request);
     }
 
-    // --- 6. EDGE DYNAMIC RENDERING (THE MAGIC) ---
+   // --- 6. EDGE DYNAMIC RENDERING (THE MAGIC) ---
     const response = await fetch(request);
     const contentType = response.headers.get("content-type") || "";
 
@@ -176,40 +176,32 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         return response;
     }
 
-    // 🏎️ THE HUMAN FAST-LANE BYPASS (ULTIMATE EDITION)
+// 🏎️ THE HUMAN FAST-LANE BYPASS
     if (!isBot) {
-        let humanHeaders = new Headers(response.headers);
-        humanHeaders.delete("Content-Length"); 
-        humanHeaders.delete("Content-Security-Policy");
-
+        let newHeaders = new Headers(response.headers);
+        newHeaders.delete("Content-Length"); 
+        
         let currentEmbedCode = null;
 
         let humanRewriter = new HTMLRewriter()
-            .on("div.EmVfjc", {
-                element(e) {
-                    e.setAttribute("style", "display: none !important;");
-                }
-            })
+            // 1. Catch the wrapper div that holds your raw code
             .on("div[data-code]", {
                 element(e) {
+                    // Save the raw HTML string stored in the data-code attribute
                     currentEmbedCode = e.getAttribute("data-code");
                 }
             })
+            // 2. Catch the Google iframe sitting right inside that div
             .on("iframe.YMEQtf", {
                 element(e) {
                     if (currentEmbedCode) {
-                        let patchedCode = currentEmbedCode.replace(/<a /gi, '<a target="_top" ');
-                        patchedCode += `<script>
-                            document.addEventListener('click', function(e) {
-                                let link = e.target.closest('a');
-                                if (link) link.setAttribute('target', '_top');
-                            });
-                        <\\/script>`;
-
-                        e.removeAttribute("src"); 
-                        e.removeAttribute("sandbox"); 
-                        e.setAttribute("srcdoc", patchedCode); 
+                        // Kill the slow external network request
+                        e.removeAttribute("src");
                         
+                        // Inject the raw code directly so it renders instantly
+                        e.setAttribute("srcdoc", currentEmbedCode);
+                        
+                        // Clear the variable for the next embed on the page
                         currentEmbedCode = null; 
                     }
                 }
@@ -217,42 +209,55 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 
         return new Response(humanRewriter.transform(response).body, {
             status: response.status,
-            headers: humanHeaders
+            headers: newHeaders
         });
     }
-    
-    // 🛑 EVERYTHING BELOW THIS LINE ONLY RUNS FOR BOTS 🛑
 
+    // 🛑 EVERYTHING BELOW THIS LINE ONLY RUNS FOR BOTS 🛑
+	  
     const domain = "https://www.eryc.my.id";
     const canonicalUrl = domain + url.pathname;
-    
-    // A. FETCH THE BOT PAYLOAD FROM KV DATABASE
-    const cleanPath = url.pathname.replace(/\/$/, "") || "/";
-    let botPayload = await env.SEO_PAYLOADS.get(cleanPath); 
+	
+	
 
-    // B. HEAD INJECTION
+    // A. FETCH THE BOT PAYLOAD FROM KV DATABASE BASED ON URL PATH
+    // (e.g., if path is "/", it looks for the key "/" in your KV)
+      let botPayload = null;
+    if (isBot) {
+        // Remove trailing slash unless it's the root homepage "/"
+        const cleanPath = url.pathname.replace(/\/$/, "") || "/";
+        botPayload = await env.SEO_PAYLOADS.get(cleanPath); 
+    }
+
+    // B. HEAD INJECTION (Always injected, good for all pages)
+    // Note: You can also move this to KV later if you want custom JSON-LD per page!
+   // The entire <head> payload (Meta + JSON-LD)
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <meta name="description" content="I'm Eryc Tri Juni S, an edge SEO & Digital Marketing Specialist in Malang, Indonesia. I help fix business systems or get your business noticed by Google.">
         <meta name="keywords" content="eryc tri juni s, digital marketing specialist, portfolio, SEO specialist, malang, indonesia">
         <meta name="author" content="Eryc Tri Juni S">
+      
         <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug"> 
-        <meta name="yandex-verification" content="275f3c061328554a" />
+		<meta name="yandex-verification" content="275f3c061328554a" />
         <link rel="canonical" href="${canonicalUrl}">
         <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llm.txt">
         <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llms.txt">
         <link rel="alternate" type="application/xml" href="https://www.eryc.my.id/sitemap.xml">
         <link rel="author" href="${domain}/about">
+            
         <meta property="og:type" content="website">
         <meta property="og:title" content="Eryc Tri Juni S | SEO & Digital Marketing Specialist">
         <meta property="og:description" content="Need to fix your business systems or get noticed? I deliver low-cost, edge SEO and data-driven digital marketing solutions for measurable growth. No B.S.">
         <meta property="og:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
         <meta property="og:url" content="${canonicalUrl}">
+        
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="Eryc Tri Juni S | SEO & Digital Marketing Specialist">
         <meta name="twitter:description" content="Need to fix your business systems or get noticed? I deliver low-cost, edge SEO and data-driven digital marketing solutions for measurable growth. No B.S.">
         <meta name="twitter:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
+        
         <script type="application/ld+json">
         {
           "@context": "https://schema.org",
@@ -264,7 +269,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "name": "Eryc Tri Juni S | SEO & Digital Marketing Specialist Malang",
               "description": "The official portfolio website of Eryc Tri Juni S, offering edge SEO services, full-stack digital marketing services, and small business advisory in Malang and worldwide.",
               "alternateName": "eryc edge seo malang",
-              "publisher": { "@id": "https://www.eryc.my.id/#website" },
+              "publisher": {
+                "@id": "https://www.eryc.my.id/#website"
+              },
               "inLanguage": "en",
               "potentialAction": {
                 "@type": "SearchAction",
@@ -278,9 +285,15 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "url": "https://www.eryc.my.id/",
               "name": "Eryc Tri Juni S | SEO & Digital Marketing Specialist Malang",
               "description": "Eryc Tri Juni S is an edge SEO & digital marketing specialist in Malang; Indonesia and a small business advisor. He helps fix business systems or get noticed at low cost.",
-              "about": { "@id": "https://www.eryc.my.id/#website" },
-              "isPartOf": { "@id": "https://www.eryc.my.id/#website" },
-              "primaryImageOfPage": { "@id": "https://www.dropbox.com/scl/fi/e6x2i45cirhotrnrvkwg9/eryctrijunis-eryc.my.id-home-screen-shot.jpeg?rlkey=mbqfgb4tnic50tcoiyo3tk7n4&st=6vc1q9ze&raw=1" },
+              "about": {
+                "@id": "https://www.eryc.my.id/#website"
+              },
+              "isPartOf": {
+                "@id": "https://www.eryc.my.id/#website"
+              },
+              "primaryImageOfPage": {
+                "@id": "https://www.dropbox.com/scl/fi/e6x2i45cirhotrnrvkwg9/eryctrijunis-eryc.my.id-home-screen-shot.jpeg?rlkey=mbqfgb4tnic50tcoiyo3tk7n4&st=6vc1q9ze&raw=1"
+              },
               "inLanguage": "en-US"
             },
             {
@@ -309,9 +322,18 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "jobTitle": "SEO & Digital Marketing Specialist",
               "image": "https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=uqcfyxv7&raw=1",
               "knowsAbout": [
-                "Data Analysis", "Data Story Telling", "Funnel Optimization", "User Personas",
-                "Google Analytics", "Search Engine Optimization (SEO)", "Web Development",
-                "Content Strategy", "Content Creation", "TikTok Marketing", "Business Analysis", "Business Acumen"
+                "Data Analysis",
+                "Data Story Telling",
+                "Funnel Optimization",
+                "User Personas",
+                "Google Analytics",
+                "Search Engine Optimization (SEO)",
+                "Web Development",
+                "Content Strategy",
+                "Content Creation",
+                "TikTok Marketing",
+                "Business Analysis",
+                "Business Acumen"
               ],
               "sameAs": [
                 "https://www.linkedin.com/in/eryctrijunis",
@@ -327,12 +349,15 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "dateCreated": "2024-01-01T00:00:00+07:00",
               "dateModified": "2026-03-22T00:00:00+07:00",
               "url": "https://www.eryc.my.id/",
-              "mainEntity": { "@id": "https://www.eryc.my.id/#person" }
+              "mainEntity": {
+                "@id": "https://www.eryc.my.id/#person"
+              }
             }
           ]
         }
         </script>
-        <script type="text/javascript">
+		
+		<script type="text/javascript">
             (function(c,l,a,r,i,t,y){
                 c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                 t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
@@ -341,27 +366,38 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         </script>
     `;
 
-    let botRewriter = new HTMLRewriter()
-        .on('meta[name="description"]', { element(e) { e.remove(); } })
-        .on('meta[property="og:title"]', { element(e) { e.remove(); } })
+    // C. DECLARE HTMLREWRITER
+  let rewriter = new HTMLRewriter()
+        // Target and remove the native Google Sites description
+        .on('meta[name="description"]', {
+            element(e) { e.remove(); }
+        })
+        // Target and remove the native Google Sites OG Title
+        .on('meta[property="og:title"]', {
+            element(e) { e.remove(); }
+        })
+        // Inject your master payload
         .on("head", {
             element(e) { e.append(customHeaderContent, { html: true }); }
         });
 
-    if (botPayload) {
-        botRewriter.on("body", {
-            element(e) {
-                e.prepend(botPayload, { html: true }); 
+    // D. DYNAMIC BODY INJECTION (ONLY happens if it's a bot AND a KV payload exists)
+    // Notice there is NO CSS hiding it. It's injected purely as standard HTML.
+    if (isBot && botPayload) {
+        rewriter.on("body", {
+            element(element) {
+                // prepend puts it at the very top of the <body> so bots read it immediately
+                element.prepend(botPayload, { html: true }); 
             }
         });
     }
 
-    let botHeaders = new Headers(response.headers);
-    botHeaders.delete("Content-Length");
+    let newHeaders = new Headers(response.headers);
+    newHeaders.delete("Content-Length");
 
-    return new Response(botRewriter.transform(response).body, {
+    return new Response(rewriter.transform(response).body, {
       status: response.status,
-      headers: botHeaders
+      headers: newHeaders
     });
   }
 };
