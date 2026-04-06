@@ -214,7 +214,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                                 let link = e.target.closest('a');
                                 if (link) link.setAttribute('target', '_top');
                             });
-                        <\/script>`;
+                        <\/script>`; // <--- THE FIX IS RIGHT HERE
 
                         e.removeAttribute("src"); // Stop the slow external load
                         e.removeAttribute("sandbox"); // Remove Google's sandbox restrictions
