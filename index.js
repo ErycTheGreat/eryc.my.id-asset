@@ -180,7 +180,19 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     const domain = "https://www.eryc.my.id";
     const canonicalUrl = domain + url.pathname;
 	
-	// The entire <head> payload (Meta + JSON-LD)
+	
+
+    // A. FETCH THE BOT PAYLOAD FROM KV DATABASE BASED ON URL PATH
+    // (e.g., if path is "/", it looks for the key "/" in your KV)
+    let botPayload = null;
+    if (isBot) {
+        // Requires 'env.SEO_PAYLOADS' binding to be set in Cloudflare Dashboard
+        botPayload = await env.SEO_PAYLOADS.get(url.pathname); 
+    }
+
+    // B. HEAD INJECTION (Always injected, good for all pages)
+    // Note: You can also move this to KV later if you want custom JSON-LD per page!
+   // The entire <head> payload (Meta + JSON-LD)
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -313,25 +325,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
             })(window, document, "clarity", "script", "w60p488a9w");
         </script>
-    `;
-
-    // A. FETCH THE BOT PAYLOAD FROM KV DATABASE BASED ON URL PATH
-    // (e.g., if path is "/", it looks for the key "/" in your KV)
-    let botPayload = null;
-    if (isBot) {
-        // Requires 'env.SEO_PAYLOADS' binding to be set in Cloudflare Dashboard
-        botPayload = await env.SEO_PAYLOADS.get(url.pathname); 
-    }
-
-    // B. HEAD INJECTION (Always injected, good for all pages)
-    // Note: You can also move this to KV later if you want custom JSON-LD per page!
-    const customHeaderContent = `
-        <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug"> 
-        <meta name="yandex-verification" content="275f3c061328554a" />
-        <link rel="canonical" href="${canonicalUrl}">
-        <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llm.txt">
-        <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llms.txt">
-        <link rel="alternate" type="application/xml" href="https://www.eryc.my.id/sitemap.xml">
     `;
 
     // C. DECLARE HTMLREWRITER
