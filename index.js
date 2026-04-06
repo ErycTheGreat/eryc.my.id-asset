@@ -177,15 +177,41 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
 
 	// 🏎️ THE HUMAN FAST-LANE BYPASS
-    // If this is a real human, serve the raw Google Site immediately. Zero latency.
-    if (!isBot) {
-        let newHeaders = new Headers(response.headers);
-        newHeaders.delete("Content-Length"); 
-        return new Response(response.body, {
-            status: response.status,
-            headers: newHeaders
-        });
-    }
+    if (!isBot) {
+        let newHeaders = new Headers(response.headers);
+        newHeaders.delete("Content-Length"); 
+        
+        let currentEmbedCode = null;
+
+        let humanRewriter = new HTMLRewriter()
+            // 1. Catch the wrapper div that holds your raw code
+            .on("div[data-code]", {
+                element(e) {
+                    // Save the raw HTML string stored in the data-code attribute
+                    currentEmbedCode = e.getAttribute("data-code");
+                }
+            })
+            // 2. Catch the Google iframe sitting right inside that div
+            .on("iframe.YMEQtf", {
+                element(e) {
+                    if (currentEmbedCode) {
+                        // Kill the slow external network request
+                        e.removeAttribute("src");
+                        
+                        // Inject the raw code directly so it renders instantly
+                        e.setAttribute("srcdoc", currentEmbedCode);
+                        
+                        // Clear the variable for the next embed on the page
+                        currentEmbedCode = null; 
+                    }
+                }
+            });
+
+        return new Response(humanRewriter.transform(response).body, {
+            status: response.status,
+            headers: newHeaders
+        });
+    }
     // 🛑 EVERYTHING BELOW THIS LINE ONLY RUNS FOR BOTS 🛑
 	  
     const domain = "https://www.eryc.my.id";
