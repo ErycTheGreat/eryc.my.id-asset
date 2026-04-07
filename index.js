@@ -2,31 +2,17 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // --- CENTRALIZED SITEMAP & INDEXNOW DATA ---
-    // Update your pages here. Both the sitemap and IndexNow will use this exact list.
-    const canonicalHost = "www.eryc.my.id";
-    const pages = [
-      "/", 
-      "/about", 
-      "/glossary", 
-      "/case-studies/seo", 
-      "/case-studies/seo/mortgage-broker", 
-      "/case-studies/seo/sound-rentals", 
-      "/case-studies/seo/vet-clinic"
-    ];
-    // -------------------------------------------
-
     // --- 0.1 BOT TRACKER & DETECTION ---
-    const userAgent = request.headers.get("User-Agent") || "";
-    const isAIBot = /OAI-SearchBot|ChatGPT-User|Claude-Web|PerplexityBot|Google-Extended/i.test(userAgent);
-    const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|seooptimer|siteaudit|seositecheckup/i.test(userAgent);
-    const isSocialBot = /facebookexternalhit|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot/i.test(userAgent);
-    const isBot = isAIBot || isSEOBot || isSocialBot;
+    const userAgent = request.headers.get("User-Agent") || "";
+    const isAIBot = /OAI-SearchBot|ChatGPT-User|Claude-Web|PerplexityBot|Google-Extended/i.test(userAgent);
+    const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|seooptimer|siteaudit|seositecheckup/i.test(userAgent);
+    const isSocialBot = /facebookexternalhit|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot/i.test(userAgent);
+    const isBot = isAIBot || isSEOBot || isSocialBot;
 
-    if (isAIBot) {
-        console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
-    }
-    // ----------------------------------------------------
+    if (isAIBot) {
+        console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
+    }
+    // ----------------------------------------------------
 
     // --- 0.2 INDEXNOW API KEY VERIFICATION ---
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
@@ -35,38 +21,12 @@ export default {
         headers: { "Content-Type": "text/plain" }
       });
     }
-
-    // --- 0.3 INDEXNOW BULK SUBMIT TRIGGER ---
-    // Visit https://www.eryc.my.id/trigger-indexnow to submit your pages array automatically
-    if (url.pathname === "/trigger-indexnow") {
-      const fullUrls = pages.map(path => `https://${canonicalHost}${path}`);
-      
-      const payload = {
-        "host": canonicalHost,
-        "key": "3d66934eab674a3496effb0a0651a038",
-        "keyLocation": `https://${canonicalHost}/3d66934eab674a3496effb0a0651a038.txt`,
-        "urlList": fullUrls
-      };
-
-      const indexNowResponse = await fetch("https://api.indexnow.org/indexnow", {
-        method: "POST",
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        body: JSON.stringify(payload)
-      });
-
-      if (indexNowResponse.ok) {
-        return new Response(`✅ Success! Submitted ${fullUrls.length} URLs to IndexNow.\n\nPayload sent:\n${JSON.stringify(payload, null, 2)}`, { 
-          status: 200, 
-          headers: { "Content-Type": "text/plain" } 
-        });
-      } else {
-        return new Response(`❌ Failed to submit. HTTP Status: ${indexNowResponse.status}`, { status: 500 });
-      }
-    }
     
    // --- 0. DIRECT XML RETURN ---
     if (url.pathname.endsWith("/sitemap.xml")) {
+      const canonicalHost = "www.eryc.my.id";
       const lastmod = new Date().toISOString().split('T')[0];
+      const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/mortgage-broker", "/case-studies/seo/sound-rentals", "/case-studies/seo/vet-clinic"];
       
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
       sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
@@ -88,6 +48,7 @@ export default {
 
     // --- 1. FORCE NAKED TO WWW & KILL "/home" ---
     const host = url.hostname;
+    const canonicalHost = "www.eryc.my.id";
     if (host !== canonicalHost) {
       return Response.redirect(`https://${canonicalHost}${url.pathname}`, 301);
     }
@@ -222,7 +183,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     // Note: You can also move this to KV later if you want custom JSON-LD per page!
    // The entire <head> payload (Meta + JSON-LD)
     const customHeaderContent = `
-		
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <meta name="description" content="I'm Eryc Tri Juni S, an edge SEO & Digital Marketing Specialist in Malang, Indonesia. I help fix business systems or get your business noticed by Google.">
@@ -397,7 +357,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         
                         // Inject the raw code directly so it renders instantly
                         e.setAttribute("srcdoc", currentEmbedCode);
-                    
+                        
                         currentEmbedCode = null; 
                     }
                 }
