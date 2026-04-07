@@ -9,6 +9,12 @@ routes = [
   { pattern = "www.eryc.my.id/assets/*", zone_name = "eryc.my.id" }
 ]
 
+# --- KV DATABASE BINDING ---
+# This ensures GitHub automatically reconnects your KV database on every push
+[[kv_namespaces]]
+binding = "SEO_PAYLOADS"
+id = "4cbae4c8b74246a2b783cb63186e405a"
+
 # --- AI BOT TRACKING LOGS ---
 [observability]
 [observability.logs]
