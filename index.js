@@ -176,76 +176,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         return response;
     }
 
-   // 🏎️ THE HUMAN FAST-LANE BYPASS (THE FINAL UNLOCKED EDITION)
-    if (!isBot) {
-        let newHeaders = new Headers(response.headers);
-        newHeaders.delete("Content-Length"); 
-        
-        // 🚨 CRITICAL FIX 1: Nuke Google's strict Security Policy so your custom JS can run
-        newHeaders.delete("Content-Security-Policy");
-
-        let currentEmbedCode = null;
-
-        let humanRewriter = new HTMLRewriter()
-            // 1. Safely hide the loading spinners using CSS
-            .on("head", {
-                element(e) {
-                    e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
-                }
-            })
-            // 2. Catch the wrapper div that holds your raw code
-            .on("div[data-code]", {
-                element(e) {
-                    currentEmbedCode = e.getAttribute("data-code");
-                }
-            })
-            // 3. Catch the Google iframe sitting right inside that div
-            .on("iframe.YMEQtf", {
-                element(e) {
-                    if (currentEmbedCode) {
-                        // 🚨 CRITICAL FIX 2: Remove the sandbox so links and JS actually work
-                        e.removeAttribute("sandbox"); 
-                        
-                        // Kill the slow external network request
-                        e.removeAttribute("src");
-                        
-                        // Inject the raw code directly so it renders instantly
-                        e.setAttribute("srcdoc", currentEmbedCode);
-                        
-                        currentEmbedCode = null; 
-                    }
-                }
-            });
-
-        return new Response(humanRewriter.transform(response).body, {
-            status: response.status,
-            headers: newHeaders
-        });
-    }
-    // 🛑 EVERYTHING BELOW THIS LINE ONLY RUNS FOR BOTS 🛑
-	  
-    const domain = "https://www.eryc.my.id";
-    const canonicalUrl = domain + url.pathname;
-	
-	
-    // A. FETCH THE BOT PAYLOAD FROM KV DATABASE (WITH SAFETY NET)
-    let botPayload = null;
-    if (isBot) {
-        try {
-            // 1. Check if the KV database is actually linked to the Worker!
-            if (env && env.SEO_PAYLOADS) {
-                const cleanPath = url.pathname.replace(/\/$/, "") || "/";
-                botPayload = await env.SEO_PAYLOADS.get(cleanPath); 
-            } else {
-                console.error("CRITICAL: SEO_PAYLOADS KV Namespace is not bound to this Worker!");
-            }
-        } catch (error) {
-            // 2. If KV fails, swallow the error so the bot still gets a 200 OK status!
-            console.error("KV Fetch Error:", error);
-        }
-    }
-
-    // B. HEAD INJECTION (Always injected, good for all pages)
+     // B. HEAD INJECTION (Always injected, good for all pages)
     // Note: You can also move this to KV later if you want custom JSON-LD per page!
    // The entire <head> payload (Meta + JSON-LD)
     const customHeaderContent = `
@@ -381,7 +312,77 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             })(window, document, "clarity", "script", "w60p488a9w");
         </script>
     `;
+	  
+   // 🏎️ THE HUMAN FAST-LANE BYPASS (THE FINAL UNLOCKED EDITION)
+    if (!isBot) {
+        let newHeaders = new Headers(response.headers);
+        newHeaders.delete("Content-Length"); 
+        
+        // 🚨 CRITICAL FIX 1: Nuke Google's strict Security Policy so your custom JS can run
+        newHeaders.delete("Content-Security-Policy");
 
+        let currentEmbedCode = null;
+
+        let humanRewriter = new HTMLRewriter()
+            // 1. Safely hide the loading spinners using CSS
+            .on("head", {
+                element(e) {
+                    e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
+                }
+            })
+            // 2. Catch the wrapper div that holds your raw code
+            .on("div[data-code]", {
+                element(e) {
+                    currentEmbedCode = e.getAttribute("data-code");
+                }
+            })
+            // 3. Catch the Google iframe sitting right inside that div
+            .on("iframe.YMEQtf", {
+                element(e) {
+                    if (currentEmbedCode) {
+                        // 🚨 CRITICAL FIX 2: Remove the sandbox so links and JS actually work
+                        e.removeAttribute("sandbox"); 
+                        
+                        // Kill the slow external network request
+                        e.removeAttribute("src");
+                        
+                        // Inject the raw code directly so it renders instantly
+                        e.setAttribute("srcdoc", currentEmbedCode);
+                        
+                        currentEmbedCode = null; 
+                    }
+                }
+            });
+
+        return new Response(humanRewriter.transform(response).body, {
+            status: response.status,
+            headers: newHeaders
+        });
+    }
+    // 🛑 EVERYTHING BELOW THIS LINE ONLY RUNS FOR BOTS 🛑
+	  
+    const domain = "https://www.eryc.my.id";
+    const canonicalUrl = domain + url.pathname;
+	
+	
+    // A. FETCH THE BOT PAYLOAD FROM KV DATABASE (WITH SAFETY NET)
+    let botPayload = null;
+    if (isBot) {
+        try {
+            // 1. Check if the KV database is actually linked to the Worker!
+            if (env && env.SEO_PAYLOADS) {
+                const cleanPath = url.pathname.replace(/\/$/, "") || "/";
+                botPayload = await env.SEO_PAYLOADS.get(cleanPath); 
+            } else {
+                console.error("CRITICAL: SEO_PAYLOADS KV Namespace is not bound to this Worker!");
+            }
+        } catch (error) {
+            // 2. If KV fails, swallow the error so the bot still gets a 200 OK status!
+            console.error("KV Fetch Error:", error);
+        }
+    }
+
+   
     // C. DECLARE HTMLREWRITER
   let rewriter = new HTMLRewriter()
         // Target and remove the native Google Sites description
