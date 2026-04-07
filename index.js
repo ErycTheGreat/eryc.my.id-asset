@@ -370,11 +370,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
     // 🛑 EVERYTHING BELOW THIS LINE ONLY RUNS FOR BOTS 🛑
 	  
-    const domain = "https://www.eryc.my.id";
-    const canonicalUrl = domain + url.pathname;
-	
-	
-    // A. FETCH THE BOT PAYLOAD FROM KV DATABASE (WITH SAFETY NET)
+	    // A. FETCH THE BOT PAYLOAD FROM KV DATABASE (WITH SAFETY NET)
     let botPayload = null;
     if (isBot) {
         try {
