@@ -397,6 +397,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         
                         // Inject the raw code directly so it renders instantly
                         e.setAttribute("srcdoc", currentEmbedCode);
+
+						// 🚨 DESKTOP SPACE KILLER: Force a negative margin to pull the next section up
+                        let currentStyle = e.getAttribute("style") || "";
+                        e.setAttribute("style", currentStyle + " margin-bottom: -25px !important;");
                       
                         currentEmbedCode = null; 
                     }
