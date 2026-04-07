@@ -176,6 +176,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         return response;
     }
 
+    // 🚨 FIX: Define domain and canonicalUrl BEFORE we try to use them in the SEO tags!
+    const domain = "https://www.eryc.my.id";
+    const canonicalUrl = domain + url.pathname
      // B. HEAD INJECTION (Always injected, good for all pages)
     // Note: You can also move this to KV later if you want custom JSON-LD per page!
    // The entire <head> payload (Meta + JSON-LD)
