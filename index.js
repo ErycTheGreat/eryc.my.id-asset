@@ -222,6 +222,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     // Note: You can also move this to KV later if you want custom JSON-LD per page!
    // The entire <head> payload (Meta + JSON-LD)
     const customHeaderContent = `
+		<link rel="icon" href="https://github.com/ErycTheGreat/eryc.my.id-asset/raw/refs/heads/main/image/site-icon.svg" type="image/svg+xml">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <meta name="description" content="I'm Eryc Tri Juni S, an edge SEO & Digital Marketing Specialist in Malang, Indonesia. I help fix business systems or get your business noticed by Google.">
