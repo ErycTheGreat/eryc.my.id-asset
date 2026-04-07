@@ -323,13 +323,19 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 
         let currentEmbedCode = null;
 
-        let humanRewriter = new HTMLRewriter()
-            // 1. Safely hide the loading spinners using CSS
+       let humanRewriter = new HTMLRewriter()
+            // 🚨 1. REMOVE DEFAULT GOOGLE SITES SEO TAGS FOR HUMANS
+            .on('meta[name="description"]', { element(e) { e.remove(); } })
+            .on('meta[property="og:title"]', { element(e) { e.remove(); } })
+            
+            // 🚨 2. INJECT CUSTOM SEO + ANTI-SPINNER CSS
             .on("head", {
                 element(e) {
                     e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
+                    e.append(customHeaderContent, { html: true }); // <--- This injects your meta tags!
                 }
             })
+            // 3. Catch the wrapper div that holds your raw code
             // 2. Catch the wrapper div that holds your raw code
             .on("div[data-code]", {
                 element(e) {
