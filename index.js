@@ -5,7 +5,7 @@ export default {
     // --- 0.1 BOT TRACKER & DETECTION ---
     const userAgent = request.headers.get("User-Agent") || "";
     const isAIBot = /OAI-SearchBot|ChatGPT-User|Claude-Web|PerplexityBot|Google-Extended/i.test(userAgent);
-    const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|seooptimer|siteaudit|seositecheckup/i.test(userAgent);
+    const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|seoptimer|siteaudit|seositecheckup/i.test(userAgent);
     const isSocialBot = /facebookexternalhit|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot/i.test(userAgent);
     const isBot = isAIBot || isSEOBot || isSocialBot;
 
