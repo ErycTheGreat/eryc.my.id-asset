@@ -102,11 +102,13 @@ const dialogues = [
                        characterName.textContent = currentDialogue.name;
 
                        // Ensure Neo color is applied, even if the name was changed
-                       if (currentDialogue.name === "Neo" || currentDialogue.name === nameInputBox.value) {
-                           characterName.className = "Neo";
-                       } else {
-                           characterName.className = currentDialogue.name.toLowerCase();
-                       }
+                      if (currentDialogue.name === "Neo" || currentDialogue.name === nameInputBox.value) {
+                          characterName.className = "neo";
+                      } else if (currentDialogue.name === "The_Architect") {
+                          characterName.className = "The_Architect";
+                      } else {
+                          characterName.className = currentDialogue.name;
+                      }
                    }
 
 
@@ -234,28 +236,20 @@ const dialogues = [
 
                    });
 
-                   function enterMatrix(e) {
-    if(e) e.stopPropagation();
+                   function enterMatrix(e){
 
-    document.getElementById("game-container").style.display = "none";
-    canvas.style.display = "block";
+                       if(e) e.stopPropagation();
 
-    // THE SIMPLE SOLUTION: 
-    // Ask the browser to verify the CSS font from the HTML is ready for Canvas
-    document.fonts.load('16px "White Rabbit Local"').then(() => {
-        startMatrixEffect();
-    }).catch((err) => {
-        console.error("Matrix font sync failed, starting anyway:", err);
-        startMatrixEffect();
-    });
-}
-        
-    }).catch(function(error) {
-        console.error('Matrix font failed to load programmatically:', error);
-        // Fallback: start it anyway if the network fails
-        startMatrixEffect(); 
-    });
-}
+                       document.getElementById("game-container").style.display = "none";
+
+                       canvas.style.display = "block";
+
+                       startMatrixEffect();
+
+                   }
+
+
+
                    // Matrix effect
                    const canvas = document.getElementById("matrixCanvas");
                    canvas.style.display = "none";
