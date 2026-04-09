@@ -241,7 +241,7 @@ const dialogues = [
                 canvas.style.display = "block";
             
                 // 1. Manually declare the font in JavaScript
-                const matrixFont = new FontFace('White Rabbit Local', 'url(https://www.eryc.my.id/assets/font/white-rabbit.woff2)');
+                const matrixFont = new FontFace('White Rabbit', 'url(https://www.eryc.my.id/assets/font/white-rabbit.woff2)');
             
                 // 2. Force the browser to download it NOW
                 matrixFont.load().then(function(loadedFont) {
@@ -305,7 +305,7 @@ const dialogues = [
                        // Draw the Matrix characters
                        ctx.globalCompositeOperation = "source-over";
                        ctx.fillStyle = "#00bba9"; // Green text color
-                       ctx.font = fontSize + "px 'White Rabbit Local', sans-serif";
+                       ctx.font = fontSize + "px 'White Rabbit', sans-serif";
                        ctx.shadowColor = "#060522";
                        ctx.shadowBlur = 4;
 
@@ -353,7 +353,7 @@ const dialogues = [
                        const elapsedTime = Date.now() - messageStartTime;
                        if (elapsedTime >= 3000) {
                            ctx.globalCompositeOperation = "source-over";
-                           ctx.font = "300 16px 'White Rabbit Local', sans-serif"; // Set font weight to 500
+                           ctx.font = "300 16px 'White Rabbit', sans-serif"; // Set font weight to 500
 
                            // Calculate the position to center the message
                            const textWidth = ctx.measureText(secretMessage.join("")).width +(secretMessage.length - 1) * letterSpacing;
