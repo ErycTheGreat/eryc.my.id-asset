@@ -234,18 +234,17 @@ const dialogues = [
 
                    });
 
-                   function enterMatrix(e){
-
-                       if(e) e.stopPropagation();
-
-                       document.getElementById("game-container").style.display = "none";
-
-                       canvas.style.display = "block";
-
-                       startMatrixEffect();
-
-                   }
-
+                  function enterMatrix(e){
+                      if(e) e.stopPropagation();
+                      
+                      document.getElementById("game-container").style.display = "none";
+                      canvas.style.display = "block";
+                  
+                      // Wait for the font to load before drawing on the canvas
+                      document.fonts.ready.then(function() {
+                          startMatrixEffect();
+                      });
+                  }
 
 
                    // Matrix effect
