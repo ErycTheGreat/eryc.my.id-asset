@@ -1,3 +1,21 @@
+// Force inject the font face directly from the JS execution context
+const style = document.createElement('style');
+style.innerHTML = `
+    @font-face {
+        font-family: 'White Rabbit Local';
+        font-style: normal;
+        font-display: swap; 
+        src: url('https://www.eryc.my.id/assets/font/white-rabbit.woff2') format('woff2');
+    }
+`;
+document.head.appendChild(style);
+
+// Wait specifically for this font to be ready before drawing Canvas
+document.fonts.ready.then(() => {
+    console.log("Font explicitly loaded in JS scope");
+});
+// --------------------------------------------
+
 const dialogues = [
                        { name: "Neo", avatar: "https://www.dropbox.com/scl/fi/v82xxogszj3prw54nje5v/eryctrijunis-neo-2-bg-blue.webp?rlkey=4pjytvnf9ipkxq4gk562knp5u&st=isvagyqm&raw=1", text: "Why do I speak, yet no one hears me?", align: "left" },
                        { name: "The_Architect", avatar: "https://www.dropbox.com/scl/fi/17x178xjw6b6ko7h1cvhx/eryctrijunis-the-architect2.webp?rlkey=5egh7ieebg09gqx5ae0lgw5ng&st=7lvnw7l8&raw=1", text: "Because you stand at the wrong gate, calling out to those who do not seek you.", align: "right" },
@@ -235,31 +253,16 @@ const dialogues = [
                    });
 
                    function enterMatrix(e){
-                      if(e) e.stopPropagation();
-                  
-                      document.getElementById("game-container").style.display = "none";
-                      canvas.style.display = "block";
-                  
-                      // 1. Define the font programmatically in JS
-                      const matrixFont = new FontFace(
-                          'White Rabbit Local', 
-                          'url(https://www.eryc.my.id/assets/font/white-rabbit.woff2)'
-                      );
-                  
-                      // 2. Force the browser to load it NOW
-                      matrixFont.load().then(function(loadedFont) {
-                          // 3. Add it to the document so Canvas can see it
-                          document.fonts.add(loadedFont);
-                          
-                          // 4. ONLY start the matrix effect once the font is confirmed ready
-                          startMatrixEffect();
-                          
-                      }).catch(function(error) {
-                          console.error('Matrix font failed to load programmatically:', error);
-                          // Fallback: start it anyway if the network fails
-                          startMatrixEffect(); 
-                      });
-                  }
+
+                       if(e) e.stopPropagation();
+
+                       document.getElementById("game-container").style.display = "none";
+
+                       canvas.style.display = "block";
+
+                       startMatrixEffect();
+
+                   }
 
 
 
