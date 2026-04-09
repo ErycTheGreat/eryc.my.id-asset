@@ -1,3 +1,13 @@
+                  // 1. Explicitly tell the JS file to fetch the font
+                  const matrixFont = new FontFace('White Rabbit Local', 'url(https://www.eryc.my.id/assets/font/white-rabbit.woff2)');
+                  
+                  // 2. Force it into the document's font registry
+                  matrixFont.load().then(function(loadedFont) {
+                      document.fonts.add(loadedFont);
+                      console.log("White Rabbit font securely loaded into JavaScript!");
+                  }).catch(function(error) {
+                      console.error("Font failed to load in JS. Check your URLs or CORS:", error);
+                  });
 const dialogues = [
                        { name: "Neo", avatar: "https://www.dropbox.com/scl/fi/v82xxogszj3prw54nje5v/eryctrijunis-neo-2-bg-blue.webp?rlkey=4pjytvnf9ipkxq4gk562knp5u&st=isvagyqm&raw=1", text: "Why do I speak, yet no one hears me?", align: "left" },
                        { name: "The_Architect", avatar: "https://www.dropbox.com/scl/fi/17x178xjw6b6ko7h1cvhx/eryctrijunis-the-architect2.webp?rlkey=5egh7ieebg09gqx5ae0lgw5ng&st=7lvnw7l8&raw=1", text: "Because you stand at the wrong gate, calling out to those who do not seek you.", align: "right" },
@@ -241,7 +251,7 @@ const dialogues = [
                 canvas.style.display = "block";
             
                 // 1. Manually declare the font in JavaScript
-                const matrixFont = new FontFace('White Rabbit', 'url(https://www.eryc.my.id/assets/font/white-rabbit.woff2)');
+                const matrixFont = new FontFace('White Rabbit Local', 'url(https://www.eryc.my.id/assets/font/white-rabbit.woff2)');
             
                 // 2. Force the browser to download it NOW
                 matrixFont.load().then(function(loadedFont) {
@@ -353,7 +363,7 @@ const dialogues = [
                        const elapsedTime = Date.now() - messageStartTime;
                        if (elapsedTime >= 3000) {
                            ctx.globalCompositeOperation = "source-over";
-                           ctx.font = "300 16px 'White Rabbit', sans-serif"; // Set font weight to 500
+                           ctx.font = "300 16px 'White Rabbit Local', sans-serif"; // Set font weight to 500
 
                            // Calculate the position to center the message
                            const textWidth = ctx.measureText(secretMessage.join("")).width +(secretMessage.length - 1) * letterSpacing;
