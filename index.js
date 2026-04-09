@@ -328,6 +328,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 
        let humanRewriter = new HTMLRewriter()
             // 🚨 1. REMOVE DEFAULT GOOGLE SITES SEO TAGS FOR HUMANS
+		    .on('link[rel="canonical"]', { element(e) { e.remove(); } })
             .on('meta[name="description"]', { element(e) { e.remove(); } })
             .on('meta[property="og:title"]', { element(e) { e.remove(); } })
             
@@ -339,13 +340,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 }
             })
             // 3. Catch the wrapper div that holds your raw code
-            // 2. Catch the wrapper div that holds your raw code
             .on("div[data-code]", {
                 element(e) {
                     currentEmbedCode = e.getAttribute("data-code");
                 }
             })
-            // 3. Catch the Google iframe sitting right inside that div
+            // 4. Catch the Google iframe sitting right inside that div
             .on("iframe.YMEQtf", {
                 element(e) {
                     if (currentEmbedCode) {
@@ -390,7 +390,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
    
     // C. DECLARE HTMLREWRITER
   let rewriter = new HTMLRewriter()
-        // Target and remove the native Google Sites description
+        // 🚨 KILL NATIVE GOOGLE SITES CANONICAL FOR BOTS
+        .on('link[rel="canonical"]', { element(e) { e.remove(); } 
+		})
+	    // Target and remove the native Google Sites description
         .on('meta[name="description"]', {
             element(e) { e.remove(); }
         })
