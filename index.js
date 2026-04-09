@@ -419,7 +419,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 
     let newHeaders = new Headers(response.headers);
     newHeaders.delete("Content-Length");
-
+    newHeaders.delete("Content-Security-Policy");
+	  
     return new Response(rewriter.transform(response).body, {
       status: response.status,
       headers: newHeaders
