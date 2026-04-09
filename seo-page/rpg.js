@@ -342,7 +342,7 @@ const dialogues = [
                        const elapsedTime = Date.now() - messageStartTime;
                        if (elapsedTime >= 3000) {
                            ctx.globalCompositeOperation = "source-over";
-                           ctx.font = "300 16px 'White Rabbit', sans-serif"; // Set font weight to 500
+                           ctx.font = "300 16px 'White Rabbit Local', sans-serif"; // Set font weight to 500
 
                            // Calculate the position to center the message
                            const textWidth = ctx.measureText(secretMessage.join("")).width +(secretMessage.length - 1) * letterSpacing;
