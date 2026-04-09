@@ -294,7 +294,7 @@ const dialogues = [
                        // Draw the Matrix characters
                        ctx.globalCompositeOperation = "source-over";
                        ctx.fillStyle = "#00bba9"; // Green text color
-                       ctx.font = fontSize + "px 'White Rabbit', sans-serif";
+                       ctx.font = fontSize + "px 'White Rabbit Local', sans-serif";
                        ctx.shadowColor = "#060522";
                        ctx.shadowBlur = 4;
 
