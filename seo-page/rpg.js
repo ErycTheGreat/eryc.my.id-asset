@@ -234,17 +234,29 @@ const dialogues = [
 
                    });
 
-                  function enterMatrix(e){
-                      if(e) e.stopPropagation();
-                      
-                      document.getElementById("game-container").style.display = "none";
-                      canvas.style.display = "block";
-                  
-                      // Wait for the font to load before drawing on the canvas
-                      document.fonts.ready.then(function() {
-                          startMatrixEffect();
-                      });
-                  }
+                 function enterMatrix(e) {
+                if (e) e.stopPropagation();
+            
+                document.getElementById("game-container").style.display = "none";
+                canvas.style.display = "block";
+            
+                // 1. Manually declare the font in JavaScript
+                const matrixFont = new FontFace('White Rabbit Local', 'url(https://www.eryc.my.id/assets/font/white-rabbit.woff2)');
+            
+                // 2. Force the browser to download it NOW
+                matrixFont.load().then(function(loadedFont) {
+                    // 3. Add it to the document's font registry
+                    document.fonts.add(loadedFont);
+                    
+                    // 4. Now that we are 100% sure it is downloaded, start the canvas
+                    startMatrixEffect();
+                    
+                }).catch(function(error) {
+                    console.error("Font failed to load. Is there a CORS or URL issue?", error);
+                    // Fallback: Start the effect anyway so the screen isn't blank
+                    startMatrixEffect(); 
+                });
+            }
 
 
                    // Matrix effect
