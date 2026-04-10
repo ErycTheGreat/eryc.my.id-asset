@@ -343,17 +343,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         newHeaders.delete("Content-Length"); 
         
         // 🚨 CRITICAL FIX 1: Nuke Google's strict Security Policy so your custom JS can run
-       // --- SAFE CSP MODIFICATION FOR HUMANS ---
-        let csp = newHeaders.get("Content-Security-Policy");
-        if (csp) {
-            csp = csp.replace(/script-src /g, "script-src https://www.clarity.ms https://*.clarity.ms 'unsafe-inline' ");
-            csp = csp.replace(/connect-src /g, "connect-src https://*.clarity.ms ");
-            csp = csp.replace(/img-src /g, "img-src https://*.clarity.ms ");
-            newHeaders.set("Content-Security-Policy", csp);
-        }
-        // ----------------------------------------
-
-        let currentEmbedCode = null;
+       newHeaders.delete("Content-Security-Policy");
+		
+       let currentEmbedCode = null;
 
        let humanRewriter = new HTMLRewriter()
             // 🚨 1. REMOVE DEFAULT GOOGLE SITES SEO TAGS FOR HUMANS
@@ -449,15 +441,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     let newHeaders = new Headers(response.headers);
     newHeaders.delete("Content-Length");
     
-	  // --- SAFE CSP MODIFICATION FOR BOTS ---
-        let csp = finalHeaders.get("Content-Security-Policy");
-        if (csp) {
-            csp = csp.replace(/script-src /g, "script-src https://www.clarity.ms https://*.clarity.ms 'unsafe-inline' ");
-            csp = csp.replace(/connect-src /g, "connect-src https://*.clarity.ms ");
-            csp = csp.replace(/img-src /g, "img-src https://*.clarity.ms ");
-            finalHeaders.set("Content-Security-Policy", csp);
-        }
-        // --------------------------------------
 	  
     return new Response(rewriter.transform(response).body, {
       status: response.status,
