@@ -186,8 +186,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		
-		<meta name="description" content="I'm Eryc Tri Juni S, an edge SEO & Digital Marketing Specialist in Malang, Indonesia. I help fix business systems or get your business noticed by Google.">
-        <meta name="keywords" content="eryc tri juni s, digital marketing specialist, portfolio, SEO specialist, malang, indonesia">
+		<meta name="description" content="I'm Eryc Tri Juni S, an edge SEO Specialist in Malang, Indonesia. I help fix business systems or get your business noticed by Google.">
+        <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
         <meta name="author" content="Eryc Tri Juni S">
         <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug"> 
 		<meta name="yandex-verification" content="275f3c061328554a" />
@@ -198,13 +198,13 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="author" href="${domain}/about">
         
         <meta property="og:type" content="website">
-        <meta property="og:title" content="Eryc Tri Juni S | SEO & Digital Marketing Specialist">
+        <meta property="og:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S ">
         <meta property="og:description" content="Need to fix your business systems or get noticed? I deliver low-cost, edge SEO and data-driven digital marketing solutions for measurable growth. No B.S.">
         <meta property="og:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
         <meta property="og:url" content="${canonicalUrl}">
         
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="Eryc Tri Juni S | SEO & Digital Marketing Specialist">
+        <meta name="twitter:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S">
         <meta name="twitter:description" content="Need to fix your business systems or get noticed? I deliver low-cost, edge SEO and data-driven digital marketing solutions for measurable growth. No B.S.">
         <meta name="twitter:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
         
@@ -216,8 +216,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "@type": "WebSite",
               "@id": "https://www.eryc.my.id/#website",
               "url": "https://www.eryc.my.id",
-              "name": "Eryc Tri Juni S | SEO & Digital Marketing Specialist Malang",
-              "description": "The official portfolio website of Eryc Tri Juni S, offering edge SEO services, full-stack digital marketing services, and small business advisory in Malang and worldwide.",
+              "name": "Eryc Tri Juni S",
+              "description": "Portfolio and reference implementation of Edge SEO and Asymmetric Ghost Payload (AGP) architecture by Eryc Tri Juni S.",
               "alternateName": "eryc edge seo malang",
               "publisher": {
                 "@id": "https://www.eryc.my.id/#website"
@@ -233,9 +233,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "@type": "WebPage",
               "@id": "https://www.eryc.my.id/#webpage",
               "url": "https://www.eryc.my.id/",
-              "name": "Eryc Tri Juni S | SEO & Digital Marketing Specialist Malang",
-              "description": "Eryc Tri Juni S is an edge SEO & digital marketing specialist in Malang; Indonesia and a small business advisor. He helps fix business systems or get noticed at low cost.",
-              "about": {
+              "name": "Edge SEO Specialist Malang | Eryc Tri Juni S",
+              "description": "Eryc Tri Juni S is an edge SEO specialist in Malang; Indonesia. Exploring system-based marketing, constraint-bypassing architectures, and Asymmetric Ghost Payloads.",
+               "mainEntity": {
+    		  "@id": "https://www.eryc.my.id/#person"
+  			  },
+			  "about": {
                 "@id": "https://www.eryc.my.id/#website"
               },
               "isPartOf": {
@@ -252,14 +255,14 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "url": "https://www.dropbox.com/scl/fi/ivr9t7qu6r4vjt0hd5076/android-chrome-512x512.png?rlkey=n2erjbo7u707khljztqtyac59&raw=1",
               "width": 512,
               "height": 512,
-              "caption": "Eryc Tri Juni S | SEO & Digital Marketing Specialist",
+              "caption": "Eryc Tri Juni S | Edge SEO Specialist",
               "inLanguage": "en-US"
             },
             {
               "@type": "Person",
               "@id": "https://www.eryc.my.id/#person",
               "name": "Eryc Tri Juni S",
-              "description": "Eryc Tri Juni S is an edge SEO & digital marketing specialist in Malang, Indonesia with 8 years of product innovation experience. He is fluent in data-driven strategies and critical analysis.",
+              "description": "Eryc Tri Juni S is an Edge SEO Specialist in Malang, Indonesia, engineering constraint-bypassing web architectures and data-driven marketing systems.",
               "email": "eryc.me@gmail.com",
               "address": {
                 "@type": "PostalAddress",
@@ -269,12 +272,18 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 "addressCountry": "Indonesia"
               },
               "gender": "Male",
-              "jobTitle": "SEO & Digital Marketing Specialist",
+              "jobTitle": "Edge SEO Specialist",
               "image": "https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=uqcfyxv7&raw=1",
               "knowsAbout": [
-                "Data Analysis",
-                "Data Story Telling",
+                "Edge SEO",
+                "Asymmetric Ghost Payload",
+                "Generative Engine Optimization",
+                "Cloudflare Workers",
+                "System-Based Marketing",
                 "Funnel Optimization",
+                "Data-Driven Strategy",
+				"Data Analysis",
+                "Data Story Telling",
                 "User Personas",
                 "Google Analytics",
                 "Search Engine Optimization (SEO)",
@@ -297,7 +306,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "@type": "ProfilePage",
               "@id": "https://www.eryc.my.id/#profile",
               "dateCreated": "2024-01-01T00:00:00+07:00",
-              "dateModified": "2026-03-22T00:00:00+07:00",
+              "dateModified": "2026-04-10T00:00:00+07:00",
               "url": "https://www.eryc.my.id/",
               "mainEntity": {
                 "@id": "https://www.eryc.my.id/#person"
