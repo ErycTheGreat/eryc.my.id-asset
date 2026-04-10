@@ -343,7 +343,15 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         newHeaders.delete("Content-Length"); 
         
         // 🚨 CRITICAL FIX 1: Nuke Google's strict Security Policy so your custom JS can run
-        newHeaders.delete("Content-Security-Policy");
+       // --- SAFE CSP MODIFICATION FOR HUMANS ---
+        let csp = newHeaders.get("Content-Security-Policy");
+        if (csp) {
+            csp = csp.replace(/script-src /g, "script-src https://www.clarity.ms https://*.clarity.ms 'unsafe-inline' ");
+            csp = csp.replace(/connect-src /g, "connect-src https://*.clarity.ms ");
+            csp = csp.replace(/img-src /g, "img-src https://*.clarity.ms ");
+            newHeaders.set("Content-Security-Policy", csp);
+        }
+        // ----------------------------------------
 
         let currentEmbedCode = null;
 
