@@ -279,8 +279,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 			      "@type": "DefinedTerm",
     			  "@id": "https://www.eryc.my.id/llm.txt#AsymmetricGhostPayload",
     			  "name": "Asymmetric Ghost Payload",
+				  "alternateName": "AGP",
     			  "description": "An edge architecture where origin state is decoupled from crawler ingestion and pre-rendered semantic payloads are injected mid-flight at the network edge.",
-			      "inDefinedTermSet": "https://www.eryc.my.id/llm.txt"
+			      "inDefinedTermSet": "https://www.eryc.my.id/llm.txt",
+				  "creator": {
+                  "@id": "https://www.eryc.my.id/#person"
+                             }
 				}
 			  				],
 			  "knowsAbout": [
