@@ -440,7 +440,16 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 
     let newHeaders = new Headers(response.headers);
     newHeaders.delete("Content-Length");
-    newHeaders.delete("Content-Security-Policy");
+    
+	  // --- SAFE CSP MODIFICATION FOR BOTS ---
+        let csp = finalHeaders.get("Content-Security-Policy");
+        if (csp) {
+            csp = csp.replace(/script-src /g, "script-src https://www.clarity.ms https://*.clarity.ms 'unsafe-inline' ");
+            csp = csp.replace(/connect-src /g, "connect-src https://*.clarity.ms ");
+            csp = csp.replace(/img-src /g, "img-src https://*.clarity.ms ");
+            finalHeaders.set("Content-Security-Policy", csp);
+        }
+        // --------------------------------------
 	  
     return new Response(rewriter.transform(response).body, {
       status: response.status,
