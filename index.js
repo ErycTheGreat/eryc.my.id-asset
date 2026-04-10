@@ -199,13 +199,13 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         
         <meta property="og:type" content="website">
         <meta property="og:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S ">
-        <meta property="og:description" content="Need to fix your business systems or get noticed? I deliver low-cost, edge SEO and data-driven digital marketing solutions for measurable growth. No B.S.">
+        <meta property="og:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta property="og:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
         <meta property="og:url" content="${canonicalUrl}">
         
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S">
-        <meta name="twitter:description" content="Need to fix your business systems or get noticed? I deliver low-cost, edge SEO and data-driven digital marketing solutions for measurable growth. No B.S.">
+        <meta name="twitter:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="twitter:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
         
         <script type="application/ld+json">
