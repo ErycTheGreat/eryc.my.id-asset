@@ -186,7 +186,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		
-		<meta name="description" content="I'm Eryc Tri Juni S, an edge SEO Specialist in Malang, Indonesia. I help fix business systems or get your business noticed by Google.">
+		<meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang. I engineer data-driven marketing systems & advanced edge architectures for business.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
         <meta name="author" content="Eryc Tri Juni S">
         <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug"> 
