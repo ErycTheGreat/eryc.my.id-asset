@@ -189,8 +189,9 @@ async function getInputValue() {
 		createCode("> clear", "Clean the terminal.");
 	} else if (value === "skill") {
 		trueValue(value);
-		createText("<span class='blue'> Skills: </span> • Data Analysis • Google Analytics • SEO • TikTok Marketing • Funnel Optimization • User Personas • Content Strategy • Content Creation • Data Story Telling");
-		createText("<span class='blue'> Trasferable Skills: </span> • Critical Thinking • Problem Solving • Business Analysis • Business Acumen");
+		createText("<span class='blue'> Edge SEO: </span> • Cloudflare Workers • AGP Architecture • Generative Engine Optimization (GEO) • Technical SEO • Web Development");
+		createText("<span class='blue'> Marketing Skills: </span> • Data Analysis • Google Analytics • SEO • TikTok Marketing • Funnel Optimization • User Personas • Content Strategy • Content Creation • Data Story Telling");
+		createText("<span class='blue'> Transferable Skills: </span> • Critical Thinking • Problem Solving • Business Analysis • Business Acumen");
 	} else if (value === "whoami") {
 		trueValue(value);
 		createText("I wear two hats: Engineer & Digital Marketer. My engineering roots fuel my <span class='blue'>data-driven strategies</span>, allowing me to engineer <span class='blue'>constraint-bypassing web architectures</span> and <span class='blue'>full-stack funnels</span>. The result? Scalable, measurable business solutions. The core? Deep, honest understanding through empathy. <span class='blue'>No B.S.</span>");
