@@ -186,7 +186,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		
-		<meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang. I fix SEO at the system layer, not just content—to capture search intent that buys.">
+		<meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
         <meta name="author" content="Eryc Tri Juni S">
         <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug"> 
@@ -199,13 +199,13 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         
         <meta property="og:type" content="website">
         <meta property="og:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S ">
-        <meta property="og:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang. I fix SEO at the system layer, not just content—to capture search intent that buys.">
+        <meta property="og:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta property="og:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
         <meta property="og:url" content="${canonicalUrl}">
         
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S">
-        <meta name="twitter:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang. I fix SEO at the system layer, not just content—to capture search intent that buys.">
+        <meta name="twitter:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="twitter:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
         
         <script type="application/ld+json">
