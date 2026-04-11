@@ -189,9 +189,9 @@ async function getInputValue() {
 		createCode("> clear", "Clean the terminal.");
 	} else if (value === "skill") {
 		trueValue(value);
-		createText("<span class='blue'> Edge SEO: </span> • Cloudflare Workers • AGP Architecture • Generative Engine Optimization (GEO) • Technical SEO • Web Development");
-		createText("<span class='blue'> Marketing Skills: </span> • Data Analysis • Google Analytics • SEO • TikTok Marketing • Funnel Optimization • User Personas • Content Strategy • Content Creation • Data Story Telling");
-		createText("<span class='blue'> Transferable Skills: </span> • Critical Thinking • Problem Solving • Business Analysis • Business Acumen");
+		createText("<span class='blue'> Edge SEO: </span> • AGP Architecture • Cloudflare Workers • Generative Engine Optimization (GEO) • Technical SEO • Web Development");
+		createText("<span class='blue'> Marketing Skills: </span> • Content Creation • Content Strategy • Data Analysis • Data Story Telling • Funnel Optimization • Google Analytics • SEO • TikTok Marketing • User Personas");
+		createText("<span class='blue'> Transferable Skills: </span> • Business Analysis • Business Acumen • Critical Thinking • Problem Solving");
 	} else if (value === "whoami") {
 		trueValue(value);
 		createText("I wear two hats: Engineer & Digital Marketer. My engineering roots fuel my <span class='blue'>data-driven strategies</span>, allowing me to engineer <span class='blue'>constraint-bypassing web architectures</span> and <span class='blue'>full-stack funnels</span>. The result? Scalable, measurable business solutions. The core? Deep, honest understanding through empathy. <span class='blue'>No B.S.</span>");
@@ -206,7 +206,7 @@ async function getInputValue() {
 		createText("<a href='https://skillshop.exceedlms.com/student/award/PPxPty4xaKJ7UvXnT6XU6UpY' target='_blank'><i class='fa fa-google'></i> Google Digital Academy (Skillshop) - Fundamentals of digital marketing</a>");
 		createText("<br>");
 		createText("The real proof isn't a certificate—it's the terminal you are reading right now.");
-		createText("This site is a live demonstration of <span class='blue'>Edge SEO</span>. It runs on a locked-down platform, bypassed at the CDN layer using my <span class='blue'>Asymmetric Ghost Payload (AGP)</span> architecture.");
+		createText("This site is a live demonstration of <span class='blue'>Edge SEO</span>. It runs on a locked-down platform, bypassed at the CDN layer using my <span class='blue'>(AGP) Asymmetric Ghost Payload</span> architecture.");
 		createText("Want to see how the system routes human execution versus crawler ingestion? Check the <a href='https://github.com/ErycTheGreat/eryc.my.id-asset' target='_blank'><i class='fa fa-github white'></i> GitHub docs</a> or parse my <a href='https://www.eryc.my.id/llm.txt' target='_blank'><i class='fa fa-terminal white'></i> llm.txt</a>.");
 	} else if (value === "sudo" || value === "sudo su") {
 		// Hide the real input cursor
