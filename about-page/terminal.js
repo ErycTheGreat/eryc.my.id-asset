@@ -193,7 +193,7 @@ async function getInputValue() {
 		createText("<span class='blue'> Trasferable Skills: </span> • Critical Thinking • Problem Solving • Business Analysis • Business Acumen");
 	} else if (value === "whoami") {
 		trueValue(value);
-		createText("I wear two hats: digital marketing specialist and engineer. My engineering roots fuel my <span class='blue'> data-driven strategies </span> and <span class='blue'> critical analysis </span> - leading to simple, low-cost yet measurable business solutions. The core? deep honest understanding through empathy. <span class='blue'> No B.S. </span>");
+		createText("I wear two hats: Engineer & Digital Marketer. My engineering roots fuel my <span class='blue'>data-driven strategies</span>, allowing me to engineer <span class='blue'>constraint-bypassing web architectures</span> and <span class='blue'>full-stack funnels</span>. The result? Scalable, measurable business solutions. The core? Deep, honest understanding through empathy. <span class='blue'>No B.S.</span>");
 		createText("<a href='https://drive.google.com/uc?id=1jZGpfGOVA7SyieMhNXl5unk2EEe8E-OX&export=download' target='_blank'><i class='fa fa-file-pdf-o white'></i> Download Resume</a>");
 	} else if (value === "dir") {
 		trueValue(value);
