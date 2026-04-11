@@ -202,7 +202,11 @@ async function getInputValue() {
 		trueValue(value);
 		createText("<a href='' target='_blank'><i class='fa fa-graduation-cap white'></i> Bachelor of Engineering - BE, Electrical & Electronics Engineering</a>");
 		createText("<a href='https://www.coursera.org/account/accomplishments/verify/J72RMZM37829' target='_blank'><i class='fa fa-google white'></i> Google Digital Marketing & E-commerce Professional Certificate</a>");
-		createText("<a href='https://skillshop.exceedlms.com/student/award/PPxPty4xaKJ7UvXnT6XU6UpY' target='_blank'><i class='fa  fa-google'></i> Google Digital Academy (Skillshop) - Fundamentals of digital marketing</a>");
+		createText("<a href='https://skillshop.exceedlms.com/student/award/PPxPty4xaKJ7UvXnT6XU6UpY' target='_blank'><i class='fa fa-google'></i> Google Digital Academy (Skillshop) - Fundamentals of digital marketing</a>");
+		createText("<br>");
+		createText("The real proof isn't a certificate—it's the terminal you are reading right now.");
+		createText("This site is a live demonstration of <span class='blue'>Edge SEO</span>. It runs on a locked-down platform, bypassed at the CDN layer using my <span class='blue'>Asymmetric Ghost Payload (AGP)</span> architecture.");
+		createText("Want to see how the system routes human execution versus crawler ingestion? Check the <a href='https://github.com/ErycTheGreat/eryc.my.id-asset' target='_blank'><i class='fa fa-github white'></i> GitHub docs</a> or parse my <a href='https://www.eryc.my.id/llm.txt' target='_blank'><i class='fa fa-terminal white'></i> llm.txt</a>.");
 	} else if (value === "sudo" || value === "sudo su") {
 		// Hide the real input cursor
 		document.querySelector(".type").style.display = "none";
