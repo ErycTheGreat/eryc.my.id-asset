@@ -412,30 +412,30 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 }
             })
 
-		   // 🚨 5. DEFER GSTATIC RENDER-BLOCKING JAVASCRIPT
+		   // 🚨 5. AGGRESSIVE DEFERRAL FOR EXTERNAL SCRIPTS
             .on('script', {
                 element(e) {
                     const src = e.getAttribute('src');
-                    // Hunt for the heavy Google Sites infrastructure scripts
-                    if (src && src.includes('www.gstatic.com')) {
+                    // Catch both the gstatic bloat and the apis.google.com scripts
+                    if (src && (src.includes('gstatic.com') || src.includes('apis.google.com'))) {
                         e.setAttribute('defer', '');
+                        e.setAttribute('async', '');
                     }
                 }
             })
 
-		 // 🚨 6. FORCE FONT-SWAP TO UNBLOCK RENDERING
+            // 🚨 6. THE "PRINT-SWAP" TRICK TO UNBLOCK FONTS
             .on('link[rel="stylesheet"]', {
                 element(e) {
                     const href = e.getAttribute('href');
                     if (href && href.includes('fonts.googleapis.com/css')) {
-                        // Append display=swap to the Google Fonts URL
-                        if (!href.includes('display=swap')) {
-                            const separator = href.includes('?') ? '&' : '?';
-                            e.setAttribute('href', href + separator + 'display=swap');
-                        }
+                        // Tell the browser this CSS is for printing, so it doesn't block the screen
+                        e.setAttribute('media', 'print');
+                        // Once loaded, swap it back to screen media
+                        e.setAttribute('onload', "this.media='all'");
                     }
                 }
-            });
+			 });
 		
         return new Response(humanRewriter.transform(response).body, {
             status: response.status,
