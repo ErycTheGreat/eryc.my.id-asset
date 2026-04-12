@@ -189,7 +189,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 		<link rel="preload" href="https://www.eryc.my.id/cf-fonts/s/jetbrains-mono/5.0.18/latin/500/normal.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 		<link rel="preload" href="https://www.eryc.my.id/cf-fonts/s/roboto/5.0.11/latin/400/normal.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 				
-		<link rel="preload" as="image" href="/assets/image/hero.webp" fetchpriority="high">
+		<link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
+		<link rel="preload" as="image" href="/assets/image/homepage-BG.avif" fetchpriority="high">
 			
 		<meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -383,7 +384,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 
                     // 1. The Hero Image Hijack
                     if (ariaLabel.includes("Eryc Tri Juni S")) {
-                        e.setAttribute("src", "/assets/image/hero.webp");
+                        e.setAttribute("src", "/assets/image/hero.avif");
                         e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high"); 
                     }
