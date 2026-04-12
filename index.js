@@ -410,15 +410,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         currentEmbedCode = null; 
                     }
                 }
-            });
+            })
 
-        return new Response(humanRewriter.transform(response).body, {
-            status: response.status,
-            headers: newHeaders
-        });
-    }
-
-	// 🚨 5. DEFER GSTATIC RENDER-BLOCKING JAVASCRIPT
+		   // 🚨 5. DEFER GSTATIC RENDER-BLOCKING JAVASCRIPT
             .on('script', {
                 element(e) {
                     const src = e.getAttribute('src');
@@ -427,9 +421,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.setAttribute('defer', '');
                     }
                 }
-            });
+            })
 
-	  // 🚨 6. FORCE FONT-SWAP TO UNBLOCK RENDERING
+		 // 🚨 6. FORCE FONT-SWAP TO UNBLOCK RENDERING
             .on('link[rel="stylesheet"]', {
                 element(e) {
                     const href = e.getAttribute('href');
@@ -442,6 +436,16 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     }
                 }
             });
+		
+        return new Response(humanRewriter.transform(response).body, {
+            status: response.status,
+            headers: newHeaders
+        });
+    }
+
+	
+
+	 
     // 🛑 EVERYTHING BELOW THIS LINE ONLY RUNS FOR BOTS 🛑
 	  
 	    // A. FETCH THE BOT PAYLOAD FROM KV DATABASE (WITH SAFETY NET)
