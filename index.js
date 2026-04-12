@@ -186,6 +186,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link rel="preload" as="image" href="https://lh3.googleusercontent.com/sitesv/APaQ0SRAh_rPQAxJKgiePZ2PtCugvsxkGmOnUgCet_Rm8hGAUtNQZhFjxYdwQewceLaIxJ5B5YBaoBgYX3yTTdHKooVUCpoJgcZKOR0mrRPNmDZNouBznpCvf9Dv3Ca56TdVTOIGfiG5UPnNEAdAysm_2Taz12tmWAOLywH2qXOyYS6Cj7gqUA_qOiCbgn8=w16383" fetchpriority="high">
+		<link rel="preload" as="image" href="https://lh3.googleusercontent.com/sitesv/APaQ0SR8JUV-MB5lf9CVHVa3vJagjzc-3iOsE4QDGyC2An7NF0oCx346nGLwOoP-vKjT4Yd8VQ_Jn8yE1EUohsPW9a2gowocyZdsPBDJScxlJcgpXdett1V6gXCcXgPz3y5KALsGnMTfd3ZVV7Cm-cKBCVoLpiMyUs6ZzD2a4RvV1BRkXx-KK0riJtu9lfM=w16383" fetchpriority="high">
 		
 		<meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
