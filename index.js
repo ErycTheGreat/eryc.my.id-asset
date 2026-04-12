@@ -379,6 +379,24 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     e.setAttribute("decoding", "sync");
                 }
             })
+
+		   // 🚨 4. HIJACK AND ACCELERATE GOOGLE FONTS
+            .on('link[href*="fonts.googleapis.com"]', {
+                element(e) {
+                    // Force the browser to grab the font CSS immediately
+                    e.setAttribute("fetchpriority", "high");
+                    
+                    // Grab the current URL
+                    let href = e.getAttribute("href");
+                    
+                    // Inject display=swap to prevent invisible text penalties
+                    if (href && !href.includes("display=swap")) {
+                        // Check if the URL already has parameters (?) or not
+                        const separator = href.includes("?") ? "&" : "?";
+                        e.setAttribute("href", href + separator + "display=swap");
+                    }
+                }
+            })
 		   
             // 4. Catch the Google iframe sitting right inside that div
             .on("iframe.YMEQtf", {
