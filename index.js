@@ -402,7 +402,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 element(e) {
                     // Overwrite Google's inline CSS with your fast GitHub proxy URL
                     // Make sure to update the filename to match your optimized AVIF/WebP file!
-                    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-bg.avif');");
+                    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG.avif');");
                 }
             })
             // Google Sites sometimes wraps images in <picture> tags. We must disarm the <source> tags for the hero.
