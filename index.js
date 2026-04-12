@@ -186,7 +186,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 				
-		<link rel="preload" as="image" href="https://lh3.googleusercontent.com/sitesv/APaQ0SSi7ZFCtsbGwfh8R25cTSlFYlVlZklI4XGve0aqj0WCDije6VPVwYVo8Tp2AqANh9CoBIwGxAHkg6NnuIfpYBq9rAu17gugOIVWILx9DUy6xEJMBNiwCcHfsa9B2hVJZhyG-LrJ0DCg4ZptZ7H4F2kQkJi7S-nFe0ns4ZVpnkaUhAUTuTHox571hoQ=w16383" fetchpriority="high">
+		<link rel="preload" as="image" href="/assets/image/hero.webp" fetchpriority="high">
 			
 		<meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -369,14 +369,28 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 }
             })
 
-		   // 🚨 3. CRUSH THE LCP LAZY-LOAD PENALTY (THE NUCLEAR OPTION)
-            .on('img, picture > source', {
+		   // 🚨 3. CRUSH THE LCP AND BYPASS GOOGLE CDN
+            .on('img', {
                 element(e) {
-                    // Don't even check if it says "lazy". Just murder the attribute entirely.
+                    // 1. Kill the lazy loader on ALL images
                     e.removeAttribute("loading"); 
-                    // Force the browser to grab it now and decode it immediately
-                    e.setAttribute("fetchpriority", "high"); 
                     e.setAttribute("decoding", "sync");
+                    
+                    // 2. Target the specific Hero Image using its aria-label
+                    let ariaLabel = e.getAttribute("aria-label") || "";
+                    if (ariaLabel.includes("Eryc Tri Juni S")) {
+                        // Swap Google's dynamic URL for your permanent GitHub URL
+                        e.setAttribute("src", "/assets/image/hero.webp");
+                        e.removeAttribute("srcset"); // Nuke srcset so it doesn't try to load Google's alternate sizes
+                        e.setAttribute("fetchpriority", "high"); // Max priority for LCP
+                    }
+                }
+            })
+            // Google Sites sometimes wraps images in <picture> tags. We must disarm the <source> tags for the hero.
+            .on('picture > source', {
+                element(e) {
+                    // We just kill the srcset so the browser falls back to the <img> tag we hijacked above
+                    e.removeAttribute("srcset"); 
                 }
             })
    
