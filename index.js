@@ -185,9 +185,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:300,400,500,700|Source+Code+Pro:400,700&display=swap">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:300,400,500,700|Source+Code+Pro:400,700&display=swap" media="print" onload="this.media='all'">
-		
+				
 		<link rel="preload" as="image" href="https://lh3.googleusercontent.com/sitesv/APaQ0SSi7ZFCtsbGwfh8R25cTSlFYlVlZklI4XGve0aqj0WCDije6VPVwYVo8Tp2AqANh9CoBIwGxAHkg6NnuIfpYBq9rAu17gugOIVWILx9DUy6xEJMBNiwCcHfsa9B2hVJZhyG-LrJ0DCg4ZptZ7H4F2kQkJi7S-nFe0ns4ZVpnkaUhAUTuTHox571hoQ=w16383" fetchpriority="high">
 			
 		<meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
