@@ -417,6 +417,31 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             headers: newHeaders
         });
     }
+
+	// 🚨 5. DEFER GSTATIC RENDER-BLOCKING JAVASCRIPT
+            .on('script', {
+                element(e) {
+                    const src = e.getAttribute('src');
+                    // Hunt for the heavy Google Sites infrastructure scripts
+                    if (src && src.includes('www.gstatic.com')) {
+                        e.setAttribute('defer', '');
+                    }
+                }
+            });
+
+	  // 🚨 6. FORCE FONT-SWAP TO UNBLOCK RENDERING
+            .on('link[rel="stylesheet"]', {
+                element(e) {
+                    const href = e.getAttribute('href');
+                    if (href && href.includes('fonts.googleapis.com/css')) {
+                        // Append display=swap to the Google Fonts URL
+                        if (!href.includes('display=swap')) {
+                            const separator = href.includes('?') ? '&' : '?';
+                            e.setAttribute('href', href + separator + 'display=swap');
+                        }
+                    }
+                }
+            });
     // 🛑 EVERYTHING BELOW THIS LINE ONLY RUNS FOR BOTS 🛑
 	  
 	    // A. FETCH THE BOT PAYLOAD FROM KV DATABASE (WITH SAFETY NET)
