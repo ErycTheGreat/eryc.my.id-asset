@@ -366,6 +366,18 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     currentEmbedCode = e.getAttribute("data-code");
                 }
             })
+
+		   // 🚨 3. CRUSH THE LCP LAZY-LOAD PENALTY
+            .on('img', {
+                element(e) {
+                    const loading = e.getAttribute("loading");
+                    if (loading === "lazy") {
+                        e.removeAttribute("loading"); // Kill the lazy load
+                        e.setAttribute("fetchpriority", "high"); // Tell the browser to prioritize it
+                    }
+                }
+            })
+		   
             // 4. Catch the Google iframe sitting right inside that div
             .on("iframe.YMEQtf", {
                 element(e) {
