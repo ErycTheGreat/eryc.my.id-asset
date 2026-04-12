@@ -443,7 +443,17 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         return new Response(humanRewriter.transform(response).body, {
             status: response.status,
             headers: newHeaders
-        });
+        })
+
+		 // 🚨 7. FIX GOOGLE SITES NATIVE ACCESSIBILITY BUG
+            .on('a[aria-selected]', {
+                element(e) {
+                    // Remove the invalid ARIA attribute that is confusing screen readers
+                    e.removeAttribute('aria-selected');
+                    // Inject the correct modern standard for an active navigation link
+                    e.setAttribute('aria-current', 'page');
+                }
+            });
     }
 
 	
