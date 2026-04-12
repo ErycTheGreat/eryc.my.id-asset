@@ -78,11 +78,18 @@ const options = document.querySelectorAll(".option");
 		});
 
 		// Lazy Load Image Script
-		const avatar = document.querySelector(".lazy-avatar");
-		const img = new Image();
-		img.src = avatar.dataset.src;
+		// Lazy Load Image Script (Edge-Optimized)
+		document.addEventListener("DOMContentLoaded", () => {
+			const avatar = document.querySelector(".lazy-avatar");
+			
+			// Safety check: Only run if the avatar actually exists!
+			if (avatar && avatar.dataset.src) {
+				const img = new Image();
+				img.src = avatar.dataset.src;
 
-		img.onload = () => {
-			avatar.src = img.src;
-			avatar.classList.add("loaded");
-		};
+				img.onload = () => {
+					avatar.src = img.src;
+					avatar.classList.add("loaded");
+				};
+			}
+		});
