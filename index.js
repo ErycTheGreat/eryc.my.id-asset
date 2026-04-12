@@ -438,7 +438,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.setAttribute('onload', "this.media='all'");
                     }
                 }
-			 });
+			 })
 		
         return new Response(humanRewriter.transform(response).body, {
             status: response.status,
@@ -455,10 +455,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 }
             });
     }
-
-	
-
-	 
+		 
     // 🛑 EVERYTHING BELOW THIS LINE ONLY RUNS FOR BOTS 🛑
 	  
 	    // A. FETCH THE BOT PAYLOAD FROM KV DATABASE (WITH SAFETY NET)
