@@ -380,21 +380,17 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 }
             })
 
-		   // 🚨 4. HIJACK AND ACCELERATE GOOGLE FONTS
-            .on('link[href*="fonts.googleapis.com"]', {
+		   // 🚨 4. HIJACK AND ACCELERATE GOOGLE FONTS (THE ASYNC HACK)
+            .on('link[href*="fonts.googleapis.com/css"]', {
                 element(e) {
-                    // Force the browser to grab the font CSS immediately
+                    // 1. Tell the browser this CSS is only for printers, so it doesn't block the screen rendering
+                    e.setAttribute("media", "print");
+                    
+                    // 2. The moment it finishes downloading in the background, flip it back to 'all' so it applies to the screen
+                    e.setAttribute("onload", "this.media='all'");
+                    
+                    // 3. Keep priority high so it doesn't get pushed to the end of the queue
                     e.setAttribute("fetchpriority", "high");
-                    
-                    // Grab the current URL
-                    let href = e.getAttribute("href");
-                    
-                    // Inject display=swap to prevent invisible text penalties
-                    if (href && !href.includes("display=swap")) {
-                        // Check if the URL already has parameters (?) or not
-                        const separator = href.includes("?") ? "&" : "?";
-                        e.setAttribute("href", href + separator + "display=swap");
-                    }
                 }
             })
 		   
