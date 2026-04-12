@@ -375,17 +375,25 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 		   // 🚨 3. CRUSH THE LCP AND BYPASS GOOGLE CDN
             .on('img', {
                 element(e) {
-                    // 1. Kill the lazy loader on ALL images
                     e.removeAttribute("loading"); 
                     e.setAttribute("decoding", "sync");
                     
-                    // 2. Target the specific Hero Image using its aria-label
                     let ariaLabel = e.getAttribute("aria-label") || "";
+                    let altText = e.getAttribute("alt") || ""; // <--- Grab the Alt text
+
+                    // 1. The Hero Image Hijack
                     if (ariaLabel.includes("Eryc Tri Juni S")) {
-                        // Swap Google's dynamic URL for your permanent GitHub URL
                         e.setAttribute("src", "/assets/image/hero.webp");
-                        e.removeAttribute("srcset"); // Nuke srcset so it doesn't try to load Google's alternate sizes
-                        e.setAttribute("fetchpriority", "high"); // Max priority for LCP
+                        e.removeAttribute("srcset");
+                        e.setAttribute("fetchpriority", "high"); 
+                    }
+                    
+                    // 2. The 3.6MB Asset Hijack (The Bulletproof Method)
+                    // Hunt for your secret Alt text instead of the Google URL
+                    else if (altText === "edge-bg-hijack") { 
+                        // Overwrite whatever dynamic URL Google generated with your proxy file
+                        e.setAttribute("src", "/assets/image/my-optimized-background.webp");
+                        e.removeAttribute("srcset");
                     }
                 }
             })
