@@ -185,6 +185,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="preload" as="image" href="https://lh3.googleusercontent.com/sitesv/APaQ0SRAh_rPQAxJKgiePZ2PtCugvsxkGmOnUgCet_Rm8hGAUtNQZhFjxYdwQewceLaIxJ5B5YBaoBgYX3yTTdHKooVUCpoJgcZKOR0mrRPNmDZNouBznpCvf9Dv3Ca56TdVTOIGfiG5UPnNEAdAysm_2Taz12tmWAOLywH2qXOyYS6Cj7gqUA_qOiCbgn8=w16383" fetchpriority="high">
 		
 		<meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -367,14 +368,14 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 }
             })
 
-		   // 🚨 3. CRUSH THE LCP LAZY-LOAD PENALTY
-            .on('img', {
+		   // 🚨 3. CRUSH THE LCP LAZY-LOAD PENALTY (THE NUCLEAR OPTION)
+            .on('img, picture > source', {
                 element(e) {
-                    const loading = e.getAttribute("loading");
-                    if (loading === "lazy") {
-                        e.removeAttribute("loading"); // Kill the lazy load
-                        e.setAttribute("fetchpriority", "high"); // Tell the browser to prioritize it
-                    }
+                    // Don't even check if it says "lazy". Just murder the attribute entirely.
+                    e.removeAttribute("loading"); 
+                    // Force the browser to grab it now and decode it immediately
+                    e.setAttribute("fetchpriority", "high"); 
+                    e.setAttribute("decoding", "sync");
                 }
             })
 		   
