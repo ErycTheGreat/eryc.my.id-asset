@@ -185,6 +185,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link rel="preload" href="https://www.eryc.my.id/assets/font/jetbrains-mono-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+        <link rel="preload" href="https://www.eryc.my.id/assets/font/jetbrains-mono-500.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+        <link rel="preload" href="https://www.eryc.my.id/assets/font/jetbrains-mono-700.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 				
 		<link rel="preload" as="image" href="/assets/image/hero.webp" fetchpriority="high">
 			
