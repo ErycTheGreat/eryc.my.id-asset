@@ -169,8 +169,16 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
 
    // --- 6. EDGE DYNAMIC RENDERING (THE MAGIC) ---
-    const response = await fetch(request);
-    const contentType = response.headers.get("content-type") || "";
+   // 🚨 DEVICE DETECTION FOR ADAPTIVE BACKGROUND
+    const uaForBg = request.headers.get("User-Agent") || "";
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(uaForBg);
+
+    const bgPreload = isMobile 
+        ? '<link rel="preload" as="image" href="/assets/image/homepage-BG-mobile.avif" fetchpriority="high">'
+        : '<link rel="preload" as="image" href="/assets/image/homepage-BG.avif" fetchpriority="high">';
+
+    const response = await fetch(request);
+    const contentType = response.headers.get("content-type") || "";
 
     if (!contentType.includes("text/html")) {
         return response;
@@ -190,7 +198,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 		<link rel="preload" href="https://www.eryc.my.id/cf-fonts/s/roboto/5.0.11/latin/400/normal.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 				
 		<link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
-		<link rel="preload" as="image" href="/assets/image/homepage-BG.avif" fetchpriority="high">
+		${bgPreload}
 			
 		<meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -398,14 +406,13 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     }
                 }
             })
-		   // 🚨 The 3.6MB Background Div Hijack
-            .on('div[aria-label="edge-bg-hijack"]', {
-                element(e) {
-                    // Overwrite Google's inline CSS with your fast GitHub proxy URL
-                    // Make sure to update the filename to match your optimized AVIF/WebP file!
-                    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG.avif');");
-                }
-            })
+		   // 🚨 The Adaptive Background Div Hijack
+            .on('div[aria-label="edge-bg-hijack"]', {
+                element(e) {
+                    const selectedBg = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
+                    e.setAttribute("style", `background-position: center center; background-image: url('${selectedBg}');`);
+                }
+            })
             // Google Sites sometimes wraps images in <picture> tags. We must disarm the <source> tags for the hero.
             .on('picture > source', {
                 element(e) {
@@ -467,10 +474,13 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 }
             });
 		
-        return new Response(humanRewriter.transform(response).body, {
-            status: response.status,
-            headers: newHeaders
-        });
+        // 🚨 Split cache so desktop users don't get mobile HTML and vice versa
+        newHeaders.set("Vary", "User-Agent");
+
+        return new Response(humanRewriter.transform(response).body, {
+            status: response.status,
+            headers: newHeaders
+        });
 	 
     }
 		 
