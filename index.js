@@ -251,14 +251,14 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 "@id": "https://www.eryc.my.id/#website"
               },
               "primaryImageOfPage": {
-                "@id": "https://www.dropbox.com/scl/fi/e6x2i45cirhotrnrvkwg9/eryctrijunis-eryc.my.id-home-screen-shot.jpeg?rlkey=mbqfgb4tnic50tcoiyo3tk7n4&st=6vc1q9ze&raw=1"
+                "@id": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp"
               },
               "inLanguage": "en-US"
             },
             {
               "@type": "ImageObject",
-              "@id": "https://www.dropbox.com/scl/fi/ivr9t7qu6r4vjt0hd5076/android-chrome-512x512.png?rlkey=n2erjbo7u707khljztqtyac59&raw=1",
-              "url": "https://www.dropbox.com/scl/fi/ivr9t7qu6r4vjt0hd5076/android-chrome-512x512.png?rlkey=n2erjbo7u707khljztqtyac59&raw=1",
+              "@id": "https://www.eryc.my.id/assets/image/logo-512x512.webp",
+              "url": "https://www.eryc.my.id/assets/image/logo-512x512.webp",
               "width": 512,
               "height": 512,
               "caption": "Eryc Tri Juni S | Edge SEO Specialist",
@@ -329,9 +329,46 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "mainEntity": {
                 "@id": "https://www.eryc.my.id/#person"
               }
+            },
+			{
+              "@type": "ProfessionalService",
+              "@id": "https://www.eryc.my.id/#localbusiness",
+              "name": "Edge SEO Specialist Malang | Eryc Tri Juni S",
+              "url": "https://www.eryc.my.id",
+              "logo": "https://www.eryc.my.id/assets/image/logo.webp",
+              "image": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp",
+              "description": "Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Malang",
+                "addressRegion": "East Java",
+                "addressCountry": "ID"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": "-7.9839", 
+                "longitude": "112.6214",
+                "description": "Center of Malang"
+              },
+              "priceRange": "$$$",
+              "areaServed": [
+                {
+                  "@type": "City",
+                  "name": "Malang",
+                  "sameAs": "https://en.wikipedia.org/wiki/Malang"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "East Java",
+                  "sameAs": "https://en.wikipedia.org/wiki/East_Java"
+                }
+              ],
+              "founder": {
+                "@id": "https://www.eryc.my.id/#person"
+              }
             }
           ]
-        }
+        }        
         </script>
 		
 		<script type="text/javascript">
