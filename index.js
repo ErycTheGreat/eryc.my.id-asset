@@ -383,11 +383,18 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     let altText = e.getAttribute("alt") || ""; // <--- Grab the Alt text
 
                     // 1. The Hero Image Hijack
-                    if (ariaLabel.includes("Eryc Tri Juni S")) {
-                        e.setAttribute("src", "/assets/image/hero.avif");
-                        e.removeAttribute("srcset");
-                        e.setAttribute("fetchpriority", "high"); 
-                    }
+					if (ariaLabel.includes("Eryc Tri Juni S")) {
+					    e.setAttribute("src", "/assets/image/hero.avif");
+					    e.removeAttribute("srcset");
+					    e.setAttribute("fetchpriority", "high"); 
+					    
+					    // 1. Tell PSI the intrinsic ratio (1:1) to crush CLS
+					    e.setAttribute("width", "120"); 
+					    e.setAttribute("height", "120"); 
+					    
+					    // 2. Keep Google's class, but force the width to scale proportionally with the height
+					    e.setAttribute("style", "width: auto !important; object-fit: contain;"); 
+					}
                     
                     // 2. The 3.6MB Asset Hijack (The Bulletproof Method)
                     // Hunt for your secret Alt text instead of the Google URL
