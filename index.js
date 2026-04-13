@@ -185,7 +185,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Roboto:wght@400&display=swap">
+		<link rel="preload" href="https://www.eryc.my.id/cf-fonts/s/jetbrains-mono/5.0.18/latin/700/normal.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+		<link rel="preload" href="https://www.eryc.my.id/cf-fonts/s/jetbrains-mono/5.0.18/latin/500/normal.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+		<link rel="preload" href="https://www.eryc.my.id/cf-fonts/s/roboto/5.0.11/latin/400/normal.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 				
 		<link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
 		<link rel="preload" as="image" href="/assets/image/homepage-BG.avif" fetchpriority="high">
@@ -381,18 +383,11 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     let altText = e.getAttribute("alt") || ""; // <--- Grab the Alt text
 
                     // 1. The Hero Image Hijack
-					if (ariaLabel.includes("Eryc Tri Juni S")) {
-					    e.setAttribute("src", "/assets/image/hero.avif");
-					    e.removeAttribute("srcset");
-					    e.setAttribute("fetchpriority", "high"); 
-					    
-					    // 1. Tell the browser the true square shape to crush the CLS penalty
-					    e.setAttribute("width", "120"); 
-					    e.setAttribute("height", "120"); 
-					    
-					    // 2. 🚨 THE LEAN FIX: Delete Google's CSS class so it stops stretching your square
-					    e.removeAttribute("class"); 
-					}
+                    if (ariaLabel.includes("Eryc Tri Juni S")) {
+                        e.setAttribute("src", "/assets/image/hero.avif");
+                        e.removeAttribute("srcset");
+                        e.setAttribute("fetchpriority", "high"); 
+                    }
                     
                     // 2. The 3.6MB Asset Hijack (The Bulletproof Method)
                     // Hunt for your secret Alt text instead of the Google URL
