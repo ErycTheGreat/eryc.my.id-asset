@@ -190,20 +190,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 		<link rel="preload" href="https://www.eryc.my.id/cf-fonts/s/roboto/5.0.11/latin/400/normal.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 				
 		<link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
-		<link rel="preload" as="image" href="/assets/image/homepage-BG-mobile.avif" fetchpriority="high" media="(max-width: 768px)">
-		<link rel="preload" as="image" href="/assets/image/homepage-BG.avif" fetchpriority="high" media="(min-width: 769px)">
-		
-		<style>
-		  #adaptive-hero-bg {
-		    background-position: center center !important;
-		    background-image: url('/assets/image/homepage-BG.avif') !important;
-		  }
-		  @media (max-width: 768px) {
-		    #adaptive-hero-bg {
-		      background-image: url('/assets/image/homepage-BG-mobile.avif') !important;
-		    }
-		  }
-		</style>
+		<link rel="preload" as="image" href="/assets/image/homepage-BG.avif" fetchpriority="high">
 			
 		<meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -411,14 +398,14 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     }
                 }
             })
-		   // 🚨 The Adaptive Background Div Hijack (Zero Cache Penalty)
-            .on('div[aria-label="edge-bg-hijack"]', {
-                element(e) {
-                    // Remove Google's inline CSS and attach our fast media query ID
-                    e.removeAttribute("style");
-                    e.setAttribute("id", "adaptive-hero-bg");
-                }
-            })
+		   // 🚨 The 3.6MB Background Div Hijack
+            .on('div[aria-label="edge-bg-hijack"]', {
+                element(e) {
+                    // Overwrite Google's inline CSS with your fast GitHub proxy URL
+                    // Make sure to update the filename to match your optimized AVIF/WebP file!
+                    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG.avif');");
+                }
+            })
             // Google Sites sometimes wraps images in <picture> tags. We must disarm the <source> tags for the hero.
             .on('picture > source', {
                 element(e) {
