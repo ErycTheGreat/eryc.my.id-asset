@@ -380,18 +380,18 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     let ariaLabel = e.getAttribute("aria-label") || "";
                     let altText = e.getAttribute("alt") || ""; // <--- Grab the Alt text
 
-                    // 1. The Hero Image Hijack (CLS Patched)
+                    // 1. The Hero Image Hijack
 					if (ariaLabel.includes("Eryc Tri Juni S")) {
-						e.setAttribute("src", "/assets/image/hero.avif");
-						e.removeAttribute("srcset");
-						e.setAttribute("fetchpriority", "high");
-						
-						// Define the bounding box
-						e.setAttribute("width", "120"); 
-						e.setAttribute("height", "120"); 
-						
-						// Force the browser to respect the image's natural shape inside that box
-						e.setAttribute("style", "width: 120px !important; height: 120px !important; object-fit: contain !important; object-position: left center !important;");
+					    e.setAttribute("src", "/assets/image/hero.avif");
+					    e.removeAttribute("srcset");
+					    e.setAttribute("fetchpriority", "high"); 
+					    
+					    // 1. Tell the browser the true square shape to crush the CLS penalty
+					    e.setAttribute("width", "120"); 
+					    e.setAttribute("height", "120"); 
+					    
+					    // 2. 🚨 THE LEAN FIX: Delete Google's CSS class so it stops stretching your square
+					    e.removeAttribute("class"); 
 					}
                     
                     // 2. The 3.6MB Asset Hijack (The Bulletproof Method)
@@ -470,15 +470,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     // Inject the correct modern standard for an active navigation link
                     e.setAttribute('aria-current', 'page');
                 }
-            })
-			
-			// 🚨 8. NUKE GOOGLE SITES BLOATWARE SCRIPTS
-            .on('script[src*="play.google.com/log"]', { element(e) { e.remove(); } })
-            .on('script[src*="apis.google.com"]', { 
-                element(e) { 
-                    // Only remove if it's not strictly necessary for your iframe embeds
-                    e.remove(); 
-                } 
             });
 		
         return new Response(humanRewriter.transform(response).body, {
