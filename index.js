@@ -169,16 +169,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
 
    // --- 6. EDGE DYNAMIC RENDERING (THE MAGIC) ---
-   // 🚨 DEVICE DETECTION FOR ADAPTIVE BACKGROUND
-    const uaForBg = request.headers.get("User-Agent") || "";
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(uaForBg);
-
-    const bgPreload = isMobile 
-        ? '<link rel="preload" as="image" href="/assets/image/homepage-BG-mobile.avif" fetchpriority="high">'
-        : '<link rel="preload" as="image" href="/assets/image/homepage-BG.avif" fetchpriority="high">';
-
-    const response = await fetch(request);
-    const contentType = response.headers.get("content-type") || "";
+    const response = await fetch(request);
+    const contentType = response.headers.get("content-type") || "";
 
     if (!contentType.includes("text/html")) {
         return response;
@@ -198,7 +190,20 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 		<link rel="preload" href="https://www.eryc.my.id/cf-fonts/s/roboto/5.0.11/latin/400/normal.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 				
 		<link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
-		${bgPreload}
+		<link rel="preload" as="image" href="/assets/image/homepage-BG-mobile.avif" fetchpriority="high" media="(max-width: 768px)">
+		<link rel="preload" as="image" href="/assets/image/homepage-BG.avif" fetchpriority="high" media="(min-width: 769px)">
+		
+		<style>
+		  #adaptive-hero-bg {
+		    background-position: center center !important;
+		    background-image: url('/assets/image/homepage-BG.avif') !important;
+		  }
+		  @media (max-width: 768px) {
+		    #adaptive-hero-bg {
+		      background-image: url('/assets/image/homepage-BG-mobile.avif') !important;
+		    }
+		  }
+		</style>
 			
 		<meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -406,11 +411,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     }
                 }
             })
-		   // 🚨 The Adaptive Background Div Hijack
+		   // 🚨 The Adaptive Background Div Hijack (Zero Cache Penalty)
             .on('div[aria-label="edge-bg-hijack"]', {
                 element(e) {
-                    const selectedBg = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
-                    e.setAttribute("style", `background-position: center center; background-image: url('${selectedBg}');`);
+                    // Remove Google's inline CSS and attach our fast media query ID
+                    e.removeAttribute("style");
+                    e.setAttribute("id", "adaptive-hero-bg");
                 }
             })
             // Google Sites sometimes wraps images in <picture> tags. We must disarm the <source> tags for the hero.
@@ -474,13 +480,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 }
             });
 		
-        // 🚨 Split cache so desktop users don't get mobile HTML and vice versa
-        newHeaders.set("Vary", "User-Agent");
-
-        return new Response(humanRewriter.transform(response).body, {
-            status: response.status,
-            headers: newHeaders
-        });
+        return new Response(humanRewriter.transform(response).body, {
+            status: response.status,
+            headers: newHeaders
+        });
 	 
     }
 		 
