@@ -352,17 +352,22 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               },
               "priceRange": "$$$",
               "areaServed": [
-                {
-                  "@type": "City",
-                  "name": "Malang",
-                  "sameAs": "https://en.wikipedia.org/wiki/Malang"
-                },
-                {
-                  "@type": "AdministrativeArea",
-                  "name": "East Java",
-                  "sameAs": "https://en.wikipedia.org/wiki/East_Java"
-                }
-              ],
+			    {
+			      "@type": "City",
+			      "name": "Malang",
+			      "sameAs": "https://en.wikipedia.org/wiki/Malang"
+			    },
+			    {
+			      "@type": "City",
+			      "name": "Surabaya",
+			      "sameAs": "https://en.wikipedia.org/wiki/Surabaya"
+			    },
+			    {
+			      "@type": "AdministrativeArea",
+			      "name": "East Java",
+			      "sameAs": "https://en.wikipedia.org/wiki/East_Java"
+			    }
+			  ],
               "founder": {
                 "@id": "https://www.eryc.my.id/#person"
               }
