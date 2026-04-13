@@ -470,7 +470,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     // Inject the correct modern standard for an active navigation link
                     e.setAttribute('aria-current', 'page');
                 }
-            });
+            })
 			
 			// 🚨 8. NUKE GOOGLE SITES BLOATWARE SCRIPTS
             .on('script[src*="play.google.com/log"]', { element(e) { e.remove(); } })
@@ -479,7 +479,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     // Only remove if it's not strictly necessary for your iframe embeds
                     e.remove(); 
                 } 
-            })
+            });
 		
         return new Response(humanRewriter.transform(response).body, {
             status: response.status,
