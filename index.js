@@ -391,7 +391,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 						e.setAttribute("height", "120"); 
 						
 						// Force the browser to respect the image's natural shape inside that box
-						e.setAttribute("style", "object-fit: contain; object-position: left center;");
+						e.setAttribute("style", "width: 120px !important; height: 120px !important; object-fit: contain !important; object-position: left center !important;");
 					}
                     
                     // 2. The 3.6MB Asset Hijack (The Bulletproof Method)
