@@ -12,7 +12,6 @@ export default {
     if (isAIBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
     }
-    // ----------------------------------------------------
 
     // --- 0.2 INDEXNOW API KEY VERIFICATION ---
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
@@ -168,7 +167,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       return fetch(request);
     }
 
-   // --- 6. EDGE DYNAMIC RENDERING (THE MAGIC) ---
+   // --- 6. EDGE DYNAMIC RENDERING ---
     const response = await fetch(request);
     const contentType = response.headers.get("content-type") || "";
 
@@ -192,11 +191,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         console.error("AGP_STATE KV Fetch Error:", e);
     }
 
-    // 🚨 FIX: Define domain and canonicalUrl BEFORE we try to use them in the SEO tags!
     const domain = "https://www.eryc.my.id";
     const canonicalUrl = domain + url.pathname
-     // B. HEAD INJECTION (Always injected, good for all pages)
-   // The entire <head> payload (Meta + JSON-LD)
+
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -400,15 +397,13 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         </script>
     `;
       
-   // 🏎️ THE HUMAN FAST-LANE BYPASS (THE FINAL UNLOCKED EDITION)
+   // 🏎️ THE HUMAN FAST-LANE BYPASS
     if (!isBot) {
         let newHeaders = new Headers(response.headers);
         newHeaders.delete("Content-Length"); 
-        
-        // 🚨 CRITICAL FIX 1: Nuke Google's strict Security Policy so your custom JS can run
-       newHeaders.delete("Content-Security-Policy");
+        newHeaders.delete("Content-Security-Policy");
 
-       // 🤖 [NEW] INJECT THE HTTP LCP PRELOAD HEADER (Force download immediately)
+       // 🤖 INJECT THE HTTP LCP PRELOAD HEADER
        if (agpLcpUrl) {
            newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image`);
        }
@@ -416,126 +411,89 @@ Sitemap: https://${canonicalHost}/sitemap.xml
        let currentEmbedCode = null;
 
        let humanRewriter = new HTMLRewriter()
-            // 🚨 1. REMOVE DEFAULT GOOGLE SITES SEO TAGS FOR HUMANS
             .on('link[rel="canonical"]', { element(e) { e.remove(); } })
             .on('meta[name="description"]', { element(e) { e.remove(); } })
             .on('meta[property="og:title"]', { element(e) { e.remove(); } })
             
-            // 🚨 2. INJECT CUSTOM SEO + ANTI-SPINNER CSS + 🤖 AGP SKELETON
             .on("head", {
                 element(e) {
                     e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
                     e.append(customHeaderContent, { html: true }); 
                     
-                    // 🤖 [NEW] INJECT THE AI-GENERATED CRITICAL CSS TO NAIL THE FCP
+                    // 🤖 INJECT THE AI-GENERATED CRITICAL CSS
                     if (agpGhostCss) {
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
                 }
             })
-            // 3. Catch the wrapper div that holds your raw code
             .on("div[data-code]", {
                 element(e) {
                     currentEmbedCode = e.getAttribute("data-code");
                 }
             })
-
-           // 🚨 3. CRUSH THE LCP AND BYPASS GOOGLE CDN
             .on('img', {
                 element(e) {
                     e.removeAttribute("loading"); 
                     e.setAttribute("decoding", "sync");
                     
                     let ariaLabel = e.getAttribute("aria-label") || "";
-                    let altText = e.getAttribute("alt") || ""; // <--- Grab the Alt text
+                    let altText = e.getAttribute("alt") || ""; 
 
-                    // 1. The Hero Image Hijack
                     if (ariaLabel.includes("Eryc Tri Juni S")) {
                         e.setAttribute("src", "/assets/image/hero.avif");
                         e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high"); 
-                        
-                        // 1. Tell PSI the intrinsic ratio (1:1) to crush CLS
                         e.setAttribute("width", "120"); 
                         e.setAttribute("height", "120"); 
-                        
-                        // 2. Keep Google's class, but force the width to scale proportionally with the height
                         e.setAttribute("style", "width: auto !important; object-fit: contain;"); 
                     }
-                    
-                    // 2. The 3.6MB Asset Hijack (The Bulletproof Method)
-                    // Hunt for your secret Alt text instead of the Google URL
                     else if (altText === "edge-bg-hijack") { 
-                        // Overwrite whatever dynamic URL Google generated with your proxy file
                         e.setAttribute("src", "/assets/image/my-optimized-background.webp");
                         e.removeAttribute("srcset");
                     }
                 }
             })
-           // 🚨 The 3.6MB Background Div Hijack
             .on('div[aria-label="edge-bg-hijack"]', {
                 element(e) {
-                    // Overwrite Google's inline CSS with your fast GitHub proxy URL
                     e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG.avif');");
                 }
             })
-            // Google Sites sometimes wraps images in <picture> tags. We must disarm the <source> tags for the hero.
             .on('picture > source', {
                 element(e) {
-                    // We just kill the srcset so the browser falls back to the <img> tag we hijacked above
                     e.removeAttribute("srcset"); 
                 }
             })
-   
-            // 4. Catch the Google iframe sitting right inside that div
             .on("iframe.YMEQtf", {
                 element(e) {
                     if (currentEmbedCode) {
-                        // 🚨 CRITICAL FIX 2: Remove the sandbox so links and JS actually work
                         e.removeAttribute("sandbox"); 
-                        
-                        // Kill the slow external network request
                         e.removeAttribute("src");
-                        
-                        // Inject the raw code directly so it renders instantly
                         e.setAttribute("srcdoc", currentEmbedCode);
-                        
                         currentEmbedCode = null; 
                     }
                 }
             })
-
-           // 🚨 5. AGGRESSIVE DEFERRAL FOR EXTERNAL SCRIPTS
             .on('script', {
                 element(e) {
                     const src = e.getAttribute('src');
-                    // Catch both the gstatic bloat and the apis.google.com scripts
                     if (src && (src.includes('gstatic.com') || src.includes('apis.google.com'))) {
                         e.setAttribute('defer', '');
                         e.setAttribute('async', '');
                     }
                 }
             })
-
-            // 🚨 6. THE "PRINT-SWAP" TRICK TO UNBLOCK FONTS
             .on('link[rel="stylesheet"]', {
                 element(e) {
                     const href = e.getAttribute('href');
                     if (href && href.includes('fonts.googleapis.com/css')) {
-                        // Tell the browser this CSS is for printing, so it doesn't block the screen
                         e.setAttribute('media', 'print');
-                        // Once loaded, swap it back to screen media
                         e.setAttribute('onload', "this.media='all'");
                     }
                 }
              })
-        
-           // 🚨 7. FIX GOOGLE SITES NATIVE ACCESSIBILITY BUG
             .on('a[aria-selected]', {
                 element(e) {
-                    // Remove the invalid ARIA attribute that is confusing screen readers
                     e.removeAttribute('aria-selected');
-                    // Inject the correct modern standard for an active navigation link
                     e.setAttribute('aria-current', 'page');
                 }
             });
@@ -544,43 +502,25 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             status: response.status,
             headers: newHeaders
         });
-    
     }
         
-    // 🛑 EVERYTHING BELOW THIS LINE ONLY RUNS FOR BOTS 🛑
-      
-    // A. FETCH THE BOT PAYLOAD FROM KV DATABASE (WITH SAFETY NET)
+    // 🛑 BOTS ONLY 🛑
     let botPayload = null;
     if (isBot) {
         try {
-            // 1. Check if the KV database is actually linked to the Worker!
             if (env && env.SEO_PAYLOADS) {
                 const cleanPath = url.pathname.replace(/\/$/, "") || "/";
                 botPayload = await env.SEO_PAYLOADS.get(cleanPath); 
-            } else {
-                console.error("CRITICAL: SEO_PAYLOADS KV Namespace is not bound to this Worker!");
             }
         } catch (error) {
-            // 2. If KV fails, swallow the error so the bot still gets a 200 OK status!
             console.error("KV Fetch Error:", error);
         }
     }
-
    
-    // C. DECLARE HTMLREWRITER
   let rewriter = new HTMLRewriter()
-        // 🚨 KILL NATIVE GOOGLE SITES CANONICAL FOR BOTS
-        .on('link[rel="canonical"]', { element(e) { e.remove(); } 
-        })
-        // Target and remove the native Google Sites description
-        .on('meta[name="description"]', {
-            element(e) { e.remove(); }
-        })
-        // Target and remove the native Google Sites OG Title
-        .on('meta[property="og:title"]', {
-            element(e) { e.remove(); }
-        })
-        // Inject your master payload + 🤖 Parity AGP Skeleton
+        .on('link[rel="canonical"]', { element(e) { e.remove(); } })
+        .on('meta[name="description"]', { element(e) { e.remove(); } })
+        .on('meta[property="og:title"]', { element(e) { e.remove(); } })
         .on("head", {
             element(e) { 
                 e.append(customHeaderContent, { html: true }); 
@@ -590,12 +530,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             }
         });
 
-    // D. DYNAMIC BODY INJECTION (ONLY happens if it's a bot AND a KV payload exists)
-    // Notice there is NO CSS hiding it. It's injected purely as standard HTML.
     if (isBot && botPayload) {
         rewriter.on("body", {
             element(element) {
-                // prepend puts it at the very top of the <body> so bots read it immediately
                 element.prepend(botPayload, { html: true }); 
             }
         });
@@ -604,7 +541,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     let newHeaders = new Headers(response.headers);
     newHeaders.delete("Content-Length");
     
-    // 🤖 [NEW] INJECT LCP PRELOAD FOR BOTS TOO (For Absolute User-Agent Parity)
     if (agpLcpUrl) {
         newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image`);
     }
@@ -613,58 +549,5 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       status: response.status,
       headers: newHeaders
     });
-  },
-
-  // 🤖 🛑 [NEW] THE ASYNCHRONOUS AI ENGINE 🛑 🤖
-  // This runs completely separate from your fetch event based on the wrangler.toml cron schedule
-  async scheduled(event, env, ctx) {
-    console.log("Starting AGP AI Extraction...");
-
-    try {
-        // 1. Launch Headless Browser to get the computed DOM
-        const browser = await puppeteer.launch(env.MYBROWSER);
-        const page = await browser.newPage();
-        
-        // 🚨🚨🚨 REPLACE THIS WITH YOUR ACTUAL GOOGLE SITES RAW URL 🚨🚨🚨
-        await page.goto("https://sites.google.com/view/eryc-tri-juni-s-notes/");
-        
-        // Wait for Google's heavy JSON scripts to fully execute
-        await page.waitForNetworkIdle(); 
-        
-        const computedHTML = await page.content();
-        await browser.close();
-
-        // 2. Define the strict instruction for the AI
-        const systemPrompt = `You are an Edge SEO extraction tool. 
-        Analyze the provided HTML. 
-        Output ONLY a valid JSON object. 
-        Required keys: 
-        "lcpUrl" (string, the absolute URL of the primary hero image), 
-        "criticalCss" (string, a minified CSS string replicating the primary above-the-fold layout and background colors). 
-        Do not include markdown formatting or explanations.`;
-
-        // 3. Send the DOM to Llama 3
-        console.log("Sending DOM to Worker AI...");
-        const aiResponse = await env.AI.run('@cf/meta/llama-3-8b-instruct', {
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: computedHTML }
-          ]
-        });
-
-        // 4. Save the payload to KV
-        const parsedData = JSON.parse(aiResponse.response);
-          
-        if (parsedData.lcpUrl) {
-            await env.AGP_STATE.put("LCP_IMAGE_URL", parsedData.lcpUrl);
-        }
-        if (parsedData.criticalCss) {
-            await env.AGP_STATE.put("GHOST_CSS", parsedData.criticalCss);
-        }
-          
-        console.log("AGP State Updated Successfully in KV.");
-    } catch (error) {
-        console.error("AI Extraction Failed:", error);
-    }
   }
 };
