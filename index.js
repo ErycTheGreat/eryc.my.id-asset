@@ -628,7 +628,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         const page = await browser.newPage();
         
         // 🚨🚨🚨 REPLACE THIS WITH YOUR ACTUAL GOOGLE SITES RAW URL 🚨🚨🚨
-        await page.goto("https://sites.google.com/view/YOUR_RAW_SITE_ID");
+        await page.goto("https://sites.google.com/view/eryc-tri-juni-s-notes/");
         
         // Wait for Google's heavy JSON scripts to fully execute
         await page.waitForNetworkIdle(); 
