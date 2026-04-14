@@ -2,6 +2,7 @@ name = "homepage-sitemap-robots-txt"
 main = "index.js"
 compatibility_date = "2024-03-27"
 
+# --- LIVE TRAFFIC ROUTING ---
 # This locks in your routes so GitHub never overwrites them
 routes = [
   { pattern = "www.eryc.my.id/*", zone_name = "eryc.my.id" },
@@ -9,11 +10,30 @@ routes = [
   { pattern = "www.eryc.my.id/assets/*", zone_name = "eryc.my.id" }
 ]
 
-# --- KV DATABASE BINDING ---
-# This ensures GitHub automatically reconnects your KV database on every push
+# --- BACKGROUND TASKS ---
+# Trigger the AI extraction to run automatically every 12 hours
+[triggers]
+crons = ["0 */12 * * *"]
+
+# --- KV DATABASE BINDINGS ---
+# 1. Your existing SEO Payloads memory
 [[kv_namespaces]]
 binding = "SEO_PAYLOADS"
 id = "4cbae4c8b74246a2b783cb63186e405a"
+
+# 2. Your NEW Asymmetric Ghost Payload memory
+[[kv_namespaces]]
+binding = "AGP_STATE"
+id = "9a9985fe64c34f6ea7eb41de408ccbcd"
+
+# --- AI & BROWSER BINDINGS ---
+# Activate Worker AI for the Llama 3 analysis
+[ai]
+binding = "AI"
+
+# Activate Browser Rendering to fetch the raw Google Sites DOM
+[browser]
+binding = "MYBROWSER"
 
 # --- AI BOT TRACKING LOGS ---
 [observability]
