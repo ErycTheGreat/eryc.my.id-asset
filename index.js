@@ -1,18 +1,20 @@
+import puppeteer from "@cloudflare/puppeteer";
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     // --- 0.1 BOT TRACKER & DETECTION ---
-    const userAgent = request.headers.get("User-Agent") || "";
-    const isAIBot = /OAI-SearchBot|ChatGPT-User|Claude-Web|PerplexityBot|Google-Extended/i.test(userAgent);
-    const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|seoptimer|siteaudit|seositecheckup/i.test(userAgent);
-    const isSocialBot = /facebookexternalhit|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot/i.test(userAgent);
-    const isBot = isAIBot || isSEOBot || isSocialBot;
+    const userAgent = request.headers.get("User-Agent") || "";
+    const isAIBot = /OAI-SearchBot|ChatGPT-User|Claude-Web|PerplexityBot|Google-Extended/i.test(userAgent);
+    const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|seoptimer|siteaudit|seositecheckup/i.test(userAgent);
+    const isSocialBot = /facebookexternalhit|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot/i.test(userAgent);
+    const isBot = isAIBot || isSEOBot || isSocialBot;
 
-    if (isAIBot) {
-        console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
-    }
-    // ----------------------------------------------------
+    if (isAIBot) {
+        console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
+    }
+    // ----------------------------------------------------
 
     // --- 0.2 INDEXNOW API KEY VERIFICATION ---
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
@@ -176,27 +178,42 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         return response;
     }
 
+    // 🤖 [NEW] FETCH AI GHOST PAYLOAD STATE IN PARALLEL (Sub-10ms)
+    let agpLcpUrl = "";
+    let agpGhostCss = "";
+    try {
+        if (env && env.AGP_STATE) {
+            const [fetchedLcp, fetchedCss] = await Promise.all([
+                env.AGP_STATE.get("LCP_IMAGE_URL"),
+                env.AGP_STATE.get("GHOST_CSS")
+            ]);
+            agpLcpUrl = fetchedLcp || "";
+            agpGhostCss = fetchedCss || "";
+        }
+    } catch (e) {
+        console.error("AGP_STATE KV Fetch Error:", e);
+    }
+
     // 🚨 FIX: Define domain and canonicalUrl BEFORE we try to use them in the SEO tags!
     const domain = "https://www.eryc.my.id";
     const canonicalUrl = domain + url.pathname
      // B. HEAD INJECTION (Always injected, good for all pages)
-    // Note: You can also move this to KV later if you want custom JSON-LD per page!
    // The entire <head> payload (Meta + JSON-LD)
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link rel="preload" href="https://www.eryc.my.id/cf-fonts/s/jetbrains-mono/5.0.18/latin/700/normal.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-		<link rel="preload" href="https://www.eryc.my.id/cf-fonts/s/jetbrains-mono/5.0.18/latin/500/normal.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-		<link rel="preload" href="https://www.eryc.my.id/cf-fonts/s/roboto/5.0.11/latin/400/normal.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-				
-		<link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
-		<link rel="preload" as="image" href="/assets/image/homepage-BG.avif" fetchpriority="high">
-			
-		<meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
+        <link rel="preload" href="https://www.eryc.my.id/cf-fonts/s/jetbrains-mono/5.0.18/latin/700/normal.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+        <link rel="preload" href="https://www.eryc.my.id/cf-fonts/s/jetbrains-mono/5.0.18/latin/500/normal.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+        <link rel="preload" href="https://www.eryc.my.id/cf-fonts/s/roboto/5.0.11/latin/400/normal.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+                
+        <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
+        <link rel="preload" as="image" href="/assets/image/homepage-BG.avif" fetchpriority="high">
+            
+        <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
         <meta name="author" content="Eryc Tri Juni S">
         <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug"> 
-		<meta name="yandex-verification" content="275f3c061328554a" />
+        <meta name="yandex-verification" content="275f3c061328554a" />
         <link rel="canonical" href="${canonicalUrl}">
         <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llm.txt">
         <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llms.txt">
@@ -242,9 +259,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "name": "Edge SEO Specialist Malang | Eryc Tri Juni S",
               "description": "Eryc Tri Juni S is an edge SEO specialist in Malang; Indonesia. Exploring system-based marketing, constraint-bypassing architectures, and Asymmetric Ghost Payloads.",
                "mainEntity": {
-    		  "@id": "https://www.eryc.my.id/#person"
-  			  },
-			  "about": {
+              "@id": "https://www.eryc.my.id/#person"
+               },
+              "about": {
                 "@id": "https://www.eryc.my.id/#website"
               },
               "isPartOf": {
@@ -281,10 +298,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "jobTitle": "Edge SEO Specialist",
               "image": "https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=uqcfyxv7&raw=1",
               "subjectOf": {
-    		  "@id": "https://www.eryc.my.id/llm.txt"
-  			  },
-			  "knowsAbout": [
-			    {
+              "@id": "https://www.eryc.my.id/llm.txt"
+               },
+              "knowsAbout": [
+                {
                   "@type": "DefinedTerm",
                   "@id": "https://www.eryc.my.id/llm.txt#AsymmetricGhostPayload",
                   "name": "Asymmetric Ghost Payload",
@@ -294,13 +311,13 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 },
                 "Edge SEO",
                 "Asymmetric Ghost Payload (AGP)",
-				"AGP Architecture",
+                "AGP Architecture",
                 "Generative Engine Optimization",
                 "Cloudflare Workers",
                 "System-Based Marketing",
                 "Funnel Optimization",
                 "Data-Driven Strategy",
-				"Data Analysis",
+                "Data Analysis",
                 "Data Story Telling",
                 "User Personas",
                 "Google Analytics",
@@ -330,7 +347,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 "@id": "https://www.eryc.my.id/#person"
               }
             },
-			{
+            {
               "@type": "ProfessionalService",
               "@id": "https://www.eryc.my.id/#localbusiness",
               "name": "Edge SEO Specialist Malang | Eryc Tri Juni S",
@@ -352,22 +369,22 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               },
               "priceRange": "$$$",
               "areaServed": [
-			    {
-			      "@type": "City",
-			      "name": "Malang",
-			      "sameAs": "https://en.wikipedia.org/wiki/Malang"
-			    },
-			    {
-			      "@type": "City",
-			      "name": "Surabaya",
-			      "sameAs": "https://en.wikipedia.org/wiki/Surabaya"
-			    },
-			    {
-			      "@type": "AdministrativeArea",
-			      "name": "East Java",
-			      "sameAs": "https://en.wikipedia.org/wiki/East_Java"
-			    }
-			  ],
+                {
+                  "@type": "City",
+                  "name": "Malang",
+                  "sameAs": "https://en.wikipedia.org/wiki/Malang"
+                },
+                {
+                  "@type": "City",
+                  "name": "Surabaya",
+                  "sameAs": "https://en.wikipedia.org/wiki/Surabaya"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "East Java",
+                  "sameAs": "https://en.wikipedia.org/wiki/East_Java"
+                }
+              ],
               "founder": {
                 "@id": "https://www.eryc.my.id/#person"
               }
@@ -375,8 +392,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
           ]
         }        
         </script>
-		
-		<script type="text/javascript">
+        
+        <script type="text/javascript">
             (function(c,l,a,r,i,t,y){
                 c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                 t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
@@ -384,7 +401,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             })(window, document, "clarity", "script", "w60p488a9w");
         </script>
     `;
-	  
+      
    // 🏎️ THE HUMAN FAST-LANE BYPASS (THE FINAL UNLOCKED EDITION)
     if (!isBot) {
         let newHeaders = new Headers(response.headers);
@@ -392,20 +409,30 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         
         // 🚨 CRITICAL FIX 1: Nuke Google's strict Security Policy so your custom JS can run
        newHeaders.delete("Content-Security-Policy");
-		
+
+       // 🤖 [NEW] INJECT THE HTTP LCP PRELOAD HEADER (Force download immediately)
+       if (agpLcpUrl) {
+           newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image`);
+       }
+        
        let currentEmbedCode = null;
 
        let humanRewriter = new HTMLRewriter()
             // 🚨 1. REMOVE DEFAULT GOOGLE SITES SEO TAGS FOR HUMANS
-		    .on('link[rel="canonical"]', { element(e) { e.remove(); } })
+            .on('link[rel="canonical"]', { element(e) { e.remove(); } })
             .on('meta[name="description"]', { element(e) { e.remove(); } })
             .on('meta[property="og:title"]', { element(e) { e.remove(); } })
             
-            // 🚨 2. INJECT CUSTOM SEO + ANTI-SPINNER CSS
+            // 🚨 2. INJECT CUSTOM SEO + ANTI-SPINNER CSS + 🤖 AGP SKELETON
             .on("head", {
                 element(e) {
                     e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
-                    e.append(customHeaderContent, { html: true }); // <--- This injects your meta tags!
+                    e.append(customHeaderContent, { html: true }); 
+                    
+                    // 🤖 [NEW] INJECT THE AI-GENERATED CRITICAL CSS TO NAIL THE FCP
+                    if (agpGhostCss) {
+                        e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
+                    }
                 }
             })
             // 3. Catch the wrapper div that holds your raw code
@@ -415,7 +442,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 }
             })
 
-		   // 🚨 3. CRUSH THE LCP AND BYPASS GOOGLE CDN
+           // 🚨 3. CRUSH THE LCP AND BYPASS GOOGLE CDN
             .on('img', {
                 element(e) {
                     e.removeAttribute("loading"); 
@@ -425,18 +452,18 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     let altText = e.getAttribute("alt") || ""; // <--- Grab the Alt text
 
                     // 1. The Hero Image Hijack
-					if (ariaLabel.includes("Eryc Tri Juni S")) {
-					    e.setAttribute("src", "/assets/image/hero.avif");
-					    e.removeAttribute("srcset");
-					    e.setAttribute("fetchpriority", "high"); 
-					    
-					    // 1. Tell PSI the intrinsic ratio (1:1) to crush CLS
-					    e.setAttribute("width", "120"); 
-					    e.setAttribute("height", "120"); 
-					    
-					    // 2. Keep Google's class, but force the width to scale proportionally with the height
-					    e.setAttribute("style", "width: auto !important; object-fit: contain;"); 
-					}
+                    if (ariaLabel.includes("Eryc Tri Juni S")) {
+                        e.setAttribute("src", "/assets/image/hero.avif");
+                        e.removeAttribute("srcset");
+                        e.setAttribute("fetchpriority", "high"); 
+                        
+                        // 1. Tell PSI the intrinsic ratio (1:1) to crush CLS
+                        e.setAttribute("width", "120"); 
+                        e.setAttribute("height", "120"); 
+                        
+                        // 2. Keep Google's class, but force the width to scale proportionally with the height
+                        e.setAttribute("style", "width: auto !important; object-fit: contain;"); 
+                    }
                     
                     // 2. The 3.6MB Asset Hijack (The Bulletproof Method)
                     // Hunt for your secret Alt text instead of the Google URL
@@ -447,11 +474,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     }
                 }
             })
-		   // 🚨 The 3.6MB Background Div Hijack
+           // 🚨 The 3.6MB Background Div Hijack
             .on('div[aria-label="edge-bg-hijack"]', {
                 element(e) {
                     // Overwrite Google's inline CSS with your fast GitHub proxy URL
-                    // Make sure to update the filename to match your optimized AVIF/WebP file!
                     e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG.avif');");
                 }
             })
@@ -481,7 +507,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 }
             })
 
-		   // 🚨 5. AGGRESSIVE DEFERRAL FOR EXTERNAL SCRIPTS
+           // 🚨 5. AGGRESSIVE DEFERRAL FOR EXTERNAL SCRIPTS
             .on('script', {
                 element(e) {
                     const src = e.getAttribute('src');
@@ -504,9 +530,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.setAttribute('onload', "this.media='all'");
                     }
                 }
-			 })
-		
-		   // 🚨 7. FIX GOOGLE SITES NATIVE ACCESSIBILITY BUG
+             })
+        
+           // 🚨 7. FIX GOOGLE SITES NATIVE ACCESSIBILITY BUG
             .on('a[aria-selected]', {
                 element(e) {
                     // Remove the invalid ARIA attribute that is confusing screen readers
@@ -515,17 +541,17 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     e.setAttribute('aria-current', 'page');
                 }
             });
-		
+        
         return new Response(humanRewriter.transform(response).body, {
             status: response.status,
             headers: newHeaders
         });
-	 
+    
     }
-		 
+        
     // 🛑 EVERYTHING BELOW THIS LINE ONLY RUNS FOR BOTS 🛑
-	  
-	    // A. FETCH THE BOT PAYLOAD FROM KV DATABASE (WITH SAFETY NET)
+      
+    // A. FETCH THE BOT PAYLOAD FROM KV DATABASE (WITH SAFETY NET)
     let botPayload = null;
     if (isBot) {
         try {
@@ -547,8 +573,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
   let rewriter = new HTMLRewriter()
         // 🚨 KILL NATIVE GOOGLE SITES CANONICAL FOR BOTS
         .on('link[rel="canonical"]', { element(e) { e.remove(); } 
-		})
-	    // Target and remove the native Google Sites description
+        })
+        // Target and remove the native Google Sites description
         .on('meta[name="description"]', {
             element(e) { e.remove(); }
         })
@@ -556,9 +582,14 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         .on('meta[property="og:title"]', {
             element(e) { e.remove(); }
         })
-        // Inject your master payload
+        // Inject your master payload + 🤖 Parity AGP Skeleton
         .on("head", {
-            element(e) { e.append(customHeaderContent, { html: true }); }
+            element(e) { 
+                e.append(customHeaderContent, { html: true }); 
+                if (agpGhostCss) {
+                    e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
+                }
+            }
         });
 
     // D. DYNAMIC BODY INJECTION (ONLY happens if it's a bot AND a KV payload exists)
@@ -575,10 +606,67 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     let newHeaders = new Headers(response.headers);
     newHeaders.delete("Content-Length");
     
-	  
+    // 🤖 [NEW] INJECT LCP PRELOAD FOR BOTS TOO (For Absolute User-Agent Parity)
+    if (agpLcpUrl) {
+        newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image`);
+    }
+      
     return new Response(rewriter.transform(response).body, {
       status: response.status,
       headers: newHeaders
     });
+  },
+
+  // 🤖 🛑 [NEW] THE ASYNCHRONOUS AI ENGINE 🛑 🤖
+  // This runs completely separate from your fetch event based on the wrangler.toml cron schedule
+  async scheduled(event, env, ctx) {
+    console.log("Starting AGP AI Extraction...");
+
+    try {
+        // 1. Launch Headless Browser to get the computed DOM
+        const browser = await puppeteer.launch(env.MYBROWSER);
+        const page = await browser.newPage();
+        
+        // 🚨🚨🚨 REPLACE THIS WITH YOUR ACTUAL GOOGLE SITES RAW URL 🚨🚨🚨
+        await page.goto("https://sites.google.com/view/YOUR_RAW_SITE_ID");
+        
+        // Wait for Google's heavy JSON scripts to fully execute
+        await page.waitForNetworkIdle(); 
+        
+        const computedHTML = await page.content();
+        await browser.close();
+
+        // 2. Define the strict instruction for the AI
+        const systemPrompt = `You are an Edge SEO extraction tool. 
+        Analyze the provided HTML. 
+        Output ONLY a valid JSON object. 
+        Required keys: 
+        "lcpUrl" (string, the absolute URL of the primary hero image), 
+        "criticalCss" (string, a minified CSS string replicating the primary above-the-fold layout and background colors). 
+        Do not include markdown formatting or explanations.`;
+
+        // 3. Send the DOM to Llama 3
+        console.log("Sending DOM to Worker AI...");
+        const aiResponse = await env.AI.run('@cf/meta/llama-3-8b-instruct', {
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: computedHTML }
+          ]
+        });
+
+        // 4. Save the payload to KV
+        const parsedData = JSON.parse(aiResponse.response);
+          
+        if (parsedData.lcpUrl) {
+            await env.AGP_STATE.put("LCP_IMAGE_URL", parsedData.lcpUrl);
+        }
+        if (parsedData.criticalCss) {
+            await env.AGP_STATE.put("GHOST_CSS", parsedData.criticalCss);
+        }
+          
+        console.log("AGP State Updated Successfully in KV.");
+    } catch (error) {
+        console.error("AI Extraction Failed:", error);
+    }
   }
 };
