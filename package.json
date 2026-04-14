@@ -1,8 +1,0 @@
-{
-  "name": "homepage-sitemap-robots-txt",
-  "version": "1.0.0",
-  "private": true,
-  "dependencies": {
-    "@cloudflare/puppeteer": "latest"
-  }
-}
