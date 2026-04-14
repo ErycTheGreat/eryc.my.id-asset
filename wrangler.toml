@@ -1,7 +1,6 @@
 name = "homepage-sitemap-robots-txt"
 main = "index.js"
-compatibility_date = "2026-04-14"
-compatibility_flags = ["nodejs_compat"]
+compatibility_date = "2024-03-27"
 
 # --- LIVE TRAFFIC ROUTING ---
 routes = [
@@ -10,25 +9,15 @@ routes = [
   { pattern = "www.eryc.my.id/assets/*", zone_name = "eryc.my.id" }
 ]
 
-# --- BACKGROUND TASKS ---
-[triggers]
-crons = ["0 */12 * * *"]
-
 # --- KV DATABASE BINDINGS ---
 [[kv_namespaces]]
 binding = "SEO_PAYLOADS"
 id = "4cbae4c8b74246a2b783cb63186e405a"
 
+# Your Asymmetric Ghost Payload memory
 [[kv_namespaces]]
 binding = "AGP_STATE"
 id = "9a9985fe64c34f6ea7eb41de408ccbcd"
-
-# --- AI & BROWSER BINDINGS ---
-[ai]
-binding = "AI"
-
-[browser]
-binding = "MYBROWSER"
 
 # --- AI BOT TRACKING LOGS ---
 [observability]
