@@ -1,6 +1,7 @@
 name = "homepage-sitemap-robots-txt"
 main = "index.js"
 compatibility_date = "2024-03-27"
+compatibility_flags = ["nodejs_compat"]
 
 # --- LIVE TRAFFIC ROUTING ---
 # This locks in your routes so GitHub never overwrites them
