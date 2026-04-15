@@ -197,9 +197,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="preload" href="https://www.eryc.my.id/cf-fonts/s/jetbrains-mono/5.0.18/latin/700/normal.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-        <link rel="preload" href="https://www.eryc.my.id/cf-fonts/s/jetbrains-mono/5.0.18/latin/500/normal.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-        <link rel="preload" href="https://www.eryc.my.id/cf-fonts/s/roboto/5.0.11/latin/400/normal.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+        
                 
         <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
         <link rel="preload" as="image" href="/assets/image/homepage-BG.avif" fetchpriority="high">
@@ -508,6 +506,14 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     }
                 }
             })
+           // 🤖 [NEW] FIX GOOGLE SITES MOBILE MENU ACCESSIBILITY
+              .on('div[role="button"][aria-haspopup="true"]', {
+                  element(e) {
+                      if (!e.hasAttribute('aria-label')) {
+                          e.setAttribute('aria-label', 'Open Navigation Menu');
+                      }
+                  }
+              })
             // 🤖 [NEW] SCRIPT NEUTRALIZER
             .on('script', {
                 element(e) {
