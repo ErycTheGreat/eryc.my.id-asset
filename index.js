@@ -175,7 +175,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         return response;
     }
 
-    // 🤖 [NEW] FETCH AI GHOST PAYLOAD STATE IN PARALLEL (Sub-10ms)
+    // 🤖 FETCH AI GHOST PAYLOAD STATE IN PARALLEL (Sub-10ms)
     let agpLcpUrl = "";
     let agpGhostCss = "";
     try {
@@ -424,6 +424,37 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     if (agpGhostCss) {
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
+
+                    // 🤖 [NEW] INJECT INTERACTION-TRIGGERED HYDRATION (WAKE UP SCRIPT)
+                    const wakeUpScript = `
+                    <script data-edge-ignore="true">
+                        (function() {
+                            let hydrated = false;
+                            function wakeUpScripts() {
+                                if (hydrated) return;
+                                hydrated = true;
+                                document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
+                                    const newScript = document.createElement('script');
+                                    Array.from(s.attributes).forEach(attr => {
+                                        if (attr.name !== 'type' && attr.name !== 'data-original-type') {
+                                            newScript.setAttribute(attr.name, attr.value);
+                                        }
+                                    });
+                                    newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
+                                    newScript.innerHTML = s.innerHTML;
+                                    s.parentNode.replaceChild(newScript, s);
+                                });
+                                ['mouseover','keydown','touchmove','wheel'].forEach(ev => 
+                                    window.removeEventListener(ev, wakeUpScripts)
+                                );
+                            }
+                            ['mouseover','keydown','touchmove','wheel'].forEach(ev => 
+                                window.addEventListener(ev, wakeUpScripts, {once: true, passive: true})
+                            );
+                            setTimeout(wakeUpScripts, 4000);
+                        })();
+                    </script>`;
+                    e.append(wakeUpScript, { html: true });
                 }
             })
             .on("div[data-code]", {
@@ -473,12 +504,16 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     }
                 }
             })
+            // 🤖 [NEW] SCRIPT NEUTRALIZER
             .on('script', {
                 element(e) {
-                    const src = e.getAttribute('src');
-                    if (src && (src.includes('gstatic.com') || src.includes('apis.google.com'))) {
-                        e.setAttribute('defer', '');
-                        e.setAttribute('async', '');
+                    const src = e.getAttribute('src') || "";
+                    const isClarity = src.includes("clarity.ms");
+                    
+                    if (!isClarity && !e.hasAttribute('data-edge-ignore')) {
+                        const originalType = e.getAttribute('type') || 'text/javascript';
+                        e.setAttribute('data-original-type', originalType);
+                        e.setAttribute('type', 'text/edge-delayed-script');
                     }
                 }
             })
