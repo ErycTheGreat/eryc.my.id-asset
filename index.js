@@ -529,7 +529,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             })
             .on('link[rel="stylesheet"]', {
                 element(e) {
-                    const href = e.getAttribute('href');
+                    const href = e.getAttribute('href') || "";
                     if (href && href.includes('fonts.googleapis.com/css')) {
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
