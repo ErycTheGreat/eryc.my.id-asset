@@ -444,14 +444,18 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                                     newScript.innerHTML = s.innerHTML;
                                     s.parentNode.replaceChild(newScript, s);
                                 });
-                                ['mouseover','keydown','touchmove','wheel'].forEach(ev => 
+                                // Clean up listeners
+                                ['mouseover','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                                     window.removeEventListener(ev, wakeUpScripts)
                                 );
                             }
-                            ['mouseover','keydown','touchmove','wheel'].forEach(ev => 
+                            
+                            // Added 'touchstart' and 'scroll' for aggressive mobile wake-up
+                            ['mouseover','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                                 window.addEventListener(ev, wakeUpScripts, {once: true, passive: true})
                             );
-                            setTimeout(wakeUpScripts, 4000);
+                            
+                            // 🚨 DELETED THE setTimeout "TIME BOMB" HERE
                         })();
                     </script>`;
                     e.append(wakeUpScript, { html: true });
