@@ -403,7 +403,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 
        // 🤖 INJECT THE HTTP LCP PRELOAD HEADER
        if (agpLcpUrl) {
-           newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image`);
+           newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
        }
         
        let currentEmbedCode = null;
