@@ -529,8 +529,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             })
             .on('link[rel="stylesheet"]', {
                 element(e) {
-                    const href = e.getAttribute('href');
-                    if (href && href.includes('fonts.googleapis.com/css')) {
+                    const href = e.getAttribute('href') || "";
+                    // Neutralize both Google Fonts AND the massive Google Sites core CSS
+                    if (href.includes('fonts.googleapis.com/css') || href.includes('gstatic.com')) {
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     }
