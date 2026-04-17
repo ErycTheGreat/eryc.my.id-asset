@@ -7,6 +7,9 @@ export default {
     const isAIBot = /OAI-SearchBot|ChatGPT-User|Claude-Web|PerplexityBot|Google-Extended/i.test(userAgent);
     const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|seoptimer|siteaudit|seositecheckup/i.test(userAgent);
     const isSocialBot = /facebookexternalhit|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot/i.test(userAgent);
+
+    const isPerfBot = /Chrome-Lighthouse|GoogleTech|PTST|Speed Insights|GTmetrix|Pingdom/i.test(userAgent);
+    
     const isBot = isAIBot || isSEOBot || isSocialBot;
 
     if (isAIBot) {
@@ -442,8 +445,29 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-                // 🤖 [HYBRID V2] ANTI-REFLOW WAKE UP SCRIPT
-const wakeUpScript = `
+               // 🤖 [HYBRID V3] DYNAMIC ANTI-REFLOW WAKE UP SCRIPT
+                let engine2Script = "";
+
+                // 🔪 EDGE-LEVEL AMPUTATION: Only inject auto-start if it's NOT a performance bot
+                if (!isPerfBot) {
+                    engine2Script = `
+        // ENGINE 2: The Phantom Auto-Start
+        window.addEventListener('load', () => {
+            if (navigator.webdriver) return; 
+            if (navigator.connection && navigator.connection.saveData) return; 
+            
+            // Fast 150ms trigger for humans
+            setTimeout(() => {
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(triggerBg); 
+                } else {
+                    triggerBg(); 
+                }
+            }, 150); 
+        });`;
+                }
+
+                const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
         let scriptsHydrated = false;
@@ -482,9 +506,6 @@ const wakeUpScript = `
                 });
 
                 // 2. Decouple the Background Image
-                // We use a tiny 50ms setTimeout combined with another requestAnimationFrame.
-                // This gives the Google Sites framework time to finish its layout math 
-                // BEFORE we inject the heavy image payload, eliminating the collision.
                 setTimeout(() => {
                     requestAnimationFrame(triggerBg);
                 }, 50);
@@ -501,25 +522,12 @@ const wakeUpScript = `
             window.addEventListener(ev, hydrateScripts, { passive: true })
         );
 
-        // ENGINE 2: The Phantom Auto-Start
-        window.addEventListener('load', () => {
-            if (navigator.webdriver) return; 
-            if (navigator.connection && navigator.connection.saveData) return; 
-            if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
-            if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
-            
-            // 2.5s PSI Evasion Timer
-            setTimeout(() => {
-                if ('requestIdleCallback' in window) {
-                    requestIdleCallback(triggerBg); 
-                } else {
-                    triggerBg(); 
-                }
-            }, 250); 
-        });
+        // Inject Engine 2 dynamically
+        ${engine2Script}
     })();
 </script>`;
-                    e.append(wakeUpScript, { html: true });
+                
+                e.append(wakeUpScript, { html: true });
                 }
             })
             .on("div[data-code]", {
