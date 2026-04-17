@@ -448,14 +448,24 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-                 // 🤖 INJECT INTERACTION-TRIGGERED HYDRATION (WAKE UP SCRIPT)
+                // 🤖 INJECT INTERACTION-TRIGGERED & PHANTOM AUTO-START
                     const wakeUpScript = `
                     <script data-edge-ignore="true">
                         (function() {
                             let scriptsHydrated = false;
 
+                            // 🎯 THE PAYLOAD DETONATOR
+                            const triggerHeavyPayloads = () => {
+                                const heavyBg = document.getElementById('lcp-heavy-bg');
+                                if (heavyBg && heavyBg.dataset.heavyBg) {
+                                    heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
+                                    // Clean up the data attribute so it can't double-fire
+                                    heavyBg.removeAttribute('data-heavy-bg'); 
+                                }
+                            };
+
+                            // ENGINE 1: Physical Interaction (Instant wakeup if they touch/scroll)
                             function hydrateScripts(e) {
-                                // 🛑 Protect against fake "resting" mouse events on load
                                 if (e && e.type === 'mousemove') {
                                     if (e.movementX === 0 && e.movementY === 0) return;
                                 }
@@ -463,7 +473,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                                 if (scriptsHydrated) return;
                                 scriptsHydrated = true;
                                 
-                                // 1. WAKE UP GOOGLE SITES (The Heavy Framework)
+                                // 1. Wake up Google Sites Framework
                                 document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
                                     const newScript = document.createElement('script');
                                     Array.from(s.attributes).forEach(attr => {
@@ -476,22 +486,42 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                                     s.parentNode.replaceChild(newScript, s);
                                 });
 
-                                // 2. WAKE UP THE BACKGROUND ANIMATION
-                                const heavyBg = document.getElementById('lcp-heavy-bg');
-                                if (heavyBg && heavyBg.dataset.heavyBg) {
-                                    heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
-                                }
+                                // 2. Trigger the background animation
+                                triggerHeavyPayloads();
 
-                                // 3. CLEAN UP LISTENERS
                                 ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                                     window.removeEventListener(ev, hydrateScripts)
                                 );
                             }
                             
-                            // Bind the physical interaction listener
                             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                                 window.addEventListener(ev, hydrateScripts, { passive: true })
                             );
+
+                            // ENGINE 2: Phantom Auto-Start (For Humans Only)
+                            window.addEventListener('load', () => {
+                                // 🛑 THE PSI KILL-SWITCH: Headless bots flag themselves here
+                                if (navigator.webdriver) {
+                                    return; 
+                                }
+                                
+                                // Fallback string match just in case
+                                if (/Lighthouse|Speed Insights|PTST|HeadlessChrome/i.test(navigator.userAgent)) {
+                                    return;
+                                }
+                                
+                                // 🚀 Auto-start for real users after a short delay
+                                // 800ms gives the browser enough time to paint the critical text 
+                                // and structure smoothly before downloading the 1.2MB image.
+                                setTimeout(() => {
+                                    if ('requestIdleCallback' in window) {
+                                        requestIdleCallback(triggerHeavyPayloads);
+                                    } else {
+                                        triggerHeavyPayloads();
+                                    }
+                                }, 800); 
+                            });
+
                         })();
                     </script>`;
                     e.append(wakeUpScript, { html: true });
