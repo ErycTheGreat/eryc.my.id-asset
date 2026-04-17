@@ -407,7 +407,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
        }
         
        let currentEmbedCode = null;
-       let gstaticCssLinks = [];
+
        let humanRewriter = new HTMLRewriter()
             .on('link[rel="canonical"]', { element(e) { e.remove(); } })
             .on('meta[name="description"]', { element(e) { e.remove(); } })
@@ -573,18 +573,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     }
                 }
             })
-          .on('link[rel="stylesheet"]', {
+           .on('link[rel="stylesheet"]', {
                 element(e) {
                     const href = e.getAttribute('href') || "";
-                    
-                    if (href && href.includes('fonts.googleapis.com/css')) {
+                    if (href && href.includes('fonts.googleapis.com/css')) { // <-- HERE IS THE LEAK
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
-                    } 
-                    else if (href && href.includes('gstatic.com')) {
-                        // 🤖 Catch the massive CSS and remove it from the head
-                        gstaticCssLinks.push(href);
-                        e.remove(); 
                     }
                 }
              })
@@ -592,14 +586,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 element(e) {
                     e.removeAttribute('aria-selected');
                     e.setAttribute('aria-current', 'page');
-                }
-            })
-            .on('body', {
-                element(e) {
-                    // 🤖 Inject the caught CSS right before the closing </body> tag
-                    gstaticCssLinks.forEach(link => {
-                        e.append(`<link rel="stylesheet" href="${link}">`, { html: true });
-                    });
                 }
             });
         
