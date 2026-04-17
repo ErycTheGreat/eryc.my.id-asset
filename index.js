@@ -482,7 +482,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                                 
                                 // Wait for the main thread to be completely idle before downloading the AVIF
                                 if ('requestIdleCallback' in window) {
-                                    requestIdleCallback(() => { setTimeout(loadBackground, 500); });
+                                    requestIdleCallback(() => { setTimeout(loadBackground, 100); });
                                 } else {
                                     setTimeout(loadBackground, 1500); // Fallback for older browsers
                                 }
