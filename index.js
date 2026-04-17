@@ -117,7 +117,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 
    // --- 3. LLM.TXT ROUTING ---
     if (url.pathname === "/llm.txt" || url.pathname === "/llms.txt") {
-      const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llm.txt");
+      const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llms.txt");
       return new Response(githubResponse.body, {
         status: 200,
         headers: {
