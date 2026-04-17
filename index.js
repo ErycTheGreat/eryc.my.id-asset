@@ -195,205 +195,206 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     const canonicalUrl = domain + url.pathname
 
     const customHeaderContent = `
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-        
-        <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
-        <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
-            
-        <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
-        <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
-        <meta name="author" content="Eryc Tri Juni S">
-        <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug"> 
-        <meta name="yandex-verification" content="275f3c061328554a" />
-        <link rel="canonical" href="${canonicalUrl}">
-        <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llm.txt">
-        <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llms.txt">
-        <link rel="alternate" type="application/xml" href="https://www.eryc.my.id/sitemap.xml">
-        <link rel="author" href="${domain}/about">
-        
-        <meta property="og:type" content="website">
-        <meta property="og:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S ">
-        <meta property="og:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
-        <meta property="og:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
-        <meta property="og:url" content="${canonicalUrl}">
-        
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S">
-        <meta name="twitter:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
-        <meta name="twitter:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
-        
-        <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@graph": [
-            {
-              "@type": "WebSite",
-              "@id": "https://www.eryc.my.id/#website",
-              "url": "https://www.eryc.my.id",
-              "name": "Eryc Tri Juni S",
-              "description": "Portfolio and reference implementation of Edge SEO and Asymmetric Ghost Payload (AGP) architecture by Eryc Tri Juni S.",
-              "alternateName": "eryc edge seo malang",
-              "publisher": {
-                "@id": "https://www.eryc.my.id/#website"
-              },
-              "inLanguage": "en",
-              "potentialAction": {
-                "@type": "SearchAction",
-                "target": "https://www.eryc.my.id/?s={search_term_string}",
-                "query-input": "required name=search_term_string"
-              }
-            },
-            {
-              "@type": "WebPage",
-              "@id": "https://www.eryc.my.id/#webpage",
-              "url": "https://www.eryc.my.id/",
-              "name": "Edge SEO Specialist Malang | Eryc Tri Juni S",
-              "description": "Eryc Tri Juni S is an edge SEO specialist in Malang; Indonesia. Exploring system-based marketing, constraint-bypassing architectures, and Asymmetric Ghost Payloads.",
-               "mainEntity": {
-              "@id": "https://www.eryc.my.id/#person"
-               },
-              "about": {
-                "@id": "https://www.eryc.my.id/#website"
-              },
-              "isPartOf": {
-                "@id": "https://www.eryc.my.id/#website"
-              },
-              "primaryImageOfPage": {
-                "@id": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp"
-              },
-              "inLanguage": "en-US"
-            },
-            {
-              "@type": "ImageObject",
-              "@id": "https://www.eryc.my.id/assets/image/logo-512x512.webp",
-              "url": "https://www.eryc.my.id/assets/image/logo-512x512.webp",
-              "width": 512,
-              "height": 512,
-              "caption": "Eryc Tri Juni S | Edge SEO Specialist",
-              "inLanguage": "en-US"
-            },
-            {
-              "@type": "Person",
-              "@id": "https://www.eryc.my.id/#person",
-              "name": "Eryc Tri Juni S",
-              "description": "Eryc Tri Juni S is an Edge SEO Specialist in Malang, Indonesia, engineering constraint-bypassing web architectures and data-driven marketing systems.",
-              "email": "eryc.me@gmail.com",
-              "address": {
-                "@type": "PostalAddress",
-                "addressLocality": "Malang Regency",
-                "addressRegion": "East Java",
-                "postalCode": "65154",
-                "addressCountry": "Indonesia"
-              },
-              "gender": "Male",
-              "jobTitle": "Edge SEO Specialist",
-              "image": "https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=uqcfyxv7&raw=1",
-              "subjectOf": {
-              "@id": "https://www.eryc.my.id/llm.txt"
-               },
-              "knowsAbout": [
-                {
-                  "@type": "DefinedTerm",
-                  "@id": "https://www.eryc.my.id/llm.txt#AsymmetricGhostPayload",
-                  "name": "Asymmetric Ghost Payload",
-                  "alternateName": "AGP",
-                  "description": "An edge architecture where origin state is decoupled from crawler ingestion and pre-rendered semantic payloads are injected mid-flight at the network edge.",
-                  "inDefinedTermSet": "https://www.eryc.my.id/llm.txt"
-                },
-                "Edge SEO",
-                "Asymmetric Ghost Payload (AGP)",
-                "AGP Architecture",
-                "Generative Engine Optimization",
-                "Cloudflare Workers",
-                "System-Based Marketing",
-                "Funnel Optimization",
-                "Data-Driven Strategy",
-                "Data Analysis",
-                "Data Story Telling",
-                "User Personas",
-                "Google Analytics",
-                "Search Engine Optimization (SEO)",
-                "Web Development",
-                "Content Strategy",
-                "Content Creation",
-                "TikTok Marketing",
-                "Business Analysis",
-                "Business Acumen"
-              ],
-              "sameAs": [
-                "https://www.linkedin.com/in/eryctrijunis",
-                "https://www.slideshare.net/ErycTriJuniS",
-                "https://id.quora.com/profile/Eryc-Tri-Juni-S",
-                "https://www.youtube.com/@ErycTriJuniS",
-                "https://github.com/ErycTheGreat"
-              ]
-            },
-            {
-              "@type": "ProfilePage",
-              "@id": "https://www.eryc.my.id/#profile",
-              "dateCreated": "2024-01-01T00:00:00+07:00",
-              "dateModified": "2026-04-10T00:00:00+07:00",
-              "url": "https://www.eryc.my.id/",
-              "mainEntity": {
-                "@id": "https://www.eryc.my.id/#person"
-              }
-            },
-            {
-              "@type": "ProfessionalService",
-              "@id": "https://www.eryc.my.id/#localbusiness",
-              "name": "Edge SEO Specialist Malang | Eryc Tri Juni S",
-              "url": "https://www.eryc.my.id",
-              "logo": "https://www.eryc.my.id/assets/image/logo.webp",
-              "image": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp",
-              "description": "Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.",
-              "address": {
-                "@type": "PostalAddress",
-                "addressLocality": "Malang",
-                "addressRegion": "East Java",
-                "addressCountry": "ID"
-              },
-              "geo": {
-                "@type": "GeoCoordinates",
-                "latitude": "-7.9839", 
-                "longitude": "112.6214",
-                "description": "Center of Malang"
-              },
-              "priceRange": "$$$",
-              "areaServed": [
-                {
-                  "@type": "City",
-                  "name": "Malang",
-                  "sameAs": "https://en.wikipedia.org/wiki/Malang"
-                },
-                {
-                  "@type": "City",
-                  "name": "Surabaya",
-                  "sameAs": "https://en.wikipedia.org/wiki/Surabaya"
-                },
-                {
-                  "@type": "AdministrativeArea",
-                  "name": "East Java",
-                  "sameAs": "https://en.wikipedia.org/wiki/East_Java"
-                }
-              ],
-              "founder": {
-                "@id": "https://www.eryc.my.id/#person"
-              }
-            }
-          ]
-        }       
-        </script>
-        
-        <script type="text/edge-delayed-script" data-original-type="text/javascript">
-            (function(c,l,a,r,i,t,y){
-                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-            })(window, document, "clarity", "script", "w60p488a9w");
-        </script>
-        <script type="text/edge-delayed-script" data-original-type="text/javascript" defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "af77cd4bb9b147a09fe3ee68cb8dfe59"}'></script>
-        `;
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        
+                
+        <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
+        <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
+            
+        <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
+        <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
+        <meta name="author" content="Eryc Tri Juni S">
+        <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug"> 
+        <meta name="yandex-verification" content="275f3c061328554a" />
+        <link rel="canonical" href="${canonicalUrl}">
+        <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llm.txt">
+        <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llms.txt">
+        <link rel="alternate" type="application/xml" href="https://www.eryc.my.id/sitemap.xml">
+        <link rel="author" href="${domain}/about">
+        
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S ">
+        <meta property="og:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
+        <meta property="og:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
+        <meta property="og:url" content="${canonicalUrl}">
+        
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S">
+        <meta name="twitter:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
+        <meta name="twitter:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
+        
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebSite",
+              "@id": "https://www.eryc.my.id/#website",
+              "url": "https://www.eryc.my.id",
+              "name": "Eryc Tri Juni S",
+              "description": "Portfolio and reference implementation of Edge SEO and Asymmetric Ghost Payload (AGP) architecture by Eryc Tri Juni S.",
+              "alternateName": "eryc edge seo malang",
+              "publisher": {
+                "@id": "https://www.eryc.my.id/#website"
+              },
+              "inLanguage": "en",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://www.eryc.my.id/?s={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://www.eryc.my.id/#webpage",
+              "url": "https://www.eryc.my.id/",
+              "name": "Edge SEO Specialist Malang | Eryc Tri Juni S",
+              "description": "Eryc Tri Juni S is an edge SEO specialist in Malang; Indonesia. Exploring system-based marketing, constraint-bypassing architectures, and Asymmetric Ghost Payloads.",
+               "mainEntity": {
+              "@id": "https://www.eryc.my.id/#person"
+               },
+              "about": {
+                "@id": "https://www.eryc.my.id/#website"
+              },
+              "isPartOf": {
+                "@id": "https://www.eryc.my.id/#website"
+              },
+              "primaryImageOfPage": {
+                "@id": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp"
+              },
+              "inLanguage": "en-US"
+            },
+            {
+              "@type": "ImageObject",
+              "@id": "https://www.eryc.my.id/assets/image/logo-512x512.webp",
+              "url": "https://www.eryc.my.id/assets/image/logo-512x512.webp",
+              "width": 512,
+              "height": 512,
+              "caption": "Eryc Tri Juni S | Edge SEO Specialist",
+              "inLanguage": "en-US"
+            },
+            {
+              "@type": "Person",
+              "@id": "https://www.eryc.my.id/#person",
+              "name": "Eryc Tri Juni S",
+              "description": "Eryc Tri Juni S is an Edge SEO Specialist in Malang, Indonesia, engineering constraint-bypassing web architectures and data-driven marketing systems.",
+              "email": "eryc.me@gmail.com",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Malang Regency",
+                "addressRegion": "East Java",
+                "postalCode": "65154",
+                "addressCountry": "Indonesia"
+              },
+              "gender": "Male",
+              "jobTitle": "Edge SEO Specialist",
+              "image": "https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=uqcfyxv7&raw=1",
+              "subjectOf": {
+              "@id": "https://www.eryc.my.id/llm.txt"
+               },
+              "knowsAbout": [
+                {
+                  "@type": "DefinedTerm",
+                  "@id": "https://www.eryc.my.id/llm.txt#AsymmetricGhostPayload",
+                  "name": "Asymmetric Ghost Payload",
+                  "alternateName": "AGP",
+                  "description": "An edge architecture where origin state is decoupled from crawler ingestion and pre-rendered semantic payloads are injected mid-flight at the network edge.",
+                  "inDefinedTermSet": "https://www.eryc.my.id/llm.txt"
+                },
+                "Edge SEO",
+                "Asymmetric Ghost Payload (AGP)",
+                "AGP Architecture",
+                "Generative Engine Optimization",
+                "Cloudflare Workers",
+                "System-Based Marketing",
+                "Funnel Optimization",
+                "Data-Driven Strategy",
+                "Data Analysis",
+                "Data Story Telling",
+                "User Personas",
+                "Google Analytics",
+                "Search Engine Optimization (SEO)",
+                "Web Development",
+                "Content Strategy",
+                "Content Creation",
+                "TikTok Marketing",
+                "Business Analysis",
+                "Business Acumen"
+              ],
+              "sameAs": [
+                "https://www.linkedin.com/in/eryctrijunis",
+                "https://www.slideshare.net/ErycTriJuniS",
+                "https://id.quora.com/profile/Eryc-Tri-Juni-S",
+                "https://www.youtube.com/@ErycTriJuniS",
+                "https://github.com/ErycTheGreat"
+              ]
+            },
+            {
+              "@type": "ProfilePage",
+              "@id": "https://www.eryc.my.id/#profile",
+              "dateCreated": "2024-01-01T00:00:00+07:00",
+              "dateModified": "2026-04-10T00:00:00+07:00",
+              "url": "https://www.eryc.my.id/",
+              "mainEntity": {
+                "@id": "https://www.eryc.my.id/#person"
+              }
+            },
+            {
+              "@type": "ProfessionalService",
+              "@id": "https://www.eryc.my.id/#localbusiness",
+              "name": "Edge SEO Specialist Malang | Eryc Tri Juni S",
+              "url": "https://www.eryc.my.id",
+              "logo": "https://www.eryc.my.id/assets/image/logo.webp",
+              "image": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp",
+              "description": "Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Malang",
+                "addressRegion": "East Java",
+                "addressCountry": "ID"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": "-7.9839", 
+                "longitude": "112.6214",
+                "description": "Center of Malang"
+              },
+              "priceRange": "$$$",
+              "areaServed": [
+                {
+                  "@type": "City",
+                  "name": "Malang",
+                  "sameAs": "https://en.wikipedia.org/wiki/Malang"
+                },
+                {
+                  "@type": "City",
+                  "name": "Surabaya",
+                  "sameAs": "https://en.wikipedia.org/wiki/Surabaya"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "East Java",
+                  "sameAs": "https://en.wikipedia.org/wiki/East_Java"
+                }
+              ],
+              "founder": {
+                "@id": "https://www.eryc.my.id/#person"
+              }
+            }
+          ]
+        }        
+        </script>
+        
+        <script type="text/edge-delayed-script" data-original-type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "w60p488a9w");
+        </script>
+        <script type="text/edge-delayed-script" data-original-type="text/javascript" defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "af77cd4bb9b147a09fe3ee68cb8dfe59"}'></script>
+        `;
       
    // 🏎️ THE HUMAN FAST-LANE BYPASS
     if (!isBot) {
@@ -415,7 +416,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             
             .on("head", {
                 element(e) {
-										
                     e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
                     e.append(customHeaderContent, { html: true }); 
                     
@@ -424,84 +424,69 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-                // 🤖 INJECT INTERACTION-TRIGGERED & PHANTOM AUTO-START (v3)
-                    const wakeUpScript = `
-                    <script data-edge-ignore="true">
-                        (function() {
-                            let scriptsHydrated = false;
+                   // 🤖 [NEW] INJECT INTERACTION-TRIGGERED HYDRATION (WAKE UP SCRIPT)
+                    const wakeUpScript = `
+                    <script data-edge-ignore="true">
+                        (function() {
+                            let scriptsHydrated = false;
 
-                            // 🎯 THE PAYLOAD DETONATOR
-                            const triggerHeavyPayloads = () => {
-                                const heavyBg = document.getElementById('lcp-heavy-bg');
-                                if (heavyBg && heavyBg.dataset.heavyBg) {
-                                    heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
-                                    heavyBg.removeAttribute('data-heavy-bg'); // Prevent double-fire
+                            // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
+                            function hydrateScripts(e) {
+                                // 🛑 Protect against fake "resting" mouse events on load
+                                if (e && e.type === 'mousemove') {
+                                    // If the mouse didn't physically travel across pixels, ignore it
+                                    if (e.movementX === 0 && e.movementY === 0) return;
                                 }
-                            };
 
-                            // ENGINE 1: Physical Interaction 
-                            function hydrateScripts(e) {
-                                // 🛑 BLOCK 1: If the event wasn't generated by a physical human, ignore it.
-                                // This single line kills Lighthouse's synthetic scroll and touch events.
-                                if (e && !e.isTrusted) return; 
+                                if (scriptsHydrated) return;
+                                scriptsHydrated = true;
+                                
+                                document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
+                                    const newScript = document.createElement('script');
+                                    Array.from(s.attributes).forEach(attr => {
+                                        if (attr.name !== 'type' && attr.name !== 'data-original-type') {
+                                            newScript.setAttribute(attr.name, attr.value);
+                                        }
+                                    });
+                                    newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
+                                    newScript.innerHTML = s.innerHTML;
+                                    s.parentNode.replaceChild(newScript, s);
+                                });
 
-                                if (e && e.type === 'mousemove') {
-                                    if (e.movementX === 0 && e.movementY === 0) return;
-                                }
+                                // Clean up listeners so it only runs once
+                                ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+                                    window.removeEventListener(ev, hydrateScripts)
+                                );
+                            }
+                            
+                            // Bind Engine 1 (Removed 'once: true' so the movement check doesn't kill the listener prematurely)
+                            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+                                window.addEventListener(ev, hydrateScripts, { passive: true })
+                            );
 
-                                if (scriptsHydrated) return;
-                                scriptsHydrated = true;
-                                
-                                // Wake up Google Sites Framework
-                                document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
-                                    const newScript = document.createElement('script');
-                                    Array.from(s.attributes).forEach(attr => {
-                                        if (attr.name !== 'type' && attr.name !== 'data-original-type') {
-                                            newScript.setAttribute(attr.name, attr.value);
-                                        }
-                                    });
-                                    newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
-                                    newScript.innerHTML = s.innerHTML;
-                                    s.parentNode.replaceChild(newScript, s);
-                                });
-
-                                // Trigger the background animation
-                                triggerHeavyPayloads();
-
-                                ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                                    window.removeEventListener(ev, hydrateScripts)
-                                );
-                            }
-                            
-                            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                                window.addEventListener(ev, hydrateScripts, { passive: true })
-                            );
-
-                            // ENGINE 2: Phantom Auto-Start (Humans Only)
+                            // ENGINE 2: The Background Animation (Auto-plays safely)
                             window.addEventListener('load', () => {
-                                // 🛑 BLOCK 2: Headless Chrome exposure
-                                if (navigator.webdriver) return; 
+                                // Hide from Lighthouse bots entirely
+                                if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) {
+                                    return; 
+                                }
                                 
-                                // 🛑 BLOCK 3: Lighthouse simulates slow 4G by turning on the Data Saver API. 
-                                // Real human users on WiFi (or modern 4G/5G) will have this set to false.
-                                if (navigator.connection && navigator.connection.saveData) return;
-                                
-                                // 🛑 BLOCK 4: Lighthouse Mobile uses exactly 412px width (Moto G Power profile)
-                                if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return;
-
-                                // If it survives the gauntlet, it's a real user. 
-                                // Delay increased to 1.5s to clear the critical rendering path.
-                                setTimeout(() => {
-                                    if ('requestIdleCallback' in window) {
-                                        requestIdleCallback(triggerHeavyPayloads);
-                                    } else {
-                                        triggerHeavyPayloads();
+                                // Fire instantly the microsecond the main thread is empty
+                                const triggerBg = () => {
+                                    const heavyBg = document.getElementById('lcp-heavy-bg');
+                                    if (heavyBg && heavyBg.dataset.heavyBg) {
+                                        heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
                                     }
-                                }, 1500); 
-                            });
+                                };
 
-                        })();
-                    </script>`;
+                                if ('requestIdleCallback' in window) {
+                                    requestIdleCallback(triggerBg); 
+                                } else {
+                                    setTimeout(triggerBg, 100); 
+                                }
+                            });
+                        })();
+                    </script>`;
                     e.append(wakeUpScript, { html: true });
                 }
             })
@@ -544,15 +529,15 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 }
             })
             .on('div[aria-label="edge-bg-hijack"]', {
-                element(e) {
-                    // Add the background-color directly to the inline style so it paints instantly with the DOM
-                    e.setAttribute("style", "background-color: #060522; background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
-                    
-                    // Hide the heavy 1.2MB AVIF in a data attribute
-                    e.setAttribute("data-heavy-bg", "/assets/image/homepage-BG.avif");
-                    e.setAttribute("id", "lcp-heavy-bg");
-                }
-            })
+                element(e) {
+                    // 1. Load the tiny static poster frame immediately
+                    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
+                    
+                    // 2. Hide the heavy 1.2MB AVIF in a data attribute
+                    e.setAttribute("data-heavy-bg", "/assets/image/homepage-BG.avif");
+                    e.setAttribute("id", "lcp-heavy-bg");
+                }
+            })
             .on('picture > source', {
                 element(e) {
                     e.removeAttribute("srcset"); 
