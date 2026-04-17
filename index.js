@@ -431,6 +431,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                             function wakeUpScripts() {
                                 if (hydrated) return;
                                 hydrated = true;
+                                
+                                // 1. Hydrate delayed scripts
                                 document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
                                     const newScript = document.createElement('script');
                                     Array.from(s.attributes).forEach(attr => {
@@ -442,18 +444,22 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                                     newScript.innerHTML = s.innerHTML;
                                     s.parentNode.replaceChild(newScript, s);
                                 });
+
+                                // 2. Trigger the heavy AVIF animation sequence
+                                const heavyAnim = document.getElementById('lcp-heavy-anim');
+                                if (heavyAnim && heavyAnim.dataset.heavyAvif) {
+                                    heavyAnim.src = heavyAnim.dataset.heavyAvif;
+                                }
+
                                 // Clean up listeners
                                 ['mouseover','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                                     window.removeEventListener(ev, wakeUpScripts)
                                 );
                             }
                             
-                            // Added 'touchstart' and 'scroll' for aggressive mobile wake-up
                             ['mouseover','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                                 window.addEventListener(ev, wakeUpScripts, {once: true, passive: true})
                             );
-                            
-                            // 🚨 DELETED THE setTimeout "TIME BOMB" HERE
                         })();
                     </script>`;
                     e.append(wakeUpScript, { html: true });
@@ -464,11 +470,11 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     currentEmbedCode = e.getAttribute("data-code");
                 }
             })
-            .on('img', {
+           .on('img', {
                 element(e) {
                     e.removeAttribute("loading"); 
                     e.setAttribute("decoding", "sync");
-                    
+
                     let ariaLabel = e.getAttribute("aria-label") || "";
                     let altText = e.getAttribute("alt") || ""; 
 
@@ -483,6 +489,17 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     else if (altText === "edge-bg-hijack") { 
                         e.setAttribute("src", "/assets/image/my-optimized-background.webp");
                         e.removeAttribute("srcset");
+                    }
+                    // 🚨 THE BAIT AND SWITCH LOGIC
+                    else if (altText === "heavy-avif-anim") { 
+                        // Serve a tiny 50kb static poster frame for instant LCP
+                        e.setAttribute("src", "/assets/image/static-poster-frame.webp");
+                        e.removeAttribute("srcset");
+                        e.setAttribute("fetchpriority", "high");
+                        
+                        // Hide the 1MB payload in a data attribute for the wakeUpScript
+                        e.setAttribute("data-heavy-avif", "/assets/image/your-1mb-animation.avif");
+                        e.setAttribute("id", "lcp-heavy-anim");
                     }
                 }
             })
