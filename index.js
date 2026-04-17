@@ -423,14 +423,20 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-                    // 🤖 [NEW] INJECT INTERACTION-TRIGGERED HYDRATION (WAKE UP SCRIPT)
+                   // 🤖 [NEW] INJECT INTERACTION-TRIGGERED HYDRATION (WAKE UP SCRIPT)
                     const wakeUpScript = `
                     <script data-edge-ignore="true">
                         (function() {
                             let scriptsHydrated = false;
 
-                            // ENGINE 1: The Heavy Framework (Strictly for humans on interaction)
-                            function hydrateScripts() {
+                            // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
+                            function hydrateScripts(e) {
+                                // 🛑 Protect against fake "resting" mouse events on load
+                                if (e && e.type === 'mousemove') {
+                                    // If the mouse didn't physically travel across pixels, ignore it
+                                    if (e.movementX === 0 && e.movementY === 0) return;
+                                }
+
                                 if (scriptsHydrated) return;
                                 scriptsHydrated = true;
                                 
@@ -447,14 +453,14 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                                 });
 
                                 // Clean up listeners so it only runs once
-                                ['mouseover','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+                                ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                                     window.removeEventListener(ev, hydrateScripts)
                                 );
                             }
                             
-                            // Bind Engine 1 to physical touch/movement
-                            ['mouseover','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                                window.addEventListener(ev, hydrateScripts, {once: true, passive: true})
+                            // Bind Engine 1 (Removed 'once: true' so the movement check doesn't kill the listener prematurely)
+                            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+                                window.addEventListener(ev, hydrateScripts, { passive: true })
                             );
 
                             // ENGINE 2: The Background Animation (Auto-plays safely)
