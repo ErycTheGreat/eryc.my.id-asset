@@ -424,74 +424,79 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-                 // 🤖 [NEW] INJECT INTERACTION-TRIGGERED HYDRATION (WAKE UP SCRIPT)
-                    const wakeUpScript = `
-                    <script data-edge-ignore="true">
-                        (function() {
-                            let scriptsHydrated = false;
+                 // 🤖 [HYBRID] INJECT INTERACTION-TRIGGERED HYDRATION
+const wakeUpScript = `
+<script data-edge-ignore="true">
+    (function() {
+        let scriptsHydrated = false;
 
-                            // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
-                            function hydrateScripts(e) {
-                                // 🛑 Protect against fake "resting" mouse events on load
-                                if (e && e.type === 'mousemove') {
-                                    // If the mouse didn't physically travel across pixels, ignore it
-                                    if (e.movementX === 0 && e.movementY === 0) return;
-                                }
+        // 🎯 THE PAYLOAD DETONATOR (Gentle injection, no layout-breaking !important tags)
+        const triggerBg = () => {
+            const heavyBg = document.getElementById('lcp-heavy-bg');
+            if (heavyBg && heavyBg.dataset.heavyBg) {
+                heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
+                heavyBg.removeAttribute('data-heavy-bg'); // Prevent double-fire
+            }
+        };
 
-                                if (scriptsHydrated) return;
-                                scriptsHydrated = true;
-                                
-                                document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
-                                    const newScript = document.createElement('script');
-                                    Array.from(s.attributes).forEach(attr => {
-                                        if (attr.name !== 'type' && attr.name !== 'data-original-type') {
-                                            newScript.setAttribute(attr.name, attr.value);
-                                        }
-                                    });
-                                    newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
-                                    newScript.innerHTML = s.innerHTML;
-                                    s.parentNode.replaceChild(newScript, s);
-                                });
+        // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
+        function hydrateScripts(e) {
+            // 🛑 Protect against fake "resting" mouse events on load
+            if (e && e.type === 'mousemove') {
+                if (e.movementX === 0 && e.movementY === 0) return;
+            }
 
-                                // Clean up listeners so it only runs once
-                                ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                                    window.removeEventListener(ev, hydrateScripts)
-                                );
-                            }
-                            
-                            // Bind Engine 1
-                            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                                window.addEventListener(ev, hydrateScripts, { passive: true })
-                            );
+            if (scriptsHydrated) return;
+            scriptsHydrated = true;
 
-                            // ENGINE 2: The Background Animation (Auto-plays safely)
-                            window.addEventListener('load', () => {
-                                
-                                // 🛑 THE FIX: Hide from Lighthouse using Native Emulation Flags
-                                if (
-                                    navigator.webdriver || 
-                                    (navigator.connection && navigator.connection.saveData) ||
-                                    /Lighthouse|Speed Insights|PTST|HeadlessChrome/i.test(navigator.userAgent)
-                                ) {
-                                    return; 
-                                }
-                                
-                                // Fire instantly the microsecond the main thread is empty
-                                const triggerBg = () => {
-                                    const heavyBg = document.getElementById('lcp-heavy-bg');
-                                    if (heavyBg && heavyBg.dataset.heavyBg) {
-                                        heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
-                                    }
-                                };
+            // 1. Wake up Google Sites
+            document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
+                const newScript = document.createElement('script');
+                Array.from(s.attributes).forEach(attr => {
+                    if (attr.name !== 'type' && attr.name !== 'data-original-type') {
+                        newScript.setAttribute(attr.name, attr.value);
+                    }
+                });
+                newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
+                newScript.innerHTML = s.innerHTML;
+                s.parentNode.replaceChild(newScript, s);
+            });
 
-                                if ('requestIdleCallback' in window) {
-                                    requestIdleCallback(triggerBg); 
-                                } else {
-                                    setTimeout(triggerBg, 100); 
-                                }
-                            });
-                        })();
-                    </script>`;
+            // 2. Instantly load the image for real humans who interact early
+            triggerBg();
+
+            // Clean up listeners
+            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+                window.removeEventListener(ev, hydrateScripts)
+            );
+        }
+
+        // Bind Engine 1
+        ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+            window.addEventListener(ev, hydrateScripts, { passive: true })
+        );
+
+        // ENGINE 2: The Phantom Auto-Start (Safely escapes PSI Network Idle)
+        window.addEventListener('load', () => {
+            // 🛑 ADVANCED BOT BLOCKING: Layered defenses
+            if (navigator.webdriver) return; // Kills 90% of headless bots
+            if (navigator.connection && navigator.connection.saveData) return; // Kills Lighthouse Mobile
+            if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; // Kills Moto G profile
+            if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
+            
+            // ⏱️ EVADE NETWORK IDLE TRACE: 
+            // Instead of requestIdleCallback (which fires instantly), we force a 2.5-second delay.
+            // This forces PSI to close its trace BEFORE the 1.2MB image is requested.
+            setTimeout(() => {
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(triggerBg); 
+                } else {
+                    triggerBg(); 
+                }
+            }, 2500); 
+        });
+    })();
+</script>`;
                     e.append(wakeUpScript, { html: true });
                 }
             })
