@@ -205,8 +205,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 		<style id="edge-anti-flash">
             /* 1. Override Google Sites Native Theme Variables */
             :root {
-                --theme-page_background-color: #060522 !important;
-                --theme-background-color: #060522 !important;
+                --theme-page_background-color: #040522 !important;
+                --theme-background-color: #040522 !important;
             }
             
             /* 2. Target the specific nested divs Google Sites uses for backgrounds */
@@ -216,12 +216,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             .YaS3fc, 
             .Hwtpvd, 
             .aGqEje { 
-                background-color: #060522 !important; 
+                background-color: #040522 !important; 
             }
 
             /* 3. Your custom hijack container */
             div[aria-label="edge-bg-hijack"] { 
-                background-color: #060522 !important; 
+                background-color: #040522 !important; 
             }
         </style>
             
