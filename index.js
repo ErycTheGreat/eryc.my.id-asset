@@ -628,8 +628,7 @@ const wakeUpScript = `
                     }
                 }
             })
-           .on('link[rel="stylesheet"]', {
-                // 🚀 THE NUCLEAR OPTION
+          .on('link[rel="stylesheet"]', {
                 element(e) {
                     const href = e.getAttribute('href') || "";
                     
@@ -638,9 +637,10 @@ const wakeUpScript = `
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     } 
-                    // Obliterate the 189KB Google Sites stylesheet entirely
+                    // ⏪ THE ROLLBACK & FIX: Defer the Google Sites CSS instead of deleting it
                     else if (href && href.includes('www.gstatic.com')) {
-                        e.remove();
+                        e.setAttribute('media', 'print');
+                        e.setAttribute('onload', "this.media='all'");
                     }
                 }
              })
