@@ -203,9 +203,26 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 		
 		<style id="edge-anti-flash">
-            html, body, div[aria-label="edge-bg-hijack"] { 
-                background-color: #060522 !important; 
-            }
+            /* 1. Override Google Sites Native Theme Variables */
+            :root {
+                --theme-page_background-color: #060522 !important;
+                --theme-background-color: #060522 !important;
+            }
+            
+            /* 2. Target the specific nested divs Google Sites uses for backgrounds */
+            html, 
+            body, 
+            .UtePc, 
+            .YaS3fc, 
+            .Hwtpvd, 
+            .aGqEje { 
+                background-color: #060522 !important; 
+            }
+
+            /* 3. Your custom hijack container */
+            div[aria-label="edge-bg-hijack"] { 
+                background-color: #060522 !important; 
+            }
         </style>
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
