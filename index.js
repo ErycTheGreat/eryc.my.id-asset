@@ -424,24 +424,23 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-                 // 🤖 [HYBRID] INJECT INTERACTION-TRIGGERED HYDRATION
+                // 🤖 [HYBRID V2] ANTI-REFLOW WAKE UP SCRIPT
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
         let scriptsHydrated = false;
 
-        // 🎯 THE PAYLOAD DETONATOR (Gentle injection, no layout-breaking !important tags)
+        // 🎯 THE PAYLOAD DETONATOR
         const triggerBg = () => {
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
                 heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
-                heavyBg.removeAttribute('data-heavy-bg'); // Prevent double-fire
+                heavyBg.removeAttribute('data-heavy-bg'); 
             }
         };
 
         // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
         function hydrateScripts(e) {
-            // 🛑 Protect against fake "resting" mouse events on load
             if (e && e.type === 'mousemove') {
                 if (e.movementX === 0 && e.movementY === 0) return;
             }
@@ -449,21 +448,29 @@ const wakeUpScript = `
             if (scriptsHydrated) return;
             scriptsHydrated = true;
 
-            // 1. Wake up Google Sites
-            document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
-                const newScript = document.createElement('script');
-                Array.from(s.attributes).forEach(attr => {
-                    if (attr.name !== 'type' && attr.name !== 'data-original-type') {
-                        newScript.setAttribute(attr.name, attr.value);
-                    }
+            // 🛠️ ANTI-REFLOW UPGRADE: Sync with browser's render cycle
+            requestAnimationFrame(() => {
+                // 1. Wake up Google Sites Framework
+                document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
+                    const newScript = document.createElement('script');
+                    Array.from(s.attributes).forEach(attr => {
+                        if (attr.name !== 'type' && attr.name !== 'data-original-type') {
+                            newScript.setAttribute(attr.name, attr.value);
+                        }
+                    });
+                    newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
+                    newScript.innerHTML = s.innerHTML;
+                    s.parentNode.replaceChild(newScript, s);
                 });
-                newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
-                newScript.innerHTML = s.innerHTML;
-                s.parentNode.replaceChild(newScript, s);
-            });
 
-            // 2. Instantly load the image for real humans who interact early
-            triggerBg();
+                // 2. Decouple the Background Image
+                // We use a tiny 50ms setTimeout combined with another requestAnimationFrame.
+                // This gives the Google Sites framework time to finish its layout math 
+                // BEFORE we inject the heavy image payload, eliminating the collision.
+                setTimeout(() => {
+                    requestAnimationFrame(triggerBg);
+                }, 50);
+            });
 
             // Clean up listeners
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
@@ -476,17 +483,14 @@ const wakeUpScript = `
             window.addEventListener(ev, hydrateScripts, { passive: true })
         );
 
-        // ENGINE 2: The Phantom Auto-Start (Safely escapes PSI Network Idle)
+        // ENGINE 2: The Phantom Auto-Start
         window.addEventListener('load', () => {
-            // 🛑 ADVANCED BOT BLOCKING: Layered defenses
-            if (navigator.webdriver) return; // Kills 90% of headless bots
-            if (navigator.connection && navigator.connection.saveData) return; // Kills Lighthouse Mobile
-            if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; // Kills Moto G profile
+            if (navigator.webdriver) return; 
+            if (navigator.connection && navigator.connection.saveData) return; 
+            if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
             if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
             
-            // ⏱️ EVADE NETWORK IDLE TRACE: 
-            // Instead of requestIdleCallback (which fires instantly), we force a 2.5-second delay.
-            // This forces PSI to close its trace BEFORE the 1.2MB image is requested.
+            // 2.5s PSI Evasion Timer
             setTimeout(() => {
                 if ('requestIdleCallback' in window) {
                     requestIdleCallback(triggerBg); 
