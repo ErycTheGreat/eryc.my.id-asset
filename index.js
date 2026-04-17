@@ -515,7 +515,7 @@ const wakeUpScript = `
                 } else {
                     triggerBg(); 
                 }
-            }, 800); 
+            }, 400); 
         });
     })();
 </script>`;
