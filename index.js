@@ -386,16 +386,15 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         }        
         </script>
         
-        <script type="text/javascript">
+        <script type="text/edge-delayed-script" data-original-type="text/javascript">
             (function(c,l,a,r,i,t,y){
                 c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                 t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
                 y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
             })(window, document, "clarity", "script", "w60p488a9w");
         </script>
-        <!-- Cloudflare Web Analytics -->
-        <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "af77cd4bb9b147a09fe3ee68cb8dfe59"}'></script><!-- End Cloudflare Web Analytics -->
-    `;
+        <script type="text/edge-delayed-script" data-original-type="text/javascript" defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "af77cd4bb9b147a09fe3ee68cb8dfe59"}'></script>
+        `;
       
    // 🏎️ THE HUMAN FAST-LANE BYPASS
     if (!isBot) {
