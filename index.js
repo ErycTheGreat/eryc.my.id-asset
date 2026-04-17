@@ -448,69 +448,52 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-                   // 🤖 [NEW] INJECT INTERACTION-TRIGGERED HYDRATION (WAKE UP SCRIPT)
-                    const wakeUpScript = `
-                    <script data-edge-ignore="true">
-                        (function() {
-                            let scriptsHydrated = false;
+                 // 🤖 INJECT INTERACTION-TRIGGERED HYDRATION (WAKE UP SCRIPT)
+                    const wakeUpScript = `
+                    <script data-edge-ignore="true">
+                        (function() {
+                            let scriptsHydrated = false;
 
-                            // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
-                            function hydrateScripts(e) {
-                                // 🛑 Protect against fake "resting" mouse events on load
-                                if (e && e.type === 'mousemove') {
-                                    // If the mouse didn't physically travel across pixels, ignore it
-                                    if (e.movementX === 0 && e.movementY === 0) return;
+                            function hydrateScripts(e) {
+                                // 🛑 Protect against fake "resting" mouse events on load
+                                if (e && e.type === 'mousemove') {
+                                    if (e.movementX === 0 && e.movementY === 0) return;
+                                }
+
+                                if (scriptsHydrated) return;
+                                scriptsHydrated = true;
+                                
+                                // 1. WAKE UP GOOGLE SITES (The Heavy Framework)
+                                document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
+                                    const newScript = document.createElement('script');
+                                    Array.from(s.attributes).forEach(attr => {
+                                        if (attr.name !== 'type' && attr.name !== 'data-original-type') {
+                                            newScript.setAttribute(attr.name, attr.value);
+                                        }
+                                    });
+                                    newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
+                                    newScript.innerHTML = s.innerHTML;
+                                    s.parentNode.replaceChild(newScript, s);
+                                });
+
+                                // 2. WAKE UP THE BACKGROUND ANIMATION
+                                const heavyBg = document.getElementById('lcp-heavy-bg');
+                                if (heavyBg && heavyBg.dataset.heavyBg) {
+                                    heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
                                 }
 
-                                if (scriptsHydrated) return;
-                                scriptsHydrated = true;
-                                
-                                document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
-                                    const newScript = document.createElement('script');
-                                    Array.from(s.attributes).forEach(attr => {
-                                        if (attr.name !== 'type' && attr.name !== 'data-original-type') {
-                                            newScript.setAttribute(attr.name, attr.value);
-                                        }
-                                    });
-                                    newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
-                                    newScript.innerHTML = s.innerHTML;
-                                    s.parentNode.replaceChild(newScript, s);
-                                });
-
-                                // Clean up listeners so it only runs once
-                                ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                                    window.removeEventListener(ev, hydrateScripts)
-                                );
-                            }
-                            
-                            // Bind Engine 1 (Removed 'once: true' so the movement check doesn't kill the listener prematurely)
-                            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                                window.addEventListener(ev, hydrateScripts, { passive: true })
-                            );
-
-                            // ENGINE 2: The Background Animation (Auto-plays safely)
-                            window.addEventListener('load', () => {
-                                // Hide from Lighthouse bots entirely
-                                if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) {
-                                    return; 
-                                }
-                                
-                                // Fire instantly the microsecond the main thread is empty
-                                const triggerBg = () => {
-                                    const heavyBg = document.getElementById('lcp-heavy-bg');
-                                    if (heavyBg && heavyBg.dataset.heavyBg) {
-                                        heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
-                                    }
-                                };
-
-                                if ('requestIdleCallback' in window) {
-                                    requestIdleCallback(triggerBg); 
-                                } else {
-                                    setTimeout(triggerBg, 100); 
-                                }
-                            });
-                        })();
-                    </script>`;
+                                // 3. CLEAN UP LISTENERS
+                                ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+                                    window.removeEventListener(ev, hydrateScripts)
+                                );
+                            }
+                            
+                            // Bind the physical interaction listener
+                            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+                                window.addEventListener(ev, hydrateScripts, { passive: true })
+                            );
+                        })();
+                    </script>`;
                     e.append(wakeUpScript, { html: true });
                 }
             })
