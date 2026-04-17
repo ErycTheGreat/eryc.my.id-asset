@@ -483,6 +483,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 
         // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
         function hydrateScripts(e) {
+            // 🛑 BLOCK SYNTHETIC BOT EVENTS: Only accept real human hardware inputs
+            if (e && !e.isTrusted) return; 
+
             if (e && e.type === 'mousemove') {
                 if (e.movementX === 0 && e.movementY === 0) return;
             }
