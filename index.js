@@ -197,9 +197,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-        
-                
-        <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
+        <link rel="preconnect" href="https://www.gstatic.com"><link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
@@ -579,6 +577,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     if (href && href.includes('fonts.googleapis.com/css')) { // <-- HERE IS THE LEAK
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
+                    }
+                  // 🤖 Maximize download speed for the core CSS without deferring it
+                    else if (href && href.includes('www.gstatic.com')) {
+                        e.setAttribute('fetchpriority', 'high');
                     }
                 }
              })
