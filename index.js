@@ -200,7 +200,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         
                 
         <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
-        <link rel="preload" as="image" href="/assets/image/homepage-BG.avif" fetchpriority="high">
+        <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -445,10 +445,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                                     s.parentNode.replaceChild(newScript, s);
                                 });
 
-                                // 2. Trigger the heavy AVIF animation sequence
-                                const heavyAnim = document.getElementById('lcp-heavy-anim');
-                                if (heavyAnim && heavyAnim.dataset.heavyAvif) {
-                                    heavyAnim.src = heavyAnim.dataset.heavyAvif;
+                                // 2. Trigger the heavy AVIF background animation
+                                const heavyBg = document.getElementById('lcp-heavy-bg');
+                                if (heavyBg && heavyBg.dataset.heavyBg) {
+                                    heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
                                 }
 
                                 // Clean up listeners
@@ -505,7 +505,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             })
             .on('div[aria-label="edge-bg-hijack"]', {
                 element(e) {
-                    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG.avif');");
+                    // 1. Load the tiny static poster frame immediately
+                    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
+                    
+                    // 2. Hide the heavy 1.2MB AVIF in a data attribute
+                    e.setAttribute("data-heavy-bg", "/assets/image/homepage-BG.avif");
+                    e.setAttribute("id", "lcp-heavy-bg");
                 }
             })
             .on('picture > source', {
