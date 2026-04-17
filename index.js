@@ -457,9 +457,15 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                                 );
                             }
                             
+                            // TRIGGER 1: Instant activation on user interaction
                             ['mouseover','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                                 window.addEventListener(ev, wakeUpScripts, {once: true, passive: true})
                             );
+
+                            // TRIGGER 2: Auto-play 500ms after the page is fully loaded
+                            window.addEventListener('load', () => {
+                                setTimeout(wakeUpScripts, 500);
+                            });
                         })();
                     </script>`;
                     e.append(wakeUpScript, { html: true });
