@@ -9,6 +9,11 @@ routes = [
   { pattern = "www.eryc.my.id/assets/*", zone_name = "eryc.my.id" }
 ]
 
+# --- CRON TRIGGER ---
+# This forces Wrangler to keep your 30-minute schedule active
+[triggers]
+crons = ["*/30 * * * *"]
+
 # --- KV DATABASE BINDING ---
 # This ensures GitHub automatically reconnects your KV database on every push
 [[kv_namespaces]]
