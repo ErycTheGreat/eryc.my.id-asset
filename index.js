@@ -203,37 +203,22 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
         <style id="edge-anti-flash">
-            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
-            html {
-                background-color: #060522 !important;
-            }
+            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
+            html {
+                background-color: #060522 !important;
+            }
 
-            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
-            :root {
-                --theme-page_background-color: transparent !important;
-                --theme-background-color: transparent !important;
-            }
-            
-            /* 3. Ensure the body allows the html canvas to show through */
-            body {
-                background-color: transparent !important;
-            }
-        </style>
-
-        <style data-edge-ignore="true">
-            /* 🤖 THE BOOT SEQUENCE CURTAIN */
-            #edge-boot-curtain {
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                width: 100vw !important;
-                height: 100vh !important;
-                background-color: #020205 !important;
-                z-index: 2147483647 !important;
-                transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
-                pointer-events: none !important;
-            }
-        </style>
+            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
+            :root {
+                --theme-page_background-color: transparent !important;
+                --theme-background-color: transparent !important;
+            }
+            
+            /* 3. Ensure the body allows the html canvas to show through */
+            body {
+                background-color: transparent !important;
+            }
+        </style>
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -439,7 +424,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
        if (agpLcpUrl) {
            newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
        }
-       
+        
        let currentEmbedCode = null;
 
        let humanRewriter = new HTMLRewriter()
@@ -457,7 +442,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-                // 🤖 [HYBRID V2] ANTI-REFLOW WAKE UP SCRIPT WITH CURTAIN LIFT
+                // 🤖 [HYBRID V2] ANTI-REFLOW WAKE UP SCRIPT
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
@@ -496,27 +481,23 @@ const wakeUpScript = `
                     s.parentNode.replaceChild(newScript, s);
                 });
 
-                // 2. Decouple the Background Image & Lift the Curtain smoothly
+                // 2. Decouple the Background Image
+                // We use a tiny 50ms setTimeout combined with another requestAnimationFrame.
+                // This gives the Google Sites framework time to finish its layout math 
+                // BEFORE we inject the heavy image payload, eliminating the collision.
                 setTimeout(() => {
-                    requestAnimationFrame(() => {
-                        triggerBg();
-                        
-                        const curtain = document.getElementById('edge-boot-curtain');
-                        if (curtain) {
-                            curtain.style.opacity = '0';
-                        }
-                    });
-                }, 80);
+                    requestAnimationFrame(triggerBg);
+                }, 50);
             });
 
             // Clean up listeners
-            ['mousemove','keydown','touchstart','touchmove','wheel','scroll','mouseenter','pointerenter'].forEach(ev => 
+            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                 window.removeEventListener(ev, hydrateScripts)
             );
         }
 
-        // Bind Engine 1 - Hyper-Sensitive Triggers Added
-        ['mousemove','keydown','touchstart','touchmove','wheel','scroll','mouseenter','pointerenter'].forEach(ev => 
+        // Bind Engine 1
+        ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
             window.addEventListener(ev, hydrateScripts, { passive: true })
         );
 
@@ -527,6 +508,7 @@ const wakeUpScript = `
             if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
             if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
             
+            // 2.5s PSI Evasion Timer
             setTimeout(() => {
                 if ('requestIdleCallback' in window) {
                     requestIdleCallback(triggerBg); 
@@ -538,12 +520,6 @@ const wakeUpScript = `
     })();
 </script>`;
                     e.append(wakeUpScript, { html: true });
-                }
-            })
-            .on("body", {
-                element(e) {
-                    // Inject the HTML curtain container inside the body for valid DOM parsing
-                    e.prepend('<div id="edge-boot-curtain"></div>', { html: true });
                 }
             })
             .on("div[data-code]", {
@@ -609,7 +585,7 @@ const wakeUpScript = `
                     }
                 }
             })
-           // 🤖 FIX GOOGLE SITES MOBILE MENU ACCESSIBILITY
+           // 🤖 [NEW] FIX GOOGLE SITES MOBILE MENU ACCESSIBILITY
               .on('div[role="button"][aria-haspopup="true"]', {
                   element(e) {
                       if (!e.hasAttribute('aria-label')) {
@@ -617,10 +593,11 @@ const wakeUpScript = `
                       }
                   }
               })
-           // 🤖 SCRIPT NEUTRALIZER
+           // 🤖 [NEW] SCRIPT NEUTRALIZER
             .on('script', {
                 element(e) {
-                    // Delays ALL scripts unless they explicitly have data-edge-ignore="true"
+                    // We removed the isClarity exception. Now it delays ALL scripts 
+                    // unless they explicitly have data-edge-ignore="true"
                     if (!e.hasAttribute('data-edge-ignore')) {
                         const originalType = e.getAttribute('type') || 'text/javascript';
                         e.setAttribute('data-original-type', originalType);
@@ -628,8 +605,9 @@ const wakeUpScript = `
                     }
                 }
             })
-          .on('link[rel="stylesheet"]', {
-                element(e) {
+           .on('link[rel="stylesheet"]', {
+                // 🤖 Notice the "async" keyword here—required for Edge fetching
+                async element(e) {
                     const href = e.getAttribute('href') || "";
                     
                     // Keep the font deferral
@@ -637,10 +615,26 @@ const wakeUpScript = `
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     } 
-                    // ⏪ THE ROLLBACK & FIX: Defer the Google Sites CSS instead of deleting it
+                    // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
                     else if (href && href.includes('www.gstatic.com')) {
-                        e.setAttribute('media', 'print');
-                        e.setAttribute('onload', "this.media='all'");
+                        try {
+                            // 1. Fetch the CSS file from Google's CDN server-side
+                            let cssRes = await fetch(href, {
+                                // 2. Cache it heavily on Cloudflare so the Edge doesn't delay the response
+                                cf: { cacheTtl: 31536000, cacheEverything: true } 
+                            });
+                            
+                            if (cssRes.ok) {
+                                // 3. Extract the raw CSS text
+                                let cssText = await cssRes.text();
+                                
+                                // 4. Replace the render-blocking <link> with a pure inline <style> tag
+                                e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
+                            }
+                        } catch (err) {
+                            console.error("Failed to inline Google Sites CSS:", err);
+                            // If the fetch fails for some reason, it safely falls back to doing nothing
+                        }
                     }
                 }
              })
