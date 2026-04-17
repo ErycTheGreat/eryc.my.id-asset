@@ -512,7 +512,7 @@ const wakeUpScript = `
            .on('img', {
                 element(e) {
                     e.removeAttribute("loading"); 
-                    e.setAttribute("decoding", "sync");
+                    e.setAttribute("decoding", "async");
 
                     let ariaLabel = e.getAttribute("aria-label") || "";
                     let altText = e.getAttribute("alt") || ""; 
