@@ -197,7 +197,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-        <link rel="preconnect" href="https://www.gstatic.com"><link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
+        
+                
+        <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
@@ -572,15 +574,35 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 }
             })
            .on('link[rel="stylesheet"]', {
-                element(e) {
+                // 🤖 Notice the "async" keyword here—required for Edge fetching
+                async element(e) {
                     const href = e.getAttribute('href') || "";
-                    if (href && href.includes('fonts.googleapis.com/css')) { // <-- HERE IS THE LEAK
+                    
+                    // Keep the font deferral
+                    if (href && href.includes('fonts.googleapis.com/css')) { 
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
-                    }
-                  // 🤖 Maximize download speed for the core CSS without deferring it
+                    } 
+                    // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
                     else if (href && href.includes('www.gstatic.com')) {
-                        e.setAttribute('fetchpriority', 'high');
+                        try {
+                            // 1. Fetch the CSS file from Google's CDN server-side
+                            let cssRes = await fetch(href, {
+                                // 2. Cache it heavily on Cloudflare so the Edge doesn't delay the response
+                                cf: { cacheTtl: 31536000, cacheEverything: true } 
+                            });
+                            
+                            if (cssRes.ok) {
+                                // 3. Extract the raw CSS text
+                                let cssText = await cssRes.text();
+                                
+                                // 4. Replace the render-blocking <link> with a pure inline <style> tag
+                                e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
+                            }
+                        } catch (err) {
+                            console.error("Failed to inline Google Sites CSS:", err);
+                            // If the fetch fails for some reason, it safely falls back to doing nothing
+                        }
                     }
                 }
              })
