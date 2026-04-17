@@ -201,6 +201,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 
         <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
+		
+		<style id="edge-anti-flash">
+            html, body, div[aria-label="edge-bg-hijack"] { 
+                background-color: #060522 !important; 
+            }
+        </style>
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -416,9 +422,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             
             .on("head", {
                 element(e) {
-					// 🚀 INJECT AT ABSOLUTE TOP: Forces dark background before the browser freezes
-					e.prepend("<style>html, body { background-color: #060522 !important; }</style>", { html: true });
-					
+										
                     e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
                     e.append(customHeaderContent, { html: true }); 
                     
@@ -501,7 +505,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
            .on('img', {
                 element(e) {
                     e.removeAttribute("loading"); 
-                    e.setAttribute("decoding", "sync");
+                    e.setAttribute("decoding", "async");
 
                     let ariaLabel = e.getAttribute("aria-label") || "";
                     let altText = e.getAttribute("alt") || ""; 
