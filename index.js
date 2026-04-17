@@ -202,28 +202,32 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 		
-		<style id="edge-anti-flash">
-            /* 1. Override Google Sites Native Theme Variables */
-            :root {
-                --theme-page_background-color: #040522 !important;
-                --theme-background-color: #040522 !important;
-            }
-            
-            /* 2. Target the specific nested divs Google Sites uses for backgrounds */
-            html, 
-            body, 
-            .UtePc, 
-            .YaS3fc, 
-            .Hwtpvd, 
-            .aGqEje { 
-                background-color: #040522 !important; 
+		const customHeaderContent = `
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        
+        <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
+        <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
+            
+        <style id="edge-anti-flash">
+            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
+            html {
+                background-color: #060522 !important;
             }
 
-            /* 3. Your custom hijack container */
-            div[aria-label="edge-bg-hijack"] { 
-                background-color: #040522 !important; 
+            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
+            :root {
+                --theme-page_background-color: transparent !important;
+                --theme-background-color: transparent !important;
+            }
+            
+            /* 3. Ensure the body allows the html canvas to show through */
+            body {
+                background-color: transparent !important;
             }
         </style>
+
+        <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -568,15 +572,15 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 }
             })
             .on('div[aria-label="edge-bg-hijack"]', {
-                element(e) {
-                    // 1. Load the tiny static poster frame immediately
-                    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
-                    
-                    // 2. Hide the heavy 1.2MB AVIF in a data attribute
-                    e.setAttribute("data-heavy-bg", "/assets/image/homepage-BG.avif");
-                    e.setAttribute("id", "lcp-heavy-bg");
-                }
-            })
+                element(e) {
+                    // Add the background-color directly to the inline style so it paints instantly with the DOM
+                    e.setAttribute("style", "background-color: #060522; background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
+                    
+                    // Hide the heavy 1.2MB AVIF in a data attribute
+                    e.setAttribute("data-heavy-bg", "/assets/image/homepage-BG.avif");
+                    e.setAttribute("id", "lcp-heavy-bg");
+                }
+            })
             .on('picture > source', {
                 element(e) {
                     e.removeAttribute("srcset"); 
