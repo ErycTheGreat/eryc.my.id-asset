@@ -480,11 +480,11 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                                     return; 
                                 }
                                 
-                                // Wait for the main thread to be completely idle before downloading the AVIF
+                                // Fire instantly the microsecond the main thread is empty
                                 if ('requestIdleCallback' in window) {
-                                    requestIdleCallback(() => { setTimeout(loadBackground, 100); });
+                                    requestIdleCallback(loadBackground); 
                                 } else {
-                                    setTimeout(loadBackground, 1500); // Fallback for older browsers
+                                    setTimeout(loadBackground, 50); // 50ms fallback for older browsers
                                 }
                             });
                         })();
