@@ -560,13 +560,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                       }
                   }
               })
-            // 🤖 [NEW] SCRIPT NEUTRALIZER
+           // 🤖 [NEW] SCRIPT NEUTRALIZER
             .on('script', {
                 element(e) {
-                    const src = e.getAttribute('src') || "";
-                    const isClarity = src.includes("clarity.ms");
-                    
-                    if (!isClarity && !e.hasAttribute('data-edge-ignore')) {
+                    // We removed the isClarity exception. Now it delays ALL scripts 
+                    // unless they explicitly have data-edge-ignore="true"
+                    if (!e.hasAttribute('data-edge-ignore')) {
                         const originalType = e.getAttribute('type') || 'text/javascript';
                         e.setAttribute('data-original-type', originalType);
                         e.setAttribute('type', 'text/edge-delayed-script');
