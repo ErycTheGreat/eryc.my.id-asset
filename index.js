@@ -197,6 +197,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+		<link rel="preconnect" href="https://apis.google.com" crossorigin="">
         
                 
         <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
@@ -412,6 +413,15 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             })(window, document, "clarity", "script", "w60p488a9w");
         </script>
         <script type="text/edge-delayed-script" data-original-type="text/javascript" defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "af77cd4bb9b147a09fe3ee68cb8dfe59"}'></script>
+		
+		<script type="text/edge-delayed-script" data-original-type="text/javascript" defer src="https://www.googletagmanager.com/gtag/js?id=G-460EZRLTB6"></script>
+        
+        <script type="text/edge-delayed-script" data-original-type="text/javascript">
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-460EZRLTB6');
+        </script>
         `;
       
    // 🏎️ THE HUMAN FAST-LANE BYPASS
