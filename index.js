@@ -393,6 +393,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
             })(window, document, "clarity", "script", "w60p488a9w");
         </script>
+        <!-- Cloudflare Web Analytics -->
+        <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "af77cd4bb9b147a09fe3ee68cb8dfe59"}'></script><!-- End Cloudflare Web Analytics -->
     `;
       
    // 🏎️ THE HUMAN FAST-LANE BYPASS
