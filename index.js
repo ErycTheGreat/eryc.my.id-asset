@@ -428,9 +428,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     <script data-edge-ignore="true">
                         (function() {
                             let scriptsHydrated = false;
-                            let bgLoaded = false;
 
-                            // FUNCTION 1: Wake up heavy JS (Strictly for humans on interaction)
+                            // ENGINE 1: The Heavy Framework (Strictly for humans on interaction)
                             function hydrateScripts() {
                                 if (scriptsHydrated) return;
                                 scriptsHydrated = true;
@@ -446,45 +445,37 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                                     newScript.innerHTML = s.innerHTML;
                                     s.parentNode.replaceChild(newScript, s);
                                 });
-                            }
 
-                            // FUNCTION 2: Load the heavy AVIF background
-                            function loadBackground() {
-                                if (bgLoaded) return;
-                                bgLoaded = true;
-                                const heavyBg = document.getElementById('lcp-heavy-bg');
-                                if (heavyBg && heavyBg.dataset.heavyBg) {
-                                    heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
-                                }
-                            }
-
-                            // The master function for when a user actually touches/scrolls
-                            function handleHumanInteraction() {
-                                hydrateScripts();
-                                loadBackground();
-                                
+                                // Clean up listeners so it only runs once
                                 ['mouseover','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                                    window.removeEventListener(ev, handleHumanInteraction)
+                                    window.removeEventListener(ev, hydrateScripts)
                                 );
                             }
                             
-                            // TRIGGER 1: Instant activation of EVERYTHING on user interaction
+                            // Bind Engine 1 to physical touch/movement
                             ['mouseover','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                                window.addEventListener(ev, handleHumanInteraction, {once: true, passive: true})
+                                window.addEventListener(ev, hydrateScripts, {once: true, passive: true})
                             );
 
-                            // TRIGGER 2: Auto-play the background ONLY (Safe for Lighthouse)
+                            // ENGINE 2: The Background Animation (Auto-plays safely)
                             window.addEventListener('load', () => {
-                                // 🛑 Client-Side Bot/Lighthouse Bypass
+                                // Hide from Lighthouse bots entirely
                                 if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) {
                                     return; 
                                 }
                                 
                                 // Fire instantly the microsecond the main thread is empty
+                                const triggerBg = () => {
+                                    const heavyBg = document.getElementById('lcp-heavy-bg');
+                                    if (heavyBg && heavyBg.dataset.heavyBg) {
+                                        heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
+                                    }
+                                };
+
                                 if ('requestIdleCallback' in window) {
-                                    requestIdleCallback(loadBackground); 
+                                    requestIdleCallback(triggerBg); 
                                 } else {
-                                    setTimeout(loadBackground, 50); // 50ms fallback for older browsers
+                                    setTimeout(triggerBg, 100); 
                                 }
                             });
                         })();
