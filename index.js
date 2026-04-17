@@ -416,6 +416,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             
             .on("head", {
                 element(e) {
+					// 🚀 INJECT AT ABSOLUTE TOP: Forces dark background before the browser freezes
+					e.prepend("<style>html, body { background-color: #020617 !important; }</style>", { html: true });
+					
                     e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
                     e.append(customHeaderContent, { html: true }); 
                     
