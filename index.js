@@ -196,7 +196,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
         
                 
         <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
