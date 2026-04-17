@@ -573,10 +573,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     }
                 }
             })
-            .on('link[rel="stylesheet"]', {
+           .on('link[rel="stylesheet"]', {
                 element(e) {
                     const href = e.getAttribute('href') || "";
-                    if (href && href.includes('fonts.googleapis.com/css')) {
+                    // Intercept both Google Fonts and the massive gstatic CSS bundle
+                    if (href.includes('fonts.googleapis.com/css') || href.includes('gstatic.com')) {
+                        // Force asynchronous loading to unblock the main thread
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     }
