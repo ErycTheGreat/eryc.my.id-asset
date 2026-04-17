@@ -493,12 +493,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     // 🚨 THE BAIT AND SWITCH LOGIC
                     else if (altText === "heavy-avif-anim") { 
                         // Serve a tiny 50kb static poster frame for instant LCP
-                        e.setAttribute("src", "/assets/image/static-poster-frame.webp");
+                        e.setAttribute("src", "/assets/image/homepage-BG-split.avif");
                         e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high");
                         
                         // Hide the 1MB payload in a data attribute for the wakeUpScript
-                        e.setAttribute("data-heavy-avif", "/assets/image/your-1mb-animation.avif");
+                        e.setAttribute("data-heavy-avif", "/assets/image/homepage-BGG.avif");
                         e.setAttribute("id", "lcp-heavy-anim");
                     }
                 }
