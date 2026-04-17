@@ -594,6 +594,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       status: response.status,
       headers: newHeaders
     });
+  },
+  // --- 7. THE CRON HANDLER FOR AI KV WRITES ---
+  async scheduled(event, env, ctx) {
+    console.log(`Cron triggered at ${event.scheduledTime}`);
+    
+    // Your AI Bot's KV database writing logic goes inside here  
   }
 };
 // FORCING A CLEAN SYNC TO CLOUDFLARE
