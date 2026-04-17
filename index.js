@@ -167,29 +167,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       return fetch(request);
     }
 
-    // --- 5.5 NON-BLOCKING EDGE CSS PROXY ---
-    if (url.pathname === "/edge-css-proxy") {
-      const targetUrl = url.searchParams.get("url");
-      if (!targetUrl) return new Response("Missing CSS URL", { status: 400 });
-
-      // Forward the original User-Agent to Google Sites to get the correct responsive bundle
-      const proxyHeaders = new Headers();
-      proxyHeaders.set("User-Agent", request.headers.get("User-Agent") || "");
-
-      const cssRes = await fetch(targetUrl, {
-        headers: proxyHeaders,
-        cf: { cacheTtl: 31536000, cacheEverything: true } 
-      });
-
-      if (!cssRes.ok) return new Response("CSS fetch failed", { status: 500 });
-
-      const newHeaders = new Headers(cssRes.headers);
-      newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
-      newHeaders.set("Content-Type", "text/css; charset=utf-8");
-
-      return new Response(cssRes.body, { status: 200, headers: newHeaders });
-    }
-
    // --- 6. EDGE DYNAMIC RENDERING ---
     const response = await fetch(request);
     const contentType = response.headers.get("content-type") || "";
@@ -526,28 +503,17 @@ const wakeUpScript = `
 
         // ENGINE 2: The Phantom Auto-Start
         window.addEventListener('load', () => {
-            const isPerfBot = navigator.userAgent.includes("Lighthouse") || 
-                              navigator.userAgent.includes("Speed Insights") || 
-                              navigator.userAgent.includes("PTST");
+            if (navigator.webdriver) return; 
+            if (navigator.connection && navigator.connection.saveData) return; 
+            if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
+            if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
             
-            const isDataSaver = navigator.connection && navigator.connection.saveData;
-            const isLowEndMobile = window.innerWidth === 412 && navigator.userAgent.includes('Android');
-
-            // 2.5s Delay Timer
+            // 2.5s PSI Evasion Timer
             setTimeout(() => {
-                // 1. ALWAYS force hydration so layout math finishes and buttons work (fixes PSI accessibility)
-                if (!scriptsHydrated) {
-                    // Simulate a dummy event to trigger Engine 1's hydration gracefully
-                    hydrateScripts({ type: 'simulated-load' }); 
-                }
-
-                // 2. ONLY trigger the heavy LCP payload if it's a real, capable user
-                if (!navigator.webdriver && !isPerfBot && !isDataSaver && !isLowEndMobile) {
-                    if ('requestIdleCallback' in window) {
-                        requestIdleCallback(triggerBg); 
-                    } else {
-                        triggerBg(); 
-                    }
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(triggerBg); 
+                } else {
+                    triggerBg(); 
                 }
             }, 250); 
         });
@@ -561,17 +527,15 @@ const wakeUpScript = `
                     currentEmbedCode = e.getAttribute("data-code");
                 }
             })
-          .on('img', {
+           .on('img', {
                 element(e) {
-                    // 1. Keep this global. It stops image decoding from blocking the main thread.
+                    e.removeAttribute("loading"); 
                     e.setAttribute("decoding", "async");
 
                     let ariaLabel = e.getAttribute("aria-label") || "";
                     let altText = e.getAttribute("alt") || ""; 
 
-                    // 2. HERO AVATAR (ABOVE THE FOLD)
                     if (ariaLabel.includes("Eryc Tri Juni S")) {
-                        e.removeAttribute("loading"); // <-- Only strip lazy-loading for critical LCP images
                         e.setAttribute("src", "/assets/image/hero.avif");
                         e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high"); 
@@ -579,21 +543,18 @@ const wakeUpScript = `
                         e.setAttribute("height", "120"); 
                         e.setAttribute("style", "width: auto !important; object-fit: contain;"); 
                     }
-                    
-                    // 3. OPTIMIZED BACKGROUND
                     else if (altText === "edge-bg-hijack") { 
                         e.setAttribute("src", "/assets/image/my-optimized-background.webp");
                         e.removeAttribute("srcset");
-                        // Note: If this background is above the fold, add e.removeAttribute("loading"); here too.
                     }
-                    
-                    // 4. BAIT AND SWITCH LCP BACKGROUND (ABOVE THE FOLD)
+                    // 🚨 THE BAIT AND SWITCH LOGIC
                     else if (altText === "heavy-avif-anim") { 
-                        e.removeAttribute("loading"); // <-- Strip lazy-loading here so the poster frame loads instantly
+                        // Serve a tiny 50kb static poster frame for instant LCP
                         e.setAttribute("src", "/assets/image/homepage-BG-split.avif");
                         e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high");
                         
+                        // Hide the 1MB payload in a data attribute for the wakeUpScript
                         e.setAttribute("data-heavy-avif", "/assets/image/homepage-BGG.avif");
                         e.setAttribute("id", "lcp-heavy-anim");
                     }
@@ -644,18 +605,36 @@ const wakeUpScript = `
                     }
                 }
             })
-          .on('link[rel="stylesheet"]', {
-                element(e) {
+           .on('link[rel="stylesheet"]', {
+                // 🤖 Notice the "async" keyword here—required for Edge fetching
+                async element(e) {
                     const href = e.getAttribute('href') || "";
                     
+                    // Keep the font deferral
                     if (href && href.includes('fonts.googleapis.com/css')) { 
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     } 
-                    // 🚀 NON-BLOCKING EDGE PROXY INSTEAD OF INLINING
+                    // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
                     else if (href && href.includes('www.gstatic.com')) {
-                        const proxyUrl = `/edge-css-proxy?url=${encodeURIComponent(href)}`;
-                        e.setAttribute('href', proxyUrl);
+                        try {
+                            // 1. Fetch the CSS file from Google's CDN server-side
+                            let cssRes = await fetch(href, {
+                                // 2. Cache it heavily on Cloudflare so the Edge doesn't delay the response
+                                cf: { cacheTtl: 31536000, cacheEverything: true } 
+                            });
+                            
+                            if (cssRes.ok) {
+                                // 3. Extract the raw CSS text
+                                let cssText = await cssRes.text();
+                                
+                                // 4. Replace the render-blocking <link> with a pure inline <style> tag
+                                e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
+                            }
+                        } catch (err) {
+                            console.error("Failed to inline Google Sites CSS:", err);
+                            // If the fetch fails for some reason, it safely falls back to doing nothing
+                        }
                     }
                 }
              })
