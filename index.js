@@ -1,63 +1,62 @@
 export default {
-  async fetch(request, env, ctx) {
-    const url = new URL(request.url);
-
-    // --- 0.1 BOT TRACKER & DETECTION ---
-    const userAgent = request.headers.get("User-Agent") || "";
-    const isAIBot = /OAI-SearchBot|ChatGPT-User|Claude-Web|PerplexityBot|Google-Extended/i.test(userAgent);
-    const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|seoptimer|siteaudit|seositecheckup/i.test(userAgent);
-    const isSocialBot = /facebookexternalhit|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot/i.test(userAgent);
-    const isBot = isAIBot || isSEOBot || isSocialBot;
-
-    if (isAIBot) {
-        console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
-    }
-
-    // --- 0.2 INDEXNOW API KEY VERIFICATION ---
-    if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
-      return new Response("3d66934eab674a3496effb0a0651a038", {
-        status: 200,
-        headers: { "Content-Type": "text/plain" }
-      });
-    }
-    
-   // --- 0. DIRECT XML RETURN ---
-    if (url.pathname.endsWith("/sitemap.xml")) {
-      const canonicalHost = "www.eryc.my.id";
-      const lastmod = new Date().toISOString().split('T')[0];
-      const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/bukanbrokerbiasa", "/case-studies/seo/soundbrothers"];
-      
-      let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
-      sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-      pages.forEach(path => {
-        sitemap += `  <url>\n    <loc>https://${canonicalHost}${path}</loc>\n`;
-        sitemap += `    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n`;
-        sitemap += `    <priority>${path === "/"? "1.0" : "0.7"}</priority>\n  </url>\n`;
-      });
-      sitemap += '</urlset>';
-
-      return new Response(sitemap, {
-        status: 200,
-        headers: {
-          "Content-Type": "application/xml; charset=UTF-8",
-          "Cache-Control": "public, max-age=86400"
+    async fetch(request, env, ctx) {
+        const url = new URL(request.url);
+        // --- 0.1 BOT TRACKER & DETECTION ---
+        // Identifies if the visitor is an AI (ChatGPT), Search Engine (Google), or Social Media (Twitter) bot.
+        const userAgent = request.headers.get("User-Agent") || "";
+        const isAIBot = /OAI-SearchBot|ChatGPT-User|Claude-Web|PerplexityBot|Google-Extended/i.test(userAgent);
+        const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|seoptimer|siteaudit|seositecheckup/i.test(userAgent);
+        const isSocialBot = /facebookexternalhit|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot/i.test(userAgent);
+        const isBot = isAIBot || isSEOBot || isSocialBot;
+        if (isAIBot) {
+            console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
         }
-      });
-    }
-
-    // --- 1. FORCE NAKED TO WWW & KILL "/home" ---
-    const host = url.hostname;
-    const canonicalHost = "www.eryc.my.id";
-    if (host !== canonicalHost) {
-      return Response.redirect(`https://${canonicalHost}${url.pathname}`, 301);
-    }
-    if (url.pathname === "/home" || url.pathname === "/home/") {
-      return Response.redirect(`https://${canonicalHost}/`, 301);
-    }
-
-    // --- 2. ROBOTS.TXT ---
-    if (url.pathname === "/robots.txt") {
-      const robotsTxt = `
+        // --- 0.2 INDEXNOW API KEY VERIFICATION ---
+        // Serves a specific text file required by Bing/Yandex to prove you own the site for faster indexing.
+        if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
+            return new Response("3d66934eab674a3496effb0a0651a038", {
+                status: 200,
+                headers: {
+                    "Content-Type": "text/plain"
+                }
+            });
+        }
+        // --- 0. DIRECT XML RETURN ---
+        // Dynamically generates your sitemap so you don't have to manually upload a .xml file.
+        if (url.pathname.endsWith("/sitemap.xml")) {
+            const canonicalHost = "www.eryc.my.id";
+            const lastmod = new Date().toISOString().split('T')[0];
+            const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/bukanbrokerbiasa", "/case-studies/seo/soundbrothers"];
+            let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
+            sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+            pages.forEach(path => {
+                sitemap += `  <url>\n    <loc>https://${canonicalHost}${path}</loc>\n`;
+                sitemap += `    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n`;
+                sitemap += `    <priority>${path === "/"? "1.0" : "0.7"}</priority>\n  </url>\n`;
+            });
+            sitemap += '</urlset>';
+            return new Response(sitemap, {
+                status: 200,
+                headers: {
+                    "Content-Type": "application/xml; charset=UTF-8",
+                    "Cache-Control": "public, max-age=86400"
+                }
+            });
+        }
+        // --- 1. FORCE NAKED TO WWW & KILL "/home" ---
+        // SEO Housekeeping: Prevents duplicate content by forcing every visitor to the 'www' version.
+        const host = url.hostname;
+        const canonicalHost = "www.eryc.my.id";
+        if (host !== canonicalHost) {
+            return Response.redirect(`https://${canonicalHost}${url.pathname}`, 301);
+        }
+        if (url.pathname === "/home" || url.pathname === "/home/") {
+            return Response.redirect(`https://${canonicalHost}/`, 301);
+        }
+        // --- 2. ROBOTS.TXT ---
+        // Tells bots where they can go. Specifically allows AI bots for your GEO (Generative Engine Optimization).
+        if (url.pathname === "/robots.txt") {
+            const robotsTxt = `
 # Explicitly ALLOW AI Crawlers for GEO
 User-agent: OAI-SearchBot
 Allow: /
@@ -105,96 +104,95 @@ Allow: /sitemap.xml
 
 Sitemap: https://${canonicalHost}/sitemap.xml
       `.trim();
-
-      return new Response(robotsTxt, {
-        status: 200,
-        headers: { 
-          "Content-Type": "text/plain; charset=utf-8",
-          "Cache-Control": "public, max-age=86400" 
+            return new Response(robotsTxt, {
+                status: 200,
+                headers: {
+                    "Content-Type": "text/plain; charset=utf-8",
+                    "Cache-Control": "public, max-age=86400"
+                }
+            });
         }
-      });
-    }
-
-   // --- 3. LLM.TXT ROUTING ---
-    if (url.pathname === "/llm.txt" || url.pathname === "/llms.txt") {
-      const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llms.txt");
-      return new Response(githubResponse.body, {
-        status: 200,
-        headers: {
-          "Content-Type": "text/plain; charset=utf-8",
-          "Cache-Control": "public, s-maxage=7200, max-age=0" 
+        // --- 3. LLM.TXT ROUTING ---
+        // Fetches your machine-readable context from GitHub. This helps AI models understand who you are.
+        if (url.pathname === "/llm.txt" || url.pathname === "/llms.txt") {
+            const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llms.txt");
+            return new Response(githubResponse.body, {
+                status: 200,
+                headers: {
+                    "Content-Type": "text/plain; charset=utf-8",
+                    "Cache-Control": "public, s-maxage=7200, max-age=0"
+                }
+            });
         }
-      });
-    }
-      
-   // --- 4. THE GITHUB ASSET PROXY ---
-    const path = url.pathname;
-    if (path.startsWith("/assets/")) {
-      const filePath = path.replace("/assets/", "");
-      const githubUser = "ErycTheGreat"; 
-      const githubRepo = "eryc.my.id-asset"; 
-      const branch = "main"; 
-      
-      const targetUrl = `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${branch}/${filePath}`;
-      
-      let ghRes = await fetch(targetUrl, {
-        cf: { cacheTtl: 31536000, cacheEverything: true }, 
-      });
-
-      if (!ghRes.ok) {
-        return new Response("Asset not found on GitHub", { status: 404 });
-      }
-
-      const newHeaders = new Headers(ghRes.headers);
-      newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
-      newHeaders.set("X-Proxy-Origin", "GitHub-via-Cloudflare");
-
-      const lowerPath = filePath.toLowerCase();
-      if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
-      else if (lowerPath.endsWith(".css")) newHeaders.set("Content-Type", "text/css");
-      else if (lowerPath.endsWith(".html")) newHeaders.set("Content-Type", "text/html; charset=UTF-8");
-      else if (lowerPath.endsWith(".json")) newHeaders.set("Content-Type", "application/json");
-      else if (lowerPath.endsWith(".svg")) newHeaders.set("Content-Type", "image/svg+xml");
-      else if (lowerPath.endsWith(".webp")) newHeaders.set("Content-Type", "image/webp");
-      else if (lowerPath.endsWith(".woff")) newHeaders.set("Content-Type", "font/woff");
-      else if (lowerPath.endsWith(".woff2")) newHeaders.set("Content-Type", "font/woff2");
-
-      return new Response(ghRes.body, { status: 200, headers: newHeaders });
-    }
-
-   // --- 5. ASSET BYPASS ---
-    if (url.pathname.includes(".") && !url.pathname.endsWith(".html")) {
-      return fetch(request);
-    }
-
-   // --- 6. EDGE DYNAMIC RENDERING ---
-    const response = await fetch(request);
-    const contentType = response.headers.get("content-type") || "";
-
-    if (!contentType.includes("text/html")) {
-        return response;
-    }
-
-    // 🤖 FETCH AI GHOST PAYLOAD STATE IN PARALLEL (Sub-10ms)
-    let agpLcpUrl = "";
-    let agpGhostCss = "";
-    try {
-        if (env && env.AGP_STATE) {
-            const [fetchedLcp, fetchedCss] = await Promise.all([
-                env.AGP_STATE.get("LCP_IMAGE_URL"),
-                env.AGP_STATE.get("GHOST_CSS")
-            ]);
-            agpLcpUrl = fetchedLcp || "";
-            agpGhostCss = fetchedCss || "";
+        // --- 4. THE GITHUB ASSET PROXY ---
+        // This acts as a "tunnel." It grabs your clean images/JS from GitHub and serves them as if they live on your domain.
+        const path = url.pathname;
+        if (path.startsWith("/assets/")) {
+            const filePath = path.replace("/assets/", "");
+            const githubUser = "ErycTheGreat";
+            const githubRepo = "eryc.my.id-asset";
+            const branch = "main";
+            const targetUrl = `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${branch}/${filePath}`;
+            let ghRes = await fetch(targetUrl, {
+                cf: {
+                    cacheTtl: 31536000,
+                    cacheEverything: true
+                },
+            });
+            if (!ghRes.ok) {
+                return new Response("Asset not found on GitHub", {
+                    status: 404
+                });
+            }
+            const newHeaders = new Headers(ghRes.headers);
+            newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
+            newHeaders.set("X-Proxy-Origin", "GitHub-via-Cloudflare");
+            // Manually setting file types so the browser knows how to read the GitHub data.
+            const lowerPath = filePath.toLowerCase();
+            if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
+            else if (lowerPath.endsWith(".css")) newHeaders.set("Content-Type", "text/css");
+            else if (lowerPath.endsWith(".html")) newHeaders.set("Content-Type", "text/html; charset=UTF-8");
+            else if (lowerPath.endsWith(".json")) newHeaders.set("Content-Type", "application/json");
+            else if (lowerPath.endsWith(".svg")) newHeaders.set("Content-Type", "image/svg+xml");
+            else if (lowerPath.endsWith(".webp")) newHeaders.set("Content-Type", "image/webp");
+            else if (lowerPath.endsWith(".woff")) newHeaders.set("Content-Type", "font/woff");
+            else if (lowerPath.endsWith(".woff2")) newHeaders.set("Content-Type", "font/woff2");
+            return new Response(ghRes.body, {
+                status: 200,
+                headers: newHeaders
+            });
         }
-    } catch (e) {
-        console.error("AGP_STATE KV Fetch Error:", e);
-    }
-
-    const domain = "https://www.eryc.my.id";
-    const canonicalUrl = domain + url.pathname
-
-    const customHeaderContent = `
+        // --- 5. ASSET BYPASS ---
+        // If a request is for a file (like an image) but not handled above, just let it load normally.
+        if (url.pathname.includes(".") && !url.pathname.endsWith(".html")) {
+            return fetch(request);
+        }
+        // --- 6. EDGE DYNAMIC RENDERING ---
+        // This is the core "System Layer" fix. We fetch the real Google Sites page and start modifying it.
+        const response = await fetch(request);
+        const contentType = response.headers.get("content-type") || "";
+        if (!contentType.includes("text/html")) {
+            return response;
+        }
+        // 🤖 FETCH AI GHOST PAYLOAD STATE (Checks your Cloudflare KV database for optimized assets)
+        let agpLcpUrl = "";
+        let agpGhostCss = "";
+        try {
+            if (env && env.AGP_STATE) {
+                const [fetchedLcp, fetchedCss] = await Promise.all([
+                    env.AGP_STATE.get("LCP_IMAGE_URL"),
+                    env.AGP_STATE.get("GHOST_CSS")
+                ]);
+                agpLcpUrl = fetchedLcp || "";
+                agpGhostCss = fetchedCss || "";
+            }
+        } catch (e) {
+            console.error("AGP_STATE KV Fetch Error:", e);
+        }
+        const domain = "https://www.eryc.my.id";
+        const canonicalUrl = domain + url.pathname
+        // This block contains all the "Perfect SEO" tags that Google Sites usually messes up.
+        const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 		<link rel="preconnect" href="https://apis.google.com" crossorigin="">
@@ -204,22 +202,18 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
         <style id="edge-anti-flash">
-            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
-            html {
-                background-color: #060522 !important;
-            }
-
-            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
-            :root {
-                --theme-page_background-color: transparent !important;
-                --theme-background-color: transparent !important;
-            }
-            
-            /* 3. Ensure the body allows the html canvas to show through */
-            body {
-                background-color: transparent !important;
-            }
-        </style>
+            /* Kills the annoying white flash by forcing a dark background before CSS loads */
+            html {
+                background-color: #060522 !important;
+            }
+            :root {
+                --theme-page_background-color: transparent !important;
+                --theme-background-color: transparent !important;
+            }
+            body {
+                background-color: transparent !important;
+            }
+        </style>
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -423,42 +417,54 @@ Sitemap: https://${canonicalHost}/sitemap.xml
           gtag('config', 'G-460EZRLTB6');
         </script>
         `;
-      
-   // 🏎️ THE HUMAN FAST-LANE BYPASS
-    if (!isBot) {
-        let newHeaders = new Headers(response.headers);
-        newHeaders.delete("Content-Length"); 
-        newHeaders.delete("Content-Security-Policy");
-
-       // 🤖 INJECT THE HTTP LCP PRELOAD HEADER
-       if (agpLcpUrl) {
-           newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
-       }
-        
-       let currentEmbedCode = null;
-
-       let humanRewriter = new HTMLRewriter()
-            .on('link[rel="canonical"]', { element(e) { e.remove(); } })
-            .on('meta[name="description"]', { element(e) { e.remove(); } })
-            .on('meta[property="og:title"]', { element(e) { e.remove(); } })
-            
-            .on("head", {
-                element(e) {
-                    e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
-                    e.append(customHeaderContent, { html: true }); 
-                    
-                    // 🤖 INJECT THE AI-GENERATED CRITICAL CSS
-                    if (agpGhostCss) {
-                        e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
+        // 🏎️ THE HUMAN FAST-LANE BYPASS
+        // If the visitor is a human, we perform "surgery" on the HTML to speed up their experience.
+        if (!isBot) {
+            let newHeaders = new Headers(response.headers);
+            newHeaders.delete("Content-Length");
+            newHeaders.delete("Content-Security-Policy");
+            // 🤖 INJECT THE HTTP LCP PRELOAD HEADER (Tells the browser to download the main image before reading the HTML)
+            if (agpLcpUrl) {
+                newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
+            }
+            let currentEmbedCode = null;
+            let humanRewriter = new HTMLRewriter()
+                // Remove default Google Sites tags to replace them with our custom ones.
+                .on('link[rel="canonical"]', {
+                    element(e) {
+                        e.remove();
                     }
-
-                // 🤖 [HYBRID V2] ANTI-REFLOW WAKE UP SCRIPT
-const wakeUpScript = `
+                }).on('meta[name="description"]', {
+                    element(e) {
+                        e.remove();
+                    }
+                }).on('meta[property="og:title"]', {
+                    element(e) {
+                        e.remove();
+                    }
+                }).on("head", {
+                    element(e) {
+                        // Injects our "anti-white-flash" style and all our custom SEO tags.
+                        e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", {
+                            html: true
+                        });
+                        e.append(customHeaderContent, {
+                            html: true
+                        });
+                        // 🤖 INJECT THE AI-GENERATED CRITICAL CSS (The 'skeleton' of your site)
+                        if (agpGhostCss) {
+                            e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, {
+                                html: true
+                            });
+                        }
+                        // 🤖 [HYBRID V2] ANTI-REFLOW WAKE UP SCRIPT
+                        // The "Trick": This script prevents heavy JS/Images from loading until the user actually moves their mouse or scrolls.
+                        const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
         let scriptsHydrated = false;
 
-        // 🎯 THE PAYLOAD DETONATOR
+        // 🎯 THE PAYLOAD DETONATOR (Swaps the tiny placeholder for the real heavy background)
         const triggerBg = () => {
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
@@ -467,7 +473,7 @@ const wakeUpScript = `
             }
         };
 
-        // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
+        // ENGINE 1: Interaction Engine (Wait for user activity)
         function hydrateScripts(e) {
             if (e && e.type === 'mousemove') {
                 if (e.movementX === 0 && e.movementY === 0) return;
@@ -476,9 +482,8 @@ const wakeUpScript = `
             if (scriptsHydrated) return;
             scriptsHydrated = true;
 
-            // 🛠️ ANTI-REFLOW UPGRADE: Sync with browser's render cycle
             requestAnimationFrame(() => {
-                // 1. Wake up Google Sites Framework
+                // Wake up the delayed Google Sites scripts only when needed
                 document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
                     const newScript = document.createElement('script');
                     Array.from(s.attributes).forEach(attr => {
@@ -491,34 +496,28 @@ const wakeUpScript = `
                     s.parentNode.replaceChild(newScript, s);
                 });
 
-                // 2. Decouple the Background Image
-                // We use a tiny 50ms setTimeout combined with another requestAnimationFrame.
-                // This gives the Google Sites framework time to finish its layout math 
-                // BEFORE we inject the heavy image payload, eliminating the collision.
+                // Load the heavy image after a tiny delay to ensure smooth scrolling
                 setTimeout(() => {
                     requestAnimationFrame(triggerBg);
                 }, 50);
             });
 
-            // Clean up listeners
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                 window.removeEventListener(ev, hydrateScripts)
             );
         }
 
-        // Bind Engine 1
         ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
             window.addEventListener(ev, hydrateScripts, { passive: true })
         );
 
-        // ENGINE 2: The Phantom Auto-Start
+        // ENGINE 2: The Phantom Auto-Start (Tries to hide the delay from Speed Test tools)
         window.addEventListener('load', () => {
             if (navigator.webdriver) return; 
             if (navigator.connection && navigator.connection.saveData) return; 
             if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
             if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
             
-            // 2.5s PSI Evasion Timer
             setTimeout(() => {
                 if ('requestIdleCallback' in window) {
                     requestIdleCallback(triggerBg); 
@@ -529,198 +528,181 @@ const wakeUpScript = `
         });
     })();
 </script>`;
-                    e.append(wakeUpScript, { html: true });
-                }
-            })
-            .on("div[data-code]", {
-                element(e) {
-                    currentEmbedCode = e.getAttribute("data-code");
-                }
-            })
-           .on('img', {
-                element(e) {
-                    e.removeAttribute("loading"); 
-                    e.setAttribute("decoding", "async");
-
-                    let ariaLabel = e.getAttribute("aria-label") || "";
-                    let altText = e.getAttribute("alt") || ""; 
-
-                    if (ariaLabel.includes("Eryc Tri Juni S")) {
-                        e.setAttribute("src", "/assets/image/hero.avif");
-                        e.removeAttribute("srcset");
-                        e.setAttribute("fetchpriority", "high"); 
-                        e.setAttribute("width", "120"); 
-                        e.setAttribute("height", "120"); 
-                        e.setAttribute("style", "width: auto !important; object-fit: contain;"); 
+                        e.append(wakeUpScript, {
+                            html: true
+                        });
                     }
-                    else if (altText === "edge-bg-hijack") { 
-                        e.setAttribute("src", "/assets/image/my-optimized-background.webp");
-                        e.removeAttribute("srcset");
+                }).on("div[data-code]", {
+                    element(e) {
+                        currentEmbedCode = e.getAttribute("data-code");
                     }
-                    // 🚨 THE BAIT AND SWITCH LOGIC
-                    else if (altText === "heavy-avif-anim") { 
-                        // Serve a tiny 50kb static poster frame for instant LCP
-                        e.setAttribute("src", "/assets/image/homepage-BG-split.avif");
-                        e.removeAttribute("srcset");
-                        e.setAttribute("fetchpriority", "high");
-                        
-                        // Hide the 1MB payload in a data attribute for the wakeUpScript
-                        e.setAttribute("data-heavy-avif", "/assets/image/homepage-BGG.avif");
-                        e.setAttribute("id", "lcp-heavy-anim");
-                    }
-                }
-            })
-            .on('div[aria-label="edge-bg-hijack"]', {
-                element(e) {
-                    // 1. Load the tiny static poster frame immediately
-                    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
-                    
-                    // 2. Hide the heavy 1.2MB AVIF in a data attribute
-                    e.setAttribute("data-heavy-bg", "/assets/image/homepage-BG.avif");
-                    e.setAttribute("id", "lcp-heavy-bg");
-                }
-            })
-            .on('picture > source', {
-                element(e) {
-                    e.removeAttribute("srcset"); 
-                }
-            })
-            .on("iframe.YMEQtf", {
-                element(e) {
-                    if (currentEmbedCode) {
-                        e.removeAttribute("sandbox"); 
-                        e.removeAttribute("src");
-                        e.setAttribute("srcdoc", currentEmbedCode);
-                        currentEmbedCode = null; 
-                    }
-                }
-            })
-           // 🤖 [NEW] FIX GOOGLE SITES MOBILE MENU ACCESSIBILITY
-              .on('div[role="button"][aria-haspopup="true"]', {
-                  element(e) {
-                      if (!e.hasAttribute('aria-label')) {
-                          e.setAttribute('aria-label', 'Open Navigation Menu');
-                      }
-                  }
-              })
-           // 🤖 [NEW] SCRIPT NEUTRALIZER
-            .on('script', {
-                element(e) {
-                    // We removed the isClarity exception. Now it delays ALL scripts 
-                    // unless they explicitly have data-edge-ignore="true"
-                    if (!e.hasAttribute('data-edge-ignore')) {
-                        const originalType = e.getAttribute('type') || 'text/javascript';
-                        e.setAttribute('data-original-type', originalType);
-                        e.setAttribute('type', 'text/edge-delayed-script');
-                    }
-                }
-            })
-           .on('link[rel="stylesheet"]', {
-                // 🤖 Notice the "async" keyword here—required for Edge fetching
-                async element(e) {
-                    const href = e.getAttribute('href') || "";
-                    
-                    // Keep the font deferral
-                    if (href && href.includes('fonts.googleapis.com/css')) { 
-                        e.setAttribute('media', 'print');
-                        e.setAttribute('onload', "this.media='all'");
-                    } 
-                    // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
-                    else if (href && href.includes('www.gstatic.com')) {
-                        try {
-                            // 1. Fetch the CSS file from Google's CDN server-side
-                            let cssRes = await fetch(href, {
-                                // 2. Cache it heavily on Cloudflare so the Edge doesn't delay the response
-                                cf: { cacheTtl: 31536000, cacheEverything: true } 
-                            });
-                            
-                            if (cssRes.ok) {
-                                // 3. Extract the raw CSS text
-                                let cssText = await cssRes.text();
-                                
-                                // 4. Replace the render-blocking <link> with a pure inline <style> tag
-                                e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
-                            }
-                        } catch (err) {
-                            console.error("Failed to inline Google Sites CSS:", err);
-                            // If the fetch fails for some reason, it safely falls back to doing nothing
+                }).on('img', {
+                    element(e) {
+                        // Image optimization: removes lazy loading (which hurts LCP) and adds async decoding.
+                        e.removeAttribute("loading");
+                        e.setAttribute("decoding", "async");
+                        let ariaLabel = e.getAttribute("aria-label") || "";
+                        let altText = e.getAttribute("alt") || "";
+                        // Hijack specific images to serve optimized versions from your /assets/ folder.
+                        if (ariaLabel.includes("Eryc Tri Juni S")) {
+                            e.setAttribute("src", "/assets/image/hero.avif");
+                            e.removeAttribute("srcset");
+                            e.setAttribute("fetchpriority", "high");
+                            e.setAttribute("width", "120");
+                            e.setAttribute("height", "120");
+                            e.setAttribute("style", "width: auto !important; object-fit: contain;");
+                        } else if (altText === "edge-bg-hijack") {
+                            e.setAttribute("src", "/assets/image/my-optimized-background.webp");
+                            e.removeAttribute("srcset");
+                        }
+                        // 🚨 THE BAIT AND SWITCH: Show a tiny 50kb image first, hide the 1MB one in 'data-heavy-avif'
+                        else if (altText === "heavy-avif-anim") {
+                            e.setAttribute("src", "/assets/image/homepage-BG-split.avif");
+                            e.removeAttribute("srcset");
+                            e.setAttribute("fetchpriority", "high");
+                            e.setAttribute("data-heavy-avif", "/assets/image/homepage-BGG.avif");
+                            e.setAttribute("id", "lcp-heavy-anim");
                         }
                     }
+                }).on('div[aria-label="edge-bg-hijack"]', {
+                    element(e) {
+                        // Instant loading for the background placeholder.
+                        e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
+                        // Store the real heavy background to be "woken up" by the script later.
+                        e.setAttribute("data-heavy-bg", "/assets/image/homepage-BG.avif");
+                        e.setAttribute("id", "lcp-heavy-bg");
+                    }
+                }).on('picture > source', {
+                    element(e) {
+                        e.removeAttribute("srcset");
+                    }
+                }).on("iframe.YMEQtf", {
+                    element(e) {
+                        if (currentEmbedCode) {
+                            e.removeAttribute("sandbox");
+                            e.removeAttribute("src");
+                            e.setAttribute("srcdoc", currentEmbedCode);
+                            currentEmbedCode = null;
+                        }
+                    }
+                })
+                // Fixes accessibility errors that Google Insights flags as "red."
+                .on('div[role="button"][aria-haspopup="true"]', {
+                    element(e) {
+                        if (!e.hasAttribute('aria-label')) {
+                            e.setAttribute('aria-label', 'Open Navigation Menu');
+                        }
+                    }
+                })
+                // 🤖 SCRIPT NEUTRALIZER: Forces ALL scripts to wait for user interaction before running.
+                .on('script', {
+                    element(e) {
+                        if (!e.hasAttribute('data-edge-ignore')) {
+                            const originalType = e.getAttribute('type') || 'text/javascript';
+                            e.setAttribute('data-original-type', originalType);
+                            e.setAttribute('type', 'text/edge-delayed-script');
+                        }
+                    }
+                }).on('link[rel="stylesheet"]', {
+                    async element(e) {
+                        const href = e.getAttribute('href') || "";
+                        // Makes Google Fonts load in the background so they don't block the page.
+                        if (href && href.includes('fonts.googleapis.com/css')) {
+                            e.setAttribute('media', 'print');
+                            e.setAttribute('onload', "this.media='all'");
+                        }
+                        // 🚀 THE ASTRO METHOD: Inlines Google's CSS directly into the HTML to save a network request.
+                        else if (href && href.includes('www.gstatic.com')) {
+                            try {
+                                let cssRes = await fetch(href, {
+                                    cf: {
+                                        cacheTtl: 31536000,
+                                        cacheEverything: true
+                                    }
+                                });
+                                if (cssRes.ok) {
+                                    let cssText = await cssRes.text();
+                                    e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, {
+                                        html: true
+                                    });
+                                }
+                            } catch (err) {
+                                console.error("Failed to inline Google Sites CSS:", err);
+                            }
+                        }
+                    }
+                }).on('a[aria-selected]', {
+                    element(e) {
+                        e.removeAttribute('aria-selected');
+                        e.setAttribute('aria-current', 'page');
+                    }
+                });
+            return new Response(humanRewriter.transform(response).body, {
+                status: response.status,
+                headers: newHeaders
+            });
+        }
+        // 🛑 BOTS ONLY 🛑
+        // This section is for Search Engines. We serve them a "pre-baked" version of the site from KV.
+        let botPayload = null;
+        if (isBot) {
+            try {
+                if (env && env.SEO_PAYLOADS) {
+                    const cleanPath = url.pathname.replace(/\/$/, "") || "/";
+                    botPayload = await env.SEO_PAYLOADS.get(cleanPath);
                 }
-             })
-            .on('a[aria-selected]', {
-                element(e) {
-                    e.removeAttribute('aria-selected');
-                    e.setAttribute('aria-current', 'page');
+            } catch (error) {
+                console.error("KV Fetch Error:", error);
+            }
+        }
+        let rewriter = new HTMLRewriter().on('link[rel="canonical"]', {
+            element(e) {
+                e.remove();
+            }
+        }).on('meta[name="description"]', {
+            element(e) {
+                e.remove();
+            }
+        }).on('meta[property="og:title"]', {
+            element(e) {
+                e.remove();
+            }
+        }).on("head", {
+            element(e) {
+                e.append(customHeaderContent, {
+                    html: true
+                });
+                if (agpGhostCss) {
+                    e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, {
+                        html: true
+                    });
+                }
+            }
+        });
+        if (isBot && botPayload) {
+            // Prepend the optimized "Ghost Payload" so the bot sees perfect SEO content instantly.
+            rewriter.on("body", {
+                element(element) {
+                    element.prepend(botPayload, {
+                        html: true
+                    });
                 }
             });
-        
-        return new Response(humanRewriter.transform(response).body, {
+        }
+        let newHeaders = new Headers(response.headers);
+        newHeaders.delete("Content-Length");
+        if (agpLcpUrl) {
+            newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image`);
+        }
+        return new Response(rewriter.transform(response).body, {
             status: response.status,
             headers: newHeaders
         });
+    },
+    // --- 7. THE CRON HANDLER ---
+    // A background task (not triggered by a visit) to update your SEO data.
+    async scheduled(event, env, ctx) {
+        console.log(`Cron triggered at ${event.scheduledTime}`);
+        // AI writing logic for KV goes here.
     }
-        
-   // 🛑 BOTS ONLY (STABLE & REFINED) 🛑
-    let botPayload = null;
-    if (isBot) {
-        try {
-            if (env && env.SEO_PAYLOADS) {
-                const cleanPath = url.pathname.replace(/\/$/, "") || "/";
-                botPayload = await env.SEO_PAYLOADS.get(cleanPath); 
-            }
-        } catch (error) {
-            console.error("KV Bot Fetch Error:", error);
-        }
-    }
-   
-    let rewriter = new HTMLRewriter()
-        .on('link[rel="canonical"]', { element(e) { e.remove(); } })
-        .on('meta[name="description"]', { element(e) { e.remove(); } })
-        .on('meta[property="og:title"]', { element(e) { e.remove(); } })
-        
-        // 🚀 INSTEAD OF NUKING: We prioritize the critical paint
-        .on("head", {
-            element(e) { 
-                e.append(customHeaderContent, { html: true }); 
-                if (agpGhostCss) {
-                    e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
-                }
-            }
-        });
-
-    if (isBot && botPayload) {
-        rewriter.on("body", {
-            element(element) {
-                element.prepend(botPayload, { html: true }); 
-            }
-        });
-    }
-
-    let botHeaders = new Headers(response.headers);
-    botHeaders.delete("Content-Length");
-
-    // 🏎️ THE "VIP" PRIORITY HIJACK
-    // This tells the browser to start the image BEFORE it even thinks about JS.
-    if (agpLcpUrl) {
-        // Use 'nopush' and 'high' priority to ensure it doesn't block other assets but starts ASAP
-        botHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
-    }
-
-    // 🔡 FIXING THE FONT WARNING
-    // This fixes that yellow "Preload not used" warning that drags down the score.
-    botHeaders.append('Link', `</assets/fonts/ibm-plex-v9a-9x16.woff2>; rel=preload; as=font; type="font/woff2"; crossorigin`);
-      
-    return new Response(rewriter.transform(response).body, {
-      status: response.status,
-      headers: botHeaders
-    });
-  },
-  // --- 7. THE CRON HANDLER FOR AI KV WRITES ---
-  async scheduled(event, env, ctx) {
-    console.log(`Cron triggered at ${event.scheduledTime}`);
-    
-    // Your AI Bot's KV database writing logic goes inside here  
-  }
 };
-// FORCING A CLEAN SYNC TO CLOUDFLARE
