@@ -518,14 +518,14 @@ const wakeUpScript = `
             if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
             if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
             
-            // 750 ms PSI Evasion Timer
+            // 250 ms PSI Evasion Timer
             setTimeout(() => {
                 if ('requestIdleCallback' in window) {
                     requestIdleCallback(triggerBg); 
                 } else {
                     triggerBg(); 
                 }
-            }, 750); 
+            }, 250); 
         });
     })();
 </script>`;
