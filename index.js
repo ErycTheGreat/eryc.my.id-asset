@@ -219,6 +219,16 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             body {
                 background-color: transparent !important;
             }
+
+			/* 4. Kill the Google Translate/Branding ghost element */
+            .VIpgJd-TzA9Ye-eEGnhe, 
+            .goog-te-banner-frame, 
+            #goog-gt-tt { 
+                display: none !important; 
+                visibility: hidden !important; 
+                opacity: 0 !important; 
+                pointer-events: none !important; 
+            }
         </style>
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
@@ -441,7 +451,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             .on('link[rel="canonical"]', { element(e) { e.remove(); } })
             .on('meta[name="description"]', { element(e) { e.remove(); } })
             .on('meta[property="og:title"]', { element(e) { e.remove(); } })
-            
+            .on('.VIpgJd-TzA9Ye-eEGnhe', { element(e) { e.remove(); } })
             .on("head", {
                 element(e) {
                     e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
