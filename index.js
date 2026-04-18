@@ -661,7 +661,7 @@ const wakeUpScript = `
         });
     }
         
-    // 🛑 BOTS ONLY 🛑
+   // 🛑 BOTS ONLY (STABLE & REFINED) 🛑
     let botPayload = null;
     if (isBot) {
         try {
@@ -670,14 +670,16 @@ const wakeUpScript = `
                 botPayload = await env.SEO_PAYLOADS.get(cleanPath); 
             }
         } catch (error) {
-            console.error("KV Fetch Error:", error);
+            console.error("KV Bot Fetch Error:", error);
         }
     }
    
-  let rewriter = new HTMLRewriter()
+    let rewriter = new HTMLRewriter()
         .on('link[rel="canonical"]', { element(e) { e.remove(); } })
         .on('meta[name="description"]', { element(e) { e.remove(); } })
         .on('meta[property="og:title"]', { element(e) { e.remove(); } })
+        
+        // 🚀 INSTEAD OF NUKING: We prioritize the critical paint
         .on("head", {
             element(e) { 
                 e.append(customHeaderContent, { html: true }); 
@@ -695,16 +697,23 @@ const wakeUpScript = `
         });
     }
 
-    let newHeaders = new Headers(response.headers);
-    newHeaders.delete("Content-Length");
-    
+    let botHeaders = new Headers(response.headers);
+    botHeaders.delete("Content-Length");
+
+    // 🏎️ THE "VIP" PRIORITY HIJACK
+    // This tells the browser to start the image BEFORE it even thinks about JS.
     if (agpLcpUrl) {
-        newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image`);
+        // Use 'nopush' and 'high' priority to ensure it doesn't block other assets but starts ASAP
+        botHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
     }
+
+    // 🔡 FIXING THE FONT WARNING
+    // This fixes that yellow "Preload not used" warning that drags down the score.
+    botHeaders.append('Link', `</assets/fonts/ibm-plex-v9a-9x16.woff2>; rel=preload; as=font; type="font/woff2"; crossorigin`);
       
     return new Response(rewriter.transform(response).body, {
       status: response.status,
-      headers: newHeaders
+      headers: botHeaders
     });
   },
   // --- 7. THE CRON HANDLER FOR AI KV WRITES ---
