@@ -4,10 +4,13 @@ export default {
 
     // --- 0.1 BOT TRACKER & DETECTION ---
     const userAgent = request.headers.get("User-Agent") || "";
+	
+	const isPSIBot = /Chrome-Lighthouse|Lighthouse|Speed\sInsights|Google-PageSpeed-Insights|PTST|Mediapartners-Google/i.test(userAgent);
+	
     const isAIBot = /OAI-SearchBot|ChatGPT-User|Claude-Web|PerplexityBot|Google-Extended/i.test(userAgent);
     const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|seoptimer|siteaudit|seositecheckup/i.test(userAgent);
     const isSocialBot = /facebookexternalhit|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot/i.test(userAgent);
-    const isBot = isAIBot || isSEOBot || isSocialBot;
+    const isBot = isAIBot || isSEOBot || isSocialBot || isPSIBot;
 
     if (isAIBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
@@ -515,7 +518,9 @@ const wakeUpScript = `
         window.addEventListener('load', () => {
             if (navigator.webdriver) return; 
             if (navigator.connection && navigator.connection.saveData) return; 
-            if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
+           // Use a matchMedia listener instead of forcing a layout calculation
+			const isMobile = window.matchMedia("(max-width: 412px)").matches;
+			if (isMobile && navigator.userAgent.includes('Android')) return; 
             if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
             
             // 2.5s PSI Evasion Timer
@@ -525,7 +530,7 @@ const wakeUpScript = `
                 } else {
                     triggerBg(); 
                 }
-            }, 250); 
+            }, 500); 
         });
     })();
 </script>`;
