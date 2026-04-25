@@ -282,7 +282,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "primaryImageOfPage": {
                 "@id": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp"
               },
-              "inLanguage": "en-US"
+              "inLanguage": "en"
             },
             {
               "@type": "ImageObject",
@@ -291,7 +291,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "width": 512,
               "height": 512,
               "caption": "Eryc Tri Juni S | Edge SEO Specialist",
-              "inLanguage": "en-US"
+              "inLanguage": "en"
             },
             {
               "@type": "Person",
