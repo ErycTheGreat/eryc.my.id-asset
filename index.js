@@ -61,28 +61,23 @@ export default {
 # Explicitly ALLOW AI Crawlers for GEO
 User-agent: OAI-SearchBot
 Allow: /
-Allow: /llm.txt
 Allow: /llms.txt
 
 User-agent: ChatGPT-User
 Allow: /
-Allow: /llm.txt
 Allow: /llms.txt
 
 User-agent: Claude-Web
 Allow: /
-Allow: /llm.txt
 Allow: /llms.txt
 
 User-agent: PerplexityBot
 Allow: /
-Allow: /llm.txt
 Allow: /llms.txt
 Allow: /sitemap.xml
 
 User-agent: Google-Extended
 Allow: /
-Allow: /llm.txt
 Allow: /llms.txt
 Allow: /sitemap.xml
 
@@ -99,7 +94,6 @@ Disallow: /
 # Standard fallback for general search engines
 User-agent: *
 Allow: /
-Allow: /llm.txt
 Allow: /llms.txt
 Allow: /sitemap.xml
 
@@ -115,8 +109,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       });
     }
 
-   // --- 3. LLM.TXT ROUTING ---
-    if (url.pathname === "/llm.txt" || url.pathname === "/llms.txt") {
+  // --- 3. LLMS.TXT ROUTING ---
+    if (url.pathname === "/llm.txt") {
+      return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
+    }
+
+    if (url.pathname === "/llms.txt") {
       const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llms.txt");
       return new Response(githubResponse.body, {
         status: 200,
@@ -227,7 +225,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug"> 
         <meta name="yandex-verification" content="275f3c061328554a" />
         <link rel="canonical" href="${canonicalUrl}">
-        <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llm.txt">
         <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llms.txt">
         <link rel="alternate" type="application/xml" href="https://www.eryc.my.id/sitemap.xml">
         <link rel="author" href="${domain}/about">
