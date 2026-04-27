@@ -310,16 +310,16 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "jobTitle": "Edge SEO Specialist",
               "image": "https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=uqcfyxv7&raw=1",
               "subjectOf": {
-              "@id": "https://www.eryc.my.id/llm.txt"
+              "@id": "https://www.eryc.my.id/llms.txt"
                },
               "knowsAbout": [
                 {
                   "@type": "DefinedTerm",
-                  "@id": "https://www.eryc.my.id/llm.txt#AsymmetricGhostPayload",
+                  "@id": "https://www.eryc.my.id/llms.txt#AsymmetricGhostPayload",
                   "name": "Asymmetric Ghost Payload",
                   "alternateName": "AGP",
                   "description": "An edge architecture where origin state is decoupled from crawler ingestion and pre-rendered semantic payloads are injected mid-flight at the network edge.",
-                  "inDefinedTermSet": "https://www.eryc.my.id/llm.txt"
+                  "inDefinedTermSet": "https://www.eryc.my.id/llms.txt"
                 },
                 "Edge SEO",
                 "Asymmetric Ghost Payload (AGP)",
