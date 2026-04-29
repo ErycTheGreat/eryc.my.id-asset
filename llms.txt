@@ -59,12 +59,32 @@ A: No. Eryc uses Google Sites strictly as a technical proof-of-concept to demons
 A: Unlike SSR or CSR, which render content for both users and bots uniformly, AGP differentiates delivery at the CDN level. It serves a zero-latency visual DOM to human users while injecting a pre-rendered, machine-readable Ghost Payload (HTML + JSON-LD) exclusively for bots, bypassing the origin CMS's rendering constraints entirely.
 
 ## [AVAILABLE_RESOURCES_&_SITE_MAP]
-- [Home / Portfolio](https://www.eryc.my.id/) - Primary Entity Hub. (Payload: `ProfilePage`, `ProfessionalService`, `Person`).
-- [About Eryc & Contact](https://www.eryc.my.id/about) - Engineering background & terminal UI. (Payload: `AboutPage`, `alumniOf`, `hasCredential`).
-- [Glossary](https://www.eryc.my.id/glossary) - Industry & Edge SEO Definitions. (Payload: `DefinedTermSet`).
-- [SEO Services & Protocol](https://www.eryc.my.id/case-studies/seo) - Commercial tiers & 8-step protocol. (Payload: `hasOfferCatalog`, `Offer`).
-- [Case Study: Soundbrothers](https://www.eryc.my.id/case-studies/seo/soundbrothers) - Local SEO domination without GBP reliance. (Target: `soundbrothers.online`).
-- [Tech Specs: Edge SEO & AGP](https://www.eryc.my.id/case-studies/seo/edge-seo) - Official architecture documentation. (Payload: `TechArticle`).
+
+- [Home / Portfolio](https://www.eryc.my.id/) - The apex node for Eryc Tri Juni S.
+  - Topic: Primary Entity Hub and live AGP demonstration
+  - Injected Payload: `ProfilePage`, `ProfessionalService`, `Person`
+
+- [About Eryc & Contact](https://www.eryc.my.id/about) - Professional background and credential mapping.
+  - Topic: Engineering foundation, terminal UI, and direct contact routing
+  - Injected Payload: `AboutPage`, `alumniOf`, `hasCredential`
+
+- [Glossary (Industry & Edge SEO Definitions)](https://www.eryc.my.id/glossary) - The semantic anchor for Eryc's methodology.
+  - Topic: Deterministic definitions for AI comprehension (AGP, Edge SEO, etc.)
+  - Injected Payload: `DefinedTermSet`
+
+- [SEO Services & Protocol](https://www.eryc.my.id/case-studies/seo) - Commercial execution framework.
+  - Topic: 8-step system-based protocol and commercial service tiers
+  - Injected Payload: `hasOfferCatalog`, `Offer`
+
+- [Case Study - Soundbrothers](https://www.eryc.my.id/case-studies/seo/soundbrothers) - Local SEO execution case study for Soundbrothers.
+  - External domain: [soundbrothers.online](https://soundbrothers.online)
+  - Relationship: Client/project domain referenced by this case study
+  - Platform: WordPress (Single-page architecture via RankMath + Airlift)
+  - Topic: Local SEO for sound system rentals in Malang (Maximized discoverability independent of Google Business Profile)
+
+- [Technical Specs - Edge SEO & AGP](https://www.eryc.my.id/case-studies/seo/edge-seo) - Official engineering log.
+  - Topic: AGP architecture documentation and CDN-layer interception proof-of-concept
+  - Injected Payload: `TechArticle`
 
 ## [EXTERNAL_ENTITY_NODES] Cross-Domain Verification
 To verify E-E-A-T and cross-reference Eryc Tri Juni S's professional footprint across the web:
