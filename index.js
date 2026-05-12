@@ -1,3 +1,10 @@
+// --- THE EXECUTIONER CLASS ---
+class ElementSlasher {
+  element(element) {
+    element.remove();
+  }
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -691,6 +698,18 @@ const wakeUpScript = `
                 element.prepend(botPayload, { html: true }); 
             }
         });
+    }
+
+    // 🔪 SIGNAL PRUNING: Kill CMS garbage for AI models
+    if (isAIBot) {
+        rewriter
+            .on('script', new ElementSlasher())       
+            .on('style', new ElementSlasher())        
+            .on('iframe', new ElementSlasher())       
+            .on('noscript', new ElementSlasher())     
+            .on('header', new ElementSlasher())       
+            .on('footer', new ElementSlasher())       
+            .on('div[jscontroller]', new ElementSlasher()); // Slays Google Sites wrappers
     }
 
     let newHeaders = new Headers(response.headers);
