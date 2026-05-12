@@ -10,11 +10,13 @@ export default {
     const url = new URL(request.url);
 
     // --- 0.1 BOT TRACKER & DETECTION ---
-    const userAgent = request.headers.get("User-Agent") || "";
-    const isAIBot = /OAI-SearchBot|ChatGPT-User|claude|PerplexityBot|Google-Extended/i.test(userAgent);
-    const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|seoptimer|siteaudit|seositecheckup/i.test(userAgent);
-    const isSocialBot = /facebookexternalhit|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot/i.test(userAgent);
-    const isBot = isAIBot || isSEOBot || isSocialBot;
+	const userAgent = request.headers.get("User-Agent") || "";
+	const isAIBot = /OAI-SearchBot|ChatGPT-User|PerplexityBot|Perplexity-User|Google-Extended|Claude|ClaudeBot/i.test(userAgent);
+	const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|seoptimer|siteaudit|seositecheckup|Applebot|Chrome-Lighthouse|Google-PageSpeed|Speed\sInsights/i.test(userAgent);
+	const isSocialBot = /facebookexternalhit|FacebookBot|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot|meta-externalagent|meta-external-agent/i.test(userAgent);
+	const isCrawlerBot = /CCBot|ia_archiver|archive\.org_bot/i.test(userAgent);
+	
+	const isBot = isAIBot || isSEOBot || isSocialBot || isCrawlerBot || url.searchParams.get("debug") === "bot";
 
     if (isAIBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
