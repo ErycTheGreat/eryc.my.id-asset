@@ -18,7 +18,7 @@ export default {
 	
 	const isBot = isAIBot || isSEOBot || isSocialBot || isCrawlerBot || url.searchParams.get("debug") === "bot";
 
-    if (isAIBot) {
+    if (isBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
     }
 
