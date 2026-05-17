@@ -8,19 +8,38 @@ class ElementSlasher {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    const host = url.hostname;
+    const canonicalHost = "www.eryc.my.id";
+
+    // --- 1. FORCE NAKED TO WWW & KILL "/home" (MOVED TO TOP FOR GSC FIX) ---
+    if (host !== canonicalHost) {
+      return Response.redirect(`https://${canonicalHost}${url.pathname}`, 301);
+    }
+    if (url.pathname === "/home" || url.pathname === "/home/") {
+      return Response.redirect(`https://${canonicalHost}/`, 301);
+    }
 
     // --- 0.1 BOT TRACKER & DETECTION ---
 	const userAgent = request.headers.get("User-Agent") || "";
-	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|PerplexityBot|Perplexity-User|Google-Extended|ClaudeBot|Claude-User|Claude-SearchBot|claude-web|AmazonBot|Cohere-AI|YouBot|Bytespider/i.test(userAgent);
-	const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|SiteAuditBot|MBCrawler|MJ12bot|DotBot|seositecheckup/i.test(userAgent);
-	const isSocialBot = /Facebot|FacebookBot|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot|Slackbot/i.test(userAgent);
-	const isCrawlerBot = /CCBot|ia_archiver|archive\.org_bot|Scrapy/i.test(userAgent);
+	const isBlockedBot = /PetalBot|MJ12bot|DotBot|AhrefsBot|SemrushBot|SiteAuditBot|MBCrawler|seositecheckup|Bytespider|CCBot|Scrapy|DataForSeoBot|serpstatbot|SEOkicks|rogerbot/i.test(userAgent);
+	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|Google-Extended|GoogleOther|Gemini-Deep-Research|Cohere-AI|YouBot|Meta-ExternalAgent|Meta-ExternalFetcher|Amazonbot|DuckAssistBot|Applebot-Extended/i.test(userAgent);
+	const isSEOBot = /Googlebot|bingbot|Yandexbot|Slurp|DuckDuckBot|Applebot|Baiduspider|Naverbot|Seznambot/i.test(userAgent);
+	const isSocialBot = /Facebot|FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Pinterest|Telegrambot|Discordbot|Slackbot/i.test(userAgent);
+	const isCrawlerBot = /ia_archiver|archive\.org_bot/i.test(userAgent);
 	
 	const isBot = isAIBot || isSEOBot || isSocialBot || isCrawlerBot || url.searchParams.get("debug") === "bot";
 
-    if (isAIBot) {
+    if (isBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
     }
+	
+	// 🚫 HARD BLOCK — kills blocked bots before ANY further processing
+	if (isBlockedBot) {
+    return new Response("Forbidden", { 
+        status: 403,
+        headers: { "Content-Type": "text/plain" }
+    });
+	}
 
     // --- 0.2 INDEXNOW API KEY VERIFICATION ---
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
@@ -31,8 +50,7 @@ export default {
     }
     
    // --- 0. DIRECT XML RETURN ---
-    if (url.pathname.endsWith("/sitemap.xml")) {
-      const canonicalHost = "www.eryc.my.id";
+    if (url.pathname === "/sitemap.xml") {
       const lastmod = new Date().toISOString().split('T')[0];
       const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/bukanbrokerbiasa", "/case-studies/seo/soundbrothers", "/case-studies/edge-seo"];
       
@@ -54,60 +72,135 @@ export default {
       });
     }
 
-    // --- 1. FORCE NAKED TO WWW & KILL "/home" ---
-    const host = url.hostname;
-    const canonicalHost = "www.eryc.my.id";
-    if (host !== canonicalHost) {
-      return Response.redirect(`https://${canonicalHost}${url.pathname}`, 301);
-    }
-    if (url.pathname === "/home" || url.pathname === "/home/") {
-      return Response.redirect(`https://${canonicalHost}/`, 301);
-    }
-
     // --- 2. ROBOTS.TXT ---
     if (url.pathname === "/robots.txt") {
       const robotsTxt = `
-# Explicitly ALLOW AI Crawlers for GEO
-User-agent: OAI-SearchBot
-Allow: /
-Allow: /llms.txt
+	# Explicitly ALLOW AI Crawlers for GEO
+	User-agent: OAI-SearchBot
+	Allow: /
+	Allow: /llms.txt
 
-User-agent: ChatGPT-User
-Allow: /
-Allow: /llms.txt
+	User-agent: ChatGPT-User
+	Allow: /
+	Allow: /llms.txt
 
-User-agent: Claude-Web
-Allow: /
-Allow: /llms.txt
+	User-agent: GPTBot
+	Allow: /
+	Allow: /llms.txt
 
-User-agent: PerplexityBot
-Allow: /
-Allow: /llms.txt
-Allow: /sitemap.xml
+	User-agent: ClaudeBot
+	Allow: /
+	Allow: /llms.txt
 
-User-agent: Google-Extended
-Allow: /
-Allow: /llms.txt
-Allow: /sitemap.xml
+	User-agent: Claude-User
+	Allow: /
+	Allow: /llms.txt
 
-# Explicitly BLOCK useless commercial scrapers to save resources
-User-agent: PetalBot
-Disallow: /
+	User-agent: Claude-Web
+	Allow: /
+	Allow: /llms.txt
 
-User-agent: MJ12bot
-Disallow: /
+	User-agent: PerplexityBot
+	Allow: /
+	Allow: /llms.txt
+	Allow: /sitemap.xml
 
-User-agent: DotBot
-Disallow: /
+	User-agent: Perplexity-User
+	Allow: /
+	Allow: /llms.txt
 
-# Standard fallback for general search engines
-User-agent: *
-Allow: /
-Allow: /llms.txt
-Allow: /sitemap.xml
+	User-agent: Google-Extended
+	Allow: /
+	Allow: /llms.txt
+	Allow: /sitemap.xml
 
-Sitemap: https://${canonicalHost}/sitemap.xml
-      `.trim();
+	User-agent: Gemini-Deep-Research
+	Allow: /
+	Allow: /llms.txt
+
+	User-agent: GoogleOther
+	Allow: /
+	Allow: /llms.txt
+
+	User-agent: Meta-ExternalAgent
+	Allow: /
+	Allow: /llms.txt
+
+	User-agent: Meta-ExternalFetcher
+	Allow: /
+	Allow: /llms.txt
+
+	User-agent: Amazonbot
+	Allow: /
+	Allow: /llms.txt
+
+	User-agent: DuckAssistBot
+	Allow: /
+	Allow: /llms.txt
+
+	User-agent: Applebot-Extended
+	Allow: /
+	Allow: /llms.txt
+
+	User-agent: Googlebot
+	Allow: /
+	Allow: /llms.txt
+	Allow: /sitemap.xml
+
+	# Explicitly BLOCK useless commercial scrapers
+	User-agent: PetalBot
+	Disallow: /
+
+	User-agent: MJ12bot
+	Disallow: /
+
+	User-agent: DotBot
+	Disallow: /
+
+	User-agent: AhrefsBot
+	Disallow: /
+
+	User-agent: SemrushBot
+	Disallow: /
+
+	User-agent: SiteAuditBot
+	Disallow: /
+
+	User-agent: MBCrawler
+	Disallow: /
+
+	User-agent: seositecheckup
+	Disallow: /
+
+	User-agent: Bytespider
+	Disallow: /
+
+	User-agent: CCBot
+	Disallow: /
+
+	User-agent: Scrapy
+	Disallow: /
+
+	User-agent: DataForSeoBot
+	Disallow: /
+
+	User-agent: serpstatbot
+	Disallow: /
+
+	User-agent: SEOkicks
+	Disallow: /
+
+	User-agent: rogerbot
+	Disallow: /
+
+	# Standard fallback
+	User-agent: *
+	Allow: /
+	Allow: /llms.txt
+	Allow: /sitemap.xml
+
+	Sitemap: https://${canonicalHost}/sitemap.xml
+	`.trim();
 
       return new Response(robotsTxt, {
         status: 200,
@@ -211,22 +304,22 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
         <style id="edge-anti-flash">
-            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
-            html {
-                background-color: #060522 !important;
-            }
+            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
+            html {
+                background-color: #060522 !important;
+            }
 
-            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
-            :root {
-                --theme-page_background-color: transparent !important;
-                --theme-background-color: transparent !important;
-            }
-            
-            /* 3. Ensure the body allows the html canvas to show through */
-            body {
-                background-color: transparent !important;
-            }
-        </style>
+            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
+            :root {
+                --theme-page_background-color: transparent !important;
+                --theme-background-color: transparent !important;
+            }
+            
+            /* 3. Ensure the body allows the html canvas to show through */
+            body {
+                background-color: transparent !important;
+            }
+        </style>
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
