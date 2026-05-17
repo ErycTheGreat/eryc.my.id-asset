@@ -89,6 +89,11 @@ Allow: /
 Allow: /llms.txt
 Allow: /sitemap.xml
 
+User-agent: Googlebot
+Allow: /
+Allow: /llms.txt
+Allow: /sitemap.xml
+
 # Explicitly BLOCK useless commercial scrapers to save resources
 User-agent: PetalBot
 Disallow: /
