@@ -212,20 +212,39 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
 
   // --- 3. LLMS.TXT ROUTING ---
-    if (url.pathname === "/llm.txt") {
-      return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
-    }
+if (url.pathname === "/llm.txt") {
+  return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
+}
 
-    if (url.pathname === "/llms.txt") {
-      const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llms.txt");
-      return new Response(githubResponse.body, {
-        status: 200,
-        headers: {
-          "Content-Type": "text/plain; charset=utf-8",
-          "Cache-Control": "public, s-maxage=7200, max-age=0" 
-        }
+if (url.pathname === "/llms.txt") {
+  try {
+    const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llms.txt");
+    
+    // 1. Check if GitHub actually found the file
+    if (!githubResponse.ok) {
+      // Pass the actual HTTP error code (e.g., 404, 500) rather than a fake 200
+      return new Response(`Asset fetch failed: ${githubResponse.statusText}`, { 
+        status: githubResponse.status 
       });
     }
+
+    // 2. Safely return the 200 OK response
+    return new Response(githubResponse.body, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "public, s-maxage=7200, max-age=0" 
+      }
+    });
+    
+  } catch (error) {
+    // 3. Catch fatal network errors so the Worker doesn't crash
+    // This gives GSC a proper 500 status code instead of severing the connection
+    return new Response("Internal Edge Error: Could not reach origin", { 
+      status: 500 
+    });
+  }
+}
       
    // --- 4. THE GITHUB ASSET PROXY ---
     const path = url.pathname;
