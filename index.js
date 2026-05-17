@@ -41,7 +41,7 @@ export default {
     }
     
    // --- 0. DIRECT XML RETURN ---
-    if (url.pathname.endsWith("/sitemap.xml")) {
+    if (url.pathname === "/sitemap.xml") {
       const lastmod = new Date().toISOString().split('T')[0];
       const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/bukanbrokerbiasa", "/case-studies/seo/soundbrothers", "/case-studies/edge-seo"];
       
