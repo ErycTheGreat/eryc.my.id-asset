@@ -1,9 +1,9 @@
 // --- THE EXECUTIONER CLASS ---
-class ElementSlasher {
-  element(element) {
-    element.remove();
-  }
-}
+//class ElementSlasher {
+//  element(element) {
+//    element.remove();
+//  }
+//}
 
 export default {
   async fetch(request, env, ctx) {
@@ -797,16 +797,16 @@ const wakeUpScript = `
     }
 
     // 🔪 SIGNAL PRUNING: Kill CMS garbage for AI models
-    if (isBot) {
-        rewriter
-            .on('script', new ElementSlasher())       
-            .on('style', new ElementSlasher())        
-            .on('iframe', new ElementSlasher())       
-            .on('noscript', new ElementSlasher())     
-            .on('header', new ElementSlasher())       
-            .on('footer', new ElementSlasher())       
-            .on('div[jscontroller]', new ElementSlasher()); // Slays Google Sites wrappers
-    }
+    //if (isBot) {
+    //    rewriter
+    //        .on('script', new ElementSlasher())       
+    //        .on('style', new ElementSlasher())        
+    //        .on('iframe', new ElementSlasher())       
+    //        .on('noscript', new ElementSlasher())     
+    //        .on('header', new ElementSlasher())       
+    //        .on('footer', new ElementSlasher())       
+    //        .on('div[jscontroller]', new ElementSlasher()); // Slays Google Sites wrappers
+    //}
 
     let newHeaders = new Headers(response.headers);
     newHeaders.delete("Content-Length");
