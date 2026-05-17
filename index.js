@@ -21,14 +21,14 @@ export default {
 
     // --- 0.1 BOT TRACKER & DETECTION ---
 	const userAgent = request.headers.get("User-Agent") || "";
-	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|PerplexityBot|Perplexity-User|Google-Extended|ClaudeBot|Claude-User|Claude-SearchBot|claude-web|AmazonBot|Cohere-AI|YouBot|Bytespider/i.test(userAgent);
+	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|PerplexityBot|Perplexity-User|Google-Extended|GoogleOther|Gemini-Deep-Research|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|Cohere-AI|YouBot|Bytespider/i.test(userAgent);
 	const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|SiteAuditBot|MBCrawler|MJ12bot|DotBot|seositecheckup/i.test(userAgent);
 	const isSocialBot = /Facebot|FacebookBot|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot|Slackbot/i.test(userAgent);
 	const isCrawlerBot = /CCBot|ia_archiver|archive\.org_bot|Scrapy/i.test(userAgent);
 	
 	const isBot = isAIBot || isSEOBot || isSocialBot || isCrawlerBot || url.searchParams.get("debug") === "bot";
 
-    if (isAIBot) {
+    if (isBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
     }
 
@@ -702,7 +702,7 @@ const wakeUpScript = `
     }
 
     // 🔪 SIGNAL PRUNING: Kill CMS garbage for AI models
-    if (isAIBot) {
+    if (isBot) {
         rewriter
             .on('script', new ElementSlasher())       
             .on('style', new ElementSlasher())        
