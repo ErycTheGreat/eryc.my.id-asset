@@ -13,7 +13,7 @@ export default {
 	const userAgent = request.headers.get("User-Agent") || "";
 	const isBlockedBot = /PetalBot|MJ12bot|DotBot|AhrefsBot|SemrushBot|SiteAuditBot|MBCrawler|seositecheckup|Bytespider|CCBot|Scrapy|DataForSeoBot|serpstatbot|SEOkicks|rogerbot/i.test(userAgent);
 	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|Google-Extended|GoogleOther|Gemini-Deep-Research|Cohere-AI|YouBot|Meta-ExternalAgent|Meta-ExternalFetcher|Amazonbot|DuckAssistBot|Applebot-Extended/i.test(userAgent);
-	const isSEOBot = /Googlebot|bingbot|Yandexbot|Slurp|DuckDuckBot|Applebot|Baiduspider|Naverbot|Seznambot|Google-InspectionTool/i.test(userAgent);
+	const isSEOBot = /Googlebot|bingbot|Yandexbot|Slurp|DuckDuckBot|Applebot|Baiduspider|Naverbot|Seznambot/i.test(userAgent);
 	const isSocialBot = /Facebot|FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Pinterest|Telegrambot|Discordbot|Slackbot/i.test(userAgent);
 	const isCrawlerBot = /ia_archiver|archive\.org_bot/i.test(userAgent);
 	
