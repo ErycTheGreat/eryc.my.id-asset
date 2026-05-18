@@ -227,7 +227,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
 
     if (url.pathname === "/llms.txt") {
-      const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llms.txt");
+      const githubResponse = await fetch("https://www.eryc.my.id/assets/llms.txt");
       return new Response(githubResponse.body, {
         status: 200,
         headers: {
