@@ -5,6 +5,23 @@ class ElementSlasher {
   }
 }
 
+// --- THE SCRIPT PRUNER CLASS ---
+class ScriptPruner {
+  element(e) {
+    // Safely grab the type, default to empty string if missing, and make lowercase
+    const type = e.getAttribute('type')?.toLowerCase() || '';
+    
+    // 1. Save JSON-LD
+    if (type === 'application/ld+json') return;
+    
+    // 2. Save specifically ignored scripts
+    if (e.hasAttribute('data-edge-ignore')) return;
+    
+    // 3. Kill everything else
+    e.remove();
+  }
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -774,20 +791,7 @@ const wakeUpScript = `
     // 🔪 SIGNAL PRUNING: Kill CMS garbage for AI models
     if (isBot) {
         rewriter
-            .on('script', {
-                element(e) {
-                    const type = e.getAttribute('type');
-
-                    // 1. Whitelist JSON-LD
-                    if (type === 'application/ld+json') return;
-
-                    // 2. Whitelist ignored scripts
-                    if (e.hasAttribute('data-edge-ignore')) return;
-
-                    // 3. Execute everything that makes it this far
-                    e.remove();
-                }
-            })    
+            .on('script', new ScriptPruner())    
             .on('style', new ElementSlasher())        
             .on('iframe', new ElementSlasher())       
             .on('noscript', new ElementSlasher())     
