@@ -35,12 +35,17 @@ export default {
 	const isStaticFile = ["/robots.txt", "/sitemap.xml", "/llms.txt", "/llm.txt"].some(p => url.pathname === p);
 
 	if (isGSCRenderer && !isStaticFile) {
- 	const res = await fetch(request);
-	const headers = new Headers(res.headers);
-	headers.delete("Content-Security-Policy");
-    headers.delete("Content-Length");
-    return new Response(res.body, { status: res.status, headers });
-   }
+  const res = await fetch(request);
+  const headers = new Headers(res.headers);
+  headers.delete("Content-Security-Policy");
+  headers.delete("Content-Length");
+  
+  return new HTMLRewriter()
+    .on('script[type="text/edge-delayed-script"]', {
+      element(el) { el.remove(); }
+    })
+    .transform(new Response(res.body, { status: res.status, headers }));
+}
 
     // --- 0.2 INDEXNOW API KEY VERIFICATION ---
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
