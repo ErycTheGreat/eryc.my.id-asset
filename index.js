@@ -31,6 +31,15 @@ export default {
     });
 	}
 
+	const isGSCRenderer = /Google-InspectionTool/i.test(userAgent);
+	if (isGSCRenderer) {
+	  const res = await fetch(request);
+	  const headers = new Headers(res.headers);
+	  headers.delete("Content-Security-Policy");
+	  headers.delete("Content-Length");
+	  return new Response(res.body, { status: res.status, headers });
+	}
+
     // --- 0.2 INDEXNOW API KEY VERIFICATION ---
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
       return new Response("3d66934eab674a3496effb0a0651a038", {
