@@ -319,7 +319,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <meta name="twitter:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="twitter:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
         
-        <script type="application/ld+json" id="edge-jsonld" data-edge-ignore="true">
+        <script type="application/ld+json">
         {
           "@context": "https://schema.org",
           "@graph": [
