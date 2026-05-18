@@ -11,29 +11,17 @@ export default {
 
     // --- 0.1 BOT TRACKER & DETECTION ---
 	const userAgent = request.headers.get("User-Agent") || "";
-	const isBlockedBot = /PetalBot|MJ12bot|DotBot|AhrefsBot|SemrushBot|SiteAuditBot|MBCrawler|seositecheckup|Bytespider|CCBot|Scrapy|DataForSeoBot|serpstatbot|SEOkicks|rogerbot/i.test(userAgent);
-	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|Google-Extended|GoogleOther|Gemini-Deep-Research|Cohere-AI|YouBot|Meta-ExternalAgent|Meta-ExternalFetcher|Amazonbot|DuckAssistBot|Applebot-Extended/i.test(userAgent);
-	const isSEOBot = /googlebot|bingbot|Yandexbot|Slurp|DuckDuckBot|Applebot|Baiduspider|Naverbot|Seznambot/i.test(userAgent);
-	const isSocialBot = /Facebot|FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Pinterest|Telegrambot|Discordbot|Slackbot/i.test(userAgent);
-	const isCrawlerBot = /ia_archiver|archive\.org_bot/i.test(userAgent);
-	
-	const isBot = isAIBot || isSEOBot || isSocialBot || isCrawlerBot || url.searchParams.get("debug") === "bot";
+	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|Google-Extended|GoogleOther|Gemini-Deep-Research/i.test(userAgent);
+	const isCrawlerBot = /Googlebot|bingbot|Yandexbot/i.test(userAgent);
+	const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
+		
+	const isBot = isAIBot || isCrawlerBot || isSocialBot || url.searchParams.get("debug") === "bot";
 
     if (isAIBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
     }
 	
-	// 🚫 HARD BLOCK — kills blocked bots before ANY further processing
-	if (isBlockedBot) {
-    return new Response("Forbidden", { 
-        status: 403,
-        headers: { "Content-Type": "text/plain" }
-    });
-	}
-
-	
-
-    // --- 0.2 INDEXNOW API KEY VERIFICATION ---
+	// --- 0.2 INDEXNOW API KEY VERIFICATION ---
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
       return new Response("3d66934eab674a3496effb0a0651a038", {
         status: 200,
@@ -125,27 +113,12 @@ User-agent: GoogleOther
 Allow: /
 Allow: /llms.txt
 
-User-agent: Meta-ExternalAgent
+User-agent: Googlebot
 Allow: /
 Allow: /llms.txt
+Allow: /sitemap.xml
 
-User-agent: Meta-ExternalFetcher
-Allow: /
-Allow: /llms.txt
-
-User-agent: Amazonbot
-Allow: /
-Allow: /llms.txt
-
-User-agent: DuckAssistBot
-Allow: /
-Allow: /llms.txt
-
-User-agent: Applebot-Extended
-Allow: /
-Allow: /llms.txt
-
-User-agent: googlebot
+User-agent: bingbot
 Allow: /
 Allow: /llms.txt
 Allow: /sitemap.xml
@@ -799,9 +772,9 @@ const wakeUpScript = `
     }
 
     // 🔪 SIGNAL PRUNING: Kill CMS garbage for AI models
-    if (isAIBot) {
+    if (isBot) {
         rewriter
-            .on('script', new ElementSlasher())       
+            .on('script:not([type="application/ld+json"]):not([type="text/edge-delayed-script"]):not([data-edge-ignore])', new ElementSlasher())     
             .on('style', new ElementSlasher())        
             .on('iframe', new ElementSlasher())       
             .on('noscript', new ElementSlasher())     
