@@ -774,7 +774,17 @@ const wakeUpScript = `
     // 🔪 SIGNAL PRUNING: Kill CMS garbage for AI models
     if (isBot) {
         rewriter
-            .on('script:not([type="application/ld+json"]):not([data-edge-ignore="true"])', new ElementSlasher())     
+            .on('script', {
+                element(e) {
+                    const type = e.getAttribute('type');
+                    const isEdgeIgnore = e.hasAttribute('data-edge-ignore');
+                    
+                    // If it is NOT JSON-LD and does NOT have the ignore flag, slash it.
+                    if (type !== 'application/ld+json' && !isEdgeIgnore) {
+                        e.remove();
+                    }
+                }
+            })    
             .on('style', new ElementSlasher())        
             .on('iframe', new ElementSlasher())       
             .on('noscript', new ElementSlasher())     
