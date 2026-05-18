@@ -31,14 +31,7 @@ export default {
     });
 	}
 
-	const isGSCRenderer = /Google-InspectionTool/i.test(userAgent);
-if (isGSCRenderer) {
-  const res = await fetch(request);
-  const headers = new Headers(res.headers);
-  headers.delete("Content-Security-Policy");
-  headers.delete("Content-Length");
-  return new Response(res.body, { status: res.status, headers });
-}
+	
 
     // --- 0.2 INDEXNOW API KEY VERIFICATION ---
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
@@ -276,6 +269,18 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     if (url.pathname.includes(".") && !url.pathname.endsWith(".html")) {
       return fetch(request);
     }
+
+	// --- 6. THE GSC RENDERER BYPASS (MOVED HERE) ---
+    // Placed after system files so GSC can read robots/sitemaps, 
+    // but before HTML manipulation so normal pages render cleanly in GSC testing tools.
+    const isGSCRenderer = /Google-InspectionTool/i.test(userAgent);
+	if (isGSCRenderer) {
+  	const res = await fetch(request);
+  	const headers = new Headers(res.headers);
+  	headers.delete("Content-Security-Policy");
+  	headers.delete("Content-Length");
+  	return new Response(res.body, { status: res.status, headers });
+	}
 
    // --- 6. EDGE DYNAMIC RENDERING ---
     const response = await fetch(request);
