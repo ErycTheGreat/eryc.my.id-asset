@@ -777,12 +777,15 @@ const wakeUpScript = `
             .on('script', {
                 element(e) {
                     const type = e.getAttribute('type');
-                    const isEdgeIgnore = e.hasAttribute('data-edge-ignore');
-                    
-                    // If it is NOT JSON-LD and does NOT have the ignore flag, slash it.
-                    if (type !== 'application/ld+json' && !isEdgeIgnore) {
-                        e.remove();
-                    }
+
+                    // 1. Whitelist JSON-LD
+                    if (type === 'application/ld+json') return;
+
+                    // 2. Whitelist ignored scripts
+                    if (e.hasAttribute('data-edge-ignore')) return;
+
+                    // 3. Execute everything that makes it this far
+                    e.remove();
                 }
             })    
             .on('style', new ElementSlasher())        
