@@ -32,7 +32,7 @@ export default {
 	const isCrawlerBot = /Googlebot|bingbot|Yandexbot/i.test(userAgent);
 	const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
 		
-	const isBot = isAIBot || isCrawlerBot || isSocialBot || url.searchParams.get("debug") === "bot";
+	const isBot = isAIBot || isSocialBot || url.searchParams.get("debug") === "bot";
 
     if (isAIBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
@@ -789,7 +789,7 @@ const wakeUpScript = `
     }
 
     // 🔪 SIGNAL PRUNING: Kill CMS garbage for AI models
-    if ( isAIBot || isSocialBot) {
+    if (isBot) {
         rewriter
             .on('script', new ScriptPruner())    
             .on('style', new ElementSlasher())        
