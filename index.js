@@ -1,17 +1,10 @@
-// --- THE EXECUTIONER CLASS ---
-class ElementSlasher {
-  element(element) {
-    element.remove();
-  }
-}
-
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     // --- 0.1 BOT TRACKER & DETECTION ---
     const userAgent = request.headers.get("User-Agent") || "";
-    const isAIBot = /OAI-SearchBot|ChatGPT-User|claude|PerplexityBot|Google-Extended/i.test(userAgent);
+    const isAIBot = /OAI-SearchBot|ChatGPT-User|Claude-Web|PerplexityBot|Google-Extended/i.test(userAgent);
     const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|seoptimer|siteaudit|seositecheckup/i.test(userAgent);
     const isSocialBot = /facebookexternalhit|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot/i.test(userAgent);
     const isBot = isAIBot || isSEOBot || isSocialBot;
@@ -32,7 +25,7 @@ export default {
     if (url.pathname.endsWith("/sitemap.xml")) {
       const canonicalHost = "www.eryc.my.id";
       const lastmod = new Date().toISOString().split('T')[0];
-      const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/bukanbrokerbiasa", "/case-studies/seo/soundbrothers", "/case-studies/edge-seo"];
+      const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/bukanbrokerbiasa", "/case-studies/seo/soundbrothers"];
       
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
       sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
@@ -68,23 +61,28 @@ export default {
 # Explicitly ALLOW AI Crawlers for GEO
 User-agent: OAI-SearchBot
 Allow: /
+Allow: /llm.txt
 Allow: /llms.txt
 
 User-agent: ChatGPT-User
 Allow: /
+Allow: /llm.txt
 Allow: /llms.txt
 
 User-agent: Claude-Web
 Allow: /
+Allow: /llm.txt
 Allow: /llms.txt
 
 User-agent: PerplexityBot
 Allow: /
+Allow: /llm.txt
 Allow: /llms.txt
 Allow: /sitemap.xml
 
 User-agent: Google-Extended
 Allow: /
+Allow: /llm.txt
 Allow: /llms.txt
 Allow: /sitemap.xml
 
@@ -101,6 +99,7 @@ Disallow: /
 # Standard fallback for general search engines
 User-agent: *
 Allow: /
+Allow: /llm.txt
 Allow: /llms.txt
 Allow: /sitemap.xml
 
@@ -116,12 +115,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       });
     }
 
-  // --- 3. LLMS.TXT ROUTING ---
-    if (url.pathname === "/llm.txt") {
-      return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
-    }
-
-    if (url.pathname === "/llms.txt") {
+   // --- 3. LLM.TXT ROUTING ---
+    if (url.pathname === "/llm.txt" || url.pathname === "/llms.txt") {
       const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llms.txt");
       return new Response(githubResponse.body, {
         status: 200,
@@ -202,29 +197,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-		<link rel="preconnect" href="https://apis.google.com" crossorigin="">
         
                 
         <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
-
-        <style id="edge-anti-flash">
-            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
-            html {
-                background-color: #060522 !important;
-            }
-
-            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
-            :root {
-                --theme-page_background-color: transparent !important;
-                --theme-background-color: transparent !important;
-            }
-            
-            /* 3. Ensure the body allows the html canvas to show through */
-            body {
-                background-color: transparent !important;
-            }
-        </style>
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -232,12 +208,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug"> 
         <meta name="yandex-verification" content="275f3c061328554a" />
         <link rel="canonical" href="${canonicalUrl}">
+        <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llm.txt">
         <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llms.txt">
         <link rel="alternate" type="application/xml" href="https://www.eryc.my.id/sitemap.xml">
         <link rel="author" href="${domain}/about">
         
         <meta property="og:type" content="website">
-		<meta property="og:site_name" content="Eryc Tri Juni S">
         <meta property="og:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S ">
         <meta property="og:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta property="og:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
@@ -287,7 +263,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "primaryImageOfPage": {
                 "@id": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp"
               },
-              "inLanguage": "en"
+              "inLanguage": "en-US"
             },
             {
               "@type": "ImageObject",
@@ -296,7 +272,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "width": 512,
               "height": 512,
               "caption": "Eryc Tri Juni S | Edge SEO Specialist",
-              "inLanguage": "en"
+              "inLanguage": "en-US"
             },
             {
               "@type": "Person",
@@ -315,16 +291,16 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "jobTitle": "Edge SEO Specialist",
               "image": "https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=uqcfyxv7&raw=1",
               "subjectOf": {
-              "@id": "https://www.eryc.my.id/llms.txt"
+              "@id": "https://www.eryc.my.id/llm.txt"
                },
               "knowsAbout": [
                 {
                   "@type": "DefinedTerm",
-                  "@id": "https://www.eryc.my.id/llms.txt#AsymmetricGhostPayload",
+                  "@id": "https://www.eryc.my.id/llm.txt#AsymmetricGhostPayload",
                   "name": "Asymmetric Ghost Payload",
                   "alternateName": "AGP",
                   "description": "An edge architecture where origin state is decoupled from crawler ingestion and pre-rendered semantic payloads are injected mid-flight at the network edge.",
-                  "inDefinedTermSet": "https://www.eryc.my.id/llms.txt"
+                  "inDefinedTermSet": "https://www.eryc.my.id/llm.txt"
                 },
                 "Edge SEO",
                 "Asymmetric Ghost Payload (AGP)",
@@ -410,24 +386,14 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         }        
         </script>
         
-        <script type="text/edge-delayed-script" data-original-type="text/javascript">
+        <script type="text/javascript">
             (function(c,l,a,r,i,t,y){
                 c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                 t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
                 y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
             })(window, document, "clarity", "script", "w60p488a9w");
         </script>
-        <script type="text/edge-delayed-script" data-original-type="text/javascript" defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "af77cd4bb9b147a09fe3ee68cb8dfe59"}'></script>
-		
-		<script type="text/edge-delayed-script" data-original-type="text/javascript" defer src="https://www.googletagmanager.com/gtag/js?id=G-460EZRLTB6"></script>
-        
-        <script type="text/edge-delayed-script" data-original-type="text/javascript">
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-460EZRLTB6');
-        </script>
-        `;
+    `;
       
    // 🏎️ THE HUMAN FAST-LANE BYPASS
     if (!isBot) {
@@ -457,83 +423,69 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-                // 🤖 [HYBRID V2] ANTI-REFLOW WAKE UP SCRIPT
-const wakeUpScript = `
-<script data-edge-ignore="true">
-    (function() {
-        let scriptsHydrated = false;
+                   // 🤖 [NEW] INJECT INTERACTION-TRIGGERED HYDRATION (WAKE UP SCRIPT)
+                    const wakeUpScript = `
+                    <script data-edge-ignore="true">
+                        (function() {
+                            let scriptsHydrated = false;
 
-        // 🎯 THE PAYLOAD DETONATOR
-        const triggerBg = () => {
-            const heavyBg = document.getElementById('lcp-heavy-bg');
-            if (heavyBg && heavyBg.dataset.heavyBg) {
-                heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
-                heavyBg.removeAttribute('data-heavy-bg'); 
-            }
-        };
+                            // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
+                            function hydrateScripts(e) {
+                                // 🛑 Protect against fake "resting" mouse events on load
+                                if (e && e.type === 'mousemove') {
+                                    // If the mouse didn't physically travel across pixels, ignore it
+                                    if (e.movementX === 0 && e.movementY === 0) return;
+                                }
 
-        // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
-        function hydrateScripts(e) {
-            if (e && e.type === 'mousemove') {
-                if (e.movementX === 0 && e.movementY === 0) return;
-            }
+                                if (scriptsHydrated) return;
+                                scriptsHydrated = true;
+                                
+                                document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
+                                    const newScript = document.createElement('script');
+                                    Array.from(s.attributes).forEach(attr => {
+                                        if (attr.name !== 'type' && attr.name !== 'data-original-type') {
+                                            newScript.setAttribute(attr.name, attr.value);
+                                        }
+                                    });
+                                    newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
+                                    newScript.innerHTML = s.innerHTML;
+                                    s.parentNode.replaceChild(newScript, s);
+                                });
 
-            if (scriptsHydrated) return;
-            scriptsHydrated = true;
+                                // Clean up listeners so it only runs once
+                                ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+                                    window.removeEventListener(ev, hydrateScripts)
+                                );
+                            }
+                            
+                            // Bind Engine 1 (Removed 'once: true' so the movement check doesn't kill the listener prematurely)
+                            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+                                window.addEventListener(ev, hydrateScripts, { passive: true })
+                            );
 
-            // 🛠️ ANTI-REFLOW UPGRADE: Sync with browser's render cycle
-            requestAnimationFrame(() => {
-                // 1. Wake up Google Sites Framework
-                document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
-                    const newScript = document.createElement('script');
-                    Array.from(s.attributes).forEach(attr => {
-                        if (attr.name !== 'type' && attr.name !== 'data-original-type') {
-                            newScript.setAttribute(attr.name, attr.value);
-                        }
-                    });
-                    newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
-                    newScript.innerHTML = s.innerHTML;
-                    s.parentNode.replaceChild(newScript, s);
-                });
+                            // ENGINE 2: The Background Animation (Auto-plays safely)
+                            window.addEventListener('load', () => {
+                                // Hide from Lighthouse bots entirely
+                                if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) {
+                                    return; 
+                                }
+                                
+                                // Fire instantly the microsecond the main thread is empty
+                                const triggerBg = () => {
+                                    const heavyBg = document.getElementById('lcp-heavy-bg');
+                                    if (heavyBg && heavyBg.dataset.heavyBg) {
+                                        heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
+                                    }
+                                };
 
-                // 2. Decouple the Background Image
-                // We use a tiny 50ms setTimeout combined with another requestAnimationFrame.
-                // This gives the Google Sites framework time to finish its layout math 
-                // BEFORE we inject the heavy image payload, eliminating the collision.
-                setTimeout(() => {
-                    requestAnimationFrame(triggerBg);
-                }, 50);
-            });
-
-            // Clean up listeners
-            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                window.removeEventListener(ev, hydrateScripts)
-            );
-        }
-
-        // Bind Engine 1
-        ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-            window.addEventListener(ev, hydrateScripts, { passive: true })
-        );
-
-        // ENGINE 2: The Phantom Auto-Start
-        window.addEventListener('load', () => {
-            if (navigator.webdriver) return; 
-            if (navigator.connection && navigator.connection.saveData) return; 
-            if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
-            if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
-            
-            // 250 ms PSI Evasion Timer
-            setTimeout(() => {
-                if ('requestIdleCallback' in window) {
-                    requestIdleCallback(triggerBg); 
-                } else {
-                    triggerBg(); 
-                }
-            }, 250); 
-        });
-    })();
-</script>`;
+                                if ('requestIdleCallback' in window) {
+                                    requestIdleCallback(triggerBg); 
+                                } else {
+                                    setTimeout(triggerBg, 100); 
+                                }
+                            });
+                        })();
+                    </script>`;
                     e.append(wakeUpScript, { html: true });
                 }
             })
@@ -545,7 +497,7 @@ const wakeUpScript = `
            .on('img', {
                 element(e) {
                     e.removeAttribute("loading"); 
-                    e.setAttribute("decoding", "async");
+                    e.setAttribute("decoding", "sync");
 
                     let ariaLabel = e.getAttribute("aria-label") || "";
                     let altText = e.getAttribute("alt") || ""; 
@@ -608,12 +560,13 @@ const wakeUpScript = `
                       }
                   }
               })
-           // 🤖 [NEW] SCRIPT NEUTRALIZER
+            // 🤖 [NEW] SCRIPT NEUTRALIZER
             .on('script', {
                 element(e) {
-                    // We removed the isClarity exception. Now it delays ALL scripts 
-                    // unless they explicitly have data-edge-ignore="true"
-                    if (!e.hasAttribute('data-edge-ignore')) {
+                    const src = e.getAttribute('src') || "";
+                    const isClarity = src.includes("clarity.ms");
+                    
+                    if (!isClarity && !e.hasAttribute('data-edge-ignore')) {
                         const originalType = e.getAttribute('type') || 'text/javascript';
                         e.setAttribute('data-original-type', originalType);
                         e.setAttribute('type', 'text/edge-delayed-script');
@@ -698,18 +651,6 @@ const wakeUpScript = `
                 element.prepend(botPayload, { html: true }); 
             }
         });
-    }
-
-    // 🔪 SIGNAL PRUNING: Kill CMS garbage for AI models
-    if (isAIBot) {
-        rewriter
-            .on('script', new ElementSlasher())       
-            .on('style', new ElementSlasher())        
-            .on('iframe', new ElementSlasher())       
-            .on('noscript', new ElementSlasher())     
-            .on('header', new ElementSlasher())       
-            .on('footer', new ElementSlasher())       
-            .on('div[jscontroller]', new ElementSlasher()); // Slays Google Sites wrappers
     }
 
     let newHeaders = new Headers(response.headers);
