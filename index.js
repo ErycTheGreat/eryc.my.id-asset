@@ -10,28 +10,15 @@ export default {
     const url = new URL(request.url);
 
     // --- 0.1 BOT TRACKER & DETECTION ---
-	const userAgent = request.headers.get("User-Agent") || "";
-	const isBlockedBot = /PetalBot|MJ12bot|DotBot|AhrefsBot|SemrushBot|SiteAuditBot|MBCrawler|seositecheckup|Bytespider|CCBot|Scrapy|DataForSeoBot|serpstatbot|SEOkicks|rogerbot/i.test(userAgent);
-	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|Google-Extended|GoogleOther|Gemini-Deep-Research|Cohere-AI|YouBot|Meta-ExternalAgent|Meta-ExternalFetcher|Amazonbot|DuckAssistBot|Applebot-Extended/i.test(userAgent);
-	const isSEOBot = /Googlebot|bingbot|Yandexbot|Slurp|DuckDuckBot|Applebot|Baiduspider|Naverbot|Seznambot/i.test(userAgent);
-	const isSocialBot = /Facebot|FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Pinterest|Telegrambot|Discordbot|Slackbot/i.test(userAgent);
-	const isCrawlerBot = /ia_archiver|archive\.org_bot/i.test(userAgent);
-	
-	const isBot = isAIBot || isSEOBot || isSocialBot || isCrawlerBot || url.searchParams.get("debug") === "bot";
+    const userAgent = request.headers.get("User-Agent") || "";
+    const isAIBot = /OAI-SearchBot|ChatGPT-User|claude|PerplexityBot|Google-Extended/i.test(userAgent);
+    const isSEOBot = /googlebot|bingbot|yandexbot|slurp|duckduckbot|ahrefsbot|semrushbot|seoptimer|siteaudit|seositecheckup/i.test(userAgent);
+    const isSocialBot = /facebookexternalhit|twitterbot|whatsapp|linkedinbot|pinterest|telegrambot|discordbot/i.test(userAgent);
+    const isBot = isAIBot || isSEOBot || isSocialBot;
 
     if (isAIBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
     }
-	
-	// 🚫 HARD BLOCK — kills blocked bots before ANY further processing
-	if (isBlockedBot) {
-    return new Response("Forbidden", { 
-        status: 403,
-        headers: { "Content-Type": "text/plain" }
-    });
-	}
-
-	
 
     // --- 0.2 INDEXNOW API KEY VERIFICATION ---
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
@@ -42,7 +29,7 @@ export default {
     }
     
    // --- 0. DIRECT XML RETURN ---
-    if (url.pathname === "/sitemap.xml") {
+    if (url.pathname.endsWith("/sitemap.xml")) {
       const canonicalHost = "www.eryc.my.id";
       const lastmod = new Date().toISOString().split('T')[0];
       const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/bukanbrokerbiasa", "/case-studies/seo/soundbrothers", "/case-studies/edge-seo"];
@@ -87,18 +74,6 @@ User-agent: ChatGPT-User
 Allow: /
 Allow: /llms.txt
 
-User-agent: GPTBot
-Allow: /
-Allow: /llms.txt
-
-User-agent: ClaudeBot
-Allow: /
-Allow: /llms.txt
-
-User-agent: Claude-User
-Allow: /
-Allow: /llms.txt
-
 User-agent: Claude-Web
 Allow: /
 Allow: /llms.txt
@@ -108,49 +83,12 @@ Allow: /
 Allow: /llms.txt
 Allow: /sitemap.xml
 
-User-agent: Perplexity-User
-Allow: /
-Allow: /llms.txt
-
 User-agent: Google-Extended
 Allow: /
 Allow: /llms.txt
 Allow: /sitemap.xml
 
-User-agent: Gemini-Deep-Research
-Allow: /
-Allow: /llms.txt
-
-User-agent: GoogleOther
-Allow: /
-Allow: /llms.txt
-
-User-agent: Meta-ExternalAgent
-Allow: /
-Allow: /llms.txt
-
-User-agent: Meta-ExternalFetcher
-Allow: /
-Allow: /llms.txt
-
-User-agent: Amazonbot
-Allow: /
-Allow: /llms.txt
-
-User-agent: DuckAssistBot
-Allow: /
-Allow: /llms.txt
-
-User-agent: Applebot-Extended
-Allow: /
-Allow: /llms.txt
-
-User-agent: Googlebot
-Allow: /
-Allow: /llms.txt
-Allow: /sitemap.xml
-
-# Explicitly BLOCK useless commercial scrapers
+# Explicitly BLOCK useless commercial scrapers to save resources
 User-agent: PetalBot
 Disallow: /
 
@@ -160,50 +98,14 @@ Disallow: /
 User-agent: DotBot
 Disallow: /
 
-User-agent: AhrefsBot
-Disallow: /
-
-User-agent: SemrushBot
-Disallow: /
-
-User-agent: SiteAuditBot
-Disallow: /
-
-User-agent: MBCrawler
-Disallow: /
-
-User-agent: seositecheckup
-Disallow: /
-
-User-agent: Bytespider
-Disallow: /
-
-User-agent: CCBot
-Disallow: /
-
-User-agent: Scrapy
-Disallow: /
-
-User-agent: DataForSeoBot
-Disallow: /
-
-User-agent: serpstatbot
-Disallow: /
-
-User-agent: SEOkicks
-Disallow: /
-
-User-agent: rogerbot
-Disallow: /
-
-# Standard fallback
+# Standard fallback for general search engines
 User-agent: *
 Allow: /
 Allow: /llms.txt
 Allow: /sitemap.xml
 
 Sitemap: https://${canonicalHost}/sitemap.xml
-`.trim();
+      `.trim();
 
       return new Response(robotsTxt, {
         status: 200,
@@ -808,7 +710,7 @@ const wakeUpScript = `
             .on('header', new ElementSlasher())       
             .on('footer', new ElementSlasher())       
             .on('div[jscontroller]', new ElementSlasher()); // Slays Google Sites wrappers
-    	}
+    }
 
     let newHeaders = new Headers(response.headers);
     newHeaders.delete("Content-Length");
