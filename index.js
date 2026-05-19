@@ -197,32 +197,20 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
 
   // --- 3. LLMS.TXT ROUTING ---
-if (url.pathname === "/llm.txt") {
-  return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
-}
-
-if (url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") {
-  const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llms.txt", {
-    headers: {
-      "User-Agent": "Mozilla/5.0 (compatible; CloudflareWorker/1.0; +https://www.eryc.my.id)"
+    if (url.pathname === "/llm.txt") {
+      return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
     }
-  });
-  
-  if (!githubResponse.ok) {
-    return new Response("Error: Unable to fetch llms.txt context from repository origin.", { status: 502 });
-  }
 
-  // 🚨 PERBAIKAN KRUSIAL: Baca sebagai teks agar Cloudflare otomatis men-dekompresi payload dari GitHub
-  const rawText = await githubResponse.text();
-
-  return new Response(rawText, {
-    status: 200,
-    headers: {
-      "Content-Type": "text/plain; charset=utf-8",
-      "Cache-Control": "public, s-maxage=7200, max-age=0" 
+    if (url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") {
+      const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llms.txt");
+      return new Response(githubResponse.body, {
+        status: 200,
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          "Cache-Control": "public, s-maxage=7200, max-age=0" 
+        }
+      });
     }
-  });
-}
       
    // --- 4. THE GITHUB ASSET PROXY ---
     const path = url.pathname;
