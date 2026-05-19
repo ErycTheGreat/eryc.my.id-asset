@@ -504,7 +504,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     if (!isBot) {
         let newHeaders = new Headers(response.headers);
         newHeaders.delete("Content-Length"); 
-        newHeaders.delete("Content-Security-Policy");
+        //newHeaders.delete("Content-Security-Policy");
 
        // 🤖 INJECT THE HTTP LCP PRELOAD HEADER
        if (agpLcpUrl) {
