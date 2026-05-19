@@ -351,8 +351,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             },
             {
               "@type": "WebPage",
-              "@id": "https://www.eryc.my.id/#webpage",
-              "url": "https://www.eryc.my.id/",
+              "@id": "${canonicalUrl}#webpage",
+              "url": "${canonicalUrl}",
               "name": "Edge SEO Specialist Malang | Eryc Tri Juni S",
               "description": "Eryc Tri Juni S is an edge SEO specialist in Malang; Indonesia. Exploring system-based marketing, constraint-bypassing architectures, and Asymmetric Ghost Payloads.",
                "mainEntity": {
