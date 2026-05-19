@@ -109,7 +109,7 @@ User-agent: Perplexity-User
 Allow: /
 Allow: /llms.txt
 
-User-agent: Google-Extended
+User-agent: Google-Agent
 Allow: /
 Allow: /llms.txt
 Allow: /sitemap.xml
