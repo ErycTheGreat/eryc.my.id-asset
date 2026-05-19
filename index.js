@@ -197,6 +197,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
 
   // --- 3. LLMS.TXT ROUTING ---
+    if (url.pathname === "/llm.txt") {
+      return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
+    }
+
     if (url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") {
       const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llms.txt");
       return new Response(githubResponse.body, {
