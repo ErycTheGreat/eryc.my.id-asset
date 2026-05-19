@@ -212,7 +212,10 @@ if (url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") {
     return new Response("Error: Unable to fetch llms.txt context from repository origin.", { status: 502 });
   }
 
-  return new Response(githubResponse.body, {
+  // 🚨 PERBAIKAN KRUSIAL: Baca sebagai teks agar Cloudflare otomatis men-dekompresi payload dari GitHub
+  const rawText = await githubResponse.text();
+
+  return new Response(rawText, {
     status: 200,
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
