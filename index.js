@@ -43,9 +43,23 @@ export default {
         headers: { "Content-Type": "text/plain" }
       });
     }
+	
+	// 3.5 THE DROPBOX CDN PROXY
+	const path = url.pathname;
+    if (path.startsWith("/dropbox/")) {
+      const dropboxPath = path.replace("/dropbox", "");
+      const targetUrl = `https://dl.dropboxusercontent.com${dropboxPath}${url.search}`;
+      let dropboxRes = await fetch(targetUrl, {
+        cf: { cacheTtl: 31536000, cacheEverything: true },
+        headers: request.headers,
+      });
+      const newHeaders = new Headers(dropboxRes.headers);
+      newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
+      newHeaders.set("X-Proxy-Origin", "Dropbox-via-Cloudflare");
+      return new Response(dropboxRes.body, { status: dropboxRes.status, headers: newHeaders });
+    }
 
     // 4. THE BLAZING FAST BYPASS
-    // If this is NOT the exact homepage, immediately pass the traffic through.
     if (url.pathname !== "/") {
       return fetch(request);
     }
@@ -63,7 +77,7 @@ export default {
 
     // The entire <head> payload (Meta + JSON-LD)
     const customHeaderContent = `
-        <meta name="description" content="Eryc is an SEO & digital marketing specialist in Malang, and a small business advisor. He helps fix business systems or get noticed at low cost.">
+        <meta name="description" content="I'm Eryc, a data-driven SEO & Digital Marketing Specialist in Malang. I help fix business systems or get your business noticed by Google.">
         <meta name="keywords" content="eryc tri juni s, digital marketing specialist, portfolio, SEO specialist, malang">
         <meta name="author" content="Eryc Tri Juni S">
       
@@ -91,7 +105,7 @@ export default {
               "@id": "https://www.eryc.my.id/#website",
               "url": "https://www.eryc.my.id",
               "name": "Eryc Tri Juni S | SEO & Digital Marketing Specialist Malang",
-              "description": "Eryc is a SEO & digital marketing specialist and experienced small business advisor, helping businesses get noticed at low cost.",
+              "description": "The official portfolio website of Eryc Tri Juni S, offering SEO services, full-stack digital marketing services, and small business advisory in Malang and worldwide.",
               "alternateName": "eryc",
               "publisher": {
                 "@id": "https://www.eryc.my.id/#website"
@@ -104,6 +118,23 @@ export default {
               }
             },
             {
+              "@type": "WebPage",
+              "@id": "https://www.eryc.my.id/#webpage",
+              "url": "https://www.eryc.my.id/",
+              "name": "Eryc Tri Juni S | SEO & Digital Marketing Specialist Malang",
+			  "description": "Eryc Tri Juni S is an SEO & digital marketing specialist in Malang, and a small business advisor. He helps fix business systems or get noticed at low cost.",
+              "about": {
+                "@id": "https://www.eryc.my.id/#website"
+              },
+              "isPartOf": {
+                "@id": "https://www.eryc.my.id/#website"
+              },
+              "primaryImageOfPage": {
+                "@id": "https://www.dropbox.com/scl/fi/e6x2i45cirhotrnrvkwg9/eryctrijunis-eryc.my.id-home-screen-shot.jpeg?rlkey=mbqfgb4tnic50tcoiyo3tk7n4&st=6vc1q9ze&raw=1"
+              },
+              "inLanguage": "en-US"
+            },
+            {
               "@type": "ImageObject",
               "@id": "https://www.dropbox.com/scl/fi/ivr9t7qu6r4vjt0hd5076/android-chrome-512x512.png?rlkey=n2erjbo7u707khljztqtyac59&raw=1",
               "url": "https://www.dropbox.com/scl/fi/ivr9t7qu6r4vjt0hd5076/android-chrome-512x512.png?rlkey=n2erjbo7u707khljztqtyac59&raw=1",
@@ -112,12 +143,11 @@ export default {
               "caption": "Eryc Tri Juni S | SEO & Digital Marketing Specialist",
               "inLanguage": "en-US"
             },
-            
             {
               "@type": "Person",
               "@id": "https://www.eryc.my.id/#person",
               "name": "Eryc Tri Juni S",
-              "description": "SEO & Digital marketing specialist and engineer in Malang. I use data-driven strategy and critical analysis for simple, measurable business solutions. No B.S.",
+              "description": "Eryc Tri Juni S is an SEO & digital marketing specialist in Malang with 8 years of product innovation experience. He is fluent in data-driven strategies and critical analysis.",
               "email": "eryc.me@gmail.com",
               "address": {
                 "@type": "PostalAddress",
@@ -165,37 +195,31 @@ export default {
         </script>
     `;
 
-    // The SEO & Accessibility Safe Text Block for the Body
-    const accessibleTextContent = `
-        <style>
-            /* Industry-standard CSS for Screen Readers (Safe from cloaking penalties) */
-            .visually-hidden {
-                clip: rect(0 0 0 0);
-                clip-path: inset(50%);
-                height: 1px;
-                overflow: hidden;
-                position: absolute;
-                white-space: nowrap;
-                width: 1px;
-            }
-        </style>
-       <div class="visually-hidden">
-            <header>
-                <h1>Digital Marketing Specialist in Malang</h1>
-            </header>
-            <nav>
-                <h2>How can I help?</h2>
-                <ul>
-                    <li>Explore Services</li>
-                    <li>Get in touch</li>
-                </ul>
-            </nav>
-            <main>
-                <h2>P.S. THIS SITE: 100% [GOOGLE SITES]</h2>
-                <p>"I Help Business Fix or Get Noticed @ low-cost"</p>
-            </main>
-        </div>
+    // 2. BODY PAYLOAD (The Raw HTML String - Zero Render Blocking)
+    const rawHtmlPayload = `
+        <header>
+            <h1>Digital Marketing Specialist in Malang</h1>
+        </header>
+        <nav>
+            <h2>How can I help?</h2>
+            <ul>
+                <li>Explore Services</li>
+                <li>Get in touch</li>
+            </ul>
+        </nav>
+        <main>
+            <h2>P.S. THIS SITE: 100% [GOOGLE SITES]</h2>
+            <p>"I Help Business Fix or Get Noticed @ low-cost"</p>
+        </main>
     `;
+
+   // 3. DIRECT HTML INJECTION (Server-Side)
+      const accessibleTextContent = `
+      <div style="clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;">
+      ${rawHtmlPayload}
+      </div>
+    `;
+
     // 6. DECLARE REWRITER AND INJECT PAYLOAD
     let rewriter = new HTMLRewriter()
         .on("head", {
@@ -205,7 +229,7 @@ export default {
         })
         .on("body", {
             element(element) {
-                element.prepend(accessibleTextContent, { html: true });
+                element.append(accessibleTextContent, { html: true }); // Swapped to append
             }
         });
 
