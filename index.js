@@ -1,6 +1,15 @@
 // --- THE EXECUTIONER CLASS ---
 class ElementSlasher {
   element(element) {
+    // 🛑 If it's a script tag, check its type before killing it
+    if (element.tagName === 'script') {
+        const type = element.getAttribute('type') || '';
+        // If it is JSON-LD schema, spare its life and return immediately
+        if (type.toLowerCase() === 'application/ld+json') {
+            return;
+        }
+    }
+    // Otherwise, execute order 66
     element.remove();
   }
 }
