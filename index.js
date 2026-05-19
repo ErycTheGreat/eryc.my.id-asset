@@ -679,18 +679,22 @@ const wakeUpScript = `
                       }
                   }
               })
-           // 🤖 [NEW] SCRIPT NEUTRALIZER
-            .on('script', {
-                element(e) {
-                    // We removed the isClarity exception. Now it delays ALL scripts 
-                    // unless they explicitly have data-edge-ignore="true"
-                    if (!e.hasAttribute('data-edge-ignore')) {
-                        const originalType = e.getAttribute('type') || 'text/javascript';
-                        e.setAttribute('data-original-type', originalType);
-                        e.setAttribute('type', 'text/edge-delayed-script');
-                    }
-                }
-            })
+           // 🤖 [FIXED] SCRIPT NEUTRALIZER
+			.on('script', {
+			    element(e) {
+			        const currentType = e.getAttribute('type') || 'text/javascript';
+			        
+			        // 🛑 CRITICAL SHIELD: If it's Schema/JSON-LD, leave it completely alone
+			        if (currentType.toLowerCase() === 'application/ld+json') {
+			            return;
+			        }
+			
+			        if (!e.hasAttribute('data-edge-ignore')) {
+			            e.setAttribute('data-original-type', currentType);
+			            e.setAttribute('type', 'text/edge-delayed-script');
+			        }
+			    }
+			})
            .on('link[rel="stylesheet"]', {
                 // 🤖 Notice the "async" keyword here—required for Edge fetching
                 async element(e) {
