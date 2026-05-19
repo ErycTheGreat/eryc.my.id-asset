@@ -73,7 +73,7 @@ export default {
     }
 
     // --- 2. ROBOTS.TXT ---
-    if (url.pathname === "/robots.txt") {
+    if (url.pathname === "/robots.txt" || url.pathname === "/robots.txt/") {
       const robotsTxt = `
 # Explicitly ALLOW AI Crawlers for GEO
 User-agent: OAI-SearchBot
@@ -201,7 +201,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
     }
 
-    if (url.pathname === "/llms.txt") {
+    if (url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") {
       const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llms.txt");
       return new Response(githubResponse.body, {
         status: 200,
