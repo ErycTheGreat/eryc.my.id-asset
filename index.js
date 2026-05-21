@@ -263,39 +263,28 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       return fetch(request);
     }
 
-   // 🤖 FETCH ALL KV STATE IN PARALLEL (Sub-15ms total)
+   // --- 6. EDGE DYNAMIC RENDERING ---
+    const response = await fetch(request);
+    const contentType = response.headers.get("content-type") || "";
+
+    if (!contentType.includes("text/html")) {
+        return response;
+    }
+
+    // 🤖 FETCH AI GHOST PAYLOAD STATE IN PARALLEL (Sub-10ms)
     let agpLcpUrl = "";
     let agpGhostCss = "";
-    let botPayload = null;
-
     try {
-        const kvPromises = [];
-
-        // Promise 1 & 2: Always fetch AGP core state
         if (env && env.AGP_STATE) {
-            kvPromises.push(env.AGP_STATE.get("LCP_IMAGE_URL"));
-            kvPromises.push(env.AGP_STATE.get("GHOST_CSS"));
-        } else {
-            kvPromises.push(Promise.resolve(null), Promise.resolve(null));
+            const [fetchedLcp, fetchedCss] = await Promise.all([
+                env.AGP_STATE.get("LCP_IMAGE_URL"),
+                env.AGP_STATE.get("GHOST_CSS")
+            ]);
+            agpLcpUrl = fetchedLcp || "";
+            agpGhostCss = fetchedCss || "";
         }
-
-        // Promise 3: Fetch Bot Payload ONLY if the requester is a bot
-        if (isBot && env && env.SEO_PAYLOADS) {
-            const cleanPath = url.pathname.replace(/\/$/, "") || "/";
-            kvPromises.push(env.SEO_PAYLOADS.get(cleanPath));
-        } else {
-            kvPromises.push(Promise.resolve(null));
-        }
-
-        // Blast all requests simultaneously
-        const [fetchedLcp, fetchedCss, fetchedBotPayload] = await Promise.all(kvPromises);
-        
-        agpLcpUrl = fetchedLcp || "";
-        agpGhostCss = fetchedCss || "";
-        botPayload = fetchedBotPayload || null;
-
     } catch (e) {
-        console.error("KV Parallel Fetch Error:", e);
+        console.error("AGP_STATE KV Fetch Error:", e);
     }
 
     const domain = "https://www.eryc.my.id";
@@ -773,6 +762,17 @@ const wakeUpScript = `
     }
         
     // 🛑 BOTS ONLY 🛑
+    let botPayload = null;
+    if (isBot) {
+        try {
+            if (env && env.SEO_PAYLOADS) {
+                const cleanPath = url.pathname.replace(/\/$/, "") || "/";
+                botPayload = await env.SEO_PAYLOADS.get(cleanPath); 
+            }
+        } catch (error) {
+            console.error("KV Fetch Error:", error);
+        }
+    }
    
   let rewriter = new HTMLRewriter()
         .on('link[rel="canonical"]', { element(e) { e.remove(); } })
