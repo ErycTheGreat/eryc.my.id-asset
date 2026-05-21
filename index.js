@@ -554,33 +554,22 @@ const wakeUpScript = `
     (function() {
         let scriptsHydrated = false;
 
-       // 🎯 THE PAYLOAD DETONATOR (Upgraded for Zero CLS)
+       // 🎯 THE PAYLOAD DETONATOR (Anti-Hydration Fix)
         const triggerBg = () => {
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
-                
-                // 1. Create an invisible phantom layer for the heavy animation
-                const phantomLayer = document.createElement('div');
-                phantomLayer.style.position = 'absolute';
-                phantomLayer.style.inset = '0'; 
-                phantomLayer.style.zIndex = '0'; 
-                phantomLayer.style.opacity = '0'; 
-                phantomLayer.style.transition = 'opacity 0.5s ease-in'; 
-                phantomLayer.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
-                phantomLayer.style.backgroundPosition = 'center center';
-                phantomLayer.style.backgroundSize = 'cover';
-                
-                // 2. Ensure the parent container can hold the absolute layer
-                heavyBg.style.position = 'relative';
-                
-                // 3. Inject the phantom layer into the Google Sites DOM
-                heavyBg.insertBefore(phantomLayer, heavyBg.firstChild);
+                const heavyUrl = heavyBg.dataset.heavyBg;
 
-                // 4. Force the browser to fully download the 1.2MB AVIF silently in the background
+                // 1. Force the browser to fully download the 1.2MB AVIF silently in the background
                 const imgPreload = new Image();
-                imgPreload.src = heavyBg.dataset.heavyBg;
+                imgPreload.src = heavyUrl;
+                
+                // 2. Wait until the heavy animation is 100% loaded into local cache
                 imgPreload.onload = () => {
-                    phantomLayer.style.opacity = '1'; // Detonate the fade-in
+                    // 3. Swap the background instantly. 
+                    // Because it's already downloaded, it swaps in exactly 1 frame (Zero CLS).
+                    // Because we are modifying the style, Google Sites won't delete it.
+                    heavyBg.style.backgroundImage = `url('${heavyUrl}')`;
                 };
                 
                 heavyBg.removeAttribute('data-heavy-bg'); 
