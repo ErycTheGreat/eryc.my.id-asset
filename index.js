@@ -272,16 +272,20 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
 
     // 🤖 FETCH AI GHOST PAYLOAD STATE IN PARALLEL (Sub-10ms)
+    // ✅ FIX #1: Added GSTATIC_CSS_MERGED to the parallel KV fetch — no more async stream blocking
     let agpLcpUrl = "";
     let agpGhostCss = "";
+    let agpGstaticCss = "";
     try {
         if (env && env.AGP_STATE) {
-            const [fetchedLcp, fetchedCss] = await Promise.all([
+            const [fetchedLcp, fetchedCss, fetchedGstatic] = await Promise.all([
                 env.AGP_STATE.get("LCP_IMAGE_URL"),
-                env.AGP_STATE.get("GHOST_CSS")
+                env.AGP_STATE.get("GHOST_CSS"),
+                env.AGP_STATE.get("GSTATIC_CSS_MERGED")
             ]);
             agpLcpUrl = fetchedLcp || "";
             agpGhostCss = fetchedCss || "";
+            agpGstaticCss = fetchedGstatic || "";
         }
     } catch (e) {
         console.error("AGP_STATE KV Fetch Error:", e);
@@ -290,32 +294,31 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     const domain = "https://www.eryc.my.id";
     const canonicalUrl = domain + url.pathname
 
+    // ✅ FIX #2: Removed both static <link rel="preload"> lines from here.
+    // A single, unified LCP preload is now injected via e.prepend() in the head handler below,
+    // using agpLcpUrl as the source of truth. This eliminates the 3-way preload conflict.
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 		<link rel="preconnect" href="https://apis.google.com" crossorigin="">
-        
-                
-        <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
-        <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
         <style id="edge-anti-flash">
-            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
-            html {
-                background-color: #060522 !important;
-            }
+            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
+            html {
+                background-color: #060522 !important;
+            }
 
-            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
-            :root {
-                --theme-page_background-color: transparent !important;
-                --theme-background-color: transparent !important;
-            }
-            
-            /* 3. Ensure the body allows the html canvas to show through */
-            body {
-                background-color: transparent !important;
-            }
-        </style>
+            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
+            :root {
+                --theme-page_background-color: transparent !important;
+                --theme-background-color: transparent !important;
+            }
+            
+            /* 3. Ensure the body allows the html canvas to show through */
+            body {
+                background-color: transparent !important;
+            }
+        </style>
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -540,6 +543,13 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             
             .on("head", {
                 element(e) {
+                    // ✅ FIX #3: Single unified LCP preload prepended at the very TOP of <head>.
+                    // Uses agpLcpUrl from KV as source of truth; falls back to the known BG split.
+                    // This fires before any of Google Sites' own head content, giving the browser
+                    // maximum early warning to start fetching the LCP image.
+                    const lcpPreloadUrl = agpLcpUrl || "/assets/image/homepage-BG-split.avif";
+                    e.prepend(`<link rel="preload" as="image" href="${lcpPreloadUrl}" fetchpriority="high" type="image/avif">`, { html: true });
+
                     e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
                     e.append(customHeaderContent, { html: true }); 
                     
@@ -715,9 +725,11 @@ const wakeUpScript = `
 			        }
 			    }
 			})
+           // ✅ FIX #4: Removed "async" keyword from this handler.
+           // gstatic CSS is now served synchronously from KV (agpGstaticCss),
+           // eliminating the mid-stream fetch that was stalling the response pipe.
            .on('link[rel="stylesheet"]', {
-                // 🤖 Notice the "async" keyword here—required for Edge fetching
-                async element(e) {
+                element(e) {
                     const href = e.getAttribute('href') || "";
                     
                     // Keep the font deferral
@@ -725,27 +737,14 @@ const wakeUpScript = `
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     } 
-                    // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
-                    else if (href && href.includes('www.gstatic.com')) {
-                        try {
-                            // 1. Fetch the CSS file from Google's CDN server-side
-                            let cssRes = await fetch(href, {
-                                // 2. Cache it heavily on Cloudflare so the Edge doesn't delay the response
-                                cf: { cacheTtl: 31536000, cacheEverything: true } 
-                            });
-                            
-                            if (cssRes.ok) {
-                                // 3. Extract the raw CSS text
-                                let cssText = await cssRes.text();
-                                
-                                // 4. Replace the render-blocking <link> with a pure inline <style> tag
-                                e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
-                            }
-                        } catch (err) {
-                            console.error("Failed to inline Google Sites CSS:", err);
-                            // If the fetch fails for some reason, it safely falls back to doing nothing
-                        }
+                    // 🚀 THE ASTRO METHOD: Serve pre-cached gstatic CSS synchronously from KV
+                    else if (href && href.includes('www.gstatic.com') && agpGstaticCss) {
+                        // Replace the render-blocking <link> with a pure inline <style> tag
+                        // CSS was pre-fetched by the AI Scanner cron and stored in AGP_STATE KV
+                        e.replace(`<style id="edge-inlined-gstatic">${agpGstaticCss}</style>`, { html: true });
                     }
+                    // Fallback: if KV cache is empty (e.g. first deploy), leave the link tag untouched.
+                    // The AI Scanner cron will populate GSTATIC_CSS_MERGED on its next run.
                 }
              })
             .on('a[aria-selected]', {
