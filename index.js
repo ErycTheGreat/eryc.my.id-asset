@@ -290,6 +290,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
         <link rel="preconnect" href="https://apis.google.com" crossorigin="">
+        <link rel="preconnect" href="https://www.gstatic.com" crossorigin="">
         
         <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
@@ -717,10 +718,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     } 
-                    // 2. Intercept Google's bloated CSS and swap it for your Edge copy
-                    else if (href.includes('www.gstatic.com')) {
-                        e.setAttribute('href', '/assets/css/google-sites-core.css');
-                    }
                 }
             })
             .on('a[aria-selected]', {
