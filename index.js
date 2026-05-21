@@ -632,7 +632,7 @@ const wakeUpScript = `
                 } else {
                     triggerBg(); 
                 }
-            }, 250); 
+            }, 1000); 
         });
     })();
 </script>`;
