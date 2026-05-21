@@ -212,28 +212,27 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       });
     }
       
-   // --- 4. THE GITHUB ASSET PROXY ---
+   // --- 4. THE R2 ASSET PROXY ---
     const path = url.pathname;
+    
+    // Check if the request is for an asset
     if (path.startsWith("/assets/")) {
+      // Extract the filename/path (e.g., "image.png")
       const filePath = path.replace("/assets/", "");
-      const githubUser = "ErycTheGreat"; 
-      const githubRepo = "eryc.my.id-asset"; 
-      const branch = "main"; 
       
-      const targetUrl = `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${branch}/${filePath}`;
-      
-      let ghRes = await fetch(targetUrl, {
-        cf: { cacheTtl: 31536000, cacheEverything: true }, 
-      });
+      // Fetch the object directly from the R2 bucket we bound as MY_ASSETS
+      const object = await env.MY_ASSETS.get(filePath);
 
-      if (!ghRes.ok) {
-        return new Response("Asset not found on GitHub", { status: 404 });
+      if (object === null) {
+        return new Response("Asset not found in R2", { status: 404 });
       }
 
-      const newHeaders = new Headers(ghRes.headers);
+      const newHeaders = new Headers();
       newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
-      newHeaders.set("X-Proxy-Origin", "GitHub-via-Cloudflare");
+      newHeaders.set("X-Proxy-Origin", "Cloudflare-R2");
 
+      // R2 automatically stores the content-type when you upload, 
+      // but we can enforce it just like your old code did just to be safe.
       const lowerPath = filePath.toLowerCase();
       if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
       else if (lowerPath.endsWith(".css")) newHeaders.set("Content-Type", "text/css");
@@ -243,8 +242,13 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       else if (lowerPath.endsWith(".webp")) newHeaders.set("Content-Type", "image/webp");
       else if (lowerPath.endsWith(".woff")) newHeaders.set("Content-Type", "font/woff");
       else if (lowerPath.endsWith(".woff2")) newHeaders.set("Content-Type", "font/woff2");
+      else if (object.httpMetadata && object.httpMetadata.contentType) {
+          // Fallback to whatever content-type R2 detected
+          newHeaders.set("Content-Type", object.httpMetadata.contentType);
+      }
 
-      return new Response(ghRes.body, { status: 200, headers: newHeaders });
+      // Return the file stream directly from R2
+      return new Response(object.body, { status: 200, headers: newHeaders });
     }
 
    // --- 5. ASSET BYPASS ---
