@@ -9,6 +9,12 @@ routes = [
   { pattern = "www.eryc.my.id/assets/*", zone_name = "eryc.my.id" }
 ]
 
+# --- R2 ASSET BINDING ---
+# This connects your new Edge proxy bucket directly to the Worker
+[[r2_buckets]]
+binding = "MY_ASSETS"
+bucket_name = "eryc-assets"
+
 # --- CRON TRIGGER ---
 # This forces Wrangler to keep your 30-minute schedule active
 [triggers]
