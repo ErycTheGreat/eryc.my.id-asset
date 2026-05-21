@@ -19,18 +19,18 @@ export default {
     const url = new URL(request.url);
 
     // --- 0.1 BOT TRACKER & DETECTION ---
-    const userAgent = request.headers.get("User-Agent") || "";
-    const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Google-Agent|Gemini-Deep-Research/i.test(userAgent);
-    const isCrawlerBot = /Googlebot|Google-InspectionTool|bingbot|Yandexbot/i.test(userAgent);
-    const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
-        
-    const isBot = isAIBot || isCrawlerBot || isSocialBot || url.searchParams.get("debug") === "bot";
+	const userAgent = request.headers.get("User-Agent") || "";
+	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Google-Agent|Gemini-Deep-Research/i.test(userAgent);
+	const isCrawlerBot = /Googlebot|Google-InspectionTool|bingbot|Yandexbot/i.test(userAgent);
+	const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
+		
+	const isBot = isAIBot || isCrawlerBot || isSocialBot || url.searchParams.get("debug") === "bot";
 
     if (isBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
     }
-    
-    // --- 0.2 INDEXNOW API KEY VERIFICATION ---
+	
+	// --- 0.2 INDEXNOW API KEY VERIFICATION ---
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
       return new Response("3d66934eab674a3496effb0a0651a038", {
         status: 200,
@@ -196,8 +196,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       });
     }
 
-   // --- 3. LLMS.TXT ROUTING ---
+ // --- 3. LLMS.TXT ROUTING ---
     if (url.pathname === "/llm.txt") {
+      // (Assuming you have canonicalHost defined earlier in your code)
       return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
     }
 
@@ -223,7 +224,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     
     // Check if the request is for an asset
     if (path.startsWith("/assets/")) {
+      // Extract the filename/path (e.g., "image.png")
       const filePath = path.replace("/assets/", "");
+      
+      // Fetch the object directly from the R2 bucket we bound as MY_ASSETS
       const object = await env.MY_ASSETS.get(filePath);
 
       if (object === null) {
@@ -234,6 +238,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
       newHeaders.set("X-Proxy-Origin", "Cloudflare-R2");
 
+      // R2 automatically stores the content-type when you upload, 
+      // but we can enforce it just like your old code did just to be safe.
       const lowerPath = filePath.toLowerCase();
       if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
       else if (lowerPath.endsWith(".css")) newHeaders.set("Content-Type", "text/css");
@@ -244,9 +250,11 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       else if (lowerPath.endsWith(".woff")) newHeaders.set("Content-Type", "font/woff");
       else if (lowerPath.endsWith(".woff2")) newHeaders.set("Content-Type", "font/woff2");
       else if (object.httpMetadata && object.httpMetadata.contentType) {
+          // Fallback to whatever content-type R2 detected
           newHeaders.set("Content-Type", object.httpMetadata.contentType);
       }
 
+      // Return the file stream directly from R2
       return new Response(object.body, { status: 200, headers: newHeaders });
     }
 
@@ -256,62 +264,58 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
 
    // --- 6. EDGE DYNAMIC RENDERING ---
-    
-    // 🚀 PARALLEL FETCHING: Origin and KV hit at the exact same time
-    const originPromise = fetch(request);
-    const kvPromise = (env && env.AGP_STATE) 
-        ? Promise.all([env.AGP_STATE.get("LCP_IMAGE_URL"), env.AGP_STATE.get("GHOST_CSS")])
-        : Promise.resolve(["", ""]);
-
-    let response, fetchedLcp, fetchedCss;
-    
-    try {
-        [response, [fetchedLcp, fetchedCss]] = await Promise.all([originPromise, kvPromise]);
-    } catch (e) {
-        console.error("Fetch Error:", e);
-        response = await originPromise; 
-        fetchedLcp = "";
-        fetchedCss = "";
-    }
-
+    const response = await fetch(request);
     const contentType = response.headers.get("content-type") || "";
 
     if (!contentType.includes("text/html")) {
         return response;
     }
 
-    let agpLcpUrl = fetchedLcp || "";
-    let agpGhostCss = fetchedCss || "";
+    // 🤖 FETCH AI GHOST PAYLOAD STATE IN PARALLEL (Sub-10ms)
+    let agpLcpUrl = "";
+    let agpGhostCss = "";
+    try {
+        if (env && env.AGP_STATE) {
+            const [fetchedLcp, fetchedCss] = await Promise.all([
+                env.AGP_STATE.get("LCP_IMAGE_URL"),
+                env.AGP_STATE.get("GHOST_CSS")
+            ]);
+            agpLcpUrl = fetchedLcp || "";
+            agpGhostCss = fetchedCss || "";
+        }
+    } catch (e) {
+        console.error("AGP_STATE KV Fetch Error:", e);
+    }
 
     const domain = "https://www.eryc.my.id";
-    const canonicalUrl = domain + url.pathname;
+    const canonicalUrl = domain + url.pathname
 
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-        <link rel="preconnect" href="https://apis.google.com" crossorigin="">
-        <link rel="preconnect" href="https://www.gstatic.com" crossorigin="">
+		<link rel="preconnect" href="https://apis.google.com" crossorigin="">
         
+                
         <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
         <style id="edge-anti-flash">
-            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
-            html {
-                background-color: #060522 !important;
-            }
+            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
+            html {
+                background-color: #060522 !important;
+            }
 
-            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
-            :root {
-                --theme-page_background-color: transparent !important;
-                --theme-background-color: transparent !important;
-            }
-            
-            /* 3. Ensure the body allows the html canvas to show through */
-            body {
-                background-color: transparent !important;
-            }
-        </style>
+            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
+            :root {
+                --theme-page_background-color: transparent !important;
+                --theme-background-color: transparent !important;
+            }
+            
+            /* 3. Ensure the body allows the html canvas to show through */
+            body {
+                background-color: transparent !important;
+            }
+        </style>
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -324,7 +328,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="author" href="${domain}/about">
         
         <meta property="og:type" content="website">
-        <meta property="og:site_name" content="Eryc Tri Juni S">
+		<meta property="og:site_name" content="Eryc Tri Juni S">
         <meta property="og:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S ">
         <meta property="og:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta property="og:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
@@ -505,8 +509,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             })(window, document, "clarity", "script", "w60p488a9w");
         </script>
         <script type="text/edge-delayed-script" data-original-type="text/javascript" defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "af77cd4bb9b147a09fe3ee68cb8dfe59"}'></script>
-        
-        <script type="text/edge-delayed-script" data-original-type="text/javascript" defer src="https://www.googletagmanager.com/gtag/js?id=G-460EZRLTB6"></script>
+		
+		<script type="text/edge-delayed-script" data-original-type="text/javascript" defer src="https://www.googletagmanager.com/gtag/js?id=G-460EZRLTB6"></script>
         
         <script type="text/edge-delayed-script" data-original-type="text/javascript">
           window.dataLayer = window.dataLayer || [];
@@ -515,81 +519,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
           gtag('config', 'G-460EZRLTB6');
         </script>
         `;
-
-    const wakeUpScript = `
-    <script data-edge-ignore="true">
-        (function() {
-            let scriptsHydrated = false;
-
-            // 🎯 THE PAYLOAD DETONATOR
-            const triggerBg = () => {
-                const heavyBg = document.getElementById('lcp-heavy-bg');
-                if (heavyBg && heavyBg.dataset.heavyBg) {
-                    heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
-                    heavyBg.removeAttribute('data-heavy-bg'); 
-                }
-            };
-
-            // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
-            function hydrateScripts(e) {
-                if (e && e.type === 'mousemove') {
-                    if (e.movementX === 0 && e.movementY === 0) return;
-                }
-
-                if (scriptsHydrated) return;
-                scriptsHydrated = true;
-
-                // 🛠️ ANTI-REFLOW UPGRADE: Sync with browser's render cycle
-                requestAnimationFrame(() => {
-                    // 1. Wake up Google Sites Framework
-                    document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
-                        const newScript = document.createElement('script');
-                        Array.from(s.attributes).forEach(attr => {
-                            if (attr.name !== 'type' && attr.name !== 'data-original-type') {
-                                newScript.setAttribute(attr.name, attr.value);
-                            }
-                        });
-                        newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
-                        newScript.innerHTML = s.innerHTML;
-                        s.parentNode.replaceChild(newScript, s);
-                    });
-
-                    // 2. Decouple the Background Image
-                    setTimeout(() => {
-                        requestAnimationFrame(triggerBg);
-                    }, 50);
-                });
-
-                // Clean up listeners
-                ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                    window.removeEventListener(ev, hydrateScripts)
-                );
-            }
-
-            // Bind Engine 1
-            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                window.addEventListener(ev, hydrateScripts, { passive: true })
-            );
-
-            // ENGINE 2: The Phantom Auto-Start
-            window.addEventListener('load', () => {
-                if (navigator.webdriver) return; 
-                if (navigator.connection && navigator.connection.saveData) return; 
-                if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
-                if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
-                
-                // 250 ms PSI Evasion Timer
-                setTimeout(() => {
-                    if ('requestIdleCallback' in window) {
-                        requestIdleCallback(triggerBg); 
-                    } else {
-                        triggerBg(); 
-                    }
-                }, 250); 
-            });
-        })();
-    </script>`;
-
+      
    // 🏎️ THE HUMAN FAST-LANE BYPASS
     if (!isBot) {
         let newHeaders = new Headers(response.headers);
@@ -600,7 +530,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
        if (agpLcpUrl) {
            newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
        }
-       
+        
        let currentEmbedCode = null;
 
        let humanRewriter = new HTMLRewriter()
@@ -618,6 +548,83 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
+                // 🤖 [HYBRID V2] ANTI-REFLOW WAKE UP SCRIPT
+const wakeUpScript = `
+<script data-edge-ignore="true">
+    (function() {
+        let scriptsHydrated = false;
+
+        // 🎯 THE PAYLOAD DETONATOR
+        const triggerBg = () => {
+            const heavyBg = document.getElementById('lcp-heavy-bg');
+            if (heavyBg && heavyBg.dataset.heavyBg) {
+                heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
+                heavyBg.removeAttribute('data-heavy-bg'); 
+            }
+        };
+
+        // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
+        function hydrateScripts(e) {
+            if (e && e.type === 'mousemove') {
+                if (e.movementX === 0 && e.movementY === 0) return;
+            }
+
+            if (scriptsHydrated) return;
+            scriptsHydrated = true;
+
+            // 🛠️ ANTI-REFLOW UPGRADE: Sync with browser's render cycle
+            requestAnimationFrame(() => {
+                // 1. Wake up Google Sites Framework
+                document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
+                    const newScript = document.createElement('script');
+                    Array.from(s.attributes).forEach(attr => {
+                        if (attr.name !== 'type' && attr.name !== 'data-original-type') {
+                            newScript.setAttribute(attr.name, attr.value);
+                        }
+                    });
+                    newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
+                    newScript.innerHTML = s.innerHTML;
+                    s.parentNode.replaceChild(newScript, s);
+                });
+
+                // 2. Decouple the Background Image
+                // We use a tiny 50ms setTimeout combined with another requestAnimationFrame.
+                // This gives the Google Sites framework time to finish its layout math 
+                // BEFORE we inject the heavy image payload, eliminating the collision.
+                setTimeout(() => {
+                    requestAnimationFrame(triggerBg);
+                }, 50);
+            });
+
+            // Clean up listeners
+            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+                window.removeEventListener(ev, hydrateScripts)
+            );
+        }
+
+        // Bind Engine 1
+        ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+            window.addEventListener(ev, hydrateScripts, { passive: true })
+        );
+
+        // ENGINE 2: The Phantom Auto-Start
+        window.addEventListener('load', () => {
+            if (navigator.webdriver) return; 
+            if (navigator.connection && navigator.connection.saveData) return; 
+            if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
+            if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
+            
+            // 250 ms PSI Evasion Timer
+            setTimeout(() => {
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(triggerBg); 
+                } else {
+                    triggerBg(); 
+                }
+            }, 250); 
+        });
+    })();
+</script>`;
                     e.append(wakeUpScript, { html: true });
                 }
             })
@@ -693,22 +700,21 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                   }
               })
            // 🤖 [FIXED] SCRIPT NEUTRALIZER
-            .on('script', {
-                element(e) {
-                    const currentType = e.getAttribute('type') || 'text/javascript';
-                    
-                    // 🛑 CRITICAL SHIELD: If it's Schema/JSON-LD, leave it completely alone
-                    if (currentType.toLowerCase() === 'application/ld+json') {
-                        return;
-                    }
-            
-                    if (!e.hasAttribute('data-edge-ignore')) {
-                        e.setAttribute('data-original-type', currentType);
-                        e.setAttribute('type', 'text/edge-delayed-script');
-                    }
-                }
-            })
-           // 🚀 THE R2 CSS DROP
+			.on('script', {
+			    element(e) {
+			        const currentType = e.getAttribute('type') || 'text/javascript';
+			        
+			        // 🛑 CRITICAL SHIELD: If it's Schema/JSON-LD, leave it completely alone
+			        if (currentType.toLowerCase() === 'application/ld+json') {
+			            return;
+			        }
+			
+			        if (!e.hasAttribute('data-edge-ignore')) {
+			            e.setAttribute('data-original-type', currentType);
+			            e.setAttribute('type', 'text/edge-delayed-script');
+			        }
+			    }
+			})
            .on('link[rel="stylesheet"]', {
                 // 🤖 Notice the "async" keyword here—required for Edge fetching
                 async element(e) {
@@ -799,7 +805,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             .on('header', new ElementSlasher())       
             .on('footer', new ElementSlasher())       
             .on('div[jscontroller]', new ElementSlasher()); // Slays Google Sites wrappers
-        }
+    	}
 
     let newHeaders = new Headers(response.headers);
     newHeaders.delete("Content-Length");
