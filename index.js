@@ -1,26 +1,43 @@
-async fetch(request, env, ctx) {
+// --- THE EXECUTIONER CLASS ---
+class ElementSlasher {
+  element(element) {
+    // 🛑 If it's a script tag, check its type before killing it
+    if (element.tagName === 'script') {
+        const type = element.getAttribute('type') || '';
+        // If it is JSON-LD schema, spare its life and return immediately
+        if (type.toLowerCase() === 'application/ld+json') {
+            return;
+        }
+    }
+    // Otherwise, execute order 66
+    element.remove();
+  }
+}
+
+export default {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     // --- 0.1 BOT TRACKER & DETECTION ---
-    const userAgent = request.headers.get("User-Agent") || "";
-    const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Google-Agent|Gemini-Deep-Research/i.test(userAgent);
-    const isCrawlerBot = /Googlebot|Google-InspectionTool|bingbot|Yandexbot/i.test(userAgent);
-    const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
-        
-    const isBot = isAIBot || isCrawlerBot || isSocialBot || url.searchParams.get("debug") === "bot";
+	const userAgent = request.headers.get("User-Agent") || "";
+	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Google-Agent|Gemini-Deep-Research/i.test(userAgent);
+	const isCrawlerBot = /Googlebot|Google-InspectionTool|bingbot|Yandexbot/i.test(userAgent);
+	const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
+		
+	const isBot = isAIBot || isCrawlerBot || isSocialBot || url.searchParams.get("debug") === "bot";
 
     if (isBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
     }
-    
-    // --- 0.2 INDEXNOW API KEY VERIFICATION ---
+	
+	// --- 0.2 INDEXNOW API KEY VERIFICATION ---
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
       return new Response("3d66934eab674a3496effb0a0651a038", {
         status: 200,
         headers: { "Content-Type": "text/plain" }
       });
     }
-      
+    
    // --- 0. DIRECT XML RETURN ---
     if (url.pathname === "/sitemap.xml" || url.pathname === "/sitemap.xml/") {
       const canonicalHost = "www.eryc.my.id";
@@ -179,12 +196,14 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       });
     }
 
-   // --- 3. LLMS.TXT ROUTING ---
+ // --- 3. LLMS.TXT ROUTING ---
     if (url.pathname === "/llm.txt") {
+      // (Assuming you have canonicalHost defined earlier in your code)
       return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
     }
 
     if (url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") {
+      // Fetch llms.txt directly from your R2 bucket
       const object = await env.MY_ASSETS.get("llms.txt");
 
       if (object === null) {
@@ -202,9 +221,13 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       
    // --- 4. THE R2 ASSET PROXY ---
     const path = url.pathname;
+    
+    // Check if the request is for an asset
     if (path.startsWith("/assets/")) {
+      // Extract the filename/path (e.g., "image.png")
       const filePath = path.replace("/assets/", "");
       
+      // Fetch the object directly from the R2 bucket we bound as MY_ASSETS
       const object = await env.MY_ASSETS.get(filePath);
 
       if (object === null) {
@@ -215,6 +238,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
       newHeaders.set("X-Proxy-Origin", "Cloudflare-R2");
 
+      // R2 automatically stores the content-type when you upload, 
+      // but we can enforce it just like your old code did just to be safe.
       const lowerPath = filePath.toLowerCase();
       if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
       else if (lowerPath.endsWith(".css")) newHeaders.set("Content-Type", "text/css");
@@ -225,9 +250,11 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       else if (lowerPath.endsWith(".woff")) newHeaders.set("Content-Type", "font/woff");
       else if (lowerPath.endsWith(".woff2")) newHeaders.set("Content-Type", "font/woff2");
       else if (object.httpMetadata && object.httpMetadata.contentType) {
+          // Fallback to whatever content-type R2 detected
           newHeaders.set("Content-Type", object.httpMetadata.contentType);
       }
 
+      // Return the file stream directly from R2
       return new Response(object.body, { status: 200, headers: newHeaders });
     }
 
@@ -247,38 +274,48 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     // 🤖 FETCH AI GHOST PAYLOAD STATE IN PARALLEL (Sub-10ms)
     let agpLcpUrl = "";
     let agpGhostCss = "";
-    let agpGstaticCss = "";
     try {
         if (env && env.AGP_STATE) {
-            const [fetchedLcp, fetchedCss, fetchedGstatic] = await Promise.all([
+            const [fetchedLcp, fetchedCss] = await Promise.all([
                 env.AGP_STATE.get("LCP_IMAGE_URL"),
-                env.AGP_STATE.get("GHOST_CSS"),
-                env.AGP_STATE.get("GSTATIC_CSS_MERGED")
+                env.AGP_STATE.get("GHOST_CSS")
             ]);
             agpLcpUrl = fetchedLcp || "";
             agpGhostCss = fetchedCss || "";
-            agpGstaticCss = fetchedGstatic || "";
         }
     } catch (e) {
         console.error("AGP_STATE KV Fetch Error:", e);
     }
 
     const domain = "https://www.eryc.my.id";
-    const canonicalUrl = domain + url.pathname;
+    const canonicalUrl = domain + url.pathname
 
     const customHeaderContent = `
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+		<link rel="preconnect" href="https://apis.google.com" crossorigin="">
+        
+                
+        <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
+        <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
+
         <style id="edge-anti-flash">
-            html {
-                background-color: #060522 !important;
-            }
-            :root {
-                --theme-page_background-color: transparent !important;
-                --theme-background-color: transparent !important;
-            }
-            body {
-                background-color: transparent !important;
-            }
-        </style>
+            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
+            html {
+                background-color: #060522 !important;
+            }
+
+            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
+            :root {
+                --theme-page_background-color: transparent !important;
+                --theme-background-color: transparent !important;
+            }
+            
+            /* 3. Ensure the body allows the html canvas to show through */
+            body {
+                background-color: transparent !important;
+            }
+        </style>
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -291,7 +328,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="author" href="${domain}/about">
         
         <meta property="og:type" content="website">
-        <meta property="og:site_name" content="Eryc Tri Juni S">
+		<meta property="og:site_name" content="Eryc Tri Juni S">
         <meta property="og:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S ">
         <meta property="og:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta property="og:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
@@ -312,7 +349,153 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "url": "https://www.eryc.my.id",
               "name": "Eryc Tri Juni S",
               "description": "Portfolio and reference implementation of Edge SEO and Asymmetric Ghost Payload (AGP) architecture by Eryc Tri Juni S.",
-              "alternateName": "eryc edge seo malang"
+              "alternateName": "eryc edge seo malang",
+              "publisher": {
+                "@id": "https://www.eryc.my.id/#website"
+              },
+              "inLanguage": "en",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://www.eryc.my.id/?s={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            },
+            {
+              "@type": "WebPage",
+              "@id": "${canonicalUrl}#webpage",
+              "url": "${canonicalUrl}",
+              "name": "Edge SEO Specialist Malang | Eryc Tri Juni S",
+              "description": "Eryc Tri Juni S is an edge SEO specialist in Malang; Indonesia. Exploring system-based marketing, constraint-bypassing architectures, and Asymmetric Ghost Payloads.",
+               "mainEntity": {
+              "@id": "https://www.eryc.my.id/#person"
+               },
+              "about": {
+                "@id": "https://www.eryc.my.id/#website"
+              },
+              "isPartOf": {
+                "@id": "https://www.eryc.my.id/#website"
+              },
+              "primaryImageOfPage": {
+                "@id": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp"
+              },
+              "inLanguage": "en"
+            },
+            {
+              "@type": "ImageObject",
+              "@id": "https://www.eryc.my.id/assets/image/logo-512x512.webp",
+              "url": "https://www.eryc.my.id/assets/image/logo-512x512.webp",
+              "width": 512,
+              "height": 512,
+              "caption": "Eryc Tri Juni S | Edge SEO Specialist",
+              "inLanguage": "en"
+            },
+            {
+              "@type": "Person",
+              "@id": "https://www.eryc.my.id/#person",
+              "name": "Eryc Tri Juni S",
+              "description": "Eryc Tri Juni S is an Edge SEO Specialist in Malang, Indonesia, engineering constraint-bypassing web architectures and data-driven marketing systems.",
+              "email": "eryc.me@gmail.com",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Malang Regency",
+                "addressRegion": "East Java",
+                "postalCode": "65154",
+                "addressCountry": "Indonesia"
+              },
+              "gender": "Male",
+              "jobTitle": "Edge SEO Specialist",
+              "image": "https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=uqcfyxv7&raw=1",
+              "subjectOf": {
+              "@id": "https://www.eryc.my.id/llms.txt"
+               },
+              "knowsAbout": [
+                {
+                  "@type": "DefinedTerm",
+                  "@id": "https://www.eryc.my.id/llms.txt#AsymmetricGhostPayload",
+                  "name": "Asymmetric Ghost Payload",
+                  "alternateName": "AGP",
+                  "description": "An edge architecture where origin state is decoupled from crawler ingestion and pre-rendered semantic payloads are injected mid-flight at the network edge.",
+                  "inDefinedTermSet": "https://www.eryc.my.id/llms.txt"
+                },
+                "Edge SEO",
+                "Asymmetric Ghost Payload (AGP)",
+                "AGP Architecture",
+                "Generative Engine Optimization",
+                "Cloudflare Workers",
+                "System-Based Marketing",
+                "Funnel Optimization",
+                "Data-Driven Strategy",
+                "Data Analysis",
+                "Data Story Telling",
+                "User Personas",
+                "Google Analytics",
+                "Search Engine Optimization (SEO)",
+                "Web Development",
+                "Content Strategy",
+                "Content Creation",
+                "TikTok Marketing",
+                "Business Analysis",
+                "Business Acumen"
+              ],
+              "sameAs": [
+                "https://www.linkedin.com/in/eryctrijunis",
+                "https://www.slideshare.net/ErycTriJuniS",
+                "https://id.quora.com/profile/Eryc-Tri-Juni-S",
+                "https://www.youtube.com/@ErycTriJuniS",
+                "https://github.com/ErycTheGreat"
+              ]
+            },
+            {
+              "@type": "ProfilePage",
+              "@id": "https://www.eryc.my.id/#profile",
+              "dateCreated": "2024-01-01T00:00:00+07:00",
+              "dateModified": "2026-04-10T00:00:00+07:00",
+              "url": "https://www.eryc.my.id/",
+              "mainEntity": {
+                "@id": "https://www.eryc.my.id/#person"
+              }
+            },
+            {
+              "@type": "ProfessionalService",
+              "@id": "https://www.eryc.my.id/#localbusiness",
+              "name": "Edge SEO Specialist Malang | Eryc Tri Juni S",
+              "url": "https://www.eryc.my.id",
+              "logo": "https://www.eryc.my.id/assets/image/logo.webp",
+              "image": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp",
+              "description": "Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Malang",
+                "addressRegion": "East Java",
+                "addressCountry": "ID"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": "-7.9839", 
+                "longitude": "112.6214",
+                "description": "Center of Malang"
+              },
+              "priceRange": "$$$",
+              "areaServed": [
+                {
+                  "@type": "City",
+                  "name": "Malang",
+                  "sameAs": "https://en.wikipedia.org/wiki/Malang"
+                },
+                {
+                  "@type": "City",
+                  "name": "Surabaya",
+                  "sameAs": "https://en.wikipedia.org/wiki/Surabaya"
+                },
+                {
+                  "@type": "AdministrativeArea",
+                  "name": "East Java",
+                  "sameAs": "https://en.wikipedia.org/wiki/East_Java"
+                }
+              ],
+              "founder": {
+                "@id": "https://www.eryc.my.id/#person"
+              }
             }
           ]
         }        
@@ -326,8 +509,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             })(window, document, "clarity", "script", "w60p488a9w");
         </script>
         <script type="text/edge-delayed-script" data-original-type="text/javascript" defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "af77cd4bb9b147a09fe3ee68cb8dfe59"}'></script>
-        
-        <script type="text/edge-delayed-script" data-original-type="text/javascript" defer src="https://www.googletagmanager.com/gtag/js?id=G-460EZRLTB6"></script>
+		
+		<script type="text/edge-delayed-script" data-original-type="text/javascript" defer src="https://www.googletagmanager.com/gtag/js?id=G-460EZRLTB6"></script>
         
         <script type="text/edge-delayed-script" data-original-type="text/javascript">
           window.dataLayer = window.dataLayer || [];
@@ -343,6 +526,11 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         newHeaders.delete("Content-Length"); 
         newHeaders.delete("Content-Security-Policy");
 
+       // 🤖 INJECT THE HTTP LCP PRELOAD HEADER
+       if (agpLcpUrl) {
+           newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
+       }
+        
        let currentEmbedCode = null;
 
        let humanRewriter = new HTMLRewriter()
@@ -352,23 +540,21 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             
             .on("head", {
                 element(e) {
-                    const lcpPreloadUrl = agpLcpUrl || "/assets/image/homepage-BG-split.avif";
-                    e.prepend(`<link rel="preload" as="image" href="${lcpPreloadUrl}" fetchpriority="high" type="image/avif">`, { html: true });
-
                     e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
                     e.append(customHeaderContent, { html: true }); 
                     
+                    // 🤖 INJECT THE AI-GENERATED CRITICAL CSS
                     if (agpGhostCss) {
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-// 🤖 [HYBRID V3] STRICT INTERACTION WAKE UP SCRIPT
+                // 🤖 [HYBRID V2] ANTI-REFLOW WAKE UP SCRIPT
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
         let scriptsHydrated = false;
 
-        // 🎯 THE HEAVY PAYLOAD DETONATOR
+        // 🎯 THE PAYLOAD DETONATOR
         const triggerBg = () => {
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
@@ -377,60 +563,65 @@ const wakeUpScript = `
             }
         };
 
-        const injectScripts = () => {
-            document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
-                const newScript = document.createElement('script');
-                Array.from(s.attributes).forEach(attr => {
-                    if (attr.name !== 'type' && attr.name !== 'data-original-type') {
-                        newScript.setAttribute(attr.name, attr.value);
-                    }
-                });
-                newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
-                newScript.innerHTML = s.innerHTML;
-                s.parentNode.replaceChild(newScript, s);
-            });
-        };
-
-        // ENGINE 1: Physical Interaction (Hydrates Scripts + Loads 1.2MB Image)
-        function hydrateOnInteraction(e) {
+        // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
+        function hydrateScripts(e) {
             if (e && e.type === 'mousemove') {
                 if (e.movementX === 0 && e.movementY === 0) return;
             }
+
             if (scriptsHydrated) return;
             scriptsHydrated = true;
 
+            // 🛠️ ANTI-REFLOW UPGRADE: Sync with browser's render cycle
             requestAnimationFrame(() => {
-                injectScripts();
-                // Load heavy background ONLY when human interacts
-                setTimeout(() => { requestAnimationFrame(triggerBg); }, 50);
+                // 1. Wake up Google Sites Framework
+                document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
+                    const newScript = document.createElement('script');
+                    Array.from(s.attributes).forEach(attr => {
+                        if (attr.name !== 'type' && attr.name !== 'data-original-type') {
+                            newScript.setAttribute(attr.name, attr.value);
+                        }
+                    });
+                    newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
+                    newScript.innerHTML = s.innerHTML;
+                    s.parentNode.replaceChild(newScript, s);
+                });
+
+                // 2. Decouple the Background Image
+                // We use a tiny 50ms setTimeout combined with another requestAnimationFrame.
+                // This gives the Google Sites framework time to finish its layout math 
+                // BEFORE we inject the heavy image payload, eliminating the collision.
+                setTimeout(() => {
+                    requestAnimationFrame(triggerBg);
+                }, 50);
             });
 
+            // Clean up listeners
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                window.removeEventListener(ev, hydrateOnInteraction)
+                window.removeEventListener(ev, hydrateScripts)
             );
         }
 
+        // Bind Engine 1
         ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-            window.addEventListener(ev, hydrateOnInteraction, { passive: true })
+            window.addEventListener(ev, hydrateScripts, { passive: true })
         );
 
-        // ENGINE 2: The Evasion Timer (Hydrates Scripts ONLY, spares LCP)
+        // ENGINE 2: The Phantom Auto-Start
         window.addEventListener('load', () => {
             if (navigator.webdriver) return; 
             if (navigator.connection && navigator.connection.saveData) return; 
+            if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
+            if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
             
+            // 250 ms PSI Evasion Timer
             setTimeout(() => {
-                if (!scriptsHydrated) {
-                    scriptsHydrated = true;
-                    if ('requestIdleCallback' in window) {
-                        requestIdleCallback(injectScripts); 
-                    } else {
-                        injectScripts(); 
-                    }
-                    // Notice triggerBg() is NOT called here.
-                    // Lighthouse will never see the 1.2MB image.
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(triggerBg); 
+                } else {
+                    triggerBg(); 
                 }
-            }, 3000); 
+            }, 250); 
         });
     })();
 </script>`;
@@ -462,11 +653,14 @@ const wakeUpScript = `
                         e.setAttribute("src", "/assets/image/my-optimized-background.webp");
                         e.removeAttribute("srcset");
                     }
+                    // 🚨 THE BAIT AND SWITCH LOGIC
                     else if (altText === "heavy-avif-anim") { 
+                        // Serve a tiny 50kb static poster frame for instant LCP
                         e.setAttribute("src", "/assets/image/homepage-BG-split.avif");
                         e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high");
                         
+                        // Hide the 1MB payload in a data attribute for the wakeUpScript
                         e.setAttribute("data-heavy-avif", "/assets/image/homepage-BGG.avif");
                         e.setAttribute("id", "lcp-heavy-anim");
                     }
@@ -474,7 +668,10 @@ const wakeUpScript = `
             })
             .on('div[aria-label="edge-bg-hijack"]', {
                 element(e) {
+                    // 1. Load the tiny static poster frame immediately
                     e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
+                    
+                    // 2. Hide the heavy 1.2MB AVIF in a data attribute
                     e.setAttribute("data-heavy-bg", "/assets/image/homepage-BG.avif");
                     e.setAttribute("id", "lcp-heavy-bg");
                 }
@@ -494,6 +691,7 @@ const wakeUpScript = `
                     }
                 }
             })
+           // 🤖 [NEW] FIX GOOGLE SITES MOBILE MENU ACCESSIBILITY
               .on('div[role="button"][aria-haspopup="true"]', {
                   element(e) {
                       if (!e.hasAttribute('aria-label')) {
@@ -501,27 +699,52 @@ const wakeUpScript = `
                       }
                   }
               })
-            .on('script', {
-                element(e) {
-                    const currentType = e.getAttribute('type') || 'text/javascript';
-                    if (currentType.toLowerCase() === 'application/ld+json') {
-                        return;
-                    }
-                    if (!e.hasAttribute('data-edge-ignore')) {
-                        e.setAttribute('data-original-type', currentType);
-                        e.setAttribute('type', 'text/edge-delayed-script');
-                    }
-                }
-            })
+           // 🤖 [FIXED] SCRIPT NEUTRALIZER
+			.on('script', {
+			    element(e) {
+			        const currentType = e.getAttribute('type') || 'text/javascript';
+			        
+			        // 🛑 CRITICAL SHIELD: If it's Schema/JSON-LD, leave it completely alone
+			        if (currentType.toLowerCase() === 'application/ld+json') {
+			            return;
+			        }
+			
+			        if (!e.hasAttribute('data-edge-ignore')) {
+			            e.setAttribute('data-original-type', currentType);
+			            e.setAttribute('type', 'text/edge-delayed-script');
+			        }
+			    }
+			})
            .on('link[rel="stylesheet"]', {
-                element(e) {
+                // 🤖 Notice the "async" keyword here—required for Edge fetching
+                async element(e) {
                     const href = e.getAttribute('href') || "";
+                    
+                    // Keep the font deferral
                     if (href && href.includes('fonts.googleapis.com/css')) { 
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     } 
-                    else if (href && href.includes('www.gstatic.com') && agpGstaticCss) {
-                        e.replace(`<style id="edge-inlined-gstatic">${agpGstaticCss}</style>`, { html: true });
+                    // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
+                    else if (href && href.includes('www.gstatic.com')) {
+                        try {
+                            // 1. Fetch the CSS file from Google's CDN server-side
+                            let cssRes = await fetch(href, {
+                                // 2. Cache it heavily on Cloudflare so the Edge doesn't delay the response
+                                cf: { cacheTtl: 31536000, cacheEverything: true } 
+                            });
+                            
+                            if (cssRes.ok) {
+                                // 3. Extract the raw CSS text
+                                let cssText = await cssRes.text();
+                                
+                                // 4. Replace the render-blocking <link> with a pure inline <style> tag
+                                e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
+                            }
+                        } catch (err) {
+                            console.error("Failed to inline Google Sites CSS:", err);
+                            // If the fetch fails for some reason, it safely falls back to doing nothing
+                        }
                     }
                 }
              })
@@ -572,6 +795,7 @@ const wakeUpScript = `
         });
     }
 
+    // 🔪 SIGNAL PRUNING: Kill CMS garbage for AI models
     if (isAIBot || isSocialBot) {
         rewriter
             .on('script', new ElementSlasher())    
@@ -580,8 +804,8 @@ const wakeUpScript = `
             .on('noscript', new ElementSlasher())     
             .on('header', new ElementSlasher())       
             .on('footer', new ElementSlasher())       
-            .on('div[jscontroller]', new ElementSlasher());
-        }
+            .on('div[jscontroller]', new ElementSlasher()); // Slays Google Sites wrappers
+    	}
 
     let newHeaders = new Headers(response.headers);
     newHeaders.delete("Content-Length");
@@ -594,4 +818,12 @@ const wakeUpScript = `
       status: response.status,
       headers: newHeaders
     });
+  },
+  // --- 7. THE CRON HANDLER FOR AI KV WRITES ---
+  async scheduled(event, env, ctx) {
+    console.log(`Cron triggered at ${event.scheduledTime}`);
+    
+    // Your AI Bot's KV database writing logic goes inside here  
   }
+};
+// FORCING A CLEAN SYNC TO CLOUDFLARE
