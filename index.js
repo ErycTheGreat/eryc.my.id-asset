@@ -196,14 +196,21 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       });
     }
 
-  // --- 3. LLMS.TXT ROUTING ---
+ // --- 3. LLMS.TXT ROUTING ---
     if (url.pathname === "/llm.txt") {
+      // (Assuming you have canonicalHost defined earlier in your code)
       return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
     }
 
     if (url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") {
-      const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llms.txt");
-      return new Response(githubResponse.body, {
+      // Fetch llms.txt directly from your R2 bucket
+      const object = await env.MY_ASSETS.get("llms.txt");
+
+      if (object === null) {
+        return new Response("llms.txt not found in R2", { status: 404 });
+      }
+
+      return new Response(object.body, {
         status: 200,
         headers: {
           "Content-Type": "text/plain; charset=utf-8",
