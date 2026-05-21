@@ -621,7 +621,7 @@ const wakeUpScript = `
                 } else {
                     triggerBg(); 
                 }
-            }, 1700); 
+            }, 2100); 
         });
     })();
 </script>`;
