@@ -38,23 +38,24 @@ export default {
       });
     }
 
-	// --- 0.3 GOOGLE ASSET EDGE MIRROR ---
-    // Intercepts Google's internal CSS/JS/Images and proxies them natively
-    if (url.pathname.startsWith("/_/")) {
-        const proxyUrl = "https://www.gstatic.com" + url.pathname + url.search;
-        let assetRes = await fetch(proxyUrl, {
-            cf: { cacheEverything: true, cacheTtl: 31536000 }
-        });
-        
-        let newHeaders = new Headers(assetRes.headers);
-        newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
-        newHeaders.set("X-Edge-Mirror", "Active");
-        
-        return new Response(assetRes.body, {
-            status: assetRes.status,
-            headers: newHeaders
-        });
-    }
+	// 🚀 THE EDGE MIRROR REWRITER
+           .on('link[rel="stylesheet"]', {
+                element(e) {
+                    const href = e.getAttribute('href') || "";
+                    
+                    // 1. Keep the font deferral
+                    if (href.includes('fonts.googleapis.com/css')) { 
+                        e.setAttribute('media', 'print');
+                        e.setAttribute('onload', "this.media='all'");
+                    } 
+                    // 2. Hook Google's heavy CSS into our Edge Mirror
+                    else if (href.includes('gstatic.com/_/')) {
+                        // This cleanly extracts exactly "/_/atari/..." and strips the external domain
+                        const mirrorPath = href.substring(href.indexOf("/_/"));
+                        e.setAttribute('href', mirrorPath);
+                    }
+                }
+             })
     
    // --- 0. DIRECT XML RETURN ---
     if (url.pathname === "/sitemap.xml" || url.pathname === "/sitemap.xml/") {
@@ -639,7 +640,7 @@ const wakeUpScript = `
                 } else {
                     triggerBg(); 
                 }
-            }, 2100); 
+            }, 250); 
         });
     })();
 </script>`;
@@ -733,21 +734,36 @@ const wakeUpScript = `
 			        }
 			    }
 			})
-         // 🚀 THE EDGE MIRROR REWRITER
            .on('link[rel="stylesheet"]', {
-                element(e) {
+                // 🤖 Notice the "async" keyword here—required for Edge fetching
+                async element(e) {
                     const href = e.getAttribute('href') || "";
                     
-                    // 1. Keep the font deferral
-                    if (href.includes('fonts.googleapis.com/css')) { 
+                    // Keep the font deferral
+                    if (href && href.includes('fonts.googleapis.com/css')) { 
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     } 
-                    // 2. Hook Google's heavy CSS into our Edge Mirror
-                    else if (href.includes('gstatic.com/_/')) {
-                        // This cleanly extracts exactly "/_/atari/..." and strips the external domain
-                        const mirrorPath = href.substring(href.indexOf("/_/"));
-                        e.setAttribute('href', mirrorPath);
+                    // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
+                    else if (href && href.includes('www.gstatic.com')) {
+                        try {
+                            // 1. Fetch the CSS file from Google's CDN server-side
+                            let cssRes = await fetch(href, {
+                                // 2. Cache it heavily on Cloudflare so the Edge doesn't delay the response
+                                cf: { cacheTtl: 31536000, cacheEverything: true } 
+                            });
+                            
+                            if (cssRes.ok) {
+                                // 3. Extract the raw CSS text
+                                let cssText = await cssRes.text();
+                                
+                                // 4. Replace the render-blocking <link> with a pure inline <style> tag
+                                e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
+                            }
+                        } catch (err) {
+                            console.error("Failed to inline Google Sites CSS:", err);
+                            // If the fetch fails for some reason, it safely falls back to doing nothing
+                        }
                     }
                 }
              })
