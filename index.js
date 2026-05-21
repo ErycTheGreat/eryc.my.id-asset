@@ -737,15 +737,16 @@ const wakeUpScript = `
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     } 
-                    // 🚀 THE ASTRO METHOD: Critical CSS inlined + full CSS deferred non-blocking
-                    // Two-layer strategy:
-                    //   Layer 1 — inline the Coverage-extracted critical CSS (~25 KiB) for instant FCP/LCP.
-                    //             No network round-trip, no render-blocking. Performance stays high.
-                    //   Layer 2 — load the full original gstatic stylesheet asynchronously via print-swap.
-                    //             Loads after paint, restores all color contrast / focus / a11y rules.
-                    //             Accessibility score recovers to 100 without touching performance.
+                    // 🚀 THE ASTRO METHOD: Serve Coverage-extracted critical CSS synchronously from KV.
+                    // Critical-only inline strategy (~25 KiB of actually used rules).
+                    //
+                    // ⚠️ DO NOT add a deferred <link> for the full gstatic stylesheet here.
+                    // When the full 190 KiB CSS swaps from media="print" to media="all" post-paint,
+                    // it triggers a complete Google Sites DOM style recalculation → CLS 1.008.
+                    // The font declarations inside that CSS also trigger FOUT, adding more CLS on top.
+                    // Critical-only inline eliminates both the render-block AND the post-paint shift.
                     else if (href && href.includes('www.gstatic.com') && agpGstaticCss) {
-                        e.replace(`<style id="edge-inlined-gstatic">${agpGstaticCss}</style><link rel="stylesheet" href="${href}" media="print" onload="this.media='all'" id="edge-gstatic-full">`, { html: true });
+                        e.replace(`<style id="edge-inlined-gstatic">${agpGstaticCss}</style>`, { html: true });
                     }
                     // Fallback: if KV cache is empty (e.g. first deploy), leave the link tag untouched.
                     // The AI Scanner cron will populate GSTATIC_CSS_MERGED on its next run.
