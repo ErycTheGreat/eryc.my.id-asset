@@ -554,11 +554,35 @@ const wakeUpScript = `
     (function() {
         let scriptsHydrated = false;
 
-        // 🎯 THE PAYLOAD DETONATOR
+       // 🎯 THE PAYLOAD DETONATOR (Upgraded for Zero CLS)
         const triggerBg = () => {
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
-                heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
+                
+                // 1. Create an invisible phantom layer for the heavy animation
+                const phantomLayer = document.createElement('div');
+                phantomLayer.style.position = 'absolute';
+                phantomLayer.style.inset = '0'; 
+                phantomLayer.style.zIndex = '0'; 
+                phantomLayer.style.opacity = '0'; 
+                phantomLayer.style.transition = 'opacity 0.5s ease-in'; 
+                phantomLayer.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
+                phantomLayer.style.backgroundPosition = 'center center';
+                phantomLayer.style.backgroundSize = 'cover';
+                
+                // 2. Ensure the parent container can hold the absolute layer
+                heavyBg.style.position = 'relative';
+                
+                // 3. Inject the phantom layer into the Google Sites DOM
+                heavyBg.insertBefore(phantomLayer, heavyBg.firstChild);
+
+                // 4. Force the browser to fully download the 1.2MB AVIF silently in the background
+                const imgPreload = new Image();
+                imgPreload.src = heavyBg.dataset.heavyBg;
+                imgPreload.onload = () => {
+                    phantomLayer.style.opacity = '1'; // Detonate the fade-in
+                };
+                
                 heavyBg.removeAttribute('data-heavy-bg'); 
             }
         };
