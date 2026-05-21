@@ -554,7 +554,7 @@ const wakeUpScript = `
     (function() {
         let scriptsHydrated = false;
 
-       // 🎯 THE PAYLOAD DETONATOR (Anti-Hydration Fix)
+       // 🎯 THE PAYLOAD DETONATOR (Syntax Error Fix)
         const triggerBg = () => {
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
@@ -566,10 +566,8 @@ const wakeUpScript = `
                 
                 // 2. Wait until the heavy animation is 100% loaded into local cache
                 imgPreload.onload = () => {
-                    // 3. Swap the background instantly. 
-                    // Because it's already downloaded, it swaps in exactly 1 frame (Zero CLS).
-                    // Because we are modifying the style, Google Sites won't delete it.
-                    heavyBg.style.backgroundImage = `url('${heavyUrl}')`;
+                    // 3. Swap using safe standard quotes so it doesn't break the outer string
+                    heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
                 };
                 
                 heavyBg.removeAttribute('data-heavy-bg'); 
