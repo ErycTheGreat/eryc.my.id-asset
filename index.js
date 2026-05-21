@@ -707,17 +707,22 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     }
                 }
             })
+           // 🚀 THE R2 CSS DROP
            .on('link[rel="stylesheet"]', {
                 element(e) {
                     const href = e.getAttribute('href') || "";
                     
-                    // Keep the font deferral, drop the blocking inline fetch
-                    if (href && href.includes('fonts.googleapis.com/css')) { 
+                    // 1. Keep the font deferral
+                    if (href.includes('fonts.googleapis.com/css')) { 
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     } 
+                    // 2. Intercept Google's bloated CSS and swap it for your Edge copy
+                    else if (href.includes('www.gstatic.com')) {
+                        e.setAttribute('href', '/assets/css/google-sites-core.css');
+                    }
                 }
-             })
+            })
             .on('a[aria-selected]', {
                 element(e) {
                     e.removeAttribute('aria-selected');
