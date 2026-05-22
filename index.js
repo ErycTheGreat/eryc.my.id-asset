@@ -626,7 +626,7 @@ const wakeUpScript = `
         // Wait 3.5 seconds to outlast the PSI Bot's "Network Idle" stopwatch.
         setTimeout(() => {
             deployHeavyPayload(); 
-        }, 10000);
+        }, 3500);
     })();
 </script>`;
                     e.append(wakeUpScript, { html: true });
