@@ -554,22 +554,11 @@ const wakeUpScript = `
     (function() {
         let scriptsHydrated = false;
 
-       // 🎯 THE PAYLOAD DETONATOR (Syntax Error Fix)
+        // 🎯 THE PAYLOAD DETONATOR
         const triggerBg = () => {
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
-                const heavyUrl = heavyBg.dataset.heavyBg;
-
-                // 1. Force the browser to fully download the 1.2MB AVIF silently in the background
-                const imgPreload = new Image();
-                imgPreload.src = heavyUrl;
-                
-                // 2. Wait until the heavy animation is 100% loaded into local cache
-                imgPreload.onload = () => {
-                    // 3. Swap using safe standard quotes so it doesn't break the outer string
-                    heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
-                };
-                
+                heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
                 heavyBg.removeAttribute('data-heavy-bg'); 
             }
         };
