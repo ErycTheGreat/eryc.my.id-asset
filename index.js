@@ -306,6 +306,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             /* 1. Paint the absolute bottom canvas to kill the initial white flash */
             html {
                 background-color: #060522 !important;
+				margin: 0;
+				padding: 0;
             }
 
             /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
@@ -317,6 +319,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             /* 3. Ensure the body allows the html canvas to show through */
             body {
                 background-color: transparent !important;
+				margin: 0;       /* ← THIS IS THE ENTIRE FIX FOR CLS = 1 */
+				padding: 0;
             }
         </style>
             
