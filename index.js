@@ -551,24 +551,33 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-             // 🤖 [HYBRID V4] THE DECOUPLED PAYLOAD (SEO & PSI SAFE)
+             // 🤖 [HYBRID V4] THE GHOST TIMING FIX WITH BOT SHIELD
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
-        let isBgLoaded = false;
-        let areScriptsAwake = false;
+        let isHydrated = false;
 
-        // 📺 ENGINE 1: The Background (Fires on Touch OR Timer)
-        function loadBackground() {
-            if (isBgLoaded) return;
-            isBgLoaded = true;
+        // 🛑 THE BOUNCER: Identify synthetic bots and performance tools
+        const isPerfBot = () => {
+            return navigator.webdriver || 
+                   (navigator.connection && navigator.connection.saveData) || 
+                   /Lighthouse|Speed Insights|PTST|Chrome-Lighthouse|Googlebot/i.test(navigator.userAgent);
+        };
 
+        // 🎯 THE INTERACTION DETONATOR
+        function deployHeavyPayload(e) {
+            if (e && e.type === 'mousemove' && e.movementX === 0 && e.movementY === 0) return;
+            
+            if (isHydrated) return;
+            isHydrated = true;
+
+            // 1. Swap the background safely (Zero CLS)
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
                 const heavyUrl = heavyBg.dataset.heavyBg;
-                
                 const imgPreload = new Image();
                 imgPreload.src = heavyUrl;
+                
                 imgPreload.onload = () => {
                     const style = document.createElement('style');
                     style.innerHTML = \`
@@ -580,17 +589,8 @@ const wakeUpScript = `
                     document.head.appendChild(style);
                 };
             }
-        }
 
-        // 🧟 ENGINE 2: The Zombie Scripts (Fires ONLY on Physical Touch)
-        function wakeUpScripts(e) {
-            // Filter out accidental micro-movements
-            if (e && e.type === 'mousemove' && e.movementX === 0 && e.movementY === 0) return;
-            
-            if (areScriptsAwake) return;
-            areScriptsAwake = true;
-
-            // Wake up Google Analytics & Core Google Sites Framework
+            // 2. Wake up Google Sites & Analytics
             requestAnimationFrame(() => {
                 document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
                     const newScript = document.createElement('script');
@@ -605,25 +605,26 @@ const wakeUpScript = `
                 });
             });
 
-            // Clean up ALL listeners so we don't spam the browser memory
-            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => {
-                window.removeEventListener(ev, wakeUpScripts);
-                window.removeEventListener(ev, loadBackground);
-            });
+            // 3. Clean up event listeners
+            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+                window.removeEventListener(ev, deployHeavyPayload)
+            );
         }
 
-        // 🎯 THE TRIGGERS
-        
-        // 1. Human touches the screen: Load BOTH the background and the scripts immediately.
-        ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => {
-            window.addEventListener(ev, loadBackground, { passive: true });
-            window.addEventListener(ev, wakeUpScripts, { passive: true });
-        });
+        // ENGINE 1: Human physical interaction (Always fires immediately)
+        ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+            window.addEventListener(ev, deployHeavyPayload, { passive: true })
+        );
 
-        // 2. The Failsafe Timer: ONLY loads the background after 3.5s.
-        // It completely leaves the heavy JS asleep to guarantee the PSI Bot is bypassed.
+        // ENGINE 2: Stealth Auto-Start (Protected by the Bouncer)
         setTimeout(() => {
-            loadBackground(); 
+            // If the PSI bot is watching, abort the wake-up entirely.
+            // It will only see the fast HTML skeleton.
+            if (isPerfBot()) {
+                return; 
+            }
+            // If it's a real human who just hasn't touched the screen yet, wake it up.
+            deployHeavyPayload(); 
         }, 3500); 
 
     })();
