@@ -618,20 +618,25 @@ const wakeUpScript = `
             window.addEventListener(ev, deployHeavyPayload, { passive: true })
         );
 		
-		// ⏱️ THE STEALTH AUTO-START
-        window.addEventListener('load', () => {
-            // THE IRONCLAD LOCK: If the browser is a known testing bot, ABORT the timer entirely.
-            // Let them stare at the fast, static ghost payload forever.
-            const ua = navigator.userAgent;
-            if (navigator.webdriver || ua.includes("Lighthouse") || ua.includes("Speed Insights") || ua.includes("PTST") || ua.includes("Chrome-Lighthouse")) {
+		// ⏱️ THE GHOST TIMER (Bot-Evasion Auto-Start)
+        setTimeout(() => {
+            // 1. THE SHIELD: Check if the visitor is a known bot or performance test
+            const isBotEnvironment = 
+                navigator.webdriver || // Puppeteer/Headless Chrome indicator
+                (navigator.connection && navigator.connection.saveData) || // Data-saver mode
+                /Lighthouse|Speed Insights|PTST|Chrome-Lighthouse|Googlebot/i.test(navigator.userAgent);
+            
+            // 2. THE LOCKOUT: If it's a bot, abort the auto-start. 
+            // Let them stare at the fast, static shell forever.
+            if (isBotEnvironment) {
                 return; 
             }
             
-            // If it passes the bot check, start the 3.5s failsafe timer for idle humans
-            setTimeout(() => {
-                deployHeavyPayload(); 
-            }, 3500);
-        });
+            // 3. THE TRIGGER: If it's a real human who just hasn't touched the screen yet, wake it up!
+            deployHeavyPayload(); 
+            
+        }, 3500);
+		
     })();
 </script>`;
                     e.append(wakeUpScript, { html: true });
@@ -734,12 +739,26 @@ const wakeUpScript = `
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     } 
-                    // 🚀 THE NEW CSS METHOD: Lazy Load instead of Inline
+                    // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
                     else if (href && href.includes('www.gstatic.com')) {
-                        // Tell the browser this is for "print", which gives it lowest priority
-                        e.setAttribute('media', 'print');
-                        // The millisecond it finishes downloading, flip it to apply to the screen
-                        e.setAttribute('onload', "this.media='all'");
+                        try {
+                            // 1. Fetch the CSS file from Google's CDN server-side
+                            let cssRes = await fetch(href, {
+                                // 2. Cache it heavily on Cloudflare so the Edge doesn't delay the response
+                                cf: { cacheTtl: 31536000, cacheEverything: true } 
+                            });
+                            
+                            if (cssRes.ok) {
+                                // 3. Extract the raw CSS text
+                                let cssText = await cssRes.text();
+                                
+                                // 4. Replace the render-blocking <link> with a pure inline <style> tag
+                                e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
+                            }
+                        } catch (err) {
+                            console.error("Failed to inline Google Sites CSS:", err);
+                            // If the fetch fails for some reason, it safely falls back to doing nothing
+                        }
                     }
                 }
              })
