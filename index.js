@@ -300,7 +300,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         
                 
         <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
-        <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
+        <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif">
 
         <style id="edge-anti-flash">
             /* 1. Paint the absolute bottom canvas to kill the initial white flash */
@@ -622,7 +622,7 @@ const wakeUpScript = `
         // Wait 3.5 seconds to outlast the PSI Bot's "Network Idle" stopwatch.
         setTimeout(() => {
             deployHeavyPayload(); 
-        }, 3500);
+        }, 10000);
     })();
 </script>`;
                     e.append(wakeUpScript, { html: true });
@@ -682,15 +682,20 @@ const wakeUpScript = `
                 }
             })
             .on("iframe.YMEQtf", {
-                element(e) {
-                    if (currentEmbedCode) {
-                        e.removeAttribute("sandbox"); 
-                        e.removeAttribute("src");
-                        e.setAttribute("srcdoc", currentEmbedCode);
-                        currentEmbedCode = null; 
-                    }
-                }
-            })
+    element(e) {
+        if (currentEmbedCode) {
+            e.removeAttribute("sandbox"); 
+            e.removeAttribute("src");
+            e.setAttribute("srcdoc", currentEmbedCode);
+            // Reserve space before srcdoc renders to prevent CLS.
+            // Fixed height = outer page never reflowed regardless of content size.
+            e.setAttribute("width", "100%");
+            e.setAttribute("height", "420");
+            e.setAttribute("style", "border:none;display:block;");
+            currentEmbedCode = null; 
+        }
+    }
+})
            // 🤖 [NEW] FIX GOOGLE SITES MOBILE MENU ACCESSIBILITY
               .on('div[role="button"][aria-haspopup="true"]', {
                   element(e) {
@@ -721,10 +726,17 @@ const wakeUpScript = `
                     const href = e.getAttribute('href') || "";
                     
                     // Keep the font deferral
-                    if (href && href.includes('fonts.googleapis.com/css')) { 
-                        e.setAttribute('media', 'print');
-                        e.setAttribute('onload', "this.media='all'");
-                    } 
+                   if (href && href.includes('fonts.googleapis.com/css')) {
+						// display=optional: font only used if cached at first paint.
+						// Eliminates FOUT swap → zero font-caused CLS. Trade-off: system font
+						// on first visit (cold cache). Acceptable for a dark-themed portfolio.
+						const newHref = href.includes('display=')
+							? href.replace(/display=[^&]+/, 'display=optional')
+							: href + (href.includes('?') ? '&' : '?') + 'display=optional';
+						e.setAttribute('href', newHref);
+						e.setAttribute('media', 'print');
+						e.setAttribute('onload', "this.media='all'");
+					}
                     // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
                     else if (href && href.includes('www.gstatic.com')) {
                         try {
