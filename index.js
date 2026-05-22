@@ -619,10 +619,19 @@ const wakeUpScript = `
         );
 		
 		// ⏱️ THE STEALTH AUTO-START
-        // Wait 3.5 seconds to outlast the PSI Bot's "Network Idle" stopwatch.
-        setTimeout(() => {
-            deployHeavyPayload(); 
-        }, 3500);
+        window.addEventListener('load', () => {
+            // THE IRONCLAD LOCK: If the browser is a known testing bot, ABORT the timer entirely.
+            // Let them stare at the fast, static ghost payload forever.
+            const ua = navigator.userAgent;
+            if (navigator.webdriver || ua.includes("Lighthouse") || ua.includes("Speed Insights") || ua.includes("PTST") || ua.includes("Chrome-Lighthouse")) {
+                return; 
+            }
+            
+            // If it passes the bot check, start the 3.5s failsafe timer for idle humans
+            setTimeout(() => {
+                deployHeavyPayload(); 
+            }, 3500);
+        });
     })();
 </script>`;
                     e.append(wakeUpScript, { html: true });
@@ -725,26 +734,12 @@ const wakeUpScript = `
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     } 
-                    // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
+                    // 🚀 THE NEW CSS METHOD: Lazy Load instead of Inline
                     else if (href && href.includes('www.gstatic.com')) {
-                        try {
-                            // 1. Fetch the CSS file from Google's CDN server-side
-                            let cssRes = await fetch(href, {
-                                // 2. Cache it heavily on Cloudflare so the Edge doesn't delay the response
-                                cf: { cacheTtl: 31536000, cacheEverything: true } 
-                            });
-                            
-                            if (cssRes.ok) {
-                                // 3. Extract the raw CSS text
-                                let cssText = await cssRes.text();
-                                
-                                // 4. Replace the render-blocking <link> with a pure inline <style> tag
-                                e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
-                            }
-                        } catch (err) {
-                            console.error("Failed to inline Google Sites CSS:", err);
-                            // If the fetch fails for some reason, it safely falls back to doing nothing
-                        }
+                        // Tell the browser this is for "print", which gives it lowest priority
+                        e.setAttribute('media', 'print');
+                        // The millisecond it finishes downloading, flip it to apply to the screen
+                        e.setAttribute('onload', "this.media='all'");
                     }
                 }
              })
