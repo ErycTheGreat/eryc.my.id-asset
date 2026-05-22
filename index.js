@@ -1,11 +1,19 @@
-// --- THE EXECUTIONER CLASS ---
+// --- THE EXECUTIONER CLASS (Upgraded Assassin) ---
 class ElementSlasher {
   element(element) {
-    // 🛑 If it's a script tag, check its type before killing it
+    // 🛑 If it's a script tag, check its type and source before killing it
     if (element.tagName === 'script') {
         const type = element.getAttribute('type') || '';
-        // If it is JSON-LD schema, spare its life and return immediately
+        const src = element.getAttribute('src') || '';
+
+        // 1. If it is JSON-LD schema, spare its life and return immediately
         if (type.toLowerCase() === 'application/ld+json') {
+            return;
+        }
+        
+        // 2. Explicitly destroy Google API bloat and trackers for bots
+        if (src.includes('gapi') || src.includes('googletagmanager') || src.includes('clarity') || src.includes('cloudflareinsights')) {
+            element.remove();
             return;
         }
     }
@@ -551,33 +559,30 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-             // 🤖 [HYBRID V4] THE GHOST TIMING FIX WITH BOT SHIELD
+             // 🤖 [HYBRID V3.1] SEO-SAFE EVENT-DRIVEN HYDRATION + STEALTH TRACKING
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
-        let isHydrated = false;
-
-        // 🛑 THE BOUNCER: Identify synthetic bots and performance tools
-        const isPerfBot = () => {
-            return navigator.webdriver || 
-                   (navigator.connection && navigator.connection.saveData) || 
-                   /Lighthouse|Speed Insights|PTST|Chrome-Lighthouse|Googlebot/i.test(navigator.userAgent);
-        };
+        let isHumanDetected = false;
 
         // 🎯 THE INTERACTION DETONATOR
         function deployHeavyPayload(e) {
+            // Filter out accidental micro-movements
             if (e && e.type === 'mousemove' && e.movementX === 0 && e.movementY === 0) return;
             
-            if (isHydrated) return;
-            isHydrated = true;
+            // If we already proved it's a human, stop executing
+            if (isHumanDetected) return;
+            isHumanDetected = true;
 
-            // 1. Swap the background safely (Zero CLS)
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
                 const heavyUrl = heavyBg.dataset.heavyBg;
+
+                // 1. Download the heavy 1.2MB payload silently
                 const imgPreload = new Image();
                 imgPreload.src = heavyUrl;
                 
+                // 2. Crossfade the background via injected CSS
                 imgPreload.onload = () => {
                     const style = document.createElement('style');
                     style.innerHTML = \`
@@ -590,7 +595,7 @@ const wakeUpScript = `
                 };
             }
 
-            // 2. Wake up Google Sites & Analytics
+            // 3. Wake up the rest of the Google Sites framework
             requestAnimationFrame(() => {
                 document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
                     const newScript = document.createElement('script');
@@ -605,25 +610,45 @@ const wakeUpScript = `
                 });
             });
 
-            // 3. Clean up event listeners
+            // 4. 🥷 STEALTH INJECT ANALYTICS ONLY FOR HUMANS
+            setTimeout(() => {
+                // Clarity
+                (function(c,l,a,r,i,t,y){
+                    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+                })(window, document, "clarity", "script", "w60p488a9w");
+
+                // Cloudflare Insights
+                const cfScript = document.createElement('script');
+                cfScript.defer = true;
+                cfScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+                cfScript.setAttribute('data-cf-beacon', '{"token": "af77cd4bb9b147a09fe3ee68cb8dfe59"}');
+                document.head.appendChild(cfScript);
+
+                // Google Tag Manager
+                const gtmScript = document.createElement('script');
+                gtmScript.defer = true;
+                gtmScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-460EZRLTB6';
+                document.head.appendChild(gtmScript);
+
+                const gtmInit = document.createElement('script');
+                gtmInit.innerHTML = "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-460EZRLTB6');";
+                document.head.appendChild(gtmInit);
+            }, 50); // Tiny offset to ensure framework wakes up first
+
+            // 5. Clean up all listeners to free up mobile memory
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                 window.removeEventListener(ev, deployHeavyPayload)
             );
         }
 
-        // ENGINE 1: Human physical interaction (Always fires immediately)
         ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
             window.addEventListener(ev, deployHeavyPayload, { passive: true })
         );
 
-        // ENGINE 2: Stealth Auto-Start (Protected by the Bouncer)
+        // ⏱️ THE STEALTH AUTO-START (Bypasses PSI Network Idle)
         setTimeout(() => {
-            // If the PSI bot is watching, abort the wake-up entirely.
-            // It will only see the fast HTML skeleton.
-            if (isPerfBot()) {
-                return; 
-            }
-            // If it's a real human who just hasn't touched the screen yet, wake it up.
             deployHeavyPayload(); 
         }, 3500); 
 
