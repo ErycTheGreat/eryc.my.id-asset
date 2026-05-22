@@ -1,26 +1,15 @@
 // --- THE EXECUTIONER CLASS ---
 class ElementSlasher {
   element(element) {
+    // 🛑 If it's a script tag, check its type before killing it
     if (element.tagName === 'script') {
         const type = element.getAttribute('type') || '';
-        const src = element.getAttribute('src') || '';
-        const html = element.innerHTML || '';
-        
-        // 🛑 SPARE: JSON-LD Schema (Critical for SEO)
+        // If it is JSON-LD schema, spare its life and return immediately
         if (type.toLowerCase() === 'application/ld+json') {
             return;
         }
-
-        // 🔪 KILL: Native Google Sites API & Tracking (Only for bots)
-        if (src.includes('apis.google.com') || 
-            src.includes('gstatic.com') || 
-            html.includes('googletagmanager') || 
-            html.includes('clarity')) {
-            element.remove();
-            return;
-        }
     }
-    // Otherwise, execute order 66 for generic CMS garbage
+    // Otherwise, execute order 66
     element.remove();
   }
 }
@@ -525,12 +514,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <script type="text/edge-delayed-script" data-original-type="text/javascript" defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "af77cd4bb9b147a09fe3ee68cb8dfe59"}'></script>
 		
 		<script type="text/edge-delayed-script" data-original-type="text/javascript" defer src="https://www.googletagmanager.com/gtag/js?id=G-460EZRLTB6"></script>
+        
         <script type="text/edge-delayed-script" data-original-type="text/javascript">
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', 'G-460EZRLTB6');
-        
         </script>
         `;
       
@@ -556,14 +545,11 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 element(e) {
                     e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
                     e.append(customHeaderContent, { html: true }); 
-                    e.append(trackingContent, { html: true }); // 👈 INJECT TRACKING FOR HUMANS ONLY
                     
+                    // 🤖 INJECT THE AI-GENERATED CRITICAL CSS
                     if (agpGhostCss) {
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
-                    e.append(wakeUpScript, { html: true });
-                }
-            })
 
               // 🤖 [HYBRID V3] SEO-SAFE EVENT-DRIVEN HYDRATION
 const wakeUpScript = `
