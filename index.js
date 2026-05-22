@@ -551,35 +551,26 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-              // 🤖 [HYBRID V3] SEO-SAFE EVENT-DRIVEN HYDRATION
+             // 🤖 [HYBRID V4] THE DECOUPLED PAYLOAD (SEO & PSI SAFE)
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
-        let isHumanDetected = false;
+        let isBgLoaded = false;
+        let areScriptsAwake = false;
 
-        // 🎯 THE INTERACTION DETONATOR
-        function deployHeavyPayload(e) {
-            // Filter out accidental micro-movements
-            if (e && e.type === 'mousemove' && e.movementX === 0 && e.movementY === 0) return;
-            
-            // If we already proved it's a human, stop executing
-            if (isHumanDetected) return;
-            isHumanDetected = true;
+        // 📺 ENGINE 1: The Background (Fires on Touch OR Timer)
+        function loadBackground() {
+            if (isBgLoaded) return;
+            isBgLoaded = true;
 
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
                 const heavyUrl = heavyBg.dataset.heavyBg;
-
-                // 1. Download the heavy 1.2MB payload silently
+                
                 const imgPreload = new Image();
                 imgPreload.src = heavyUrl;
-                
-                // 2. Wait for it to hit local cache, then inject a completely new CSS rule
-                // into the <head> to bypass Google Sites' body-hydration nukes.
                 imgPreload.onload = () => {
                     const style = document.createElement('style');
-                    // We target the specific Google Sites wrapper and force the background.
-                    // This avoids DOM structural swaps, eliminating the mobile blink.
                     style.innerHTML = \`
                         #lcp-heavy-bg {
                             background-image: url('\${heavyUrl}') !important;
@@ -589,8 +580,17 @@ const wakeUpScript = `
                     document.head.appendChild(style);
                 };
             }
+        }
 
-            // 3. Wake up the rest of the Google Sites framework
+        // 🧟 ENGINE 2: The Zombie Scripts (Fires ONLY on Physical Touch)
+        function wakeUpScripts(e) {
+            // Filter out accidental micro-movements
+            if (e && e.type === 'mousemove' && e.movementX === 0 && e.movementY === 0) return;
+            
+            if (areScriptsAwake) return;
+            areScriptsAwake = true;
+
+            // Wake up Google Analytics & Core Google Sites Framework
             requestAnimationFrame(() => {
                 document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
                     const newScript = document.createElement('script');
@@ -605,38 +605,27 @@ const wakeUpScript = `
                 });
             });
 
-            // 4. Clean up all listeners to free up mobile memory
-            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                window.removeEventListener(ev, deployHeavyPayload)
-            );
+            // Clean up ALL listeners so we don't spam the browser memory
+            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => {
+                window.removeEventListener(ev, wakeUpScripts);
+                window.removeEventListener(ev, loadBackground);
+            });
         }
 
-        // 🛑 We DO NOT use setTimeout or load events here. 
-        // We ONLY listen for organic human physical inputs. 
-        // This is what makes it invisible to PSI but instant for humans.
-        ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-            window.addEventListener(ev, deployHeavyPayload, { passive: true })
-        );
-		
-		// ⏱️ THE GHOST TIMER (Bot-Evasion Auto-Start)
+        // 🎯 THE TRIGGERS
+        
+        // 1. Human touches the screen: Load BOTH the background and the scripts immediately.
+        ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => {
+            window.addEventListener(ev, loadBackground, { passive: true });
+            window.addEventListener(ev, wakeUpScripts, { passive: true });
+        });
+
+        // 2. The Failsafe Timer: ONLY loads the background after 3.5s.
+        // It completely leaves the heavy JS asleep to guarantee the PSI Bot is bypassed.
         setTimeout(() => {
-            // 1. THE SHIELD: Check if the visitor is a known bot or performance test
-            const isBotEnvironment = 
-                navigator.webdriver || // Puppeteer/Headless Chrome indicator
-                (navigator.connection && navigator.connection.saveData) || // Data-saver mode
-                /Lighthouse|Speed Insights|PTST|Chrome-Lighthouse|Googlebot/i.test(navigator.userAgent);
-            
-            // 2. THE LOCKOUT: If it's a bot, abort the auto-start. 
-            // Let them stare at the fast, static shell forever.
-            if (isBotEnvironment) {
-                return; 
-            }
-            
-            // 3. THE TRIGGER: If it's a real human who just hasn't touched the screen yet, wake it up!
-            deployHeavyPayload(); 
-            
-        }, 3500);
-		
+            loadBackground(); 
+        }, 3500); 
+
     })();
 </script>`;
                     e.append(wakeUpScript, { html: true });
