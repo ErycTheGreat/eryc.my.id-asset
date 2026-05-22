@@ -548,33 +548,50 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-                // 🤖 [HYBRID V2] ANTI-REFLOW WAKE UP SCRIPT
+               // 🤖 [HYBRID V2] ANTI-REFLOW WAKE UP SCRIPT
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
         let scriptsHydrated = false;
+        let isImageLoading = false; // 🚧 THE LOGIC GATE: Stops the infinite blinking loop
 
         // 🎯 THE PAYLOAD DETONATOR
         const triggerBg = () => {
+            // If we already started loading the image once, block all other triggers!
+            if (isImageLoading) return; 
+            
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
-                heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
-                heavyBg.removeAttribute('data-heavy-bg'); 
+                const heavyUrl = heavyBg.dataset.heavyBg;
+                
+                isImageLoading = true; // Lock the gate immediately
+
+                // 1. Start downloading silently in the background
+                const imgPreload = new Image();
+                imgPreload.src = heavyUrl;
+                
+                // 2. Flip the switch ONLY when completely downloaded
+                imgPreload.onload = () => {
+                    heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
+                    heavyBg.removeAttribute('data-heavy-bg'); 
+                };
             }
         };
 
-        // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
+        // ENGINE 1: The Heavy Framework (Physical interaction)
         function hydrateScripts(e) {
             if (e && e.type === 'mousemove') {
                 if (e.movementX === 0 && e.movementY === 0) return;
             }
 
+            // Trigger background image download safely
+            triggerBg();
+
             if (scriptsHydrated) return;
             scriptsHydrated = true;
 
-            // 🛠️ ANTI-REFLOW UPGRADE: Sync with browser's render cycle
+            // Sync with browser's render cycle for Google Scripts
             requestAnimationFrame(() => {
-                // 1. Wake up Google Sites Framework
                 document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
                     const newScript = document.createElement('script');
                     Array.from(s.attributes).forEach(attr => {
@@ -586,17 +603,9 @@ const wakeUpScript = `
                     newScript.innerHTML = s.innerHTML;
                     s.parentNode.replaceChild(newScript, s);
                 });
-
-                // 2. Decouple the Background Image
-                // We use a tiny 50ms setTimeout combined with another requestAnimationFrame.
-                // This gives the Google Sites framework time to finish its layout math 
-                // BEFORE we inject the heavy image payload, eliminating the collision.
-                setTimeout(() => {
-                    requestAnimationFrame(triggerBg);
-                }, 50);
             });
 
-            // Clean up listeners
+            // Clean up listeners immediately so they stop tracking user thumbs
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                 window.removeEventListener(ev, hydrateScripts)
             );
@@ -607,14 +616,13 @@ const wakeUpScript = `
             window.addEventListener(ev, hydrateScripts, { passive: true })
         );
 
-        // ENGINE 2: The Phantom Auto-Start
+        // ENGINE 2: The Phantom Auto-Start (Fallback for bots/idle)
         window.addEventListener('load', () => {
             if (navigator.webdriver) return; 
             if (navigator.connection && navigator.connection.saveData) return; 
             if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
             if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
             
-            // 250 ms PSI Evasion Timer
             setTimeout(() => {
                 if ('requestIdleCallback' in window) {
                     requestIdleCallback(triggerBg); 
