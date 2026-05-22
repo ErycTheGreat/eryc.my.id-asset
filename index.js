@@ -555,7 +555,7 @@ const wakeUpScript = `
         let scriptsHydrated = false;
         let isImageLoading = false; // 🚧 THE LOGIC GATE: Stops the infinite blinking loop
 
-        // 🎯 THE PAYLOAD DETONATOR
+       // 🎯 THE PAYLOAD DETONATOR (The Unbreakable CSS Billboard)
         const triggerBg = () => {
             // If we already started loading the image once, block all other triggers!
             if (isImageLoading) return; 
@@ -572,7 +572,12 @@ const wakeUpScript = `
                 
                 // 2. Flip the switch ONLY when completely downloaded
                 imgPreload.onload = () => {
-                    heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
+                    // 3. INSTEAD of touching the element's style directly, 
+                    // we inject an unbreakable CSS rule into the document head.
+                    const overrideStyle = document.createElement('style');
+                    overrideStyle.innerHTML = "#lcp-heavy-bg { background-image: url('" + heavyUrl + "') !important; }";
+                    document.head.appendChild(overrideStyle);
+                    
                     heavyBg.removeAttribute('data-heavy-bg'); 
                 };
             }
