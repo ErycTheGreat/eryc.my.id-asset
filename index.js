@@ -1,23 +1,26 @@
-// --- THE EXECUTIONER CLASS (Upgraded Assassin) ---
+// --- THE EXECUTIONER CLASS ---
 class ElementSlasher {
   element(element) {
-    // 🛑 If it's a script tag, check its type and source before killing it
     if (element.tagName === 'script') {
         const type = element.getAttribute('type') || '';
         const src = element.getAttribute('src') || '';
-
-        // 1. If it is JSON-LD schema, spare its life and return immediately
+        const html = element.innerHTML || '';
+        
+        // 🛑 SPARE: JSON-LD Schema (Critical for SEO)
         if (type.toLowerCase() === 'application/ld+json') {
             return;
         }
-        
-        // 2. Explicitly destroy Google API bloat and trackers for bots
-        if (src.includes('gapi') || src.includes('googletagmanager') || src.includes('clarity') || src.includes('cloudflareinsights')) {
+
+        // 🔪 KILL: Native Google Sites API & Tracking (Only for bots)
+        if (src.includes('apis.google.com') || 
+            src.includes('gstatic.com') || 
+            html.includes('googletagmanager') || 
+            html.includes('clarity')) {
             element.remove();
             return;
         }
     }
-    // Otherwise, execute order 66
+    // Otherwise, execute order 66 for generic CMS garbage
     element.remove();
   }
 }
@@ -522,12 +525,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <script type="text/edge-delayed-script" data-original-type="text/javascript" defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "af77cd4bb9b147a09fe3ee68cb8dfe59"}'></script>
 		
 		<script type="text/edge-delayed-script" data-original-type="text/javascript" defer src="https://www.googletagmanager.com/gtag/js?id=G-460EZRLTB6"></script>
-        
         <script type="text/edge-delayed-script" data-original-type="text/javascript">
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', 'G-460EZRLTB6');
+        
         </script>
         `;
       
@@ -553,13 +556,16 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 element(e) {
                     e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
                     e.append(customHeaderContent, { html: true }); 
+                    e.append(trackingContent, { html: true }); // 👈 INJECT TRACKING FOR HUMANS ONLY
                     
-                    // 🤖 INJECT THE AI-GENERATED CRITICAL CSS
                     if (agpGhostCss) {
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
+                    e.append(wakeUpScript, { html: true });
+                }
+            })
 
-             // 🤖 [HYBRID V3.1] SEO-SAFE EVENT-DRIVEN HYDRATION + STEALTH TRACKING
+              // 🤖 [HYBRID V3] SEO-SAFE EVENT-DRIVEN HYDRATION
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
@@ -582,9 +588,12 @@ const wakeUpScript = `
                 const imgPreload = new Image();
                 imgPreload.src = heavyUrl;
                 
-                // 2. Crossfade the background via injected CSS
+                // 2. Wait for it to hit local cache, then inject a completely new CSS rule
+                // into the <head> to bypass Google Sites' body-hydration nukes.
                 imgPreload.onload = () => {
                     const style = document.createElement('style');
+                    // We target the specific Google Sites wrapper and force the background.
+                    // This avoids DOM structural swaps, eliminating the mobile blink.
                     style.innerHTML = \`
                         #lcp-heavy-bg {
                             background-image: url('\${heavyUrl}') !important;
@@ -610,48 +619,24 @@ const wakeUpScript = `
                 });
             });
 
-            // 4. 🥷 STEALTH INJECT ANALYTICS ONLY FOR HUMANS
-            setTimeout(() => {
-                // Clarity
-                (function(c,l,a,r,i,t,y){
-                    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-                })(window, document, "clarity", "script", "w60p488a9w");
-
-                // Cloudflare Insights
-                const cfScript = document.createElement('script');
-                cfScript.defer = true;
-                cfScript.src = 'https://static.cloudflareinsights.com/beacon.min.js';
-                cfScript.setAttribute('data-cf-beacon', '{"token": "af77cd4bb9b147a09fe3ee68cb8dfe59"}');
-                document.head.appendChild(cfScript);
-
-                // Google Tag Manager
-                const gtmScript = document.createElement('script');
-                gtmScript.defer = true;
-                gtmScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-460EZRLTB6';
-                document.head.appendChild(gtmScript);
-
-                const gtmInit = document.createElement('script');
-                gtmInit.innerHTML = "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-460EZRLTB6');";
-                document.head.appendChild(gtmInit);
-            }, 50); // Tiny offset to ensure framework wakes up first
-
-            // 5. Clean up all listeners to free up mobile memory
+            // 4. Clean up all listeners to free up mobile memory
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                 window.removeEventListener(ev, deployHeavyPayload)
             );
         }
 
+        // 🛑 We DO NOT use setTimeout or load events here. 
+        // We ONLY listen for organic human physical inputs. 
+        // This is what makes it invisible to PSI but instant for humans.
         ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
             window.addEventListener(ev, deployHeavyPayload, { passive: true })
         );
-
-        // ⏱️ THE STEALTH AUTO-START (Bypasses PSI Network Idle)
+		
+		// ⏱️ THE STEALTH AUTO-START
+        // Wait 3.5 seconds to outlast the PSI Bot's "Network Idle" stopwatch.
         setTimeout(() => {
             deployHeavyPayload(); 
-        }, 3500); 
-
+        }, 3500);
     })();
 </script>`;
                     e.append(wakeUpScript, { html: true });
