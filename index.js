@@ -756,7 +756,7 @@ const wakeUpScript = `
                                 
                                 // 4. Replace the render-blocking <link> with a pure inline <style> tag
                      //            e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
-                            }
+                     //        }
                      //  } catch (err) {
                      //      console.error("Failed to inline Google Sites CSS:", err);
                             // If the fetch fails for some reason, it safely falls back to doing nothing
