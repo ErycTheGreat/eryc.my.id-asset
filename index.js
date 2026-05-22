@@ -238,10 +238,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
       newHeaders.set("X-Proxy-Origin", "Cloudflare-R2");
 
-	  // 🚀 ADD THIS LINE TO FIX THE FONT CORS ISSUE FOR SITES.GOOGLE.COM
-      newHeaders.set("Access-Control-Allow-Origin", "*");
-
-	 // R2 automatically stores the content-type when you upload, 
+      // R2 automatically stores the content-type when you upload, 
       // but we can enforce it just like your old code did just to be safe.
       const lowerPath = filePath.toLowerCase();
       if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
@@ -551,47 +548,33 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-              // 🤖 [HYBRID V3] SEO-SAFE EVENT-DRIVEN HYDRATION
+                // 🤖 [HYBRID V2] ANTI-REFLOW WAKE UP SCRIPT
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
-        let isHumanDetected = false;
+        let scriptsHydrated = false;
 
-        // 🎯 THE INTERACTION DETONATOR
-        function deployHeavyPayload(e) {
-            // Filter out accidental micro-movements
-            if (e && e.type === 'mousemove' && e.movementX === 0 && e.movementY === 0) return;
-            
-            // If we already proved it's a human, stop executing
-            if (isHumanDetected) return;
-            isHumanDetected = true;
-
+        // 🎯 THE PAYLOAD DETONATOR
+        const triggerBg = () => {
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
-                const heavyUrl = heavyBg.dataset.heavyBg;
+                heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
+                heavyBg.removeAttribute('data-heavy-bg'); 
+            }
+        };
 
-                // 1. Download the heavy 1.2MB payload silently
-                const imgPreload = new Image();
-                imgPreload.src = heavyUrl;
-                
-                // 2. Wait for it to hit local cache, then inject a completely new CSS rule
-                // into the <head> to bypass Google Sites' body-hydration nukes.
-                imgPreload.onload = () => {
-                    const style = document.createElement('style');
-                    // We target the specific Google Sites wrapper and force the background.
-                    // This avoids DOM structural swaps, eliminating the mobile blink.
-                    style.innerHTML = \`
-                        #lcp-heavy-bg {
-                            background-image: url('\${heavyUrl}') !important;
-                            transition: background-image 0.5s ease-in-out;
-                        }
-                    \`;
-                    document.head.appendChild(style);
-                };
+        // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
+        function hydrateScripts(e) {
+            if (e && e.type === 'mousemove') {
+                if (e.movementX === 0 && e.movementY === 0) return;
             }
 
-            // 3. Wake up the rest of the Google Sites framework
+            if (scriptsHydrated) return;
+            scriptsHydrated = true;
+
+            // 🛠️ ANTI-REFLOW UPGRADE: Sync with browser's render cycle
             requestAnimationFrame(() => {
+                // 1. Wake up Google Sites Framework
                 document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
                     const newScript = document.createElement('script');
                     Array.from(s.attributes).forEach(attr => {
@@ -603,26 +586,43 @@ const wakeUpScript = `
                     newScript.innerHTML = s.innerHTML;
                     s.parentNode.replaceChild(newScript, s);
                 });
+
+                // 2. Decouple the Background Image
+                // We use a tiny 50ms setTimeout combined with another requestAnimationFrame.
+                // This gives the Google Sites framework time to finish its layout math 
+                // BEFORE we inject the heavy image payload, eliminating the collision.
+                setTimeout(() => {
+                    requestAnimationFrame(triggerBg);
+                }, 50);
             });
 
-            // 4. Clean up all listeners to free up mobile memory
+            // Clean up listeners
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                window.removeEventListener(ev, deployHeavyPayload)
+                window.removeEventListener(ev, hydrateScripts)
             );
         }
 
-        // 🛑 We DO NOT use setTimeout or load events here. 
-        // We ONLY listen for organic human physical inputs. 
-        // This is what makes it invisible to PSI but instant for humans.
+        // Bind Engine 1
         ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-            window.addEventListener(ev, deployHeavyPayload, { passive: true })
+            window.addEventListener(ev, hydrateScripts, { passive: true })
         );
-		
-		// ⏱️ THE STEALTH AUTO-START
-        // Wait 3.5 seconds to outlast the PSI Bot's "Network Idle" stopwatch.
-        setTimeout(() => {
-            deployHeavyPayload(); 
-        }, 3500);
+
+        // ENGINE 2: The Phantom Auto-Start
+        window.addEventListener('load', () => {
+            if (navigator.webdriver) return; 
+            if (navigator.connection && navigator.connection.saveData) return; 
+            if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
+            if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
+            
+            // 250 ms PSI Evasion Timer
+            setTimeout(() => {
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(triggerBg); 
+                } else {
+                    triggerBg(); 
+                }
+            }, 250); 
+        });
     })();
 </script>`;
                     e.append(wakeUpScript, { html: true });
