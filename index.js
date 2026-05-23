@@ -555,7 +555,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-              // 🤖 [HYBRID V3] SEO-SAFE EVENT-DRIVEN HYDRATION
+              // 🤖 [HYBRID V3.1] SEO-SAFE EVENT-DRIVEN HYDRATION (Anti-Blink Decode)
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
@@ -570,31 +570,8 @@ const wakeUpScript = `
             if (isHumanDetected) return;
             isHumanDetected = true;
 
-            const heavyBg = document.getElementById('lcp-heavy-bg');
-            if (heavyBg && heavyBg.dataset.heavyBg) {
-                const heavyUrl = heavyBg.dataset.heavyBg;
-
-                // 1. Download the heavy 1.2MB payload silently
-                const imgPreload = new Image();
-                imgPreload.src = heavyUrl;
-                
-                // 2. Wait for it to hit local cache, then inject a completely new CSS rule
-                // into the <head> to bypass Google Sites' body-hydration nukes.
-                imgPreload.onload = () => {
-                    const style = document.createElement('style');
-                    // We target the specific Google Sites wrapper and force the background.
-                    // This avoids DOM structural swaps, eliminating the mobile blink.
-                    style.innerHTML = \`
-                        #lcp-heavy-bg {
-                            background-image: url('\${heavyUrl}') !important;
-                            transition: background-image 0.5s ease-in-out;
-                        }
-                    \`;
-                    document.head.appendChild(style);
-                };
-            }
-
-            // 3. Wake up the rest of the Google Sites framework
+            // 1. Wake up the Google Sites framework FIRST.
+            // Let the CPU crunch the JS hydration immediately so it gets out of the way.
             requestAnimationFrame(() => {
                 document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
                     const newScript = document.createElement('script');
@@ -609,7 +586,33 @@ const wakeUpScript = `
                 });
             });
 
-            // 4. Clean up all listeners to free up mobile memory
+            // 2. Handle the 1.2MB Animated AVIF Payload (Off-thread Decode)
+            const heavyBg = document.getElementById('lcp-heavy-bg');
+            if (heavyBg && heavyBg.dataset.heavyBg) {
+                const heavyUrl = heavyBg.dataset.heavyBg;
+
+                const imgPreload = new Image();
+                imgPreload.src = heavyUrl;
+                
+                // 🛑 THE FIX: Use decode() instead of onload.
+                // This decodes the heavy AVIF in the background WITHOUT blocking the main thread.
+                imgPreload.decode().then(() => {
+                    // When this resolves, the image is 100% ready for the GPU to paint instantly.
+                    const style = document.createElement('style');
+                    style.innerHTML = \`
+                        #lcp-heavy-bg {
+                            background-image: url('\${heavyUrl}') !important;
+                        }
+                    \`;
+                    document.head.appendChild(style);
+                }).catch(err => {
+                    // Fallback just in case the decode API fails (very rare)
+                    console.error("Payload decode failed", err);
+                    heavyBg.style.setProperty('background-image', \`url('\${heavyUrl}')\`, 'important');
+                });
+            }
+
+            // 3. Clean up all listeners to free up mobile memory
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                 window.removeEventListener(ev, deployHeavyPayload)
             );
@@ -621,8 +624,8 @@ const wakeUpScript = `
         ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
             window.addEventListener(ev, deployHeavyPayload, { passive: true })
         );
-		
-		// ⏱️ THE STEALTH AUTO-START
+        
+        // ⏱️ THE STEALTH AUTO-START
         // Wait 3.5 seconds to outlast the PSI Bot's "Network Idle" stopwatch.
         setTimeout(() => {
             deployHeavyPayload(); 
