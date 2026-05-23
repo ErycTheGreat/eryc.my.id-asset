@@ -1,4 +1,4 @@
-	// --- THE EXECUTIONER CLASS ---
+// --- THE EXECUTIONER CLASS ---
 class ElementSlasher {
   element(element) {
     // 🛑 If it's a script tag, check its type before killing it
@@ -99,10 +99,6 @@ Allow: /
 Allow: /llms.txt
 
 User-agent: Claude-Web
-Allow: /
-Allow: /llms.txt
-
-User-agent: Claude-SearchBot
 Allow: /
 Allow: /llms.txt
 
