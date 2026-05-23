@@ -238,7 +238,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
       newHeaders.set("X-Proxy-Origin", "Cloudflare-R2");
 
-      // R2 automatically stores the content-type when you upload, 
+	  // 🚀 ADD THIS LINE TO FIX THE FONT CORS ISSUE FOR SITES.GOOGLE.COM
+      newHeaders.set("Access-Control-Allow-Origin", "*");
+
+	 // R2 automatically stores the content-type when you upload, 
       // but we can enforce it just like your old code did just to be safe.
       const lowerPath = filePath.toLowerCase();
       if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
@@ -297,12 +300,14 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         
                 
         <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
-        <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
+        <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif">
 
         <style id="edge-anti-flash">
             /* 1. Paint the absolute bottom canvas to kill the initial white flash */
             html {
                 background-color: #060522 !important;
+				margin: 0;
+				padding: 0;
             }
 
             /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
@@ -314,6 +319,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             /* 3. Ensure the body allows the html canvas to show through */
             body {
                 background-color: transparent !important;
+				margin: 0;       /* ← THIS IS THE ENTIRE FIX FOR CLS = 1 */
+				padding: 0;
             }
         </style>
             
@@ -548,7 +555,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-                // 🤖 [HYBRID V5] VDOM-PROOF HYDRATION & PSI SECURE
+         // 🤖 [HYBRID V5] VDOM-PROOF HYDRATION & PSI SECURE
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
@@ -686,15 +693,20 @@ const wakeUpScript = `
                 }
             })
             .on("iframe.YMEQtf", {
-                element(e) {
-                    if (currentEmbedCode) {
-                        e.removeAttribute("sandbox"); 
-                        e.removeAttribute("src");
-                        e.setAttribute("srcdoc", currentEmbedCode);
-                        currentEmbedCode = null; 
-                    }
-                }
-            })
+    element(e) {
+        if (currentEmbedCode) {
+            e.removeAttribute("sandbox"); 
+            e.removeAttribute("src");
+            e.setAttribute("srcdoc", currentEmbedCode);
+            // Reserve space before srcdoc renders to prevent CLS.
+            // Fixed height = outer page never reflowed regardless of content size.
+            e.setAttribute("width", "100%");
+            e.setAttribute("height", "420");
+            e.setAttribute("style", "border:none;display:block;");
+            currentEmbedCode = null; 
+        }
+    }
+})
            // 🤖 [NEW] FIX GOOGLE SITES MOBILE MENU ACCESSIBILITY
               .on('div[role="button"][aria-haspopup="true"]', {
                   element(e) {
@@ -704,31 +716,42 @@ const wakeUpScript = `
                   }
               })
            // 🤖 [FIXED] SCRIPT NEUTRALIZER
-			.on('script', {
-			    element(e) {
-			        const currentType = e.getAttribute('type') || 'text/javascript';
-			        
-			        // 🛑 CRITICAL SHIELD: If it's Schema/JSON-LD, leave it completely alone
-			        if (currentType.toLowerCase() === 'application/ld+json') {
-			            return;
-			        }
-			
-			        if (!e.hasAttribute('data-edge-ignore')) {
-			            e.setAttribute('data-original-type', currentType);
-			            e.setAttribute('type', 'text/edge-delayed-script');
-			        }
-			    }
-			})
+            .on('script', {
+                element(e) {
+                    const currentType = e.getAttribute('type') || 'text/javascript';
+                    const src = e.getAttribute('src') || '';
+                    const innerCode = e.innerHTML || '';
+                    
+                    // 🛑 CRITICAL SHIELD: If it's Schema/JSON-LD, leave it completely alone
+                    if (currentType.toLowerCase() === 'application/ld+json') {
+                        return;
+                    }
+
+                    // 🛑 TELEMETRY SHIELD: Spare Google's internal logging to prevent CORS errors on mobile
+                    if (src.includes('play.google.com') || innerCode.includes('play.google.com/log')) {
+                        return;
+                    }
+            
+                    if (!e.hasAttribute('data-edge-ignore')) {
+                        e.setAttribute('data-original-type', currentType);
+                        e.setAttribute('type', 'text/edge-delayed-script');
+                    }
+                }
+            })
            .on('link[rel="stylesheet"]', {
-                // 🤖 Notice the "async" keyword here—required for Edge fetching
                 async element(e) {
                     const href = e.getAttribute('href') || "";
                     
-                    // Keep the font deferral
-                    if (href && href.includes('fonts.googleapis.com/css')) { 
+                    if (href && href.includes('fonts.googleapis.com/css')) {
+                        // Reverting to optional to completely kill the font blink
+                        const newHref = href.includes('display=')
+                            ? href.replace(/display=[^&]+/, 'display=optional')
+                            : href + (href.includes('?') ? '&' : '?') + 'display=optional';
+                        e.setAttribute('href', newHref);
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
-                    } 
+                    }
+                    // ... keep your gstatic inlining code below this ...
                     // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
                     else if (href && href.includes('www.gstatic.com')) {
                         try {
