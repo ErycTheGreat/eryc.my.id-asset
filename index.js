@@ -645,7 +645,6 @@ const wakeUpScript = `
         window.addEventListener('load', () => {
             if (navigator.webdriver) return; 
             if (navigator.connection && navigator.connection.saveData) return; 
-            if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
             if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
             
             // 250 ms PSI Evasion Timer (Maintains your stable 3666ms evasion)
@@ -706,7 +705,7 @@ const wakeUpScript = `
                     e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
                     
                     // 2. Hide the heavy 1.2MB AVIF in a data attribute
-                    e.setAttribute("data-heavy-avif", heavyAnimUrl);
+                    e.setAttribute("data-heavy-bg", heavyAnimUrl);
                     e.setAttribute("id", "lcp-heavy-bg");
                 }
             })
