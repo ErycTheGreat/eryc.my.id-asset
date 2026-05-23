@@ -551,18 +551,31 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-                // 🤖 [HYBRID V2] ANTI-REFLOW WAKE UP SCRIPT
+                // 🤖 [HYBRID V2.1] ANTI-REFLOW WAKE UP SCRIPT
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
         let scriptsHydrated = false;
 
-        // 🎯 THE PAYLOAD DETONATOR
+        // 🎯 THE PAYLOAD DETONATOR (Off-Thread Decode)
         const triggerBg = () => {
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
-                heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
-                heavyBg.removeAttribute('data-heavy-bg'); 
+                const heavyUrl = heavyBg.dataset.heavyBg;
+                const imgPreload = new Image();
+                imgPreload.src = heavyUrl;
+                
+                // Decode off-thread to prevent main-thread lockups when painting
+                imgPreload.decode().then(() => {
+                    requestAnimationFrame(() => {
+                        heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
+                        heavyBg.removeAttribute('data-heavy-bg'); 
+                    });
+                }).catch(() => {
+                    // Fallback
+                    heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
+                    heavyBg.removeAttribute('data-heavy-bg'); 
+                });
             }
         };
 
@@ -575,29 +588,41 @@ const wakeUpScript = `
             if (scriptsHydrated) return;
             scriptsHydrated = true;
 
-            // 🛠️ ANTI-REFLOW UPGRADE: Sync with browser's render cycle
-            requestAnimationFrame(() => {
-                // 1. Wake up Google Sites Framework
-                document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
-                    const newScript = document.createElement('script');
-                    Array.from(s.attributes).forEach(attr => {
-                        if (attr.name !== 'type' && attr.name !== 'data-original-type') {
-                            newScript.setAttribute(attr.name, attr.value);
-                        }
-                    });
-                    newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
-                    newScript.innerHTML = s.innerHTML;
-                    s.parentNode.replaceChild(newScript, s);
-                });
+            // 🛠️ ANTI-REFLOW UPGRADE: Drip-feed scripts to prevent DOM thrashing
+            const scripts = document.querySelectorAll('script[type="text/edge-delayed-script"]');
+            let scriptIndex = 0;
 
-                // 2. Decouple the Background Image
-                // We use a tiny 50ms setTimeout combined with another requestAnimationFrame.
-                // This gives the Google Sites framework time to finish its layout math 
-                // BEFORE we inject the heavy image payload, eliminating the collision.
-                setTimeout(() => {
-                    requestAnimationFrame(triggerBg);
-                }, 50);
-            });
+            function injectNextScript() {
+                // Base case: All scripts loaded, now safely trigger the background
+                if (scriptIndex >= scripts.length) {
+                    setTimeout(() => requestAnimationFrame(triggerBg), 50);
+                    return;
+                }
+
+                const s = scripts[scriptIndex];
+                const newScript = document.createElement('script');
+                Array.from(s.attributes).forEach(attr => {
+                    if (attr.name !== 'type' && attr.name !== 'data-original-type') {
+                        newScript.setAttribute(attr.name, attr.value);
+                    }
+                });
+                newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
+                newScript.innerHTML = s.innerHTML;
+                
+                // Inject single script
+                s.parentNode.replaceChild(newScript, s);
+                scriptIndex++;
+
+                // Yield to the browser's main thread to prevent Forced Reflows
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(injectNextScript);
+                } else {
+                    setTimeout(injectNextScript, 15);
+                }
+            }
+
+            // Start the staggered injection process
+            requestAnimationFrame(injectNextScript);
 
             // Clean up listeners
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
@@ -617,7 +642,7 @@ const wakeUpScript = `
             if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
             if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
             
-            // 250 ms PSI Evasion Timer
+            // 250 ms PSI Evasion Timer (Maintains your stable 3666ms evasion)
             setTimeout(() => {
                 if ('requestIdleCallback' in window) {
                     requestIdleCallback(triggerBg); 
