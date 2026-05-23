@@ -702,22 +702,29 @@ const wakeUpScript = `
                       }
                   }
               })
-           // 🤖 [FIXED] SCRIPT NEUTRALIZER
-			.on('script', {
-			    element(e) {
-			        const currentType = e.getAttribute('type') || 'text/javascript';
-			        
-			        // 🛑 CRITICAL SHIELD: If it's Schema/JSON-LD, leave it completely alone
-			        if (currentType.toLowerCase() === 'application/ld+json') {
-			            return;
-			        }
-			
-			        if (!e.hasAttribute('data-edge-ignore')) {
-			            e.setAttribute('data-original-type', currentType);
-			            e.setAttribute('type', 'text/edge-delayed-script');
-			        }
-			    }
-			})
+          // 🤖 [FIXED] SCRIPT NEUTRALIZER
+            .on('script', {
+                element(e) {
+                    const currentType = e.getAttribute('type') || 'text/javascript';
+                    const src = e.getAttribute('src') || '';
+                    const innerCode = e.innerHTML || '';
+                    
+                    // 🛑 CRITICAL SHIELD: If it's Schema/JSON-LD, leave it completely alone
+                    if (currentType.toLowerCase() === 'application/ld+json') {
+                        return;
+                    }
+
+                    // 🛑 TELEMETRY SHIELD: Spare Google's internal logging to prevent CORS errors on mobile
+                    if (src.includes('play.google.com') || innerCode.includes('play.google.com/log')) {
+                        return;
+                    }
+            
+                    if (!e.hasAttribute('data-edge-ignore')) {
+                        e.setAttribute('data-original-type', currentType);
+                        e.setAttribute('type', 'text/edge-delayed-script');
+                    }
+                }
+            })
            .on('link[rel="stylesheet"]', {
                 // 🤖 Notice the "async" keyword here—required for Edge fetching
                 async element(e) {
