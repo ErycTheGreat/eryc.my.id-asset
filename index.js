@@ -723,8 +723,12 @@ const wakeUpScript = `
                 async element(e) {
                     const href = e.getAttribute('href') || "";
                     
-                    // Keep the font deferral
-                    if (href && href.includes('fonts.googleapis.com/css')) { 
+                    // Keep the font deferral, but switch to display=swap to fix cold loads
+                    if (href && href.includes('fonts.googleapis.com/css')) {
+                        const newHref = href.includes('display=')
+                            ? href.replace(/display=[^&]+/, 'display=swap')
+                            : href + (href.includes('?') ? '&' : '?') + 'display=swap';
+                        e.setAttribute('href', newHref);
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     } 
