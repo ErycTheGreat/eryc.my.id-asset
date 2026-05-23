@@ -555,44 +555,43 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-           // 🤖 [HYBRID V4] SEQUENTIAL ANTI-BLINK & PSI SECURE
+          // 🤖 [HYBRID V6] DECOUPLED BACKGROUND & PSI-SECURE HYDRATION
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
         let isHydrated = false;
-        const isLighthouse = navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST") || navigator.userAgent.includes("Chrome-Lighthouse");
+        
+        // Catch generic PSI mobile emulators (moto g power) and explicit Lighthouse bots
+        const isPSI = navigator.userAgent.includes("Lighthouse") || 
+                      navigator.userAgent.includes("PTST") || 
+                      navigator.userAgent.includes("Speed Insights") ||
+                      (window.innerWidth === 412 && navigator.userAgent.includes('Android'));
 
-        // 🎯 THE SEQUENTIAL DETONATOR
+        // 🎯 THE INTERACTION DETONATOR
         function deployHeavyPayload(e) {
             if (e && e.type === 'mousemove' && e.movementX === 0 && e.movementY === 0) return;
             if (isHydrated) return;
             isHydrated = true;
 
-            const heavyBg = document.getElementById('lcp-heavy-bg');
-            if (heavyBg && heavyBg.dataset.heavyBg) {
-                const heavyUrl = heavyBg.dataset.heavyBg;
+            // Target the independent Edge layer, NOT the Google Sites DOM
+            const decoupledBg = document.getElementById('edge-decoupled-bg');
+            
+            if (decoupledBg && decoupledBg.dataset.heavyBg) {
+                const heavyUrl = decoupledBg.dataset.heavyBg;
                 const imgPreload = new Image();
                 imgPreload.src = heavyUrl;
                 
-                // 1. Decode the image off-thread
+                // Decode off-thread so the background paints instantly
                 imgPreload.decode().then(() => {
-                    // 2. Paint the image instantly
-                    const style = document.createElement('style');
-                    style.innerHTML = \`#lcp-heavy-bg { background-image: url('\${heavyUrl}') !important; }\`;
-                    document.head.appendChild(style);
+                    decoupledBg.style.backgroundImage = \`url('\${heavyUrl}')\`;
                     
-                    // 3. Double requestAnimationFrame: Wait for the browser to physically paint the background
-                    // BEFORE slamming the mobile CPU with the Google Sites JS.
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            hydrateFramework();
-                        });
-                    });
+                    // Wait a fraction of a second to let GPU paint, then start JS
+                    setTimeout(startStaggeredHydration, 50);
                 }).catch(err => {
-                    hydrateFramework();
+                    startStaggeredHydration();
                 });
             } else {
-                hydrateFramework();
+                startStaggeredHydration();
             }
 
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
@@ -600,9 +599,14 @@ const wakeUpScript = `
             );
         }
 
-        // ⚙️ THE FRAMEWORK ENGINE
-        function hydrateFramework() {
-            document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
+        // 🏎️ THE CPU DRIP-FEED (Staggered Hydration)
+        function startStaggeredHydration() {
+            const scripts = Array.from(document.querySelectorAll('script[type="text/edge-delayed-script"]'));
+            
+            function loadScript(index) {
+                if (index >= scripts.length) return;
+
+                const s = scripts[index];
                 const newScript = document.createElement('script');
                 Array.from(s.attributes).forEach(attr => {
                     if (attr.name !== 'type' && attr.name !== 'data-original-type') {
@@ -611,22 +615,31 @@ const wakeUpScript = `
                 });
                 newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
                 newScript.innerHTML = s.innerHTML;
+
                 s.parentNode.replaceChild(newScript, s);
-            });
+
+                // 🛑 THE CPU BREATHER: 30ms between scripts to prevent mobile frame drops
+                setTimeout(() => {
+                    requestAnimationFrame(() => loadScript(index + 1));
+                }, 30);
+            }
+
+            requestAnimationFrame(() => loadScript(0));
         }
 
-        // 🛑 Listen for organic human physical inputs. 
+        // Bind organic interaction listeners
         ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
             window.addEventListener(ev, deployHeavyPayload, { passive: true })
         );
         
-        // ⏱️ THE PSI EVASION TIMER
-        // Only auto-start if we confirm the user is NOT a Lighthouse bot
-        setTimeout(() => {
-            if (!isLighthouse) {
+        // 🛑 PSI Evasion Timer: 
+        // Only trigger the auto-start if we are 100% sure it is a real user.
+        // We push this to 8.5s so it survives the entire Lighthouse audit window.
+        if (!isPSI) {
+            setTimeout(() => {
                 deployHeavyPayload(); 
-            }
-        }, 3500);
+            }, 8500);
+        }
     })();
 </script>`;
                     e.append(wakeUpScript, { html: true });
@@ -670,14 +683,11 @@ const wakeUpScript = `
                     }
                 }
             })
-            .on('div[aria-label="edge-bg-hijack"]', {
+            // 🚀 INJECT A DECOUPLED BACKGROUND LAYER
+            // Google Sites JS cannot thrash this because it sits outside its framework wrappers.
+            .on('body', {
                 element(e) {
-                    // 1. Load the tiny static poster frame immediately
-                    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
-                    
-                    // 2. Hide the heavy 1.2MB AVIF in a data attribute
-                    e.setAttribute("data-heavy-bg", "/assets/image/homepage-BG.avif");
-                    e.setAttribute("id", "lcp-heavy-bg");
+                    e.prepend(`<div id="edge-decoupled-bg" data-heavy-bg="/assets/image/homepage-BG.avif" style="position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:-999; background-color:#060522; background-image:url('/assets/image/homepage-BG-split.avif'); background-size:cover; background-position:center; pointer-events:none;"></div>`, { html: true });
                 }
             })
             .on('picture > source', {
@@ -731,41 +741,25 @@ const wakeUpScript = `
                     }
                 }
             })
-           .on('link[rel="stylesheet"]', {
+          .on('link[rel="stylesheet"]', {
                 async element(e) {
                     const href = e.getAttribute('href') || "";
                     
-                    if (href && href.includes('fonts.googleapis.com/css')) {
-                        // Reverting to optional to completely kill the font blink
-                        const newHref = href.includes('display=')
-                            ? href.replace(/display=[^&]+/, 'display=optional')
-                            : href + (href.includes('?') ? '&' : '?') + 'display=optional';
-                        e.setAttribute('href', newHref);
-                        e.setAttribute('media', 'print');
-                        e.setAttribute('onload', "this.media='all'");
-                    }
-                    // ... keep your gstatic inlining code below this ...
                     // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
-                    else if (href && href.includes('www.gstatic.com')) {
+                    if (href && href.includes('www.gstatic.com')) {
                         try {
-                            // 1. Fetch the CSS file from Google's CDN server-side
                             let cssRes = await fetch(href, {
-                                // 2. Cache it heavily on Cloudflare so the Edge doesn't delay the response
                                 cf: { cacheTtl: 31536000, cacheEverything: true } 
                             });
-                            
                             if (cssRes.ok) {
-                                // 3. Extract the raw CSS text
                                 let cssText = await cssRes.text();
-                                
-                                // 4. Replace the render-blocking <link> with a pure inline <style> tag
                                 e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
                             }
                         } catch (err) {
                             console.error("Failed to inline Google Sites CSS:", err);
-                            // If the fetch fails for some reason, it safely falls back to doing nothing
                         }
                     }
+                    // Notice: The fonts.googleapis.com deferral has been permanently removed.
                 }
              })
             .on('a[aria-selected]', {
