@@ -102,6 +102,10 @@ User-agent: Claude-Web
 Allow: /
 Allow: /llms.txt
 
+User-agent: Claude-SearchBot
+Allow: /
+Allow: /llms.txt
+
 User-agent: PerplexityBot
 Allow: /
 Allow: /llms.txt
