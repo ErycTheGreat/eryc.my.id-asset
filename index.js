@@ -23,6 +23,8 @@ export default {
 	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Google-Agent|Gemini-Deep-Research/i.test(userAgent);
 	const isCrawlerBot = /Googlebot|Google-InspectionTool|bingbot|Yandexbot/i.test(userAgent);
 	const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
+	// 📱 DETECT MOBILE DEVICES
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
 		
 	const isBot = isAIBot || isCrawlerBot || isSocialBot || url.searchParams.get("debug") === "bot";
 
@@ -198,12 +200,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 
  // --- 3. LLMS.TXT ROUTING ---
     if (url.pathname === "/llm.txt") {
-      // (Assuming you have canonicalHost defined earlier in your code)
       return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
     }
 
     if (url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") {
-      // Fetch llms.txt directly from your R2 bucket
       const object = await env.MY_ASSETS.get("llms.txt");
 
       if (object === null) {
@@ -222,12 +222,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
    // --- 4. THE R2 ASSET PROXY ---
     const path = url.pathname;
     
-    // Check if the request is for an asset
     if (path.startsWith("/assets/")) {
-      // Extract the filename/path (e.g., "image.png")
       const filePath = path.replace("/assets/", "");
-      
-      // Fetch the object directly from the R2 bucket we bound as MY_ASSETS
       const object = await env.MY_ASSETS.get(filePath);
 
       if (object === null) {
@@ -238,11 +234,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
       newHeaders.set("X-Proxy-Origin", "Cloudflare-R2");
 	  
-	   // 🚀 ADD THIS LINE TO FIX THE FONT CORS ISSUE FOR SITES.GOOGLE.COM
+	  // 🚀 ADD THIS LINE TO FIX THE FONT CORS ISSUE FOR SITES.GOOGLE.COM
       newHeaders.set("Access-Control-Allow-Origin", "*");
 
-      // R2 automatically stores the content-type when you upload, 
-      // but we can enforce it just like your old code did just to be safe.
       const lowerPath = filePath.toLowerCase();
       if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
       else if (lowerPath.endsWith(".css")) newHeaders.set("Content-Type", "text/css");
@@ -253,11 +247,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       else if (lowerPath.endsWith(".woff")) newHeaders.set("Content-Type", "font/woff");
       else if (lowerPath.endsWith(".woff2")) newHeaders.set("Content-Type", "font/woff2");
       else if (object.httpMetadata && object.httpMetadata.contentType) {
-          // Fallback to whatever content-type R2 detected
           newHeaders.set("Content-Type", object.httpMetadata.contentType);
       }
 
-      // Return the file stream directly from R2
       return new Response(object.body, { status: 200, headers: newHeaders });
     }
 
@@ -298,27 +290,26 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 		<link rel="preconnect" href="https://apis.google.com" crossorigin="">
         
-                
         <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
         <style id="edge-anti-flash">
-            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
-            html {
-                background-color: #060522 !important;
-            }
+            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
+            html {
+                background-color: #060522 !important;
+            }
 
-            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
-            :root {
-                --theme-page_background-color: transparent !important;
-                --theme-background-color: transparent !important;
-            }
-            
-            /* 3. Ensure the body allows the html canvas to show through */
-            body {
-                background-color: transparent !important;
-            }
-        </style>
+            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
+            :root {
+                --theme-page_background-color: transparent !important;
+                --theme-background-color: transparent !important;
+            }
+            
+            /* 3. Ensure the body allows the html canvas to show through */
+            body {
+                background-color: transparent !important;
+            }
+        </style>
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -528,6 +519,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         let newHeaders = new Headers(response.headers);
         newHeaders.delete("Content-Length"); 
         newHeaders.delete("Content-Security-Policy");
+		
+		// 📱 ROUTE THE ASSET BASED ON DEVICE POWER
+        const heavyAnimUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
+        const heavyStaticUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
 
        // 🤖 INJECT THE HTTP LCP PRELOAD HEADER
        if (agpLcpUrl) {
@@ -557,24 +552,39 @@ const wakeUpScript = `
     (function() {
         let scriptsHydrated = false;
 
-        // 🎯 THE PAYLOAD DETONATOR (Off-Thread Decode)
+        // ✅ CHANGE 1 OF 2: triggerBg now injects an <img> element instead of
+        // setting backgroundImage. <img> animated AVIF runs through the browser's
+        // dedicated image pipeline — off the main thread, GPU composited — so the
+        // animation plays smoothly without starving the main thread.
+        // The poster CSS background stays visible underneath until the <img> is
+        // decoded and appended, giving zero gap frame between poster and animation.
         const triggerBg = () => {
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
                 const heavyUrl = heavyBg.dataset.heavyBg;
                 const imgPreload = new Image();
                 imgPreload.src = heavyUrl;
-                
-                // Decode off-thread to prevent main-thread lockups when painting
+
                 imgPreload.decode().then(() => {
                     requestAnimationFrame(() => {
-                        heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
-                        heavyBg.removeAttribute('data-heavy-bg'); 
+                        const animImg = document.createElement('img');
+                        animImg.src = heavyUrl;
+                        animImg.setAttribute('style', 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;will-change:transform;');
+                        animImg.setAttribute('aria-hidden', 'true');
+                        animImg.setAttribute('decoding', 'async');
+                        heavyBg.appendChild(animImg);
+                        heavyBg.removeAttribute('data-heavy-bg');
                     });
                 }).catch(() => {
-                    // Fallback
-                    heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
-                    heavyBg.removeAttribute('data-heavy-bg'); 
+                    // Fallback: decode() unsupported or failed — inject img anyway,
+                    // browser will handle it. Poster stays visible until img paints.
+                    const animImg = document.createElement('img');
+                    animImg.src = heavyUrl;
+                    animImg.setAttribute('style', 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;will-change:transform;');
+                    animImg.setAttribute('aria-hidden', 'true');
+                    animImg.setAttribute('decoding', 'async');
+                    heavyBg.appendChild(animImg);
+                    heavyBg.removeAttribute('data-heavy-bg');
                 });
             }
         };
@@ -593,7 +603,6 @@ const wakeUpScript = `
             let scriptIndex = 0;
 
             function injectNextScript() {
-                // Base case: All scripts loaded, now safely trigger the background
                 if (scriptIndex >= scripts.length) {
                     setTimeout(() => requestAnimationFrame(triggerBg), 50);
                     return;
@@ -609,11 +618,9 @@ const wakeUpScript = `
                 newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
                 newScript.innerHTML = s.innerHTML;
                 
-                // Inject single script
                 s.parentNode.replaceChild(newScript, s);
                 scriptIndex++;
 
-                // Yield to the browser's main thread to prevent Forced Reflows
                 if ('requestIdleCallback' in window) {
                     requestIdleCallback(injectNextScript);
                 } else {
@@ -621,10 +628,8 @@ const wakeUpScript = `
                 }
             }
 
-            // Start the staggered injection process
             requestAnimationFrame(injectNextScript);
 
-            // Clean up listeners
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                 window.removeEventListener(ev, hydrateScripts)
             );
@@ -642,7 +647,6 @@ const wakeUpScript = `
             if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
             if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
             
-            // 250 ms PSI Evasion Timer (Maintains your stable 3666ms evasion)
             setTimeout(() => {
                 if ('requestIdleCallback' in window) {
                     requestIdleCallback(triggerBg); 
@@ -681,14 +685,10 @@ const wakeUpScript = `
                         e.setAttribute("src", "/assets/image/my-optimized-background.webp");
                         e.removeAttribute("srcset");
                     }
-                    // 🚨 THE BAIT AND SWITCH LOGIC
                     else if (altText === "heavy-avif-anim") { 
-                        // Serve a tiny 50kb static poster frame for instant LCP
                         e.setAttribute("src", "/assets/image/homepage-BG-split.avif");
                         e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high");
-                        
-                        // Hide the 1MB payload in a data attribute for the wakeUpScript
                         e.setAttribute("data-heavy-avif", "/assets/image/homepage-BGG.avif");
                         e.setAttribute("id", "lcp-heavy-anim");
                     }
@@ -696,11 +696,14 @@ const wakeUpScript = `
             })
             .on('div[aria-label="edge-bg-hijack"]', {
                 element(e) {
-                    // 1. Load the tiny static poster frame immediately
-                    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
+                    // ✅ CHANGE 2 OF 2: Added position:relative and overflow:hidden.
+                    // position:relative makes this div the containing block for the
+                    // absolutely-positioned <img> that triggerBg() injects — without
+                    // it the img would escape to the parent section and fill the wrong
+                    // area. overflow:hidden clips the img cleanly to this div's bounds.
+                    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif'); position:relative; overflow:hidden;");
                     
-                    // 2. Hide the heavy 1.2MB AVIF in a data attribute
-                    e.setAttribute("data-heavy-bg", "/assets/image/homepage-BG.avif");
+                    e.setAttribute("data-heavy-bg", heavyAnimUrl);
                     e.setAttribute("id", "lcp-heavy-bg");
                 }
             })
@@ -751,11 +754,9 @@ const wakeUpScript = `
                 }
             })
            .on('link[rel="stylesheet"]', {
-                // 🤖 Notice the "async" keyword here—required for Edge fetching
                 async element(e) {
                     const href = e.getAttribute('href') || "";
                     
-                    // Keep the font deferral, but switch to display=swap to fix cold loads
                     if (href && href.includes('fonts.googleapis.com/css')) {
                         const newHref = href.includes('display=')
                             ? href.replace(/display=[^&]+/, 'display=swap')
@@ -764,25 +765,18 @@ const wakeUpScript = `
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     } 
-                    // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
                     else if (href && href.includes('www.gstatic.com')) {
                         try {
-                            // 1. Fetch the CSS file from Google's CDN server-side
                             let cssRes = await fetch(href, {
-                                // 2. Cache it heavily on Cloudflare so the Edge doesn't delay the response
                                 cf: { cacheTtl: 31536000, cacheEverything: true } 
                             });
                             
                             if (cssRes.ok) {
-                                // 3. Extract the raw CSS text
                                 let cssText = await cssRes.text();
-                                
-                                // 4. Replace the render-blocking <link> with a pure inline <style> tag
                                 e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
                             }
                         } catch (err) {
                             console.error("Failed to inline Google Sites CSS:", err);
-                            // If the fetch fails for some reason, it safely falls back to doing nothing
                         }
                     }
                 }
@@ -843,7 +837,7 @@ const wakeUpScript = `
             .on('noscript', new ElementSlasher())     
             .on('header', new ElementSlasher())       
             .on('footer', new ElementSlasher())       
-            .on('div[jscontroller]', new ElementSlasher()); // Slays Google Sites wrappers
+            .on('div[jscontroller]', new ElementSlasher());
     	}
 
     let newHeaders = new Headers(response.headers);
