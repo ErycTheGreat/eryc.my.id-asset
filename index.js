@@ -1,6 +1,11 @@
 // --- THE EXECUTIONER CLASS ---
 class ElementSlasher {
   element(element) {
+    // 🛑 PAYLOAD SHIELD: If it's part of our injected AGP payload, spare it
+    if (element.getAttribute('data-agp-payload') === 'true') {
+        return;
+    }
+
     // 🛑 If it's a script tag, check its type before killing it
     if (element.tagName === 'script') {
         const type = element.getAttribute('type') || '';
