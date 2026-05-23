@@ -20,7 +20,7 @@ export default {
 
     // --- 0.1 BOT TRACKER & DETECTION ---
 	const userAgent = request.headers.get("User-Agent") || "";
-	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Google-Agent|Gemini-Deep-Research/i.test(userAgent);
+	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Gemini-Deep-Research/i.test(userAgent);
 	const isCrawlerBot = /Googlebot|bingbot|Yandexbot/i.test(userAgent);
 	const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
 	// 📱 DETECT MOBILE DEVICES
@@ -114,11 +114,6 @@ Allow: /sitemap.xml
 User-agent: Perplexity-User
 Allow: /
 Allow: /llms.txt
-
-User-agent: Google-Agent
-Allow: /
-Allow: /llms.txt
-Allow: /sitemap.xml
 
 User-agent: Gemini-Deep-Research
 Allow: /
