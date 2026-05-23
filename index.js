@@ -302,7 +302,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         
                 
         <!-- <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high"> -->
-        <!--<link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">-->
+        <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
         <style id="edge-anti-flash">
             /* 1. Paint the absolute bottom canvas to kill the initial white flash */
