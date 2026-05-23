@@ -98,6 +98,10 @@ User-agent: Claude-User
 Allow: /
 Allow: /llms.txt
 
+User-agent: Claude-SearchBot
+Allow: /
+Allow: /llms.txt
+
 User-agent: Claude-Web
 Allow: /
 Allow: /llms.txt
