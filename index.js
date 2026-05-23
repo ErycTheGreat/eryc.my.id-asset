@@ -555,72 +555,84 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-              // 🤖 [HYBRID V3.1] SEO-SAFE EVENT-DRIVEN HYDRATION (Anti-Blink Decode)
+              // 🤖 [HYBRID V4] STAGGERED HYDRATION & ANTI-THRASHING
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
         let isHumanDetected = false;
 
-        // 🎯 THE INTERACTION DETONATOR
-        function deployHeavyPayload(e) {
-            // Filter out accidental micro-movements
+        // Notice the 'async' keyword here so we can yield to the CPU
+        async function deployHeavyPayload(e) {
             if (e && e.type === 'mousemove' && e.movementX === 0 && e.movementY === 0) return;
-            
-            // If we already proved it's a human, stop executing
             if (isHumanDetected) return;
             isHumanDetected = true;
 
-            // 1. Wake up the Google Sites framework FIRST.
-            // Let the CPU crunch the JS hydration immediately so it gets out of the way.
-            requestAnimationFrame(() => {
-                document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
-                    const newScript = document.createElement('script');
-                    Array.from(s.attributes).forEach(attr => {
-                        if (attr.name !== 'type' && attr.name !== 'data-original-type') {
-                            newScript.setAttribute(attr.name, attr.value);
-                        }
-                    });
-                    newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
-                    newScript.innerHTML = s.innerHTML;
-                    s.parentNode.replaceChild(newScript, s);
-                });
-            });
+            // Clean up listeners immediately to free up memory
+            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+                window.removeEventListener(ev, deployHeavyPayload)
+            );
 
-            // 2. Handle the 1.2MB Animated AVIF Payload (Off-thread Decode)
+            // 1. FREEZE THE DOM LAYER (GPU Compositing)
+            // We force the GPU to hold the current visual layout on its own layer. 
+            // This prevents the screen from snapping while the CPU trashes the DOM underneath.
+            document.body.style.setProperty('transform', 'translateZ(0)', 'important');
+            document.body.style.setProperty('backface-visibility', 'hidden', 'important');
+
+            // 2. PARALLEL AVIF DECODE (Off-thread)
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
                 const heavyUrl = heavyBg.dataset.heavyBg;
-
                 const imgPreload = new Image();
                 imgPreload.src = heavyUrl;
                 
-                // 🛑 THE FIX: Use decode() instead of onload.
-                // This decodes the heavy AVIF in the background WITHOUT blocking the main thread.
                 imgPreload.decode().then(() => {
-                    // When this resolves, the image is 100% ready for the GPU to paint instantly.
                     const style = document.createElement('style');
-                    style.innerHTML = \`
-                        #lcp-heavy-bg {
-                            background-image: url('\${heavyUrl}') !important;
-                        }
-                    \`;
+                    style.innerHTML = \`#lcp-heavy-bg { background-image: url('\${heavyUrl}') !important; }\`;
                     document.head.appendChild(style);
                 }).catch(err => {
-                    // Fallback just in case the decode API fails (very rare)
                     console.error("Payload decode failed", err);
                     heavyBg.style.setProperty('background-image', \`url('\${heavyUrl}')\`, 'important');
                 });
             }
 
-            // 3. Clean up all listeners to free up mobile memory
-            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                window.removeEventListener(ev, deployHeavyPayload)
-            );
+            // 3. STAGGERED HYDRATION (The CPU Lockup Fix)
+            const scripts = document.querySelectorAll('script[type="text/edge-delayed-script"]');
+            
+            // Feed the scripts to the DOM one by one instead of a massive dump
+            for (let s of scripts) {
+                await new Promise(resolve => {
+                    // Yield to the main thread for 15ms between EVERY script.
+                    // This gives the mobile CPU room to breathe, paint frames, and process CSS.
+                    setTimeout(() => {
+                        const newScript = document.createElement('script');
+                        Array.from(s.attributes).forEach(attr => {
+                            if (attr.name !== 'type' && attr.name !== 'data-original-type') {
+                                newScript.setAttribute(attr.name, attr.value);
+                            }
+                        });
+                        newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
+                        
+                        // 🚨 CRITICAL FIX: Preserve Google Sites execution order!
+                        // This prevents dependency race conditions that cause layout quakes.
+                        newScript.async = false; 
+                        
+                        newScript.innerHTML = s.innerHTML;
+                        s.parentNode.replaceChild(newScript, s);
+                        
+                        resolve();
+                    }, 15); 
+                });
+            }
+            
+            // 4. REMOVE THE GPU FREEZE 
+            // Give Google Sites 300ms to finish calculating its responsive grid math, then unfreeze.
+            setTimeout(() => {
+                document.body.style.removeProperty('transform');
+                document.body.style.removeProperty('backface-visibility');
+            }, 300);
         }
 
-        // 🛑 We DO NOT use setTimeout or load events here. 
         // We ONLY listen for organic human physical inputs. 
-        // This is what makes it invisible to PSI but instant for humans.
         ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
             window.addEventListener(ev, deployHeavyPayload, { passive: true })
         );
