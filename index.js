@@ -532,7 +532,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         newHeaders.delete("Content-Security-Policy");
 		
 		// 📱 ROUTE THE ASSET BASED ON DEVICE POWER
-        const heavyAnimUrl = isMobile ? "/assets/image/homepage-BGG-mobile.avif" : "/assets/image/homepage-BG-mobile.avif";
+        const heavyAnimUrl = isMobile ? "/assets/image/homepage-BGG-mobile.avif" : "/assets/image/homepage-BGG.avif";
         const heavyStaticUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
 
        // 🤖 INJECT THE HTTP LCP PRELOAD HEADER
@@ -762,14 +762,14 @@ const wakeUpScript = `
                     const href = e.getAttribute('href') || "";
                     
                     // Keep the font deferral, but switch to display=swap to fix cold loads
-                    if (href && href.includes('fonts.googleapis.com/css')) {
+                   if (href && href.includes('fonts.googleapis.com/css')) {
                         const newHref = href.includes('display=')
-                            ? href.replace(/display=[^&]+/, 'display=swap')
-                            : href + (href.includes('?') ? '&' : '?') + 'display=swap';
+                            ? href.replace(/display=[^&]+/, 'display=optional')
+                            : href + (href.includes('?') ? '&' : '?') + 'display=optional';
                         e.setAttribute('href', newHref);
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
-                    } 
+                    }
                     // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
                     else if (href && href.includes('www.gstatic.com')) {
                         try {
