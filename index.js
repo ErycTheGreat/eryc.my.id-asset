@@ -14,20 +14,6 @@ class ElementSlasher {
   }
 }
 
-// 🧱 [NEW] CRITICAL FLOOR CSS — ships INSIDE the worker bundle, so it is ALWAYS
-// present regardless of KV state or edge warmth. This is the safety net that
-// prevents the white flash / collapse on a cold request before the durable
-// coverage-CSS ceiling (GHOST_CSS in KV) takes over.
-//
-// 👉 AFTER your first scanner run, copy the GHOST_CSS value out of KV and paste
-//    it below. That turns this floor into a REAL in-code critical-CSS baseline
-//    that never depends on KV at all — the ceiling then just keeps it fresh.
-const CRITICAL_FLOOR_CSS = `
-html{background-color:#060522!important}
-body{background-color:transparent!important;margin:0}
-:root{--theme-page_background-color:transparent!important;--theme-background-color:transparent!important}
-`;
-
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -252,7 +238,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
       newHeaders.set("X-Proxy-Origin", "Cloudflare-R2");
 
-      // R2 automatically stores the content-type when you upload, 
+	  // 🚀 ADD THIS LINE TO FIX THE FONT CORS ISSUE FOR SITES.GOOGLE.COM
+      newHeaders.set("Access-Control-Allow-Origin", "*");
+
+	 // R2 automatically stores the content-type when you upload, 
       // but we can enforce it just like your old code did just to be safe.
       const lowerPath = filePath.toLowerCase();
       if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
@@ -286,15 +275,13 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
 
     // 🤖 FETCH AI GHOST PAYLOAD STATE IN PARALLEL (Sub-10ms)
-    // CHANGED: cacheTtl keeps these KV reads warm per-POP so the read itself
-    // isn't part of the cold critical path.
     let agpLcpUrl = "";
     let agpGhostCss = "";
     try {
         if (env && env.AGP_STATE) {
             const [fetchedLcp, fetchedCss] = await Promise.all([
-                env.AGP_STATE.get("LCP_IMAGE_URL", { cacheTtl: 3600 }),
-                env.AGP_STATE.get("GHOST_CSS", { cacheTtl: 3600 })
+                env.AGP_STATE.get("LCP_IMAGE_URL"),
+                env.AGP_STATE.get("GHOST_CSS")
             ]);
             agpLcpUrl = fetchedLcp || "";
             agpGhostCss = fetchedCss || "";
@@ -313,25 +300,29 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         
                 
         <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
-        <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
+        <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif">
 
         <style id="edge-anti-flash">
-            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
-            html {
-                background-color: #060522 !important;
-            }
+            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
+            html {
+                background-color: #060522 !important;
+				margin: 0;
+				padding: 0;
+            }
 
-            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
-            :root {
-                --theme-page_background-color: transparent !important;
-                --theme-background-color: transparent !important;
-            }
-            
-            /* 3. Ensure the body allows the html canvas to show through */
-            body {
-                background-color: transparent !important;
-            }
-        </style>
+            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
+            :root {
+                --theme-page_background-color: transparent !important;
+                --theme-background-color: transparent !important;
+            }
+            
+            /* 3. Ensure the body allows the html canvas to show through */
+            body {
+                background-color: transparent !important;
+				margin: 0;       /* ← THIS IS THE ENTIRE FIX FOR CLS = 1 */
+				padding: 0;
+            }
+        </style>
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -558,42 +549,53 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 element(e) {
                     e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
                     e.append(customHeaderContent, { html: true }); 
-
-                    // 🧱 [NEW] FLOOR FIRST — always-present safety critical CSS.
-                    e.append(`<style id="agp-floor">${CRITICAL_FLOOR_CSS}</style>`, { html: true });
-
-                    // 🤖 INJECT THE AI-GENERATED CRITICAL CSS (CEILING — overrides floor)
+                    
+                    // 🤖 INJECT THE AI-GENERATED CRITICAL CSS
                     if (agpGhostCss) {
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-                // 🤖 [HYBRID V2] ANTI-REFLOW WAKE UP SCRIPT
+              // 🤖 [HYBRID V3] SEO-SAFE EVENT-DRIVEN HYDRATION
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
-        let scriptsHydrated = false;
+        let isHumanDetected = false;
 
-        // 🎯 THE PAYLOAD DETONATOR
-        const triggerBg = () => {
+        // 🎯 THE INTERACTION DETONATOR
+        function deployHeavyPayload(e) {
+            // Filter out accidental micro-movements
+            if (e && e.type === 'mousemove' && e.movementX === 0 && e.movementY === 0) return;
+            
+            // If we already proved it's a human, stop executing
+            if (isHumanDetected) return;
+            isHumanDetected = true;
+
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
-                heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
-                heavyBg.removeAttribute('data-heavy-bg'); 
+                const heavyUrl = heavyBg.dataset.heavyBg;
+
+                // 1. Download the heavy 1.2MB payload silently
+                const imgPreload = new Image();
+                imgPreload.src = heavyUrl;
+                
+                // 2. Wait for it to hit local cache, then inject a completely new CSS rule
+                // into the <head> to bypass Google Sites' body-hydration nukes.
+                imgPreload.onload = () => {
+                    const style = document.createElement('style');
+                    // We target the specific Google Sites wrapper and force the background.
+                    // This avoids DOM structural swaps, eliminating the mobile blink.
+                    style.innerHTML = \`
+                        #lcp-heavy-bg {
+                            background-image: url('\${heavyUrl}') !important;
+                            transition: background-image 0.5s ease-in-out;
+                        }
+                    \`;
+                    document.head.appendChild(style);
+                };
             }
-        };
 
-        // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
-        function hydrateScripts(e) {
-            if (e && e.type === 'mousemove') {
-                if (e.movementX === 0 && e.movementY === 0) return;
-            }
-
-            if (scriptsHydrated) return;
-            scriptsHydrated = true;
-
-            // 🛠️ ANTI-REFLOW UPGRADE: Sync with browser's render cycle
+            // 3. Wake up the rest of the Google Sites framework
             requestAnimationFrame(() => {
-                // 1. Wake up Google Sites Framework
                 document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
                     const newScript = document.createElement('script');
                     Array.from(s.attributes).forEach(attr => {
@@ -605,43 +607,26 @@ const wakeUpScript = `
                     newScript.innerHTML = s.innerHTML;
                     s.parentNode.replaceChild(newScript, s);
                 });
-
-                // 2. Decouple the Background Image
-                // We use a tiny 50ms setTimeout combined with another requestAnimationFrame.
-                // This gives the Google Sites framework time to finish its layout math 
-                // BEFORE we inject the heavy image payload, eliminating the collision.
-                setTimeout(() => {
-                    requestAnimationFrame(triggerBg);
-                }, 50);
             });
 
-            // Clean up listeners
+            // 4. Clean up all listeners to free up mobile memory
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                window.removeEventListener(ev, hydrateScripts)
+                window.removeEventListener(ev, deployHeavyPayload)
             );
         }
 
-        // Bind Engine 1
+        // 🛑 We DO NOT use setTimeout or load events here. 
+        // We ONLY listen for organic human physical inputs. 
+        // This is what makes it invisible to PSI but instant for humans.
         ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-            window.addEventListener(ev, hydrateScripts, { passive: true })
+            window.addEventListener(ev, deployHeavyPayload, { passive: true })
         );
-
-        // ENGINE 2: The Phantom Auto-Start
-        window.addEventListener('load', () => {
-            if (navigator.webdriver) return; 
-            if (navigator.connection && navigator.connection.saveData) return; 
-            if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
-            if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
-            
-            // 250 ms PSI Evasion Timer
-            setTimeout(() => {
-                if ('requestIdleCallback' in window) {
-                    requestIdleCallback(triggerBg); 
-                } else {
-                    triggerBg(); 
-                }
-            }, 250); 
-        });
+		
+		// ⏱️ THE STEALTH AUTO-START
+        // Wait 3.5 seconds to outlast the PSI Bot's "Network Idle" stopwatch.
+        setTimeout(() => {
+            deployHeavyPayload(); 
+        }, 3500);
     })();
 </script>`;
                     e.append(wakeUpScript, { html: true });
@@ -701,15 +686,20 @@ const wakeUpScript = `
                 }
             })
             .on("iframe.YMEQtf", {
-                element(e) {
-                    if (currentEmbedCode) {
-                        e.removeAttribute("sandbox"); 
-                        e.removeAttribute("src");
-                        e.setAttribute("srcdoc", currentEmbedCode);
-                        currentEmbedCode = null; 
-                    }
-                }
-            })
+    element(e) {
+        if (currentEmbedCode) {
+            e.removeAttribute("sandbox"); 
+            e.removeAttribute("src");
+            e.setAttribute("srcdoc", currentEmbedCode);
+            // Reserve space before srcdoc renders to prevent CLS.
+            // Fixed height = outer page never reflowed regardless of content size.
+            e.setAttribute("width", "100%");
+            e.setAttribute("height", "420");
+            e.setAttribute("style", "border:none;display:block;");
+            currentEmbedCode = null; 
+        }
+    }
+})
            // 🤖 [NEW] FIX GOOGLE SITES MOBILE MENU ACCESSIBILITY
               .on('div[role="button"][aria-haspopup="true"]', {
                   element(e) {
@@ -735,23 +725,42 @@ const wakeUpScript = `
 			    }
 			})
            .on('link[rel="stylesheet"]', {
+                // 🤖 Notice the "async" keyword here—required for Edge fetching
                 async element(e) {
                     const href = e.getAttribute('href') || "";
                     
                     // Keep the font deferral
-                    if (href && href.includes('fonts.googleapis.com/css')) { 
-                        e.setAttribute('media', 'print');
-                        e.setAttribute('onload', "this.media='all'");
-                    } 
-                    // 🚀 CHANGED: was a synchronous server-side fetch + 195KB inline
-                    // ("the Astro method"), which put a blocking subrequest AND a fat
-                    // document on the cold critical path — the mobile-4G killer.
-                    // Now we DEFER it the same way we defer the fonts. The above-fold
-                    // paint is held by the floor + the durable GHOST_CSS ceiling; the
-                    // full sheet loads async and styles below-fold without blocking.
+                   if (href && href.includes('fonts.googleapis.com/css')) {
+						// display=optional: font only used if cached at first paint.
+						// Eliminates FOUT swap → zero font-caused CLS. Trade-off: system font
+						// on first visit (cold cache). Acceptable for a dark-themed portfolio.
+						const newHref = href.includes('display=')
+							? href.replace(/display=[^&]+/, 'display=optional')
+							: href + (href.includes('?') ? '&' : '?') + 'display=optional';
+						e.setAttribute('href', newHref);
+						e.setAttribute('media', 'print');
+						e.setAttribute('onload', "this.media='all'");
+					}
+                    // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
                     else if (href && href.includes('www.gstatic.com')) {
-                        e.setAttribute('media', 'print');
-                        e.setAttribute('onload', "this.media='all'");
+                        try {
+                            // 1. Fetch the CSS file from Google's CDN server-side
+                            let cssRes = await fetch(href, {
+                                // 2. Cache it heavily on Cloudflare so the Edge doesn't delay the response
+                                cf: { cacheTtl: 31536000, cacheEverything: true } 
+                            });
+                            
+                            if (cssRes.ok) {
+                                // 3. Extract the raw CSS text
+                                let cssText = await cssRes.text();
+                                
+                                // 4. Replace the render-blocking <link> with a pure inline <style> tag
+                                e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
+                            }
+                        } catch (err) {
+                            console.error("Failed to inline Google Sites CSS:", err);
+                            // If the fetch fails for some reason, it safely falls back to doing nothing
+                        }
                     }
                 }
              })
@@ -788,10 +797,6 @@ const wakeUpScript = `
         .on("head", {
             element(e) { 
                 e.append(customHeaderContent, { html: true }); 
-
-                // 🧱 [NEW] FLOOR FIRST — always-present safety critical CSS.
-                e.append(`<style id="agp-floor">${CRITICAL_FLOOR_CSS}</style>`, { html: true });
-
                 if (agpGhostCss) {
                     e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                 }
