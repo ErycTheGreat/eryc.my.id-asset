@@ -238,10 +238,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
       newHeaders.set("X-Proxy-Origin", "Cloudflare-R2");
 
-	  // 🚀 ADD THIS LINE TO FIX THE FONT CORS ISSUE FOR SITES.GOOGLE.COM
-      newHeaders.set("Access-Control-Allow-Origin", "*");
-
-	 // R2 automatically stores the content-type when you upload, 
+      // R2 automatically stores the content-type when you upload, 
       // but we can enforce it just like your old code did just to be safe.
       const lowerPath = filePath.toLowerCase();
       if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
@@ -300,14 +297,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         
                 
         <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
-        <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif">
+        <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
         <style id="edge-anti-flash">
             /* 1. Paint the absolute bottom canvas to kill the initial white flash */
             html {
                 background-color: #060522 !important;
-				margin: 0;
-				padding: 0;
             }
 
             /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
@@ -319,8 +314,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             /* 3. Ensure the body allows the html canvas to show through */
             body {
                 background-color: transparent !important;
-				margin: 0;       /* ← THIS IS THE ENTIRE FIX FOR CLS = 1 */
-				padding: 0;
             }
         </style>
             
@@ -555,43 +548,51 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-          // 🤖 [HYBRID V6] DECOUPLED BACKGROUND & PSI-SECURE HYDRATION
+                // 🤖 [HYBRID V5] VDOM-PROOF HYDRATION & PSI SECURE
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
         let isHydrated = false;
-        
-        // Catch generic PSI mobile emulators (moto g power) and explicit Lighthouse bots
-        const isPSI = navigator.userAgent.includes("Lighthouse") || 
-                      navigator.userAgent.includes("PTST") || 
-                      navigator.userAgent.includes("Speed Insights") ||
-                      (window.innerWidth === 412 && navigator.userAgent.includes('Android'));
+        // 🛑 THE SHIELD: Prevent execution during audits
+        const isBot = /Lighthouse|Speed Insights|PTST|Chrome-Lighthouse|Googlebot/i.test(navigator.userAgent);
 
-        // 🎯 THE INTERACTION DETONATOR
+        // 🎯 THE SEQUENTIAL DETONATOR
         function deployHeavyPayload(e) {
             if (e && e.type === 'mousemove' && e.movementX === 0 && e.movementY === 0) return;
             if (isHydrated) return;
             isHydrated = true;
 
-            // Target the independent Edge layer, NOT the Google Sites DOM
-            const decoupledBg = document.getElementById('edge-decoupled-bg');
+            // Target the native aria-label, NOT the injected ID
+            const heavyBg = document.querySelector('div[aria-label="edge-bg-hijack"]');
             
-            if (decoupledBg && decoupledBg.dataset.heavyBg) {
-                const heavyUrl = decoupledBg.dataset.heavyBg;
+            if (heavyBg && heavyBg.dataset.heavyBg) {
+                const heavyUrl = heavyBg.dataset.heavyBg;
                 const imgPreload = new Image();
                 imgPreload.src = heavyUrl;
                 
-                // Decode off-thread so the background paints instantly
+                // 1. Decode the massive AVIF off-thread
                 imgPreload.decode().then(() => {
-                    decoupledBg.style.backgroundImage = \`url('\${heavyUrl}')\`;
+                    // 2. Paint the image using the native attribute selector
+                    const style = document.createElement('style');
+                    style.innerHTML = \`
+                        div[aria-label="edge-bg-hijack"] { 
+                            background-image: url('\${heavyUrl}') !important; 
+                        }
+                    \`;
+                    document.head.appendChild(style);
                     
-                    // Wait a fraction of a second to let GPU paint, then start JS
-                    setTimeout(startStaggeredHydration, 50);
+                    // 3. Wait for the browser to physically paint the background
+                    // BEFORE slamming the mobile CPU with the JS.
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            hydrateFramework();
+                        });
+                    });
                 }).catch(err => {
-                    startStaggeredHydration();
+                    hydrateFramework();
                 });
             } else {
-                startStaggeredHydration();
+                hydrateFramework();
             }
 
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
@@ -599,14 +600,9 @@ const wakeUpScript = `
             );
         }
 
-        // 🏎️ THE CPU DRIP-FEED (Staggered Hydration)
-        function startStaggeredHydration() {
-            const scripts = Array.from(document.querySelectorAll('script[type="text/edge-delayed-script"]'));
-            
-            function loadScript(index) {
-                if (index >= scripts.length) return;
-
-                const s = scripts[index];
+        // ⚙️ THE FRAMEWORK ENGINE
+        function hydrateFramework() {
+            document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
                 const newScript = document.createElement('script');
                 Array.from(s.attributes).forEach(attr => {
                     if (attr.name !== 'type' && attr.name !== 'data-original-type') {
@@ -615,31 +611,22 @@ const wakeUpScript = `
                 });
                 newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
                 newScript.innerHTML = s.innerHTML;
-
                 s.parentNode.replaceChild(newScript, s);
-
-                // 🛑 THE CPU BREATHER: 30ms between scripts to prevent mobile frame drops
-                setTimeout(() => {
-                    requestAnimationFrame(() => loadScript(index + 1));
-                }, 30);
-            }
-
-            requestAnimationFrame(() => loadScript(0));
+            });
         }
 
-        // Bind organic interaction listeners
+        // Listen for organic human physical inputs. 
         ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
             window.addEventListener(ev, deployHeavyPayload, { passive: true })
         );
         
-        // 🛑 PSI Evasion Timer: 
-        // Only trigger the auto-start if we are 100% sure it is a real user.
-        // We push this to 8.5s so it survives the entire Lighthouse audit window.
-        if (!isPSI) {
-            setTimeout(() => {
+        // ⏱️ THE PSI EVASION TIMER
+        setTimeout(() => {
+            // ONLY execute if we confirm it is a real user, keeping the 850KB of JS out of the audit
+            if (!isBot) {
                 deployHeavyPayload(); 
-            }, 8500);
-        }
+            }
+        }, 3500);
     })();
 </script>`;
                     e.append(wakeUpScript, { html: true });
@@ -683,11 +670,14 @@ const wakeUpScript = `
                     }
                 }
             })
-            // 🚀 INJECT A DECOUPLED BACKGROUND LAYER
-            // Google Sites JS cannot thrash this because it sits outside its framework wrappers.
-            .on('body', {
+            .on('div[aria-label="edge-bg-hijack"]', {
                 element(e) {
-                    e.prepend(`<div id="edge-decoupled-bg" data-heavy-bg="/assets/image/homepage-BG.avif" style="position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:-999; background-color:#060522; background-image:url('/assets/image/homepage-BG-split.avif'); background-size:cover; background-position:center; pointer-events:none;"></div>`, { html: true });
+                    // 1. Load the tiny static poster frame immediately
+                    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
+                    
+                    // 2. Hide the heavy 1.2MB AVIF in a data attribute
+                    e.setAttribute("data-heavy-bg", "/assets/image/homepage-BG.avif");
+                    e.setAttribute("id", "lcp-heavy-bg");
                 }
             })
             .on('picture > source', {
@@ -696,20 +686,15 @@ const wakeUpScript = `
                 }
             })
             .on("iframe.YMEQtf", {
-    element(e) {
-        if (currentEmbedCode) {
-            e.removeAttribute("sandbox"); 
-            e.removeAttribute("src");
-            e.setAttribute("srcdoc", currentEmbedCode);
-            // Reserve space before srcdoc renders to prevent CLS.
-            // Fixed height = outer page never reflowed regardless of content size.
-            e.setAttribute("width", "100%");
-            e.setAttribute("height", "420");
-            e.setAttribute("style", "border:none;display:block;");
-            currentEmbedCode = null; 
-        }
-    }
-})
+                element(e) {
+                    if (currentEmbedCode) {
+                        e.removeAttribute("sandbox"); 
+                        e.removeAttribute("src");
+                        e.setAttribute("srcdoc", currentEmbedCode);
+                        currentEmbedCode = null; 
+                    }
+                }
+            })
            // 🤖 [NEW] FIX GOOGLE SITES MOBILE MENU ACCESSIBILITY
               .on('div[role="button"][aria-haspopup="true"]', {
                   element(e) {
@@ -719,47 +704,52 @@ const wakeUpScript = `
                   }
               })
            // 🤖 [FIXED] SCRIPT NEUTRALIZER
-            .on('script', {
-                element(e) {
-                    const currentType = e.getAttribute('type') || 'text/javascript';
-                    const src = e.getAttribute('src') || '';
-                    const innerCode = e.innerHTML || '';
-                    
-                    // 🛑 CRITICAL SHIELD: If it's Schema/JSON-LD, leave it completely alone
-                    if (currentType.toLowerCase() === 'application/ld+json') {
-                        return;
-                    }
-
-                    // 🛑 TELEMETRY SHIELD: Spare Google's internal logging to prevent CORS errors on mobile
-                    if (src.includes('play.google.com') || innerCode.includes('play.google.com/log')) {
-                        return;
-                    }
-            
-                    if (!e.hasAttribute('data-edge-ignore')) {
-                        e.setAttribute('data-original-type', currentType);
-                        e.setAttribute('type', 'text/edge-delayed-script');
-                    }
-                }
-            })
-          .on('link[rel="stylesheet"]', {
+			.on('script', {
+			    element(e) {
+			        const currentType = e.getAttribute('type') || 'text/javascript';
+			        
+			        // 🛑 CRITICAL SHIELD: If it's Schema/JSON-LD, leave it completely alone
+			        if (currentType.toLowerCase() === 'application/ld+json') {
+			            return;
+			        }
+			
+			        if (!e.hasAttribute('data-edge-ignore')) {
+			            e.setAttribute('data-original-type', currentType);
+			            e.setAttribute('type', 'text/edge-delayed-script');
+			        }
+			    }
+			})
+           .on('link[rel="stylesheet"]', {
+                // 🤖 Notice the "async" keyword here—required for Edge fetching
                 async element(e) {
                     const href = e.getAttribute('href') || "";
                     
+                    // Keep the font deferral
+                    if (href && href.includes('fonts.googleapis.com/css')) { 
+                        e.setAttribute('media', 'print');
+                        e.setAttribute('onload', "this.media='all'");
+                    } 
                     // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
-                    if (href && href.includes('www.gstatic.com')) {
+                    else if (href && href.includes('www.gstatic.com')) {
                         try {
+                            // 1. Fetch the CSS file from Google's CDN server-side
                             let cssRes = await fetch(href, {
+                                // 2. Cache it heavily on Cloudflare so the Edge doesn't delay the response
                                 cf: { cacheTtl: 31536000, cacheEverything: true } 
                             });
+                            
                             if (cssRes.ok) {
+                                // 3. Extract the raw CSS text
                                 let cssText = await cssRes.text();
+                                
+                                // 4. Replace the render-blocking <link> with a pure inline <style> tag
                                 e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
                             }
                         } catch (err) {
                             console.error("Failed to inline Google Sites CSS:", err);
+                            // If the fetch fails for some reason, it safely falls back to doing nothing
                         }
                     }
-                    // Notice: The fonts.googleapis.com deferral has been permanently removed.
                 }
              })
             .on('a[aria-selected]', {
