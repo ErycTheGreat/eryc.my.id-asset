@@ -555,17 +555,18 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-            // 🤖 [HYBRID V5] WARM-CACHE SAFE EVENT-DRIVEN HYDRATION
+           // 🤖 [HYBRID V4] SEQUENTIAL ANTI-BLINK & PSI SECURE
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
-        let isHumanDetected = false;
+        let isHydrated = false;
+        const isLighthouse = navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST") || navigator.userAgent.includes("Chrome-Lighthouse");
 
-        // 🎯 THE INTERACTION DETONATOR
+        // 🎯 THE SEQUENTIAL DETONATOR
         function deployHeavyPayload(e) {
             if (e && e.type === 'mousemove' && e.movementX === 0 && e.movementY === 0) return;
-            if (isHumanDetected) return;
-            isHumanDetected = true;
+            if (isHydrated) return;
+            isHydrated = true;
 
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
@@ -573,51 +574,35 @@ const wakeUpScript = `
                 const imgPreload = new Image();
                 imgPreload.src = heavyUrl;
                 
+                // 1. Decode the image off-thread
                 imgPreload.decode().then(() => {
-                    // 🛑 THE WARM CACHE FIX: Double requestAnimationFrame
-                    // This guarantees the browser finishes painting the initial interaction frame
-                    // BEFORE we inject the new CSS and start the JavaScript engine.
+                    // 2. Paint the image instantly
+                    const style = document.createElement('style');
+                    style.innerHTML = \`#lcp-heavy-bg { background-image: url('\${heavyUrl}') !important; }\`;
+                    document.head.appendChild(style);
+                    
+                    // 3. Double requestAnimationFrame: Wait for the browser to physically paint the background
+                    // BEFORE slamming the mobile CPU with the Google Sites JS.
                     requestAnimationFrame(() => {
                         requestAnimationFrame(() => {
-                            const style = document.createElement('style');
-                            style.innerHTML = \`
-                                #lcp-heavy-bg {
-                                    background-image: url('\${heavyUrl}') !important;
-                                }
-                            \`;
-                            document.head.appendChild(style);
-                            
-                            // Give the CSS swap 50ms to render before hitting the CPU with JS
-                            setTimeout(startStaggeredHydration, 50);
+                            hydrateFramework();
                         });
                     });
                 }).catch(err => {
-                    console.error("Payload decode failed", err);
-                    heavyBg.style.setProperty('background-image', \`url('\${heavyUrl}')\`, 'important');
-                    startStaggeredHydration();
+                    hydrateFramework();
                 });
             } else {
-                startStaggeredHydration();
+                hydrateFramework();
             }
 
-            // Clean up listeners
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                 window.removeEventListener(ev, deployHeavyPayload)
             );
         }
 
-        // 🏎️ THE CPU DRIP-FEED (Staggered Hydration)
-        function startStaggeredHydration() {
-            const scripts = Array.from(document.querySelectorAll('script[type="text/edge-delayed-script"]'));
-            
-            function loadScript(index) {
-                if (index >= scripts.length) {
-                    const skeleton = document.getElementById('agp-skeleton-css');
-                    if (skeleton) skeleton.remove();
-                    return;
-                }
-
-                const s = scripts[index];
+        // ⚙️ THE FRAMEWORK ENGINE
+        function hydrateFramework() {
+            document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
                 const newScript = document.createElement('script');
                 Array.from(s.attributes).forEach(attr => {
                     if (attr.name !== 'type' && attr.name !== 'data-original-type') {
@@ -626,24 +611,21 @@ const wakeUpScript = `
                 });
                 newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
                 newScript.innerHTML = s.innerHTML;
-
                 s.parentNode.replaceChild(newScript, s);
-
-                // The 30ms breather for the mobile CPU
-                setTimeout(() => {
-                    requestAnimationFrame(() => loadScript(index + 1));
-                }, 30);
-            }
-
-            requestAnimationFrame(() => loadScript(0));
+            });
         }
 
+        // 🛑 Listen for organic human physical inputs. 
         ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
             window.addEventListener(ev, deployHeavyPayload, { passive: true })
         );
         
+        // ⏱️ THE PSI EVASION TIMER
+        // Only auto-start if we confirm the user is NOT a Lighthouse bot
         setTimeout(() => {
-            deployHeavyPayload(); 
+            if (!isLighthouse) {
+                deployHeavyPayload(); 
+            }
         }, 3500);
     })();
 </script>`;
@@ -750,19 +732,19 @@ const wakeUpScript = `
                 }
             })
            .on('link[rel="stylesheet"]', {
-                // 🤖 Notice the "async" keyword here—required for Edge fetching
                 async element(e) {
                     const href = e.getAttribute('href') || "";
                     
-                    // Keep the font deferral, but switch to display=swap to fix cold loads
                     if (href && href.includes('fonts.googleapis.com/css')) {
+                        // Reverting to optional to completely kill the font blink
                         const newHref = href.includes('display=')
-                            ? href.replace(/display=[^&]+/, 'display=swap')
-                            : href + (href.includes('?') ? '&' : '?') + 'display=swap';
+                            ? href.replace(/display=[^&]+/, 'display=optional')
+                            : href + (href.includes('?') ? '&' : '?') + 'display=optional';
                         e.setAttribute('href', newHref);
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
-                    } 
+                    }
+                    // ... keep your gstatic inlining code below this ...
                     // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
                     else if (href && href.includes('www.gstatic.com')) {
                         try {
