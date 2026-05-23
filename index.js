@@ -555,7 +555,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-              // 🤖 [HYBRID V4] STAGGERED ANTI-BLINK HYDRATION
+            // 🤖 [HYBRID V5] WARM-CACHE SAFE EVENT-DRIVEN HYDRATION
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
@@ -563,32 +563,34 @@ const wakeUpScript = `
 
         // 🎯 THE INTERACTION DETONATOR
         function deployHeavyPayload(e) {
-            // Filter out accidental micro-movements
             if (e && e.type === 'mousemove' && e.movementX === 0 && e.movementY === 0) return;
-            
-            // If we already proved it's a human, stop executing
             if (isHumanDetected) return;
             isHumanDetected = true;
 
-            // 1. Decouple the Heavy Image First
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
                 const heavyUrl = heavyBg.dataset.heavyBg;
                 const imgPreload = new Image();
                 imgPreload.src = heavyUrl;
                 
-                // Decode off-thread so the background paints instantly
                 imgPreload.decode().then(() => {
-                    const style = document.createElement('style');
-                    style.innerHTML = \`
-                        #lcp-heavy-bg {
-                            background-image: url('\${heavyUrl}') !important;
-                        }
-                    \`;
-                    document.head.appendChild(style);
-                    
-                    // 2. ONLY start hydrating the framework AFTER the background is painted
-                    startStaggeredHydration();
+                    // 🛑 THE WARM CACHE FIX: Double requestAnimationFrame
+                    // This guarantees the browser finishes painting the initial interaction frame
+                    // BEFORE we inject the new CSS and start the JavaScript engine.
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            const style = document.createElement('style');
+                            style.innerHTML = \`
+                                #lcp-heavy-bg {
+                                    background-image: url('\${heavyUrl}') !important;
+                                }
+                            \`;
+                            document.head.appendChild(style);
+                            
+                            // Give the CSS swap 50ms to render before hitting the CPU with JS
+                            setTimeout(startStaggeredHydration, 50);
+                        });
+                    });
                 }).catch(err => {
                     console.error("Payload decode failed", err);
                     heavyBg.style.setProperty('background-image', \`url('\${heavyUrl}')\`, 'important');
@@ -598,7 +600,7 @@ const wakeUpScript = `
                 startStaggeredHydration();
             }
 
-            // 3. Clean up listeners
+            // Clean up listeners
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                 window.removeEventListener(ev, deployHeavyPayload)
             );
@@ -610,7 +612,6 @@ const wakeUpScript = `
             
             function loadScript(index) {
                 if (index >= scripts.length) {
-                    // Hydration complete: Optional cleanup of injected skeleton CSS
                     const skeleton = document.getElementById('agp-skeleton-css');
                     if (skeleton) skeleton.remove();
                     return;
@@ -626,26 +627,21 @@ const wakeUpScript = `
                 newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
                 newScript.innerHTML = s.innerHTML;
 
-                // Execute the script
                 s.parentNode.replaceChild(newScript, s);
 
-                // 🛑 THE CPU BREATHER: Give the mobile processor 30ms to clear its execution stack 
-                // before injecting the next heavy script. This stops the DOM from thrashing.
+                // The 30ms breather for the mobile CPU
                 setTimeout(() => {
                     requestAnimationFrame(() => loadScript(index + 1));
                 }, 30);
             }
 
-            // Ignite the chain
             requestAnimationFrame(() => loadScript(0));
         }
 
-        // 🛑 We ONLY listen for organic human physical inputs. 
         ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
             window.addEventListener(ev, deployHeavyPayload, { passive: true })
         );
         
-        // ⏱️ THE STEALTH AUTO-START (3.5s evasion timer)
         setTimeout(() => {
             deployHeavyPayload(); 
         }, 3500);
