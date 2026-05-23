@@ -703,7 +703,7 @@ const wakeUpScript = `
             .on('div[aria-label="edge-bg-hijack"]', {
                 element(e) {
                     // 1. Load the tiny static poster frame immediately
-                    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
+                     e.setAttribute("style", "position:relative; overflow:hidden; min-height:100svh; background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
                     
                     // 2. Hide the heavy animated AVIF in a data attribute
                     // Fixed: Changed data-heavy-avif to data-heavy-bg so triggerBg() can find it
