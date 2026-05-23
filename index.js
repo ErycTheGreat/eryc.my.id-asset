@@ -23,8 +23,6 @@ export default {
 	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Google-Agent|Gemini-Deep-Research/i.test(userAgent);
 	const isCrawlerBot = /Googlebot|Google-InspectionTool|bingbot|Yandexbot/i.test(userAgent);
 	const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
-	// 📱 DETECT MOBILE DEVICES
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
 		
 	const isBot = isAIBot || isCrawlerBot || isSocialBot || url.searchParams.get("debug") === "bot";
 
@@ -530,10 +528,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         let newHeaders = new Headers(response.headers);
         newHeaders.delete("Content-Length"); 
         newHeaders.delete("Content-Security-Policy");
-		
-		// 📱 ROUTE THE ASSET BASED ON DEVICE POWER
-       const heavyAnimUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
-        const heavyStaticUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
 
        // 🤖 INJECT THE HTTP LCP PRELOAD HEADER
        if (agpLcpUrl) {
@@ -705,9 +699,8 @@ const wakeUpScript = `
                     // 1. Load the tiny static poster frame immediately
                     e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
                     
-                    // 2. Hide the heavy animated AVIF in a data attribute
-                    // Fixed: Changed data-heavy-avif to data-heavy-bg so triggerBg() can find it
-                    e.setAttribute("data-heavy-bg", heavyAnimUrl);
+                    // 2. Hide the heavy 1.2MB AVIF in a data attribute
+                    e.setAttribute("data-heavy-bg", "/assets/image/homepage-BG.avif");
                     e.setAttribute("id", "lcp-heavy-bg");
                 }
             })
