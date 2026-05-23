@@ -730,15 +730,19 @@ const wakeUpScript = `
 			    }
 			})
            .on('link[rel="stylesheet"]', {
-                // 🤖 Notice the "async" keyword here—required for Edge fetching
                 async element(e) {
                     const href = e.getAttribute('href') || "";
                     
-                    // Keep the font deferral
                     if (href && href.includes('fonts.googleapis.com/css')) { 
+                        // Hard enforce display=optional to kill the FOUT blink completely
+                        const newHref = href.includes('display=')
+                            ? href.replace(/display=[^&]+/, 'display=optional')
+                            : href + (href.includes('?') ? '&' : '?') + 'display=optional';
+                        e.setAttribute('href', newHref);
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     } 
+                    // ... keep your gstatic inlining code below this ... 
                     // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
                     else if (href && href.includes('www.gstatic.com')) {
                         try {
