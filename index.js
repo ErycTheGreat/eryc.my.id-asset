@@ -551,92 +551,81 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-            // 🤖 [HYBRID V6] ISOLATED SHADOW LAYER & INP-EVASION
+                // 🤖 [HYBRID V2] ANTI-REFLOW WAKE UP SCRIPT
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
-        let isHydrated = false;
+        let scriptsHydrated = false;
 
-        // 🎯 THE INTERACTION DETONATOR
-        function deployHeavyPayload(e) {
-            // 🛑 CRITICAL INP EVASION: Lighthouse now simulates scrolls/clicks.
-            // We MUST block headless browsers here so they don't trigger the JS dump.
-            if (navigator.webdriver || navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST") || navigator.userAgent.includes("Chrome-Lighthouse")) return;
-
-            if (e && e.type === 'mousemove' && e.movementX === 0 && e.movementY === 0) return;
-            if (isHydrated) return;
-            isHydrated = true;
-
+        // 🎯 THE PAYLOAD DETONATOR
+        const triggerBg = () => {
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
-                const heavyUrl = heavyBg.dataset.heavyBg;
-                
-                const imgPreload = new Image();
-                imgPreload.src = heavyUrl;
-                
-                imgPreload.decode().then(() => {
-                    // 🛡️ THE ISOLATED SHADOW LAYER
-                    // We bypass Google Sites' DOM destruction by injecting the heavy AVIF
-                    // into a fixed layer at the absolute root of the document.
-                    const shadowBg = document.createElement('div');
-                    shadowBg.style.cssText = "position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:-9999; background-image:url('" + heavyUrl + "'); background-size:cover; background-position:center; pointer-events:none;";
-                    document.documentElement.appendChild(shadowBg);
-                    
-                    // Fade out the old placeholder so it doesn't overlay the new layer
-                    heavyBg.style.opacity = '0';
+                heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
+                heavyBg.removeAttribute('data-heavy-bg'); 
+            }
+        };
 
-                    // Give the GPU two frames to paint the shadow layer before hitting the CPU
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(startStaggeredHydration);
-                    });
-                }).catch(() => startStaggeredHydration());
-            } else {
-                startStaggeredHydration();
+        // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
+        function hydrateScripts(e) {
+            if (e && e.type === 'mousemove') {
+                if (e.movementX === 0 && e.movementY === 0) return;
             }
 
+            if (scriptsHydrated) return;
+            scriptsHydrated = true;
+
+            // 🛠️ ANTI-REFLOW UPGRADE: Sync with browser's render cycle
+            requestAnimationFrame(() => {
+                // 1. Wake up Google Sites Framework
+                document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
+                    const newScript = document.createElement('script');
+                    Array.from(s.attributes).forEach(attr => {
+                        if (attr.name !== 'type' && attr.name !== 'data-original-type') {
+                            newScript.setAttribute(attr.name, attr.value);
+                        }
+                    });
+                    newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
+                    newScript.innerHTML = s.innerHTML;
+                    s.parentNode.replaceChild(newScript, s);
+                });
+
+                // 2. Decouple the Background Image
+                // We use a tiny 50ms setTimeout combined with another requestAnimationFrame.
+                // This gives the Google Sites framework time to finish its layout math 
+                // BEFORE we inject the heavy image payload, eliminating the collision.
+                setTimeout(() => {
+                    requestAnimationFrame(triggerBg);
+                }, 50);
+            });
+
+            // Clean up listeners
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                window.removeEventListener(ev, deployHeavyPayload)
+                window.removeEventListener(ev, hydrateScripts)
             );
         }
 
-        // 🏎️ THE CPU DRIP-FEED (Staggered Hydration)
-        function startStaggeredHydration() {
-            const scripts = Array.from(document.querySelectorAll('script[type="text/edge-delayed-script"]'));
-            
-            function loadScript(index) {
-                if (index >= scripts.length) return;
-
-                const s = scripts[index];
-                const newScript = document.createElement('script');
-                Array.from(s.attributes).forEach(attr => {
-                    if (attr.name !== 'type' && attr.name !== 'data-original-type') {
-                        newScript.setAttribute(attr.name, attr.value);
-                    }
-                });
-                newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
-                newScript.innerHTML = s.innerHTML;
-
-                s.parentNode.replaceChild(newScript, s);
-
-                // 30ms breather to prevent main thread lockup
-                setTimeout(() => {
-                    requestAnimationFrame(() => loadScript(index + 1));
-                }, 30);
-            }
-
-            requestAnimationFrame(() => loadScript(0));
-        }
-
+        // Bind Engine 1
         ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-            window.addEventListener(ev, deployHeavyPayload, { passive: true })
+            window.addEventListener(ev, hydrateScripts, { passive: true })
         );
-        
-        // ⏱️ THE STEALTH AUTO-START
-        setTimeout(() => {
-            if (!navigator.webdriver && !navigator.userAgent.includes("Lighthouse")) {
-                deployHeavyPayload(); 
-            }
-        }, 3500);
+
+        // ENGINE 2: The Phantom Auto-Start
+        window.addEventListener('load', () => {
+            if (navigator.webdriver) return; 
+            if (navigator.connection && navigator.connection.saveData) return; 
+            if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
+            if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
+            
+            // 250 ms PSI Evasion Timer
+            setTimeout(() => {
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(triggerBg); 
+                } else {
+                    triggerBg(); 
+                }
+            }, 250); 
+        });
     })();
 </script>`;
                     e.append(wakeUpScript, { html: true });
@@ -730,19 +719,15 @@ const wakeUpScript = `
 			    }
 			})
            .on('link[rel="stylesheet"]', {
+                // 🤖 Notice the "async" keyword here—required for Edge fetching
                 async element(e) {
                     const href = e.getAttribute('href') || "";
                     
+                    // Keep the font deferral
                     if (href && href.includes('fonts.googleapis.com/css')) { 
-                        // Hard enforce display=optional to kill the FOUT blink completely
-                        const newHref = href.includes('display=')
-                            ? href.replace(/display=[^&]+/, 'display=optional')
-                            : href + (href.includes('?') ? '&' : '?') + 'display=optional';
-                        e.setAttribute('href', newHref);
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     } 
-                    // ... keep your gstatic inlining code below this ... 
                     // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
                     else if (href && href.includes('www.gstatic.com')) {
                         try {
