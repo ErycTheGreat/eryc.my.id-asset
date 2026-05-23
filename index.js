@@ -1,15 +1,12 @@
 // --- THE EXECUTIONER CLASS ---
 class ElementSlasher {
   element(element) {
-    // 🛑 If it's a script tag, check its type before killing it
     if (element.tagName === 'script') {
         const type = element.getAttribute('type') || '';
-        // If it is JSON-LD schema, spare its life and return immediately
         if (type.toLowerCase() === 'application/ld+json') {
             return;
         }
     }
-    // Otherwise, execute order 66
     element.remove();
   }
 }
@@ -18,34 +15,29 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // --- 0.1 BOT TRACKER & DETECTION ---
-	const userAgent = request.headers.get("User-Agent") || "";
-	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Google-Agent|Gemini-Deep-Research/i.test(userAgent);
-	const isCrawlerBot = /Googlebot|Google-InspectionTool|bingbot|Yandexbot/i.test(userAgent);
-	const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
-	// 📱 DETECT MOBILE DEVICES
+    const userAgent = request.headers.get("User-Agent") || "";
+    const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Google-Agent|Gemini-Deep-Research/i.test(userAgent);
+    const isCrawlerBot = /Googlebot|Google-InspectionTool|bingbot|Yandexbot/i.test(userAgent);
+    const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-		
-	const isBot = isAIBot || isCrawlerBot || isSocialBot || url.searchParams.get("debug") === "bot";
+
+    const isBot = isAIBot || isCrawlerBot || isSocialBot || url.searchParams.get("debug") === "bot";
 
     if (isBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
     }
-	
-	// --- 0.2 INDEXNOW API KEY VERIFICATION ---
+
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
       return new Response("3d66934eab674a3496effb0a0651a038", {
         status: 200,
         headers: { "Content-Type": "text/plain" }
       });
     }
-    
-   // --- 0. DIRECT XML RETURN ---
+
     if (url.pathname === "/sitemap.xml" || url.pathname === "/sitemap.xml/") {
       const canonicalHost = "www.eryc.my.id";
       const lastmod = new Date().toISOString().split('T')[0];
       const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/bukanbrokerbiasa", "/case-studies/seo/soundbrothers", "/case-studies/edge-seo"];
-      
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
       sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
       pages.forEach(path => {
@@ -54,17 +46,12 @@ export default {
         sitemap += `    <priority>${path === "/"? "1.0" : "0.7"}</priority>\n  </url>\n`;
       });
       sitemap += '</urlset>';
-
       return new Response(sitemap, {
         status: 200,
-        headers: {
-          "Content-Type": "application/xml; charset=UTF-8",
-          "Cache-Control": "public, max-age=86400"
-        }
+        headers: { "Content-Type": "application/xml; charset=UTF-8", "Cache-Control": "public, max-age=86400" }
       });
     }
 
-    // --- 1. FORCE NAKED TO WWW & KILL "/home" ---
     const host = url.hostname;
     const canonicalHost = "www.eryc.my.id";
     if (host !== canonicalHost) {
@@ -74,7 +61,6 @@ export default {
       return Response.redirect(`https://${canonicalHost}/`, 301);
     }
 
-    // --- 2. ROBOTS.TXT ---
     if (url.pathname === "/robots.txt" || url.pathname === "/robots.txt/") {
       const robotsTxt = `
 # Explicitly ALLOW AI Crawlers for GEO
@@ -188,55 +174,39 @@ Allow: /sitemap.xml
 
 Sitemap: https://${canonicalHost}/sitemap.xml
 `.trim();
-
       return new Response(robotsTxt, {
         status: 200,
-        headers: { 
-          "Content-Type": "text/plain; charset=utf-8",
-          "Cache-Control": "public, max-age=86400" 
-        }
+        headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "public, max-age=86400" }
       });
     }
 
- // --- 3. LLMS.TXT ROUTING ---
     if (url.pathname === "/llm.txt") {
       return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
     }
 
     if (url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") {
       const object = await env.MY_ASSETS.get("llms.txt");
-
       if (object === null) {
         return new Response("llms.txt not found in R2", { status: 404 });
       }
-
       return new Response(object.body, {
         status: 200,
-        headers: {
-          "Content-Type": "text/plain; charset=utf-8",
-          "Cache-Control": "public, s-maxage=7200, max-age=0" 
-        }
+        headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "public, s-maxage=7200, max-age=0" }
       });
     }
-      
-   // --- 4. THE R2 ASSET PROXY ---
+
     const path = url.pathname;
-    
+
     if (path.startsWith("/assets/")) {
       const filePath = path.replace("/assets/", "");
       const object = await env.MY_ASSETS.get(filePath);
-
       if (object === null) {
         return new Response("Asset not found in R2", { status: 404 });
       }
-
       const newHeaders = new Headers();
       newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
       newHeaders.set("X-Proxy-Origin", "Cloudflare-R2");
-	  
-	  // 🚀 ADD THIS LINE TO FIX THE FONT CORS ISSUE FOR SITES.GOOGLE.COM
       newHeaders.set("Access-Control-Allow-Origin", "*");
-
       const lowerPath = filePath.toLowerCase();
       if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
       else if (lowerPath.endsWith(".css")) newHeaders.set("Content-Type", "text/css");
@@ -249,16 +219,13 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       else if (object.httpMetadata && object.httpMetadata.contentType) {
           newHeaders.set("Content-Type", object.httpMetadata.contentType);
       }
-
       return new Response(object.body, { status: 200, headers: newHeaders });
     }
 
-   // --- 5. ASSET BYPASS ---
     if (url.pathname.includes(".") && !url.pathname.endsWith(".html")) {
       return fetch(request);
     }
 
-   // --- 6. EDGE DYNAMIC RENDERING ---
     const response = await fetch(request);
     const contentType = response.headers.get("content-type") || "";
 
@@ -266,7 +233,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         return response;
     }
 
-    // 🤖 FETCH AI GHOST PAYLOAD STATE IN PARALLEL (Sub-10ms)
     let agpLcpUrl = "";
     let agpGhostCss = "";
     try {
@@ -283,56 +249,47 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
 
     const domain = "https://www.eryc.my.id";
-    const canonicalUrl = domain + url.pathname
+    const canonicalUrl = domain + url.pathname;
 
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-		<link rel="preconnect" href="https://apis.google.com" crossorigin="">
-        
+        <link rel="preconnect" href="https://apis.google.com" crossorigin="">
+
         <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
         <style id="edge-anti-flash">
-            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
-            html {
-                background-color: #060522 !important;
-            }
-
-            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
+            html { background-color: #060522 !important; }
             :root {
                 --theme-page_background-color: transparent !important;
                 --theme-background-color: transparent !important;
             }
-            
-            /* 3. Ensure the body allows the html canvas to show through */
-            body {
-                background-color: transparent !important;
-            }
+            body { background-color: transparent !important; }
         </style>
-            
+
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
         <meta name="author" content="Eryc Tri Juni S">
-        <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug"> 
+        <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug">
         <meta name="yandex-verification" content="275f3c061328554a" />
         <link rel="canonical" href="${canonicalUrl}">
         <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llms.txt">
         <link rel="alternate" type="application/xml" href="https://www.eryc.my.id/sitemap.xml">
         <link rel="author" href="${domain}/about">
-        
+
         <meta property="og:type" content="website">
-		<meta property="og:site_name" content="Eryc Tri Juni S">
+        <meta property="og:site_name" content="Eryc Tri Juni S">
         <meta property="og:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S ">
         <meta property="og:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta property="og:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
         <meta property="og:url" content="${canonicalUrl}">
-        
+
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S">
         <meta name="twitter:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="twitter:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
-        
+
         <script type="application/ld+json">
         {
           "@context": "https://schema.org",
@@ -344,9 +301,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "name": "Eryc Tri Juni S",
               "description": "Portfolio and reference implementation of Edge SEO and Asymmetric Ghost Payload (AGP) architecture by Eryc Tri Juni S.",
               "alternateName": "eryc edge seo malang",
-              "publisher": {
-                "@id": "https://www.eryc.my.id/#website"
-              },
+              "publisher": { "@id": "https://www.eryc.my.id/#website" },
               "inLanguage": "en",
               "potentialAction": {
                 "@type": "SearchAction",
@@ -360,18 +315,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "url": "${canonicalUrl}",
               "name": "Edge SEO Specialist Malang | Eryc Tri Juni S",
               "description": "Eryc Tri Juni S is an edge SEO specialist in Malang; Indonesia. Exploring system-based marketing, constraint-bypassing architectures, and Asymmetric Ghost Payloads.",
-               "mainEntity": {
-              "@id": "https://www.eryc.my.id/#person"
-               },
-              "about": {
-                "@id": "https://www.eryc.my.id/#website"
-              },
-              "isPartOf": {
-                "@id": "https://www.eryc.my.id/#website"
-              },
-              "primaryImageOfPage": {
-                "@id": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp"
-              },
+              "mainEntity": { "@id": "https://www.eryc.my.id/#person" },
+              "about": { "@id": "https://www.eryc.my.id/#website" },
+              "isPartOf": { "@id": "https://www.eryc.my.id/#website" },
+              "primaryImageOfPage": { "@id": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp" },
               "inLanguage": "en"
             },
             {
@@ -399,9 +346,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "gender": "Male",
               "jobTitle": "Edge SEO Specialist",
               "image": "https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=uqcfyxv7&raw=1",
-              "subjectOf": {
-              "@id": "https://www.eryc.my.id/llms.txt"
-               },
+              "subjectOf": { "@id": "https://www.eryc.my.id/llms.txt" },
               "knowsAbout": [
                 {
                   "@type": "DefinedTerm",
@@ -411,25 +356,11 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                   "description": "An edge architecture where origin state is decoupled from crawler ingestion and pre-rendered semantic payloads are injected mid-flight at the network edge.",
                   "inDefinedTermSet": "https://www.eryc.my.id/llms.txt"
                 },
-                "Edge SEO",
-                "Asymmetric Ghost Payload (AGP)",
-                "AGP Architecture",
-                "Generative Engine Optimization",
-                "Cloudflare Workers",
-                "System-Based Marketing",
-                "Funnel Optimization",
-                "Data-Driven Strategy",
-                "Data Analysis",
-                "Data Story Telling",
-                "User Personas",
-                "Google Analytics",
-                "Search Engine Optimization (SEO)",
-                "Web Development",
-                "Content Strategy",
-                "Content Creation",
-                "TikTok Marketing",
-                "Business Analysis",
-                "Business Acumen"
+                "Edge SEO","Asymmetric Ghost Payload (AGP)","AGP Architecture","Generative Engine Optimization",
+                "Cloudflare Workers","System-Based Marketing","Funnel Optimization","Data-Driven Strategy",
+                "Data Analysis","Data Story Telling","User Personas","Google Analytics",
+                "Search Engine Optimization (SEO)","Web Development","Content Strategy","Content Creation",
+                "TikTok Marketing","Business Analysis","Business Acumen"
               ],
               "sameAs": [
                 "https://www.linkedin.com/in/eryctrijunis",
@@ -445,9 +376,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               "dateCreated": "2024-01-01T00:00:00+07:00",
               "dateModified": "2026-04-10T00:00:00+07:00",
               "url": "https://www.eryc.my.id/",
-              "mainEntity": {
-                "@id": "https://www.eryc.my.id/#person"
-              }
+              "mainEntity": { "@id": "https://www.eryc.my.id/#person" }
             },
             {
               "@type": "ProfessionalService",
@@ -465,36 +394,22 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               },
               "geo": {
                 "@type": "GeoCoordinates",
-                "latitude": "-7.9839", 
+                "latitude": "-7.9839",
                 "longitude": "112.6214",
                 "description": "Center of Malang"
               },
               "priceRange": "$$$",
               "areaServed": [
-                {
-                  "@type": "City",
-                  "name": "Malang",
-                  "sameAs": "https://en.wikipedia.org/wiki/Malang"
-                },
-                {
-                  "@type": "City",
-                  "name": "Surabaya",
-                  "sameAs": "https://en.wikipedia.org/wiki/Surabaya"
-                },
-                {
-                  "@type": "AdministrativeArea",
-                  "name": "East Java",
-                  "sameAs": "https://en.wikipedia.org/wiki/East_Java"
-                }
+                { "@type": "City", "name": "Malang", "sameAs": "https://en.wikipedia.org/wiki/Malang" },
+                { "@type": "City", "name": "Surabaya", "sameAs": "https://en.wikipedia.org/wiki/Surabaya" },
+                { "@type": "AdministrativeArea", "name": "East Java", "sameAs": "https://en.wikipedia.org/wiki/East_Java" }
               ],
-              "founder": {
-                "@id": "https://www.eryc.my.id/#person"
-              }
+              "founder": { "@id": "https://www.eryc.my.id/#person" }
             }
           ]
-        }        
+        }
         </script>
-        
+
         <script type="text/edge-delayed-script" data-original-type="text/javascript">
             (function(c,l,a,r,i,t,y){
                 c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -503,9 +418,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             })(window, document, "clarity", "script", "w60p488a9w");
         </script>
         <script type="text/edge-delayed-script" data-original-type="text/javascript" defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "af77cd4bb9b147a09fe3ee68cb8dfe59"}'></script>
-		
-		<script type="text/edge-delayed-script" data-original-type="text/javascript" defer src="https://www.googletagmanager.com/gtag/js?id=G-460EZRLTB6"></script>
-        
+        <script type="text/edge-delayed-script" data-original-type="text/javascript" defer src="https://www.googletagmanager.com/gtag/js?id=G-460EZRLTB6"></script>
         <script type="text/edge-delayed-script" data-original-type="text/javascript">
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
@@ -513,51 +426,47 @@ Sitemap: https://${canonicalHost}/sitemap.xml
           gtag('config', 'G-460EZRLTB6');
         </script>
         `;
-      
-   // 🏎️ THE HUMAN FAST-LANE BYPASS
+
     if (!isBot) {
         let newHeaders = new Headers(response.headers);
-        newHeaders.delete("Content-Length"); 
+        newHeaders.delete("Content-Length");
         newHeaders.delete("Content-Security-Policy");
-		
-		// 📱 ROUTE THE ASSET BASED ON DEVICE POWER
+
+        // 📱 ROUTE THE ASSET BASED ON DEVICE POWER
         const heavyAnimUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
         const heavyStaticUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
 
-       // 🤖 INJECT THE HTTP LCP PRELOAD HEADER
-       if (agpLcpUrl) {
-           newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
-       }
-        
-       let currentEmbedCode = null;
+        if (agpLcpUrl) {
+            newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
+        }
 
-       let humanRewriter = new HTMLRewriter()
+        let currentEmbedCode = null;
+
+        let humanRewriter = new HTMLRewriter()
             .on('link[rel="canonical"]', { element(e) { e.remove(); } })
             .on('meta[name="description"]', { element(e) { e.remove(); } })
             .on('meta[property="og:title"]', { element(e) { e.remove(); } })
-            
+
             .on("head", {
                 element(e) {
                     e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
-                    e.append(customHeaderContent, { html: true }); 
-                    
-                    // 🤖 INJECT THE AI-GENERATED CRITICAL CSS
+                    e.append(customHeaderContent, { html: true });
                     if (agpGhostCss) {
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-                // 🤖 [HYBRID V2.1] ANTI-REFLOW WAKE UP SCRIPT
+// 🤖 [HYBRID V2.1] ANTI-REFLOW WAKE UP SCRIPT
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
         let scriptsHydrated = false;
 
-        // ✅ CHANGE 1 OF 2: triggerBg now injects an <img> element instead of
-        // setting backgroundImage. <img> animated AVIF runs through the browser's
-        // dedicated image pipeline — off the main thread, GPU composited — so the
-        // animation plays smoothly without starving the main thread.
-        // The poster CSS background stays visible underneath until the <img> is
-        // decoded and appended, giving zero gap frame between poster and animation.
+        // 🎯 THE PAYLOAD DETONATOR
+        // ✅ CHANGED [Touch Point 3]: Replaced backgroundImage CSS assignment with <img> injection.
+        // Animated AVIF as <img> runs through the browser's dedicated image pipeline —
+        // off main thread, GPU composited — eliminating the main-thread paint stutter
+        // that caused blinking during animation playback on mobile.
+        // The poster CSS background stays on the div as a fallback layer underneath.
         const triggerBg = () => {
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
@@ -569,36 +478,31 @@ const wakeUpScript = `
                     requestAnimationFrame(() => {
                         const animImg = document.createElement('img');
                         animImg.src = heavyUrl;
-                        animImg.setAttribute('style', 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;will-change:transform;');
                         animImg.setAttribute('aria-hidden', 'true');
                         animImg.setAttribute('decoding', 'async');
+                        animImg.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;will-change:transform;';
                         heavyBg.appendChild(animImg);
                         heavyBg.removeAttribute('data-heavy-bg');
                     });
                 }).catch(() => {
-                    // Fallback: decode() unsupported or failed — inject img anyway,
-                    // browser will handle it. Poster stays visible until img paints.
                     const animImg = document.createElement('img');
                     animImg.src = heavyUrl;
-                    animImg.setAttribute('style', 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;will-change:transform;');
                     animImg.setAttribute('aria-hidden', 'true');
                     animImg.setAttribute('decoding', 'async');
+                    animImg.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;will-change:transform;';
                     heavyBg.appendChild(animImg);
                     heavyBg.removeAttribute('data-heavy-bg');
                 });
             }
         };
 
-        // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
         function hydrateScripts(e) {
             if (e && e.type === 'mousemove') {
                 if (e.movementX === 0 && e.movementY === 0) return;
             }
-
             if (scriptsHydrated) return;
             scriptsHydrated = true;
 
-            // 🛠️ ANTI-REFLOW UPGRADE: Drip-feed scripts to prevent DOM thrashing
             const scripts = document.querySelectorAll('script[type="text/edge-delayed-script"]');
             let scriptIndex = 0;
 
@@ -607,7 +511,6 @@ const wakeUpScript = `
                     setTimeout(() => requestAnimationFrame(triggerBg), 50);
                     return;
                 }
-
                 const s = scripts[scriptIndex];
                 const newScript = document.createElement('script');
                 Array.from(s.attributes).forEach(attr => {
@@ -617,10 +520,8 @@ const wakeUpScript = `
                 });
                 newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
                 newScript.innerHTML = s.innerHTML;
-                
                 s.parentNode.replaceChild(newScript, s);
                 scriptIndex++;
-
                 if ('requestIdleCallback' in window) {
                     requestIdleCallback(injectNextScript);
                 } else {
@@ -630,30 +531,27 @@ const wakeUpScript = `
 
             requestAnimationFrame(injectNextScript);
 
-            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev =>
                 window.removeEventListener(ev, hydrateScripts)
             );
         }
 
-        // Bind Engine 1
-        ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+        ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev =>
             window.addEventListener(ev, hydrateScripts, { passive: true })
         );
 
-        // ENGINE 2: The Phantom Auto-Start
         window.addEventListener('load', () => {
-            if (navigator.webdriver) return; 
-            if (navigator.connection && navigator.connection.saveData) return; 
-            if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
+            if (navigator.webdriver) return;
+            if (navigator.connection && navigator.connection.saveData) return;
+            if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return;
             if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
-            
             setTimeout(() => {
                 if ('requestIdleCallback' in window) {
-                    requestIdleCallback(triggerBg); 
+                    requestIdleCallback(triggerBg);
                 } else {
-                    triggerBg(); 
+                    triggerBg();
                 }
-            }, 3666); 
+            }, 3666);
         });
     })();
 </script>`;
@@ -661,31 +559,27 @@ const wakeUpScript = `
                 }
             })
             .on("div[data-code]", {
-                element(e) {
-                    currentEmbedCode = e.getAttribute("data-code");
-                }
+                element(e) { currentEmbedCode = e.getAttribute("data-code"); }
             })
-           .on('img', {
+            .on('img', {
                 element(e) {
-                    e.removeAttribute("loading"); 
+                    e.removeAttribute("loading");
                     e.setAttribute("decoding", "async");
-
                     let ariaLabel = e.getAttribute("aria-label") || "";
-                    let altText = e.getAttribute("alt") || ""; 
-
+                    let altText = e.getAttribute("alt") || "";
                     if (ariaLabel.includes("Eryc Tri Juni S")) {
                         e.setAttribute("src", "/assets/image/hero.avif");
                         e.removeAttribute("srcset");
-                        e.setAttribute("fetchpriority", "high"); 
-                        e.setAttribute("width", "120"); 
-                        e.setAttribute("height", "120"); 
-                        e.setAttribute("style", "width: auto !important; object-fit: contain;"); 
+                        e.setAttribute("fetchpriority", "high");
+                        e.setAttribute("width", "120");
+                        e.setAttribute("height", "120");
+                        e.setAttribute("style", "width: auto !important; object-fit: contain;");
                     }
-                    else if (altText === "edge-bg-hijack") { 
+                    else if (altText === "edge-bg-hijack") {
                         e.setAttribute("src", "/assets/image/my-optimized-background.webp");
                         e.removeAttribute("srcset");
                     }
-                    else if (altText === "heavy-avif-anim") { 
+                    else if (altText === "heavy-avif-anim") {
                         e.setAttribute("src", "/assets/image/homepage-BG-split.avif");
                         e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high");
@@ -694,69 +588,54 @@ const wakeUpScript = `
                     }
                 }
             })
+            // ✅ CHANGED [Touch Point 2]: Added position:relative and overflow:hidden.
+            // position:relative makes this div the containing block for the absolutely-
+            // positioned <img> that triggerBg injects. Without it the img escapes to the
+            // parent section and covers unintended content. overflow:hidden clips the img
+            // cleanly to this div's bounds.
             .on('div[aria-label="edge-bg-hijack"]', {
                 element(e) {
-                    // ✅ CHANGE 2 OF 2: Added position:relative and overflow:hidden.
-                    // position:relative makes this div the containing block for the
-                    // absolutely-positioned <img> that triggerBg() injects — without
-                    // it the img would escape to the parent section and fill the wrong
-                    // area. overflow:hidden clips the img cleanly to this div's bounds.
-                    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif'); position:relative; overflow:hidden;");
-                    
+                    e.setAttribute("style", "position:relative; overflow:hidden; background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
                     e.setAttribute("data-heavy-bg", heavyAnimUrl);
                     e.setAttribute("id", "lcp-heavy-bg");
                 }
             })
             .on('picture > source', {
-                element(e) {
-                    e.removeAttribute("srcset"); 
-                }
+                element(e) { e.removeAttribute("srcset"); }
             })
             .on("iframe.YMEQtf", {
                 element(e) {
                     if (currentEmbedCode) {
-                        e.removeAttribute("sandbox"); 
+                        e.removeAttribute("sandbox");
                         e.removeAttribute("src");
                         e.setAttribute("srcdoc", currentEmbedCode);
-                        currentEmbedCode = null; 
+                        currentEmbedCode = null;
                     }
                 }
             })
-           // 🤖 [NEW] FIX GOOGLE SITES MOBILE MENU ACCESSIBILITY
-              .on('div[role="button"][aria-haspopup="true"]', {
-                  element(e) {
-                      if (!e.hasAttribute('aria-label')) {
-                          e.setAttribute('aria-label', 'Open Navigation Menu');
-                      }
-                  }
-              })
-          // 🤖 [FIXED] SCRIPT NEUTRALIZER
+            .on('div[role="button"][aria-haspopup="true"]', {
+                element(e) {
+                    if (!e.hasAttribute('aria-label')) {
+                        e.setAttribute('aria-label', 'Open Navigation Menu');
+                    }
+                }
+            })
             .on('script', {
                 element(e) {
                     const currentType = e.getAttribute('type') || 'text/javascript';
                     const src = e.getAttribute('src') || '';
                     const innerCode = e.innerHTML || '';
-                    
-                    // 🛑 CRITICAL SHIELD: If it's Schema/JSON-LD, leave it completely alone
-                    if (currentType.toLowerCase() === 'application/ld+json') {
-                        return;
-                    }
-
-                    // 🛑 TELEMETRY SHIELD: Spare Google's internal logging to prevent CORS errors on mobile
-                    if (src.includes('play.google.com') || innerCode.includes('play.google.com/log')) {
-                        return;
-                    }
-            
+                    if (currentType.toLowerCase() === 'application/ld+json') return;
+                    if (src.includes('play.google.com') || innerCode.includes('play.google.com/log')) return;
                     if (!e.hasAttribute('data-edge-ignore')) {
                         e.setAttribute('data-original-type', currentType);
                         e.setAttribute('type', 'text/edge-delayed-script');
                     }
                 }
             })
-           .on('link[rel="stylesheet"]', {
+            .on('link[rel="stylesheet"]', {
                 async element(e) {
                     const href = e.getAttribute('href') || "";
-                    
                     if (href && href.includes('fonts.googleapis.com/css')) {
                         const newHref = href.includes('display=')
                             ? href.replace(/display=[^&]+/, 'display=swap')
@@ -764,13 +643,12 @@ const wakeUpScript = `
                         e.setAttribute('href', newHref);
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
-                    } 
+                    }
                     else if (href && href.includes('www.gstatic.com')) {
                         try {
                             let cssRes = await fetch(href, {
-                                cf: { cacheTtl: 31536000, cacheEverything: true } 
+                                cf: { cacheTtl: 31536000, cacheEverything: true }
                             });
-                            
                             if (cssRes.ok) {
                                 let cssText = await cssRes.text();
                                 e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
@@ -780,40 +658,39 @@ const wakeUpScript = `
                         }
                     }
                 }
-             })
+            })
             .on('a[aria-selected]', {
                 element(e) {
                     e.removeAttribute('aria-selected');
                     e.setAttribute('aria-current', 'page');
                 }
             });
-        
+
         return new Response(humanRewriter.transform(response).body, {
             status: response.status,
             headers: newHeaders
         });
     }
-        
-    // 🛑 BOTS ONLY 🛑
+
     let botPayload = null;
     if (isBot) {
         try {
             if (env && env.SEO_PAYLOADS) {
                 const cleanPath = url.pathname.replace(/\/$/, "") || "/";
-                botPayload = await env.SEO_PAYLOADS.get(cleanPath); 
+                botPayload = await env.SEO_PAYLOADS.get(cleanPath);
             }
         } catch (error) {
             console.error("KV Fetch Error:", error);
         }
     }
-   
-  let rewriter = new HTMLRewriter()
+
+    let rewriter = new HTMLRewriter()
         .on('link[rel="canonical"]', { element(e) { e.remove(); } })
         .on('meta[name="description"]', { element(e) { e.remove(); } })
         .on('meta[property="og:title"]', { element(e) { e.remove(); } })
         .on("head", {
-            element(e) { 
-                e.append(customHeaderContent, { html: true }); 
+            element(e) {
+                e.append(customHeaderContent, { html: true });
                 if (agpGhostCss) {
                     e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                 }
@@ -822,41 +699,37 @@ const wakeUpScript = `
 
     if (isBot && botPayload) {
         rewriter.on("body", {
-            element(element) {
-                element.prepend(botPayload, { html: true }); 
-            }
+            element(element) { element.prepend(botPayload, { html: true }); }
         });
     }
 
-    // 🔪 SIGNAL PRUNING: Kill CMS garbage for AI models
     if (isAIBot || isSocialBot) {
         rewriter
-            .on('script', new ElementSlasher())    
-            .on('style', new ElementSlasher())        
-            .on('iframe', new ElementSlasher())       
-            .on('noscript', new ElementSlasher())     
-            .on('header', new ElementSlasher())       
-            .on('footer', new ElementSlasher())       
+            .on('script', new ElementSlasher())
+            .on('style', new ElementSlasher())
+            .on('iframe', new ElementSlasher())
+            .on('noscript', new ElementSlasher())
+            .on('header', new ElementSlasher())
+            .on('footer', new ElementSlasher())
             .on('div[jscontroller]', new ElementSlasher());
-    	}
+    }
 
     let newHeaders = new Headers(response.headers);
     newHeaders.delete("Content-Length");
-    
+
     if (agpLcpUrl) {
         newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image`);
     }
-      
+
     return new Response(rewriter.transform(response).body, {
-      status: response.status,
-      headers: newHeaders
+        status: response.status,
+        headers: newHeaders
     });
   },
-  // --- 7. THE CRON HANDLER FOR AI KV WRITES ---
+
   async scheduled(event, env, ctx) {
     console.log(`Cron triggered at ${event.scheduledTime}`);
-    
-    // Your AI Bot's KV database writing logic goes inside here  
+    // Your AI Bot's KV database writing logic goes inside here
   }
 };
 // FORCING A CLEAN SYNC TO CLOUDFLARE
