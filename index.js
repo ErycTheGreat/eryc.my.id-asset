@@ -557,15 +557,36 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-               // 🤖 [HYBRID V3.2] STABILIZED ANTI-REFLOW WAKE UP SCRIPT
+                // 🤖 [HYBRID V2.1] ANTI-REFLOW WAKE UP SCRIPT
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
         let scriptsHydrated = false;
 
-        // 🎯 THE SEQUENTIAL DETONATOR
-        function deployHeavyPayload(e) {
-            // Filter micro-movements
+        // 🎯 THE PAYLOAD DETONATOR (Off-Thread Decode)
+        const triggerBg = () => {
+            const heavyBg = document.getElementById('lcp-heavy-bg');
+            if (heavyBg && heavyBg.dataset.heavyBg) {
+                const heavyUrl = heavyBg.dataset.heavyBg;
+                const imgPreload = new Image();
+                imgPreload.src = heavyUrl;
+                
+                // Decode off-thread to prevent main-thread lockups when painting
+                imgPreload.decode().then(() => {
+                    requestAnimationFrame(() => {
+                        heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
+                        heavyBg.removeAttribute('data-heavy-bg'); 
+                    });
+                }).catch(() => {
+                    // Fallback
+                    heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
+                    heavyBg.removeAttribute('data-heavy-bg'); 
+                });
+            }
+        };
+
+        // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
+        function hydrateScripts(e) {
             if (e && e.type === 'mousemove') {
                 if (e.movementX === 0 && e.movementY === 0) return;
             }
@@ -573,50 +594,16 @@ const wakeUpScript = `
             if (scriptsHydrated) return;
             scriptsHydrated = true;
 
-            const heavyBg = document.getElementById('lcp-heavy-bg');
-            if (heavyBg && heavyBg.dataset.heavyBg) {
-                const heavyUrl = heavyBg.dataset.heavyBg;
-                const imgPreload = new Image();
-                imgPreload.src = heavyUrl;
-                
-                // 1. Decode off-thread
-                imgPreload.decode().then(() => {
-                    // 2. DOUBLE rAF FIX: Force the browser to wait until the current frame 
-                    // is physically painted before executing the CSS swap and JS hydration.
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            // Swap background instantly
-                            heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
-                            heavyBg.removeAttribute('data-heavy-bg'); 
-                            
-                            // 3. Give the GPU 50ms to render the image BEFORE hitting the CPU with scripts
-                            setTimeout(startStaggeredHydration, 50);
-                        });
-                    });
-                }).catch(() => {
-                    // Fallback if decode fails
-                    heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
-                    heavyBg.removeAttribute('data-heavy-bg'); 
-                    startStaggeredHydration();
-                });
-            } else {
-                startStaggeredHydration();
-            }
-
-            // Clean up listeners
-            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-                window.removeEventListener(ev, deployHeavyPayload)
-            );
-        }
-
-        // 🛠️ ANTI-REFLOW UPGRADE: Drip-feed scripts to prevent DOM thrashing
-        function startStaggeredHydration() {
+            // 🛠️ ANTI-REFLOW UPGRADE: Drip-feed scripts to prevent DOM thrashing
             const scripts = document.querySelectorAll('script[type="text/edge-delayed-script"]');
             let scriptIndex = 0;
 
             function injectNextScript() {
-                // Base case: All scripts loaded
-                if (scriptIndex >= scripts.length) return;
+                // Base case: All scripts loaded, now safely trigger the background
+                if (scriptIndex >= scripts.length) {
+                    setTimeout(() => requestAnimationFrame(triggerBg), 50);
+                    return;
+                }
 
                 const s = scripts[scriptIndex];
                 const newScript = document.createElement('script');
@@ -642,26 +629,31 @@ const wakeUpScript = `
 
             // Start the staggered injection process
             requestAnimationFrame(injectNextScript);
+
+            // Clean up listeners
+            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+                window.removeEventListener(ev, hydrateScripts)
+            );
         }
 
-        // Bind Events
+        // Bind Engine 1
         ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
-            window.addEventListener(ev, deployHeavyPayload, { passive: true })
+            window.addEventListener(ev, hydrateScripts, { passive: true })
         );
 
-        // ENGINE 2: The Phantom Auto-Start (Preserving your stable bot evasion)
+        // ENGINE 2: The Phantom Auto-Start
         window.addEventListener('load', () => {
             if (navigator.webdriver) return; 
             if (navigator.connection && navigator.connection.saveData) return; 
             if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
             if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
             
-            // 3666 ms PSI Evasion Timer
+            // 250 ms PSI Evasion Timer (Maintains your stable 3666ms evasion)
             setTimeout(() => {
                 if ('requestIdleCallback' in window) {
-                    requestIdleCallback(deployHeavyPayload); 
+                    requestIdleCallback(triggerBg); 
                 } else {
-                    deployHeavyPayload(); 
+                    triggerBg(); 
                 }
             }, 3666); 
         });
