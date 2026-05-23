@@ -707,7 +707,7 @@ const wakeUpScript = `
                     
                     // 2. Hide the heavy animated AVIF in a data attribute
                     // Fixed: Changed data-heavy-avif to data-heavy-bg so triggerBg() can find it
-                    e.setAttribute("data-heavy-bg", heavyAnimUrl);
+                   e.setAttribute("data-heavy-bg", "/assets/image/homepage-BG.avif");
                     e.setAttribute("id", "lcp-heavy-bg");
                 }
             })
