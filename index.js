@@ -20,13 +20,15 @@ export default {
 
     // --- 0.1 BOT TRACKER & DETECTION ---
 	const userAgent = request.headers.get("User-Agent") || "";
-	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Gemini-Deep-Research/i.test(userAgent);
+	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Gemini-Deep-Research|Google-Agent|anthropic-ai/i.test(userAgent);
 	const isCrawlerBot = /Googlebot|bingbot|Yandexbot/i.test(userAgent);
 	const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
+
 	// 📱 DETECT MOBILE DEVICES
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+	const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
 		
-	const isBot = isAIBot || isCrawlerBot || isSocialBot || url.searchParams.get("debug") === "bot";
+	// Force true if Cloudflare already verified it as a bot via cf.request.cf (optional safeguard)
+	const isBot = isAIBot || isCrawlerBot || isSocialBot || (request.cf && request.cf.asReplacerBot) || url.searchParams.get("debug") === "bot";
 
     if (isBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
@@ -94,11 +96,11 @@ User-agent: ClaudeBot
 Allow: /
 Allow: /llms.txt
 
-User-agent: Claude-User
+User-agent: Claude-SearchBot
 Allow: /
 Allow: /llms.txt
 
-User-agent: Claude-SearchBot
+User-agent: Claude-User
 Allow: /
 Allow: /llms.txt
 
@@ -114,6 +116,11 @@ Allow: /sitemap.xml
 User-agent: Perplexity-User
 Allow: /
 Allow: /llms.txt
+
+User-agent: Google-Agent
+Allow: /
+Allow: /llms.txt
+Allow: /sitemap.xml
 
 User-agent: Gemini-Deep-Research
 Allow: /
@@ -841,7 +848,7 @@ const wakeUpScript = `
     }
 
     // 🔪 SIGNAL PRUNING: Kill CMS garbage for AI models
-    if (isBot) {
+    if (isAIBot || isSocialBot) {
         rewriter
             .on('script', new ElementSlasher())    
             .on('style', new ElementSlasher())        
