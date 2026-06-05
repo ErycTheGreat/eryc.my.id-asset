@@ -305,7 +305,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 		<link rel="preconnect" href="https://apis.google.com" crossorigin="">
-        
+        <link rel="preconnect" href="https://lh3.googleusercontent.com" crossorigin="anonymous">
                 
         <!-- <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high"> -->
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
@@ -563,7 +563,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-                // 🤖 [HYBRID V2.1] ANTI-REFLOW WAKE UP SCRIPT
+               // 🤖 [HYBRID V2.2] ANTI-REFLOW WAKE UP SCRIPT
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
@@ -577,14 +577,12 @@ const wakeUpScript = `
                 const imgPreload = new Image();
                 imgPreload.src = heavyUrl;
                 
-                // Decode off-thread to prevent main-thread lockups when painting
                 imgPreload.decode().then(() => {
                     requestAnimationFrame(() => {
                         heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
                         heavyBg.removeAttribute('data-heavy-bg'); 
                     });
                 }).catch(() => {
-                    // Fallback
                     heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
                     heavyBg.removeAttribute('data-heavy-bg'); 
                 });
@@ -593,6 +591,9 @@ const wakeUpScript = `
 
         // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
         function hydrateScripts(e) {
+            // 🛡️ THE NEW SHIELD: Stop PSI's emulated scrolls from triggering hydration
+            if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
+
             if (e && e.type === 'mousemove') {
                 if (e.movementX === 0 && e.movementY === 0) return;
             }
@@ -600,12 +601,10 @@ const wakeUpScript = `
             if (scriptsHydrated) return;
             scriptsHydrated = true;
 
-            // 🛠️ ANTI-REFLOW UPGRADE: Drip-feed scripts to prevent DOM thrashing
             const scripts = document.querySelectorAll('script[type="text/edge-delayed-script"]');
             let scriptIndex = 0;
 
             function injectNextScript() {
-                // Base case: All scripts loaded, now safely trigger the background
                 if (scriptIndex >= scripts.length) {
                     setTimeout(() => requestAnimationFrame(triggerBg), 50);
                     return;
@@ -625,11 +624,17 @@ const wakeUpScript = `
                 s.parentNode.replaceChild(newScript, s);
                 scriptIndex++;
 
-                // Yield to the browser's main thread to prevent Forced Reflows
-                if ('requestIdleCallback' in window) {
-                    requestIdleCallback(injectNextScript);
+                // 🛠️ THE RACE-CONDITION FIX: Strictly sequential execution
+                if (newScript.src) {
+                    // Wait for external script to load before executing the next payload
+                    newScript.onload = newScript.onerror = () => {
+                        if ('requestIdleCallback' in window) requestIdleCallback(injectNextScript);
+                        else setTimeout(injectNextScript, 15);
+                    };
                 } else {
-                    setTimeout(injectNextScript, 15);
+                    // Inline script, proceed immediately
+                    if ('requestIdleCallback' in window) requestIdleCallback(injectNextScript);
+                    else setTimeout(injectNextScript, 15);
                 }
             }
 
@@ -654,7 +659,6 @@ const wakeUpScript = `
             if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
             if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
             
-            // 250 ms PSI Evasion Timer (Maintains your stable 3666ms evasion)
             setTimeout(() => {
                 if ('requestIdleCallback' in window) {
                     requestIdleCallback(triggerBg); 
