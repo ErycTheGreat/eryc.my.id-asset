@@ -7,7 +7,7 @@ class ElementSlasher {
         // If it is JSON-LD schema, spare its life and return immediately
         if (type.toLowerCase() === 'application/ld+json') {
             return;
-        }
+        }a
     }
     // Otherwise, execute order 66
     element.remove();
@@ -20,15 +20,11 @@ export default {
 
     // --- 0.1 BOT TRACKER & DETECTION ---
 	const userAgent = request.headers.get("User-Agent") || "";
-	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Gemini-Deep-Research|Google-Agent|anthropic-ai/i.test(userAgent);
+	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Google-Agent|Gemini-Deep-Research/i.test(userAgent);
 	const isCrawlerBot = /Googlebot|Google-InspectionTool|bingbot|Yandexbot/i.test(userAgent);
 	const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
-
-	// 📱 DETECT MOBILE DEVICES
-	const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
 		
-	// Force true if Cloudflare already verified it as a bot via cf.request.cf (optional safeguard)
-	const isBot = isAIBot || isCrawlerBot || isSocialBot || (request.cf && request.cf.asReplacerBot) || url.searchParams.get("debug") === "bot";
+	const isBot = isAIBot || isCrawlerBot || isSocialBot || url.searchParams.get("debug") === "bot";
 
     if (isBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
@@ -93,10 +89,6 @@ Allow: /
 Allow: /llms.txt
 
 User-agent: ClaudeBot
-Allow: /
-Allow: /llms.txt
-
-User-agent: Claude-SearchBot
 Allow: /
 Allow: /llms.txt
 
@@ -204,19 +196,14 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       });
     }
 
- // --- 3. LLMS.TXT ROUTING ---
+  // --- 3. LLMS.TXT ROUTING ---
     if (url.pathname === "/llm.txt") {
       return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
     }
 
     if (url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") {
-      const object = await env.MY_ASSETS.get("llms.txt");
-
-      if (object === null) {
-        return new Response("llms.txt not found in R2", { status: 404 });
-      }
-
-      return new Response(object.body, {
+      const githubResponse = await fetch("https://raw.githubusercontent.com/ErycTheGreat/eryc.my.id-asset/main/llms.txt");
+      return new Response(githubResponse.body, {
         status: 200,
         headers: {
           "Content-Type": "text/plain; charset=utf-8",
@@ -225,21 +212,27 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       });
     }
       
-   // --- 4. THE R2 ASSET PROXY ---
+   // --- 4. THE GITHUB ASSET PROXY ---
     const path = url.pathname;
-    
     if (path.startsWith("/assets/")) {
       const filePath = path.replace("/assets/", "");
-      const object = await env.MY_ASSETS.get(filePath);
+      const githubUser = "ErycTheGreat"; 
+      const githubRepo = "eryc.my.id-asset"; 
+      const branch = "main"; 
+      
+      const targetUrl = `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${branch}/${filePath}`;
+      
+      let ghRes = await fetch(targetUrl, {
+        cf: { cacheTtl: 31536000, cacheEverything: true }, 
+      });
 
-      if (object === null) {
-        return new Response("Asset not found in R2", { status: 404 });
+      if (!ghRes.ok) {
+        return new Response("Asset not found on GitHub", { status: 404 });
       }
 
-      const newHeaders = new Headers();
+      const newHeaders = new Headers(ghRes.headers);
       newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
-      newHeaders.set("X-Proxy-Origin", "Cloudflare-R2");
-      newHeaders.set("Access-Control-Allow-Origin", "*");
+      newHeaders.set("X-Proxy-Origin", "GitHub-via-Cloudflare");
 
       const lowerPath = filePath.toLowerCase();
       if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
@@ -250,11 +243,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       else if (lowerPath.endsWith(".webp")) newHeaders.set("Content-Type", "image/webp");
       else if (lowerPath.endsWith(".woff")) newHeaders.set("Content-Type", "font/woff");
       else if (lowerPath.endsWith(".woff2")) newHeaders.set("Content-Type", "font/woff2");
-      else if (object.httpMetadata && object.httpMetadata.contentType) {
-          newHeaders.set("Content-Type", object.httpMetadata.contentType);
-      }
 
-      return new Response(object.body, { status: 200, headers: newHeaders });
+      return new Response(ghRes.body, { status: 200, headers: newHeaders });
     }
 
    // --- 5. ASSET BYPASS ---
@@ -293,27 +283,28 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 		<link rel="preconnect" href="https://apis.google.com" crossorigin="">
+        
                 
-        <!-- <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high"> -->
+        <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
         <style id="edge-anti-flash">
-            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
-            html {
-                background-color: #060522 !important;
-            }
+            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
+            html {
+                background-color: #060522 !important;
+            }
 
-            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
-            :root {
-                --theme-page_background-color: transparent !important;
-                --theme-background-color: transparent !important;
-            }
-            
-            /* 3. Ensure the body allows the html canvas to show through */
-            body {
-                background-color: transparent !important;
-            }
-        </style>
+            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
+            :root {
+                --theme-page_background-color: transparent !important;
+                --theme-background-color: transparent !important;
+            }
+            
+            /* 3. Ensure the body allows the html canvas to show through */
+            body {
+                background-color: transparent !important;
+            }
+        </style>
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -523,19 +514,15 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         let newHeaders = new Headers(response.headers);
         newHeaders.delete("Content-Length"); 
         newHeaders.delete("Content-Security-Policy");
-		
-		// 📱 ROUTE THE ASSET BASED ON DEVICE POWER
-        const heavyAnimUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
-        const heavyStaticUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
 
-        // 🤖 INJECT THE HTTP LCP PRELOAD HEADER
-        if (agpLcpUrl) {
-            newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
-        }
+       // 🤖 INJECT THE HTTP LCP PRELOAD HEADER
+       if (agpLcpUrl) {
+           newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
+       }
         
-        let currentEmbedCode = null;
+       let currentEmbedCode = null;
 
-        let humanRewriter = new HTMLRewriter()
+       let humanRewriter = new HTMLRewriter()
             .on('link[rel="canonical"]', { element(e) { e.remove(); } })
             .on('meta[name="description"]', { element(e) { e.remove(); } })
             .on('meta[property="og:title"]', { element(e) { e.remove(); } })
@@ -550,38 +537,23 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-               // 🤖 [HYBRID V2.1 — FIXED] ANTI-REFLOW WAKE UP SCRIPT
+                // 🤖 [HYBRID V2] ANTI-REFLOW WAKE UP SCRIPT
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
         let scriptsHydrated = false;
 
-        // 🎯 THE PAYLOAD DETONATOR (Off-Thread Decode)
+        // 🎯 THE PAYLOAD DETONATOR
         const triggerBg = () => {
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
-                const heavyUrl = heavyBg.dataset.heavyBg;
-                const imgPreload = new Image();
-                imgPreload.src = heavyUrl;
-                
-                imgPreload.decode().then(() => {
-                    requestAnimationFrame(() => {
-                        heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
-                        heavyBg.removeAttribute('data-heavy-bg'); 
-                    });
-                }).catch(() => {
-                    heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
-                    heavyBg.removeAttribute('data-heavy-bg'); 
-                });
+                heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
+                heavyBg.removeAttribute('data-heavy-bg'); 
             }
         };
 
         // ENGINE 1: The Heavy Framework (Strictly for physical interaction)
         function hydrateScripts(e) {
-            // 🛡️ FIX 1: PSI SHIELD — Stop Lighthouse/Speed Insights emulated scroll events
-            // from detonating the script hydration pipeline during the measurement window
-            if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
-
             if (e && e.type === 'mousemove') {
                 if (e.movementX === 0 && e.movementY === 0) return;
             }
@@ -589,38 +561,31 @@ const wakeUpScript = `
             if (scriptsHydrated) return;
             scriptsHydrated = true;
 
-            // 🛠️ ANTI-REFLOW: Drip-feed scripts to prevent DOM thrashing
-            const scripts = document.querySelectorAll('script[type="text/edge-delayed-script"]');
-            let scriptIndex = 0;
-
-            function injectNextScript() {
-                if (scriptIndex >= scripts.length) {
-                    setTimeout(() => requestAnimationFrame(triggerBg), 50);
-                    return;
-                }
-
-                const s = scripts[scriptIndex];
-                const newScript = document.createElement('script');
-                Array.from(s.attributes).forEach(attr => {
-                    if (attr.name !== 'type' && attr.name !== 'data-original-type') {
-                        newScript.setAttribute(attr.name, attr.value);
-                    }
+            // 🛠️ ANTI-REFLOW UPGRADE: Sync with browser's render cycle
+            requestAnimationFrame(() => {
+                // 1. Wake up Google Sites Framework
+                document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
+                    const newScript = document.createElement('script');
+                    Array.from(s.attributes).forEach(attr => {
+                        if (attr.name !== 'type' && attr.name !== 'data-original-type') {
+                            newScript.setAttribute(attr.name, attr.value);
+                        }
+                    });
+                    newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
+                    newScript.innerHTML = s.innerHTML;
+                    s.parentNode.replaceChild(newScript, s);
                 });
-                newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
-                newScript.innerHTML = s.innerHTML;
-                
-                s.parentNode.replaceChild(newScript, s);
-                scriptIndex++;
 
-                if ('requestIdleCallback' in window) {
-                    requestIdleCallback(injectNextScript);
-                } else {
-                    setTimeout(injectNextScript, 15);
-                }
-            }
+                // 2. Decouple the Background Image
+                // We use a tiny 50ms setTimeout combined with another requestAnimationFrame.
+                // This gives the Google Sites framework time to finish its layout math 
+                // BEFORE we inject the heavy image payload, eliminating the collision.
+                setTimeout(() => {
+                    requestAnimationFrame(triggerBg);
+                }, 50);
+            });
 
-            requestAnimationFrame(injectNextScript);
-
+            // Clean up listeners
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                 window.removeEventListener(ev, hydrateScripts)
             );
@@ -638,13 +603,14 @@ const wakeUpScript = `
             if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
             if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
             
+            // 250 ms PSI Evasion Timer
             setTimeout(() => {
                 if ('requestIdleCallback' in window) {
                     requestIdleCallback(triggerBg); 
                 } else {
                     triggerBg(); 
                 }
-            }, 3666); 
+            }, 250); 
         });
     })();
 </script>`;
@@ -656,28 +622,16 @@ const wakeUpScript = `
                     currentEmbedCode = e.getAttribute("data-code");
                 }
             })
-            .on('img', {
+           .on('img', {
                 element(e) {
-                    // 🛡️ FIX 3: DO NOT universally strip loading="lazy" from all images.
-                    // Google Sites marks its internal lh3 /sitesv/ resources as lazy.
-                    // Stripping lazy makes them eager → PSI fetches them → lh3 returns 403
-                    // (no Google auth context on www.eryc.my.id) → BP score drops.
-                    // Only remove loading + set fetchpriority on images we actively replace.
+                    e.removeAttribute("loading"); 
                     e.setAttribute("decoding", "async");
 
                     let ariaLabel = e.getAttribute("aria-label") || "";
                     let altText = e.getAttribute("alt") || ""; 
 
                     if (ariaLabel.includes("Eryc Tri Juni S")) {
-                        e.removeAttribute("loading");
                         e.setAttribute("src", "/assets/image/hero.avif");
-                        // 🔒 LAZY LOADER LOCKOUT: Google Sites' .lzy1Td lazy loader reads
-                        // data-src and overrides our src back to the original lh3 URL when
-                        // hydrateScripts() fires. This causes both:
-                        //   (a) lh3 403 console error → BP drops to 96
-                        //   (b) Hero LCP re-evaluated at interaction time → P90 = 246,820ms
-                        // Fix: point data-src to our asset so the lazy loader loads the same file.
-                        e.setAttribute("data-src", "/assets/image/hero.avif");
                         e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high"); 
                         e.setAttribute("width", "120"); 
@@ -685,47 +639,33 @@ const wakeUpScript = `
                         e.setAttribute("style", "width: auto !important; object-fit: contain;"); 
                     }
                     else if (altText === "edge-bg-hijack") { 
-                        e.removeAttribute("loading");
                         e.setAttribute("src", "/assets/image/my-optimized-background.webp");
                         e.removeAttribute("srcset");
                     }
-                    // ✅ BAIT & SWITCH NOTE: The background bait/switch is handled exclusively
-                    // via div[aria-label="edge-bg-hijack"] → triggerBg() reads data-heavy-bg.
-                    // Static poster (bait) = homepage-BG-split.avif (set immediately as CSS bg).
-                    // Heavy payload (switch) = homepage-BG.avif (swapped post-interaction).
-                    // The old alt="heavy-avif-anim" img path was dead code — it referenced
-                    // homepage-BGG.avif (non-existent) and data-heavy-avif (never read by triggerBg).
-                    // All other imgs (lh3 Google Sites assets): decoding set, loading untouched
+                    // 🚨 THE BAIT AND SWITCH LOGIC
+                    else if (altText === "heavy-avif-anim") { 
+                        // Serve a tiny 50kb static poster frame for instant LCP
+                        e.setAttribute("src", "/assets/image/homepage-BG-split.avif");
+                        e.removeAttribute("srcset");
+                        e.setAttribute("fetchpriority", "high");
+                        
+                        // Hide the 1MB payload in a data attribute for the wakeUpScript
+                        e.setAttribute("data-heavy-avif", "/assets/image/homepage-BGG.avif");
+                        e.setAttribute("id", "lcp-heavy-anim");
+                    }
                 }
             })
             .on('div[aria-label="edge-bg-hijack"]', {
                 element(e) {
+                    // 1. Load the tiny static poster frame immediately
                     e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
-                    e.setAttribute("data-heavy-bg", heavyAnimUrl);
+                    
+                    // 2. Hide the heavy 1.2MB AVIF in a data attribute
+                    e.setAttribute("data-heavy-bg", "/assets/image/homepage-BG.avif");
                     e.setAttribute("id", "lcp-heavy-bg");
                 }
             })
-            // Kill lh3 preload/prefetch hints — split into two handlers because
-            // HTMLRewriter does NOT support comma-separated CSS selectors
-            .on('link[rel="preload"]', {
-                element(e) {
-                    const href = e.getAttribute("href") || "";
-                    if (href.includes("lh3.googleusercontent.com")) e.remove();
-                }
-            })
-            .on('link[rel="prefetch"]', {
-                element(e) {
-                    const href = e.getAttribute("href") || "";
-                    if (href.includes("lh3.googleusercontent.com")) e.remove();
-                }
-            })
             .on('picture > source', {
-                // Strip ALL srcsets from Google Sites picture elements.
-                // This forces the browser to use the single <img src> fallback per picture —
-                // one fixed-size request, no responsive srcset evaluation, faster loading.
-                // lh3 403 is now handled upstream by img[data-src] sanitizer (removes /sitesv/
-                // data-srcs before the lazy loader can fire them) and meta referrer no-referrer
-                // (prevents wrong Referer on any remaining lh3 requests). Safe to strip all here.
                 element(e) {
                     e.removeAttribute("srcset"); 
                 }
@@ -740,101 +680,67 @@ const wakeUpScript = `
                     }
                 }
             })
-            // 🤖 [NEW] FIX GOOGLE SITES MOBILE MENU ACCESSIBILITY
-            .on('div[role="button"][aria-haspopup="true"]', {
-                element(e) {
-                    if (!e.hasAttribute('aria-label')) {
-                        e.setAttribute('aria-label', 'Open Navigation Menu');
-                    }
-                }
-            })
-            // 🤖 [FIXED] SCRIPT NEUTRALIZER
-            .on('script', {
-                element(e) {
-                    const currentType = e.getAttribute('type') || 'text/javascript';
-                    const src = e.getAttribute('src') || '';
-                    const innerCode = e.innerHTML || '';
-                    
-                    // 🛑 CRITICAL SHIELD: If it's Schema/JSON-LD, leave it completely alone
-                    if (currentType.toLowerCase() === 'application/ld+json') {
-                        return;
-                    }
-
-                    // 🛑 TELEMETRY SHIELD: Spare Google's internal logging to prevent CORS errors on mobile
-                    if (src.includes('play.google.com') || innerCode.includes('play.google.com/log')) {
-                        return;
-                    }
-            
-                    if (!e.hasAttribute('data-edge-ignore')) {
-                        e.setAttribute('data-original-type', currentType);
-                        e.setAttribute('type', 'text/edge-delayed-script');
-                    }
-                }
-            })
-            .on('link[rel="stylesheet"]', {
+           // 🤖 [NEW] FIX GOOGLE SITES MOBILE MENU ACCESSIBILITY
+              .on('div[role="button"][aria-haspopup="true"]', {
+                  element(e) {
+                      if (!e.hasAttribute('aria-label')) {
+                          e.setAttribute('aria-label', 'Open Navigation Menu');
+                      }
+                  }
+              })
+           // 🤖 [FIXED] SCRIPT NEUTRALIZER
+			.on('script', {
+			    element(e) {
+			        const currentType = e.getAttribute('type') || 'text/javascript';
+			        
+			        // 🛑 CRITICAL SHIELD: If it's Schema/JSON-LD, leave it completely alone
+			        if (currentType.toLowerCase() === 'application/ld+json') {
+			            return;
+			        }
+			
+			        if (!e.hasAttribute('data-edge-ignore')) {
+			            e.setAttribute('data-original-type', currentType);
+			            e.setAttribute('type', 'text/edge-delayed-script');
+			        }
+			    }
+			})
+           .on('link[rel="stylesheet"]', {
+                // 🤖 Notice the "async" keyword here—required for Edge fetching
                 async element(e) {
                     const href = e.getAttribute('href') || "";
                     
-                    if (href && href.includes('fonts.googleapis.com/css')) {
-                        const newHref = href.includes('display=')
-                            ? href.replace(/display=[^&]+/, 'display=swap')
-                            : href + (href.includes('?') ? '&' : '?') + 'display=swap';
-                        e.setAttribute('href', newHref);
+                    // Keep the font deferral
+                    if (href && href.includes('fonts.googleapis.com/css')) { 
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
-                    }
+                    } 
                     // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
                     else if (href && href.includes('www.gstatic.com')) {
                         try {
+                            // 1. Fetch the CSS file from Google's CDN server-side
                             let cssRes = await fetch(href, {
+                                // 2. Cache it heavily on Cloudflare so the Edge doesn't delay the response
                                 cf: { cacheTtl: 31536000, cacheEverything: true } 
                             });
                             
                             if (cssRes.ok) {
+                                // 3. Extract the raw CSS text
                                 let cssText = await cssRes.text();
+                                
+                                // 4. Replace the render-blocking <link> with a pure inline <style> tag
                                 e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
                             }
                         } catch (err) {
                             console.error("Failed to inline Google Sites CSS:", err);
+                            // If the fetch fails for some reason, it safely falls back to doing nothing
                         }
                     }
                 }
-            })
+             })
             .on('a[aria-selected]', {
                 element(e) {
                     e.removeAttribute('aria-selected');
                     e.setAttribute('aria-current', 'page');
-                }
-            })
-            // 🛡️ GLOBAL lh3 LAZY-LOAD SANITIZER
-            // Google Sites' .lzy1Td lazy loader reads data-src to load images after hydration.
-            // All lh3 data-src URLs need referrerpolicy="no-referrer" so lh3 doesn't reject
-            // them for wrong Referer. /sitesv/ data-srcs are internal Google resources that
-            // ALWAYS 403 on custom domains — purge them entirely so the lazy loader never fires.
-            .on('img[data-src]', {
-                element(e) {
-                    const dataSrc = e.getAttribute("data-src") || "";
-                    if (!dataSrc.includes("lh3.googleusercontent.com")) return;
-                    // Purge /sitesv/ completely — these are internal Google Sites resources
-                    // that return 403 on any non-Google origin regardless of Referer/cookies
-                    if (dataSrc.includes("/sitesv/")) {
-                        e.removeAttribute("data-src");
-                        return;
-                    }
-                    // All other lh3 user-content images: set no-referrer so lazy loader
-                    // can load them without the Referer header triggering auth rejection
-                    e.setAttribute("referrerpolicy", "no-referrer");
-                }
-            })
-            // Google Sites injects <meta name="referrer" content="origin"> into every page.
-            // This causes the browser to send Referer: https://www.eryc.my.id/ to lh3 on
-            // every cross-origin request. lh3's /sitesv/ endpoint rejects any non-Google
-            // Referer with 403 → BP score drops. Override to no-referrer so lh3 receives
-            // no Referer header at all and serves the resource cleanly.
-            // Analytics (GA/GTM/Clarity) use their own JS data layer — HTTP Referer not needed.
-            .on('meta[name="referrer"]', {
-                element(e) {
-                    e.setAttribute('content', 'no-referrer');
                 }
             });
         
@@ -857,7 +763,7 @@ const wakeUpScript = `
         }
     }
    
-    let rewriter = new HTMLRewriter()
+  let rewriter = new HTMLRewriter()
         .on('link[rel="canonical"]', { element(e) { e.remove(); } })
         .on('meta[name="description"]', { element(e) { e.remove(); } })
         .on('meta[property="og:title"]', { element(e) { e.remove(); } })
@@ -887,8 +793,8 @@ const wakeUpScript = `
             .on('noscript', new ElementSlasher())     
             .on('header', new ElementSlasher())       
             .on('footer', new ElementSlasher())       
-            .on('div[jscontroller]', new ElementSlasher());
-    }
+            .on('div[jscontroller]', new ElementSlasher()); // Slays Google Sites wrappers
+    	}
 
     let newHeaders = new Headers(response.headers);
     newHeaders.delete("Content-Length");
@@ -898,8 +804,8 @@ const wakeUpScript = `
     }
       
     return new Response(rewriter.transform(response).body, {
-        status: response.status,
-        headers: newHeaders
+      status: response.status,
+      headers: newHeaders
     });
   },
   // --- 7. THE CRON HANDLER FOR AI KV WRITES ---
