@@ -794,6 +794,18 @@ const wakeUpScript = `
                     e.removeAttribute('aria-selected');
                     e.setAttribute('aria-current', 'page');
                 }
+            })
+            // 🛡️ ROOT FIX: REFERRER POLICY OVERRIDE
+            // Google Sites injects <meta name="referrer" content="origin"> into every page.
+            // This causes the browser to send Referer: https://www.eryc.my.id/ to lh3 on
+            // every cross-origin request. lh3's /sitesv/ endpoint rejects any non-Google
+            // Referer with 403 → BP score drops. Override to no-referrer so lh3 receives
+            // no Referer header at all and serves the resource cleanly.
+            // Analytics (GA/GTM/Clarity) use their own JS data layer — HTTP Referer not needed.
+            .on('meta[name="referrer"]', {
+                element(e) {
+                    e.setAttribute('content', 'no-referrer');
+                }
             });
         
         return new Response(humanRewriter.transform(response).body, {
