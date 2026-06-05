@@ -658,13 +658,18 @@ const wakeUpScript = `
             })
             .on('img', {
                 element(e) {
-                    e.removeAttribute("loading"); 
+                    // 🛡️ FIX 3: DO NOT universally strip loading="lazy" from all images.
+                    // Google Sites marks its internal lh3 /sitesv/ resources as lazy.
+                    // Stripping lazy makes them eager → PSI fetches them → lh3 returns 403
+                    // (no Google auth context on www.eryc.my.id) → BP score drops.
+                    // Only remove loading + set fetchpriority on images we actively replace.
                     e.setAttribute("decoding", "async");
 
                     let ariaLabel = e.getAttribute("aria-label") || "";
                     let altText = e.getAttribute("alt") || ""; 
 
                     if (ariaLabel.includes("Eryc Tri Juni S")) {
+                        e.removeAttribute("loading");
                         e.setAttribute("src", "/assets/image/hero.avif");
                         e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high"); 
@@ -673,17 +678,20 @@ const wakeUpScript = `
                         e.setAttribute("style", "width: auto !important; object-fit: contain;"); 
                     }
                     else if (altText === "edge-bg-hijack") { 
+                        e.removeAttribute("loading");
                         e.setAttribute("src", "/assets/image/my-optimized-background.webp");
                         e.removeAttribute("srcset");
                     }
                     // 🚨 THE BAIT AND SWITCH LOGIC
                     else if (altText === "heavy-avif-anim") { 
+                        e.removeAttribute("loading");
                         e.setAttribute("src", "/assets/image/homepage-BG-split.avif");
                         e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high");
                         e.setAttribute("data-heavy-avif", "/assets/image/homepage-BGG.avif");
                         e.setAttribute("id", "lcp-heavy-anim");
                     }
+                    // All other imgs (lh3 Google Sites assets): decoding set, loading untouched
                 }
             })
             .on('div[aria-label="edge-bg-hijack"]', {
@@ -691,6 +699,18 @@ const wakeUpScript = `
                     e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
                     e.setAttribute("data-heavy-bg", heavyAnimUrl);
                     e.setAttribute("id", "lcp-heavy-bg");
+                }
+            })
+            // 🛡️ FIX 4: KILL lh3 PRELOAD/PREFETCH HINTS
+            // Google Sites may inject <link rel="preload"> or <link rel="prefetch"> pointing
+            // to lh3 /sitesv/ URLs. These fire immediately regardless of JS state and return
+            // 403 when requested outside of Google's auth context → BP score drops.
+            .on('link[rel="preload"], link[rel="prefetch"]', {
+                element(e) {
+                    const href = e.getAttribute("href") || "";
+                    if (href.includes("lh3.googleusercontent.com")) {
+                        e.remove();
+                    }
                 }
             })
             .on('picture > source', {
