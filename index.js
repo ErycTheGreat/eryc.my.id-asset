@@ -671,6 +671,13 @@ const wakeUpScript = `
                     if (ariaLabel.includes("Eryc Tri Juni S")) {
                         e.removeAttribute("loading");
                         e.setAttribute("src", "/assets/image/hero.avif");
+                        // 🔒 LAZY LOADER LOCKOUT: Google Sites' .lzy1Td lazy loader reads
+                        // data-src and overrides our src back to the original lh3 URL when
+                        // hydrateScripts() fires. This causes both:
+                        //   (a) lh3 403 console error → BP drops to 96
+                        //   (b) Hero LCP re-evaluated at interaction time → P90 = 246,820ms
+                        // Fix: point data-src to our asset so the lazy loader loads the same file.
+                        e.setAttribute("data-src", "/assets/image/hero.avif");
                         e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high"); 
                         e.setAttribute("width", "120"); 
@@ -795,7 +802,26 @@ const wakeUpScript = `
                     e.setAttribute('aria-current', 'page');
                 }
             })
-            // 🛡️ ROOT FIX: REFERRER POLICY OVERRIDE
+            // 🛡️ GLOBAL lh3 LAZY-LOAD SANITIZER
+            // Google Sites' .lzy1Td lazy loader reads data-src to load images after hydration.
+            // All lh3 data-src URLs need referrerpolicy="no-referrer" so lh3 doesn't reject
+            // them for wrong Referer. /sitesv/ data-srcs are internal Google resources that
+            // ALWAYS 403 on custom domains — purge them entirely so the lazy loader never fires.
+            .on('img[data-src]', {
+                element(e) {
+                    const dataSrc = e.getAttribute("data-src") || "";
+                    if (!dataSrc.includes("lh3.googleusercontent.com")) return;
+                    // Purge /sitesv/ completely — these are internal Google Sites resources
+                    // that return 403 on any non-Google origin regardless of Referer/cookies
+                    if (dataSrc.includes("/sitesv/")) {
+                        e.removeAttribute("data-src");
+                        return;
+                    }
+                    // All other lh3 user-content images: set no-referrer so lazy loader
+                    // can load them without the Referer header triggering auth rejection
+                    e.setAttribute("referrerpolicy", "no-referrer");
+                }
+            })
             // Google Sites injects <meta name="referrer" content="origin"> into every page.
             // This causes the browser to send Referer: https://www.eryc.my.id/ to lh3 on
             // every cross-origin request. lh3's /sitesv/ endpoint rejects any non-Google
