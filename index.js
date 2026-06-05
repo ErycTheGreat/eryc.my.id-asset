@@ -20,11 +20,15 @@ export default {
 
     // --- 0.1 BOT TRACKER & DETECTION ---
 	const userAgent = request.headers.get("User-Agent") || "";
-	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Google-Agent|Gemini-Deep-Research/i.test(userAgent);
+	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Gemini-Deep-Research|Google-Agent|anthropic-ai/i.test(userAgent);
 	const isCrawlerBot = /Googlebot|Google-InspectionTool|bingbot|Yandexbot/i.test(userAgent);
 	const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
+
+	// 📱 DETECT MOBILE DEVICES
+	const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
 		
-	const isBot = isAIBot || isCrawlerBot || isSocialBot || url.searchParams.get("debug") === "bot";
+	// Force true if Cloudflare already verified it as a bot via cf.request.cf (optional safeguard)
+	const isBot = isAIBot || isCrawlerBot || isSocialBot || (request.cf && request.cf.asReplacerBot) || url.searchParams.get("debug") === "bot";
 
     if (isBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
@@ -89,6 +93,10 @@ Allow: /
 Allow: /llms.txt
 
 User-agent: ClaudeBot
+Allow: /
+Allow: /llms.txt
+
+User-agent: Claude-SearchBot
 Allow: /
 Allow: /llms.txt
 
@@ -299,7 +307,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 		<link rel="preconnect" href="https://apis.google.com" crossorigin="">
         
                 
-        <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
+        <!-- <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high"> -->
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
         <style id="edge-anti-flash">
@@ -528,6 +536,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         let newHeaders = new Headers(response.headers);
         newHeaders.delete("Content-Length"); 
         newHeaders.delete("Content-Security-Policy");
+		
+		// 📱 ROUTE THE ASSET BASED ON DEVICE POWER
+       const heavyAnimUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
+        const heavyStaticUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
 
        // 🤖 INJECT THE HTTP LCP PRELOAD HEADER
        if (agpLcpUrl) {
@@ -699,8 +711,9 @@ const wakeUpScript = `
                     // 1. Load the tiny static poster frame immediately
                     e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
                     
-                    // 2. Hide the heavy 1.2MB AVIF in a data attribute
-                    e.setAttribute("data-heavy-bg", "/assets/image/homepage-BG.avif");
+                    // 2. Hide the heavy animated AVIF in a data attribute
+                    // Fixed: Changed data-heavy-avif to data-heavy-bg so triggerBg() can find it
+                    e.setAttribute("data-heavy-bg", heavyAnimUrl);
                     e.setAttribute("id", "lcp-heavy-bg");
                 }
             })
@@ -763,7 +776,7 @@ const wakeUpScript = `
                         e.setAttribute('href', newHref);
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
-                    } 
+                    }
                     // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
                     else if (href && href.includes('www.gstatic.com')) {
                         try {
