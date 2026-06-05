@@ -539,7 +539,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 		
 		// 📱 ROUTE THE ASSET BASED ON DEVICE POWER
        const heavyAnimUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
-        const heavyStaticUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
+        const heavyStaticUrl = isMobile ? "/assets/image/homepage-BG-split.avif";
 
        // 🤖 INJECT THE HTTP LCP PRELOAD HEADER
        if (agpLcpUrl) {
@@ -705,7 +705,7 @@ const wakeUpScript = `
                         e.setAttribute("fetchpriority", "high");
                         
                         // Hide the 1MB payload in a data attribute for the wakeUpScript
-                        e.setAttribute("data-heavy-avif", "/assets/image/homepage-BGG.avif");
+                        e.setAttribute("data-heavy-avif", "/assets/image/homepage-BG.avif");
                         e.setAttribute("id", "lcp-heavy-anim");
                     }
                 }
