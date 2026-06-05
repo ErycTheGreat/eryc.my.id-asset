@@ -21,7 +21,7 @@ export default {
     // --- 0.1 BOT TRACKER & DETECTION ---
 	const userAgent = request.headers.get("User-Agent") || "";
 	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Gemini-Deep-Research|Google-Agent|anthropic-ai/i.test(userAgent);
-	const isCrawlerBot = /Googlebot|Google-InspectionTool|bingbot|Yandexbot/i.test(userAgent);
+	const isCrawlerBot = /Googlebot|bingbot|Yandexbot/i.test(userAgent);
 	const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
 
 	// 📱 DETECT MOBILE DEVICES
@@ -93,10 +93,6 @@ Allow: /
 Allow: /llms.txt
 
 User-agent: ClaudeBot
-Allow: /
-Allow: /llms.txt
-
-User-agent: Claude-SearchBot
 Allow: /
 Allow: /llms.txt
 
@@ -701,7 +697,7 @@ const wakeUpScript = `
                         e.setAttribute("fetchpriority", "high");
                         
                         // Hide the 1MB payload in a data attribute for the wakeUpScript
-                        e.setAttribute("data-heavy-avif", "/assets/image/homepage-BGG.avif");
+                        e.setAttribute("data-heavy-avif", "/assets/image/homepage-BG.avif");
                         e.setAttribute("id", "lcp-heavy-anim");
                     }
                 }
