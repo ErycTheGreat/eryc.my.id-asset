@@ -682,15 +682,12 @@ const wakeUpScript = `
                         e.setAttribute("src", "/assets/image/my-optimized-background.webp");
                         e.removeAttribute("srcset");
                     }
-                    // 🚨 THE BAIT AND SWITCH LOGIC
-                    else if (altText === "heavy-avif-anim") { 
-                        e.removeAttribute("loading");
-                        e.setAttribute("src", "/assets/image/homepage-BG-split.avif");
-                        e.removeAttribute("srcset");
-                        e.setAttribute("fetchpriority", "high");
-                        e.setAttribute("data-heavy-avif", "/assets/image/homepage-BGG.avif");
-                        e.setAttribute("id", "lcp-heavy-anim");
-                    }
+                    // ✅ BAIT & SWITCH NOTE: The background bait/switch is handled exclusively
+                    // via div[aria-label="edge-bg-hijack"] → triggerBg() reads data-heavy-bg.
+                    // Static poster (bait) = homepage-BG-split.avif (set immediately as CSS bg).
+                    // Heavy payload (switch) = homepage-BG.avif (swapped post-interaction).
+                    // The old alt="heavy-avif-anim" img path was dead code — it referenced
+                    // homepage-BGG.avif (non-existent) and data-heavy-avif (never read by triggerBg).
                     // All other imgs (lh3 Google Sites assets): decoding set, loading untouched
                 }
             })
