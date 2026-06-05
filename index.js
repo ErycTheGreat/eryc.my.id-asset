@@ -705,24 +705,28 @@ const wakeUpScript = `
                     e.setAttribute("id", "lcp-heavy-bg");
                 }
             })
-            // 🛡️ FIX 4: KILL lh3 PRELOAD/PREFETCH HINTS
-            // Google Sites may inject <link rel="preload"> or <link rel="prefetch"> pointing
-            // to lh3 /sitesv/ URLs. These fire immediately regardless of JS state and return
-            // 403 when requested outside of Google's auth context → BP score drops.
-            .on('link[rel="preload"], link[rel="prefetch"]', {
+            // Kill lh3 preload/prefetch hints — split into two handlers because
+            // HTMLRewriter does NOT support comma-separated CSS selectors
+            .on('link[rel="preload"]', {
                 element(e) {
                     const href = e.getAttribute("href") || "";
-                    if (href.includes("lh3.googleusercontent.com")) {
-                        e.remove();
-                    }
+                    if (href.includes("lh3.googleusercontent.com")) e.remove();
+                }
+            })
+            .on('link[rel="prefetch"]', {
+                element(e) {
+                    const href = e.getAttribute("href") || "";
+                    if (href.includes("lh3.googleusercontent.com")) e.remove();
                 }
             })
             .on('picture > source', {
-                // 🛡️ FIX 2: SAFE SRCSET STRIPPING — Spare lh3 auth tokens to prevent 403s
-                // Blindly nuking srcset breaks lh3's scoped token URLs → server returns 403
+                // Strip ALL srcsets from Google Sites picture elements.
+                // This forces the browser to use the single <img src> fallback per picture —
+                // one fixed-size request, no responsive srcset evaluation, faster loading.
+                // lh3 403 is now handled upstream by img[data-src] sanitizer (removes /sitesv/
+                // data-srcs before the lazy loader can fire them) and meta referrer no-referrer
+                // (prevents wrong Referer on any remaining lh3 requests). Safe to strip all here.
                 element(e) {
-                    const srcset = e.getAttribute("srcset") || "";
-                    if (srcset.includes("lh3.googleusercontent.com")) return;
                     e.removeAttribute("srcset"); 
                 }
             })
