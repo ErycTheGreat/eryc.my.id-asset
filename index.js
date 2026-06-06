@@ -658,12 +658,25 @@ const wakeUpScript = `
             })
             .on('img', {
                 element(e) {
-                    // 🛡️ FIX 3: DO NOT universally strip loading="lazy" from all images.
-                    // Google Sites marks its internal lh3 /sitesv/ resources as lazy.
-                    // Stripping lazy makes them eager → PSI fetches them → lh3 returns 403
-                    // (no Google auth context on www.eryc.my.id) → BP score drops.
-                    // Only remove loading + set fetchpriority on images we actively replace.
                     e.setAttribute("decoding", "async");
+
+                    const src = e.getAttribute("src") || "";
+                    const dataSrc = e.getAttribute("data-src") || "";
+                    
+                    // 🛑 THE 403 ASSASSIN: Nuke internal Google /sitesv/ images.
+                    // We replace the src with a transparent 1x1 data URI so the browser 
+                    // doesn't fire a network request and layout doesn't break.
+                    if (src.includes("/sitesv/") || dataSrc.includes("/sitesv/")) {
+                        e.setAttribute("src", "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
+                        e.removeAttribute("data-src");
+                        e.removeAttribute("srcset");
+                        return; // Stop processing this specific image
+                    }
+
+                    // 🛡️ LH3 REFERRER FIX: Apply no-referrer to all remaining Google user content
+                    if (src.includes("lh3.googleusercontent.com") || dataSrc.includes("lh3.googleusercontent.com")) {
+                        e.setAttribute("referrerpolicy", "no-referrer");
+                    }
 
                     let ariaLabel = e.getAttribute("aria-label") || "";
                     let altText = e.getAttribute("alt") || ""; 
@@ -671,12 +684,7 @@ const wakeUpScript = `
                     if (ariaLabel.includes("Eryc Tri Juni S")) {
                         e.removeAttribute("loading");
                         e.setAttribute("src", "/assets/image/hero.avif");
-                        // 🔒 LAZY LOADER LOCKOUT: Google Sites' .lzy1Td lazy loader reads
-                        // data-src and overrides our src back to the original lh3 URL when
-                        // hydrateScripts() fires. This causes both:
-                        //   (a) lh3 403 console error → BP drops to 96
-                        //   (b) Hero LCP re-evaluated at interaction time → P90 = 246,820ms
-                        // Fix: point data-src to our asset so the lazy loader loads the same file.
+                        // 🔒 LAZY LOADER LOCKOUT
                         e.setAttribute("data-src", "/assets/image/hero.avif");
                         e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high"); 
@@ -689,13 +697,6 @@ const wakeUpScript = `
                         e.setAttribute("src", "/assets/image/my-optimized-background.webp");
                         e.removeAttribute("srcset");
                     }
-                    // ✅ BAIT & SWITCH NOTE: The background bait/switch is handled exclusively
-                    // via div[aria-label="edge-bg-hijack"] → triggerBg() reads data-heavy-bg.
-                    // Static poster (bait) = homepage-BG-split.avif (set immediately as CSS bg).
-                    // Heavy payload (switch) = homepage-BG.avif (swapped post-interaction).
-                    // The old alt="heavy-avif-anim" img path was dead code — it referenced
-                    // homepage-BGG.avif (non-existent) and data-heavy-avif (never read by triggerBg).
-                    // All other imgs (lh3 Google Sites assets): decoding set, loading untouched
                 }
             })
             .on('div[aria-label="edge-bg-hijack"]', {
