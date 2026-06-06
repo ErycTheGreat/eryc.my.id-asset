@@ -670,7 +670,7 @@ const wakeUpScript = `
                         e.setAttribute("src", "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
                         e.removeAttribute("data-src");
                         e.removeAttribute("srcset");
-                        return; // Stop processing this specific image
+                        return; 
                     }
 
                     // 🛡️ LH3 REFERRER FIX: Apply no-referrer to all remaining Google user content
@@ -684,7 +684,6 @@ const wakeUpScript = `
                     if (ariaLabel.includes("Eryc Tri Juni S")) {
                         e.removeAttribute("loading");
                         e.setAttribute("src", "/assets/image/hero.avif");
-                        // 🔒 LAZY LOADER LOCKOUT
                         e.setAttribute("data-src", "/assets/image/hero.avif");
                         e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high"); 
@@ -812,21 +811,7 @@ const wakeUpScript = `
             // All lh3 data-src URLs need referrerpolicy="no-referrer" so lh3 doesn't reject
             // them for wrong Referer. /sitesv/ data-srcs are internal Google resources that
             // ALWAYS 403 on custom domains — purge them entirely so the lazy loader never fires.
-            .on('img[data-src]', {
-                element(e) {
-                    const dataSrc = e.getAttribute("data-src") || "";
-                    if (!dataSrc.includes("lh3.googleusercontent.com")) return;
-                    // Purge /sitesv/ completely — these are internal Google Sites resources
-                    // that return 403 on any non-Google origin regardless of Referer/cookies
-                    if (dataSrc.includes("/sitesv/")) {
-                        e.removeAttribute("data-src");
-                        return;
-                    }
-                    // All other lh3 user-content images: set no-referrer so lazy loader
-                    // can load them without the Referer header triggering auth rejection
-                    e.setAttribute("referrerpolicy", "no-referrer");
-                }
-            })
+            
             // Google Sites injects <meta name="referrer" content="origin"> into every page.
             // This causes the browser to send Referer: https://www.eryc.my.id/ to lh3 on
             // every cross-origin request. lh3's /sitesv/ endpoint rejects any non-Google
@@ -863,11 +848,13 @@ const wakeUpScript = `
         .on('meta[name="description"]', { element(e) { e.remove(); } })
         .on('meta[property="og:title"]', { element(e) { e.remove(); } })
         .on("head", {
-            element(e) { 
-                e.append(customHeaderContent, { html: true }); 
-                if (agpGhostCss) {
-                    e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
-                }
+                element(e) {
+                    e.append(customHeaderContent, { html: true }); 
+                    
+                    // 🤖 INJECT THE AI-GENERATED CRITICAL CSS
+                    if (agpGhostCss) {
+                        e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
+                    }
             }
         });
 
