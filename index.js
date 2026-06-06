@@ -569,25 +569,6 @@ const wakeUpScript = `
     (function() {
         let scriptsHydrated = false;
 
-
-		 // 🛡️ INTERCEPT: Kill lh3.googleusercontent.com/sitesv/ before browser fetches it
-        const lh3Observer = new MutationObserver((mutations) => {
-            mutations.forEach(mutation => {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-                    const el = mutation.target;
-                    const bg = el.style.backgroundImage || '';
-                    if (bg.includes('lh3.googleusercontent.com/sitesv/')) {
-                        el.style.backgroundImage = 'none';
-                    }
-                }
-            });
-        });
-        lh3Observer.observe(document.documentElement, { 
-            attributes: true, 
-            attributeFilter: ['style'], 
-            subtree: true 
-        });
-
         // 🎯 THE PAYLOAD DETONATOR (Off-Thread Decode)
         const triggerBg = () => {
             const heavyBg = document.getElementById('lcp-heavy-bg');
@@ -736,7 +717,6 @@ const wakeUpScript = `
                     e.setAttribute("id", "lcp-heavy-bg");
                 }
             })
-			
             .on('picture > source', {
                 element(e) {
                     e.removeAttribute("srcset"); 
@@ -820,19 +800,6 @@ const wakeUpScript = `
                     }
                 }
              })
-			 
-			 .on('[style*="lh3.googleusercontent.com"]', {
-                element(e) {
-                    const style = e.getAttribute('style') || '';
-                    e.setAttribute('style', 
-                        style.replace(
-                            /url\(['"]?https:\/\/lh3\.googleusercontent\.com\/sitesv\/[^'")\s]+['"]?\)/g, 
-                            'none'
-                        )
-                    );
-                }
-            })
-			 
             .on('a[aria-selected]', {
                 element(e) {
                     e.removeAttribute('aria-selected');
