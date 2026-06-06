@@ -806,7 +806,7 @@ const wakeUpScript = `
                     e.removeAttribute('aria-selected');
                     e.setAttribute('aria-current', 'page');
                 }
-            });
+            })
         
 			// 🔪 SCRUB: Kill Google Sites internal CDN refs before they 403
 			.on('[style]', {
