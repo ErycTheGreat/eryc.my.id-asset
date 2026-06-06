@@ -19,22 +19,22 @@ export default {
     const url = new URL(request.url);
 
     // --- 0.1 BOT TRACKER & DETECTION ---
-    const userAgent = request.headers.get("User-Agent") || "";
-    const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Gemini-Deep-Research|Google-Agent|anthropic-ai/i.test(userAgent);
-    const isCrawlerBot = /Googlebot|bingbot|Yandexbot/i.test(userAgent);
-    const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
+	const userAgent = request.headers.get("User-Agent") || "";
+	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Gemini-Deep-Research|Google-Agent|anthropic-ai/i.test(userAgent);
+	const isCrawlerBot = /Googlebot|bingbot|Yandexbot/i.test(userAgent);
+	const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
 
-    // 📱 DETECT MOBILE DEVICES
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-        
-    // Force true if Cloudflare already verified it as a bot via cf.request.cf (optional safeguard)
-    const isBot = isAIBot || isCrawlerBot || isSocialBot || (request.cf && request.cf.asReplacerBot) || url.searchParams.get("debug") === "bot";
+	// 📱 DETECT MOBILE DEVICES
+	const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+		
+	// Force true if Cloudflare already verified it as a bot via cf.request.cf (optional safeguard)
+	const isBot = isAIBot || isCrawlerBot || isSocialBot || (request.cf && request.cf.asReplacerBot) || url.searchParams.get("debug") === "bot";
 
     if (isBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
     }
-    
-    // --- 0.2 INDEXNOW API KEY VERIFICATION ---
+	
+	// --- 0.2 INDEXNOW API KEY VERIFICATION ---
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
       return new Response("3d66934eab674a3496effb0a0651a038", {
         status: 200,
@@ -292,8 +292,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     const customHeaderContent = `
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-        <link rel="preconnect" href="https://apis.google.com" crossorigin="">
+		<link rel="preconnect" href="https://apis.google.com" crossorigin="">
                 
+        <!-- <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high"> -->
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
         <style id="edge-anti-flash">
@@ -325,7 +326,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="author" href="${domain}/about">
         
         <meta property="og:type" content="website">
-        <meta property="og:site_name" content="Eryc Tri Juni S">
+		<meta property="og:site_name" content="Eryc Tri Juni S">
         <meta property="og:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S ">
         <meta property="og:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta property="og:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
@@ -506,8 +507,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             })(window, document, "clarity", "script", "w60p488a9w");
         </script>
         <script type="text/edge-delayed-script" data-original-type="text/javascript" defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "af77cd4bb9b147a09fe3ee68cb8dfe59"}'></script>
-        
-        <script type="text/edge-delayed-script" data-original-type="text/javascript" defer src="https://www.googletagmanager.com/gtag/js?id=G-460EZRLTB6"></script>
+		
+		<script type="text/edge-delayed-script" data-original-type="text/javascript" defer src="https://www.googletagmanager.com/gtag/js?id=G-460EZRLTB6"></script>
         
         <script type="text/edge-delayed-script" data-original-type="text/javascript">
           window.dataLayer = window.dataLayer || [];
@@ -522,8 +523,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         let newHeaders = new Headers(response.headers);
         newHeaders.delete("Content-Length"); 
         newHeaders.delete("Content-Security-Policy");
-        
-        // 📱 ROUTE THE ASSET BASED ON DEVICE POWER
+		
+		// 📱 ROUTE THE ASSET BASED ON DEVICE POWER
         const heavyAnimUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
         const heavyStaticUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
 
@@ -541,6 +542,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             
             .on("head", {
                 element(e) {
+                    e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
                     e.append(customHeaderContent, { html: true }); 
                     
                     // 🤖 INJECT THE AI-GENERATED CRITICAL CSS
@@ -656,24 +658,12 @@ const wakeUpScript = `
             })
             .on('img', {
                 element(e) {
+                    // 🛡️ FIX 3: DO NOT universally strip loading="lazy" from all images.
+                    // Google Sites marks its internal lh3 /sitesv/ resources as lazy.
+                    // Stripping lazy makes them eager → PSI fetches them → lh3 returns 403
+                    // (no Google auth context on www.eryc.my.id) → BP score drops.
+                    // Only remove loading + set fetchpriority on images we actively replace.
                     e.setAttribute("decoding", "async");
-
-                    let src = e.getAttribute("src") || "";
-                    let dataSrc = e.getAttribute("data-src") || "";
-                    let srcset = e.getAttribute("srcset") || "";
-
-                    // 🛑 THE 403 ASSASSIN: Nuke /sitesv/ no matter where it hides
-                    if (src.includes("/sitesv/") || dataSrc.includes("/sitesv/") || srcset.includes("/sitesv/")) {
-                        e.setAttribute("src", "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
-                        e.removeAttribute("data-src");
-                        e.removeAttribute("srcset");
-                        return; // Stop processing this image
-                    }
-
-                    // 🛡️ LH3 REFERRER FIX: Apply no-referrer to all remaining Google user content
-                    if (src.includes("lh3.googleusercontent.com") || dataSrc.includes("lh3.googleusercontent.com")) {
-                        e.setAttribute("referrerpolicy", "no-referrer");
-                    }
 
                     let ariaLabel = e.getAttribute("aria-label") || "";
                     let altText = e.getAttribute("alt") || ""; 
@@ -681,6 +671,12 @@ const wakeUpScript = `
                     if (ariaLabel.includes("Eryc Tri Juni S")) {
                         e.removeAttribute("loading");
                         e.setAttribute("src", "/assets/image/hero.avif");
+                        // 🔒 LAZY LOADER LOCKOUT: Google Sites' .lzy1Td lazy loader reads
+                        // data-src and overrides our src back to the original lh3 URL when
+                        // hydrateScripts() fires. This causes both:
+                        //   (a) lh3 403 console error → BP drops to 96
+                        //   (b) Hero LCP re-evaluated at interaction time → P90 = 246,820ms
+                        // Fix: point data-src to our asset so the lazy loader loads the same file.
                         e.setAttribute("data-src", "/assets/image/hero.avif");
                         e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high"); 
@@ -693,15 +689,13 @@ const wakeUpScript = `
                         e.setAttribute("src", "/assets/image/my-optimized-background.webp");
                         e.removeAttribute("srcset");
                     }
-                }
-            })
-            // 🛡️ FAVICON 403 CATCHER
-            .on('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]', {
-                element(e) {
-                    let href = e.getAttribute("href") || "";
-                    if (href.includes("/sitesv/")) {
-                        e.setAttribute("href", "/assets/image/logo-512x512.webp");
-                    }
+                    // ✅ BAIT & SWITCH NOTE: The background bait/switch is handled exclusively
+                    // via div[aria-label="edge-bg-hijack"] → triggerBg() reads data-heavy-bg.
+                    // Static poster (bait) = homepage-BG-split.avif (set immediately as CSS bg).
+                    // Heavy payload (switch) = homepage-BG.avif (swapped post-interaction).
+                    // The old alt="heavy-avif-anim" img path was dead code — it referenced
+                    // homepage-BGG.avif (non-existent) and data-heavy-avif (never read by triggerBg).
+                    // All other imgs (lh3 Google Sites assets): decoding set, loading untouched
                 }
             })
             .on('div[aria-label="edge-bg-hijack"]', {
@@ -812,6 +806,26 @@ const wakeUpScript = `
                     e.setAttribute('aria-current', 'page');
                 }
             })
+            // 🛡️ GLOBAL lh3 LAZY-LOAD SANITIZER
+            // Google Sites' .lzy1Td lazy loader reads data-src to load images after hydration.
+            // All lh3 data-src URLs need referrerpolicy="no-referrer" so lh3 doesn't reject
+            // them for wrong Referer. /sitesv/ data-srcs are internal Google resources that
+            // ALWAYS 403 on custom domains — purge them entirely so the lazy loader never fires.
+            .on('img[data-src]', {
+                element(e) {
+                    const dataSrc = e.getAttribute("data-src") || "";
+                    if (!dataSrc.includes("lh3.googleusercontent.com")) return;
+                    // Purge /sitesv/ completely — these are internal Google Sites resources
+                    // that return 403 on any non-Google origin regardless of Referer/cookies
+                    if (dataSrc.includes("/sitesv/")) {
+                        e.removeAttribute("data-src");
+                        return;
+                    }
+                    // All other lh3 user-content images: set no-referrer so lazy loader
+                    // can load them without the Referer header triggering auth rejection
+                    e.setAttribute("referrerpolicy", "no-referrer");
+                }
+            })
             // Google Sites injects <meta name="referrer" content="origin"> into every page.
             // This causes the browser to send Referer: https://www.eryc.my.id/ to lh3 on
             // every cross-origin request. lh3's /sitesv/ endpoint rejects any non-Google
@@ -867,7 +881,7 @@ const wakeUpScript = `
     // 🔪 SIGNAL PRUNING: Kill CMS garbage for AI models
     if (isAIBot || isSocialBot) {
         rewriter
-            .on('script', new ElementSlasher())   
+            .on('script', new ElementSlasher())    
             .on('style', new ElementSlasher())        
             .on('iframe', new ElementSlasher())       
             .on('noscript', new ElementSlasher())     
