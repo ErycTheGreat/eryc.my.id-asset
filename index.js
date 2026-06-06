@@ -717,16 +717,7 @@ const wakeUpScript = `
                     e.setAttribute("id", "lcp-heavy-bg");
                 }
             })
-			.on('[style*="lh3.googleusercontent.com"]', {
-			element(e) {
-				const style = e.getAttribute('style') || '';
-				const newStyle = style.replace(
-					/background-image:\s*url\([^)]*lh3\.googleusercontent\.com[^)]*\)\s*;?/gi, 
-					''
-				);
-				e.setAttribute('style', newStyle);
-			}
-		})
+			
             .on('picture > source', {
                 element(e) {
                     e.removeAttribute("srcset"); 
@@ -817,6 +808,20 @@ const wakeUpScript = `
                 }
             });
         
+			// 🔪 SCRUB: Kill Google Sites internal CDN refs before they 403
+			.on('[style]', {
+				element(e) {
+					const style = e.getAttribute('style') || '';
+					if (style.includes('googleusercontent.com/sitesv/')) {
+						const cleaned = style.replace(
+							/url\(['"]?https:\/\/lh3\.googleusercontent\.com\/sitesv\/[^'")\s]+['"]?\)/g, 
+							'none'
+						);
+						e.setAttribute('style', cleaned);
+					}
+				}
+			});
+		
         return new Response(humanRewriter.transform(response).body, {
             status: response.status,
             headers: newHeaders
