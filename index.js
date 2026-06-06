@@ -717,17 +717,16 @@ const wakeUpScript = `
                     e.setAttribute("id", "lcp-heavy-bg");
                 }
             })
-			// 🔪 KILL GOOGLE SITES NATIVE BG — 403 SOURCE
-            .on('img[src*="lh3.googleusercontent.com/sitesv"]', {
-                element(e) {
-                    e.remove();
-                }
-            })
-            .on('[style*="lh3.googleusercontent.com/sitesv"]', {
-                element(e) {
-                    e.removeAttribute('style');
-                }
-            })
+			.on('[style*="lh3.googleusercontent.com"]', {
+			element(e) {
+				const style = e.getAttribute('style') || '';
+				const newStyle = style.replace(
+					/background-image:\s*url\([^)]*lh3\.googleusercontent\.com[^)]*\)\s*;?/gi, 
+					''
+				);
+				e.setAttribute('style', newStyle);
+			}
+		})
             .on('picture > source', {
                 element(e) {
                     e.removeAttribute("srcset"); 
