@@ -681,7 +681,7 @@ const wakeUpScript = `
                     let ariaLabel = e.getAttribute("aria-label") || "";
                     let altText = e.getAttribute("alt") || ""; 
 
-                    if (ariaLabel.includes("Eryc Tri Juni S")) {
+                    if (ariaLabel.includes("site-logo-hijack")) {
                         e.setAttribute("src", "/assets/image/hero.avif");
                         e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high"); 
