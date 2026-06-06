@@ -553,6 +553,14 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             .on('meta[name="description"]', { element(e) { e.remove(); } })
             .on('meta[property="og:title"]', { element(e) { e.remove(); } })
             
+			.on('link[rel="preload"]', { 
+			element(e) { 
+				const href = e.getAttribute('href') || '';
+				if (href.includes('lh3.googleusercontent.com')) {
+					e.remove();
+				}
+			} 
+			})
             .on("head", {
                 element(e) {
                     e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
@@ -830,7 +838,14 @@ const wakeUpScript = `
         .on('link[rel="canonical"]', { element(e) { e.remove(); } })
         .on('meta[name="description"]', { element(e) { e.remove(); } })
         .on('meta[property="og:title"]', { element(e) { e.remove(); } })
-		.on('link[rel="preload"][href*="googleusercontent.com"]', { element(e) { e.remove(); } })
+		.on('link[rel="preload"]', { 
+		element(e) { 
+			const href = e.getAttribute('href') || '';
+			if (href.includes('lh3.googleusercontent.com')) {
+				e.remove(); // ← kill Google Sites' sneaky preload injection
+			}
+		} 
+		})
         .on("head", {
             element(e) { 
                 e.append(customHeaderContent, { html: true }); 
