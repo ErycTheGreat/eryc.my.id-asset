@@ -700,7 +700,7 @@
 							e.setAttribute("fetchpriority", "high");
 							
 							// Hide the 1MB payload in a data attribute for the wakeUpScript
-							e.setAttribute("data-heavy-avif", "/assets/image/homepage-BGG.avif");
+							e.setAttribute("data-heavy-avif", "/assets/image/homepage-BG.avif");
 							e.setAttribute("id", "lcp-heavy-anim");
 						}
 					}
