@@ -311,27 +311,22 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
         <style id="edge-anti-flash">
-            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
-            html {
-                background-color: #060522 !important;
-            }
+            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
+            html {
+                background-color: #060522 !important;
+            }
 
-            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
-            :root {
-                --theme-page_background-color: transparent !important;
-                --theme-background-color: transparent !important;
-            }
-            
-            /* 3. Ensure the body allows the html canvas to show through */
-            body {
-                background-color: transparent !important;
-            }
-
-            /* 4. 🔪 SURGICAL KILL: Neutralize Google Sites editor background (lh3 403 fix) */
-            [style*="lh3.googleusercontent.com"] {
-                background-image: none !important;
-            }
-        </style>
+            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
+            :root {
+                --theme-page_background-color: transparent !important;
+                --theme-background-color: transparent !important;
+            }
+            
+            /* 3. Ensure the body allows the html canvas to show through */
+            body {
+                background-color: transparent !important;
+            }
+        </style>
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -720,6 +715,17 @@ const wakeUpScript = `
                     // Fixed: Changed data-heavy-avif to data-heavy-bg so triggerBg() can find it
                     e.setAttribute("data-heavy-bg", heavyAnimUrl);
                     e.setAttribute("id", "lcp-heavy-bg");
+                }
+            })
+			// 🔪 KILL GOOGLE SITES NATIVE BG — 403 SOURCE
+            .on('img[src*="lh3.googleusercontent.com/sitesv"]', {
+                element(e) {
+                    e.remove();
+                }
+            })
+            .on('[style*="lh3.googleusercontent.com/sitesv"]', {
+                element(e) {
+                    e.removeAttribute('style');
                 }
             })
             .on('picture > source', {
