@@ -223,50 +223,50 @@
 		  });
 		}
 		  
-	   // --- 4. THE R2 ASSET PROXY (with Cloudflare Edge Cache) ---
-		const path = url.pathname;
+	   // --- 4. THE R2 ASSET PROXY ---
+    const path = url.pathname;
+    
+    if (path.startsWith("/assets/")) {
+      const filePath = path.replace("/assets/", "");
 
-		if (path.startsWith("/assets/")) {
-		  const filePath = path.replace("/assets/", "");
-		  const cacheKey = new Request(request.url);
-		  const cache = caches.default;
+      // 🚀 STEP 1: Check Cloudflare PoP edge cache first (same as cf.cacheEverything)
+      const cacheKey = new Request(request.url);
+      const cache = caches.default;
+      const cachedResponse = await cache.match(cacheKey);
+      if (cachedResponse) return cachedResponse; // ← Pure PoP hit, R2 never touched
 
-		  // 1. Check the Cloudflare PoP edge cache first — sub-ms on hit
-		  let cachedResponse = await cache.match(cacheKey);
-		  if (cachedResponse) return cachedResponse;
+      // 🪣 STEP 2: Cache miss — now actually hit R2
+      const object = await env.MY_ASSETS.get(filePath);
 
-		  // 2. Cache miss — go to R2
-		  const object = await env.MY_ASSETS.get(filePath);
+      if (object === null) {
+        return new Response("Asset not found in R2", { status: 404 });
+      }
 
-		  if (object === null) {
-			return new Response("Asset not found in R2", { status: 404 });
-		  }
+      const newHeaders = new Headers();
+      newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
+      newHeaders.set("X-Proxy-Origin", "Cloudflare-R2");
+      newHeaders.set("Access-Control-Allow-Origin", "*");
 
-		  const newHeaders = new Headers();
-		  newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
-		  newHeaders.set("X-Proxy-Origin", "Cloudflare-R2");
-		  newHeaders.set("Access-Control-Allow-Origin", "*");
+      const lowerPath = filePath.toLowerCase();
+      if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
+      else if (lowerPath.endsWith(".css")) newHeaders.set("Content-Type", "text/css");
+      else if (lowerPath.endsWith(".html")) newHeaders.set("Content-Type", "text/html; charset=UTF-8");
+      else if (lowerPath.endsWith(".json")) newHeaders.set("Content-Type", "application/json");
+      else if (lowerPath.endsWith(".svg")) newHeaders.set("Content-Type", "image/svg+xml");
+      else if (lowerPath.endsWith(".webp")) newHeaders.set("Content-Type", "image/webp");
+      else if (lowerPath.endsWith(".woff")) newHeaders.set("Content-Type", "font/woff");
+      else if (lowerPath.endsWith(".woff2")) newHeaders.set("Content-Type", "font/woff2");
+      else if (object.httpMetadata && object.httpMetadata.contentType) {
+          newHeaders.set("Content-Type", object.httpMetadata.contentType);
+      }
 
-		  const lowerPath = filePath.toLowerCase();
-		  if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
-		  else if (lowerPath.endsWith(".css")) newHeaders.set("Content-Type", "text/css");
-		  else if (lowerPath.endsWith(".html")) newHeaders.set("Content-Type", "text/html; charset=UTF-8");
-		  else if (lowerPath.endsWith(".json")) newHeaders.set("Content-Type", "application/json");
-		  else if (lowerPath.endsWith(".svg")) newHeaders.set("Content-Type", "image/svg+xml");
-		  else if (lowerPath.endsWith(".webp")) newHeaders.set("Content-Type", "image/webp");
-		  else if (lowerPath.endsWith(".woff")) newHeaders.set("Content-Type", "font/woff");
-		  else if (lowerPath.endsWith(".woff2")) newHeaders.set("Content-Type", "font/woff2");
-		  else if (object.httpMetadata && object.httpMetadata.contentType) {
-			  newHeaders.set("Content-Type", object.httpMetadata.contentType);
-		  }
+      const responseToCache = new Response(object.body, { status: 200, headers: newHeaders });
 
-		  const responseToCache = new Response(object.body, { status: 200, headers: newHeaders });
+      // 🔒 STEP 3: Store in edge cache non-blocking — next visitor gets PoP speed
+      ctx.waitUntil(cache.put(cacheKey, responseToCache.clone()));
 
-		  // 3. Store in PoP edge cache non-blocking — next request never touches R2
-		  ctx.waitUntil(cache.put(cacheKey, responseToCache.clone()));
-
-		  return responseToCache;
-		}
+      return responseToCache;
+    }
 
 	   // --- 5. ASSET BYPASS ---
 		if (url.pathname.includes(".") && !url.pathname.endsWith(".html")) {
