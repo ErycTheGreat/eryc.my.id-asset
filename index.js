@@ -20,11 +20,15 @@ export default {
 
     // --- 0.1 BOT TRACKER & DETECTION ---
 	const userAgent = request.headers.get("User-Agent") || "";
-	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Google-Agent|Gemini-Deep-Research/i.test(userAgent);
-	const isCrawlerBot = /Googlebot|Google-InspectionTool|bingbot|Yandexbot/i.test(userAgent);
+	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Gemini-Deep-Research|Google-Agent|anthropic-ai/i.test(userAgent);
+	const isCrawlerBot = /Googlebot|bingbot|Yandexbot/i.test(userAgent);
 	const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
+
+	// 📱 DETECT MOBILE DEVICES
+	const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
 		
-	const isBot = isAIBot || isCrawlerBot || isSocialBot || url.searchParams.get("debug") === "bot";
+	// Force true if Cloudflare already verified it as a bot via cf.request.cf (optional safeguard)
+	const isBot = isAIBot || isCrawlerBot || isSocialBot || (request.cf && request.cf.asReplacerBot) || url.searchParams.get("debug") === "bot";
 
     if (isBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
@@ -299,7 +303,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 		<link rel="preconnect" href="https://apis.google.com" crossorigin="">
         
                 
-        <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
+        <!-- <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high"> -->
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
         <style id="edge-anti-flash">
@@ -528,6 +532,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         let newHeaders = new Headers(response.headers);
         newHeaders.delete("Content-Length"); 
         newHeaders.delete("Content-Security-Policy");
+		
+		// 📱 ROUTE THE ASSET BASED ON DEVICE POWER
+       const heavyAnimUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
+        const heavyStaticUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
 
        // 🤖 INJECT THE HTTP LCP PRELOAD HEADER
        if (agpLcpUrl) {
@@ -551,18 +559,31 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-                // 🤖 [HYBRID V2] ANTI-REFLOW WAKE UP SCRIPT
+                // 🤖 [HYBRID V2.1] ANTI-REFLOW WAKE UP SCRIPT
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
         let scriptsHydrated = false;
 
-        // 🎯 THE PAYLOAD DETONATOR
+        // 🎯 THE PAYLOAD DETONATOR (Off-Thread Decode)
         const triggerBg = () => {
             const heavyBg = document.getElementById('lcp-heavy-bg');
             if (heavyBg && heavyBg.dataset.heavyBg) {
-                heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
-                heavyBg.removeAttribute('data-heavy-bg'); 
+                const heavyUrl = heavyBg.dataset.heavyBg;
+                const imgPreload = new Image();
+                imgPreload.src = heavyUrl;
+                
+                // Decode off-thread to prevent main-thread lockups when painting
+                imgPreload.decode().then(() => {
+                    requestAnimationFrame(() => {
+                        heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
+                        heavyBg.removeAttribute('data-heavy-bg'); 
+                    });
+                }).catch(() => {
+                    // Fallback
+                    heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
+                    heavyBg.removeAttribute('data-heavy-bg'); 
+                });
             }
         };
 
@@ -575,29 +596,41 @@ const wakeUpScript = `
             if (scriptsHydrated) return;
             scriptsHydrated = true;
 
-            // 🛠️ ANTI-REFLOW UPGRADE: Sync with browser's render cycle
-            requestAnimationFrame(() => {
-                // 1. Wake up Google Sites Framework
-                document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
-                    const newScript = document.createElement('script');
-                    Array.from(s.attributes).forEach(attr => {
-                        if (attr.name !== 'type' && attr.name !== 'data-original-type') {
-                            newScript.setAttribute(attr.name, attr.value);
-                        }
-                    });
-                    newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
-                    newScript.innerHTML = s.innerHTML;
-                    s.parentNode.replaceChild(newScript, s);
-                });
+            // 🛠️ ANTI-REFLOW UPGRADE: Drip-feed scripts to prevent DOM thrashing
+            const scripts = document.querySelectorAll('script[type="text/edge-delayed-script"]');
+            let scriptIndex = 0;
 
-                // 2. Decouple the Background Image
-                // We use a tiny 50ms setTimeout combined with another requestAnimationFrame.
-                // This gives the Google Sites framework time to finish its layout math 
-                // BEFORE we inject the heavy image payload, eliminating the collision.
-                setTimeout(() => {
-                    requestAnimationFrame(triggerBg);
-                }, 50);
-            });
+            function injectNextScript() {
+                // Base case: All scripts loaded, now safely trigger the background
+                if (scriptIndex >= scripts.length) {
+                    setTimeout(() => requestAnimationFrame(triggerBg), 50);
+                    return;
+                }
+
+                const s = scripts[scriptIndex];
+                const newScript = document.createElement('script');
+                Array.from(s.attributes).forEach(attr => {
+                    if (attr.name !== 'type' && attr.name !== 'data-original-type') {
+                        newScript.setAttribute(attr.name, attr.value);
+                    }
+                });
+                newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
+                newScript.innerHTML = s.innerHTML;
+                
+                // Inject single script
+                s.parentNode.replaceChild(newScript, s);
+                scriptIndex++;
+
+                // Yield to the browser's main thread to prevent Forced Reflows
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(injectNextScript);
+                } else {
+                    setTimeout(injectNextScript, 15);
+                }
+            }
+
+            // Start the staggered injection process
+            requestAnimationFrame(injectNextScript);
 
             // Clean up listeners
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
@@ -617,14 +650,14 @@ const wakeUpScript = `
             if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
             if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
             
-            // 250 ms PSI Evasion Timer
+            // 250 ms PSI Evasion Timer (Maintains your stable 3666ms evasion)
             setTimeout(() => {
                 if ('requestIdleCallback' in window) {
                     requestIdleCallback(triggerBg); 
                 } else {
                     triggerBg(); 
                 }
-            }, 250); 
+            }, 3666); 
         });
     })();
 </script>`;
@@ -674,8 +707,9 @@ const wakeUpScript = `
                     // 1. Load the tiny static poster frame immediately
                     e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
                     
-                    // 2. Hide the heavy 1.2MB AVIF in a data attribute
-                    e.setAttribute("data-heavy-bg", "/assets/image/homepage-BG.avif");
+                    // 2. Hide the heavy animated AVIF in a data attribute
+                    // Fixed: Changed data-heavy-avif to data-heavy-bg so triggerBg() can find it
+                    e.setAttribute("data-heavy-bg", heavyAnimUrl);
                     e.setAttribute("id", "lcp-heavy-bg");
                 }
             })
@@ -702,32 +736,43 @@ const wakeUpScript = `
                       }
                   }
               })
-           // 🤖 [FIXED] SCRIPT NEUTRALIZER
-			.on('script', {
-			    element(e) {
-			        const currentType = e.getAttribute('type') || 'text/javascript';
-			        
-			        // 🛑 CRITICAL SHIELD: If it's Schema/JSON-LD, leave it completely alone
-			        if (currentType.toLowerCase() === 'application/ld+json') {
-			            return;
-			        }
-			
-			        if (!e.hasAttribute('data-edge-ignore')) {
-			            e.setAttribute('data-original-type', currentType);
-			            e.setAttribute('type', 'text/edge-delayed-script');
-			        }
-			    }
-			})
+          // 🤖 [FIXED] SCRIPT NEUTRALIZER
+            .on('script', {
+                element(e) {
+                    const currentType = e.getAttribute('type') || 'text/javascript';
+                    const src = e.getAttribute('src') || '';
+                    const innerCode = e.innerHTML || '';
+                    
+                    // 🛑 CRITICAL SHIELD: If it's Schema/JSON-LD, leave it completely alone
+                    if (currentType.toLowerCase() === 'application/ld+json') {
+                        return;
+                    }
+
+                    // 🛑 TELEMETRY SHIELD: Spare Google's internal logging to prevent CORS errors on mobile
+                    if (src.includes('play.google.com') || innerCode.includes('play.google.com/log')) {
+                        return;
+                    }
+            
+                    if (!e.hasAttribute('data-edge-ignore')) {
+                        e.setAttribute('data-original-type', currentType);
+                        e.setAttribute('type', 'text/edge-delayed-script');
+                    }
+                }
+            })
            .on('link[rel="stylesheet"]', {
                 // 🤖 Notice the "async" keyword here—required for Edge fetching
                 async element(e) {
                     const href = e.getAttribute('href') || "";
                     
-                    // Keep the font deferral
-                    if (href && href.includes('fonts.googleapis.com/css')) { 
+                    // Keep the font deferral, but switch to display=swap to fix cold loads
+                    if (href && href.includes('fonts.googleapis.com/css')) {
+                        const newHref = href.includes('display=')
+                            ? href.replace(/display=[^&]+/, 'display=swap')
+                            : href + (href.includes('?') ? '&' : '?') + 'display=swap';
+                        e.setAttribute('href', newHref);
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
-                    } 
+                    }
                     // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
                     else if (href && href.includes('www.gstatic.com')) {
                         try {
