@@ -830,6 +830,7 @@ const wakeUpScript = `
         .on('link[rel="canonical"]', { element(e) { e.remove(); } })
         .on('meta[name="description"]', { element(e) { e.remove(); } })
         .on('meta[property="og:title"]', { element(e) { e.remove(); } })
+		.on('link[rel="preload"][href*="googleusercontent.com"]', { element(e) { e.remove(); } })
         .on("head", {
             element(e) { 
                 e.append(customHeaderContent, { html: true }); 
