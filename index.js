@@ -20,7 +20,7 @@ export default {
 
     // --- 0.1 BOT TRACKER & DETECTION ---
 	const userAgent = request.headers.get("User-Agent") || "";
-	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|GoogleOther|Gemini-Deep-Research|Google-Agent|anthropic-ai/i.test(userAgent);
+	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|Google-Agent|GoogleOther|Gemini-Deep-Research|Google-Extended|gemini|vertex|apis-google|google-read-aloud|anthropic-ai/i.test(userAgent);
 	const isCrawlerBot = /Googlebot|Google-InspectionTool|bingbot|Yandexbot/i.test(userAgent);
 	const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
 
@@ -848,7 +848,7 @@ const wakeUpScript = `
     }
 
     // 🔪 SIGNAL PRUNING: Kill CMS garbage for AI models
-    if (isAIBot || isSocialBot) {
+    if (isBot && !isCrawlerBot) {
         rewriter
             .on('script', new ElementSlasher())    
             .on('style', new ElementSlasher())        
