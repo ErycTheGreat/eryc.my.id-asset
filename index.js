@@ -848,7 +848,7 @@ const wakeUpScript = `
     }
 
     // 🔪 SIGNAL PRUNING: Kill CMS garbage for AI models
-    if (isBot && !isCrawlerBot) {
+    if (isAIBot || isSocialBot || url.searchParams.get("debug") === "bot") {
         rewriter
             .on('script', new ElementSlasher())    
             .on('style', new ElementSlasher())        
