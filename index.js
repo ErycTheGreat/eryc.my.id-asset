@@ -555,7 +555,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             
             .on("head", {
                 element(e) {
-                    e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
+                    e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; } .GAuSPc { width: 120px !important; height: 120px !important; overflow: hidden !important; } .GAuSPc img { width: 120px !important; height: 120px !important; object-fit: contain !important; }</style>", { html: true });
                     e.append(customHeaderContent, { html: true }); 
                     
                     // 🤖 INJECT THE AI-GENERATED CRITICAL CSS
