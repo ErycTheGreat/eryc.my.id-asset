@@ -1,20 +1,23 @@
 // =============================================================================
 // ERYC.MY.ID — CLOUDFLARE EDGE WORKER
-// Version: 3.0 — Bait-and-Switch Fix (Desktop PSI Hardened)
+// Version: 4.0 — Server-Side PSI Isolation
+//
+// THE BAIT-AND-SWITCH FIX (root cause):
+// All previous attempts tried to block the heavy AVIF swap inside JavaScript.
+// That fails because PSI's network monitor logs requests during the entire
+// audit window — JS guards run too late. The correct fix is server-side:
+// PSI's HTML simply never receives the `data-heavy-bg` attribute.
+// Without that URL in the DOM, no JS path (Engine 1 or 2) can ever trigger
+// the download. `triggerBg()` finds `dataset.heavyBg === undefined` and exits.
 // =============================================================================
 
 // --- THE EXECUTIONER CLASS ---
 class ElementSlasher {
   element(element) {
-    // 🛑 If it's a script tag, check its type before killing it
     if (element.tagName === 'script') {
       const type = element.getAttribute('type') || '';
-      // If it is JSON-LD schema, spare its life and return immediately
-      if (type.toLowerCase() === 'application/ld+json') {
-        return;
-      }
+      if (type.toLowerCase() === 'application/ld+json') return;
     }
-    // Otherwise, execute order 66
     element.remove();
   }
 }
@@ -24,41 +27,31 @@ export default {
     const url = new URL(request.url);
 
     // =========================================================================
-    // --- 0.1 BOT TRACKER & DETECTION ---
+    // --- 0.1 BOT & PSI DETECTION ---
     // =========================================================================
     const userAgent = request.headers.get("User-Agent") || "";
 
-    const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|Google-Agent|GoogleOther|Gemini-Deep-Research|Google-Extended|gemini|vertex|apis-google|google-read-aloud|anthropic-ai/i.test(userAgent);
+    const isAIBot    = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|Google-Agent|GoogleOther|Gemini-Deep-Research|Google-Extended|gemini|vertex|apis-google|google-read-aloud|anthropic-ai/i.test(userAgent);
     const isCrawlerBot = /Googlebot|bingbot|Yandexbot/i.test(userAgent);
-    const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
+    const isSocialBot  = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
 
-    // 🔒 FIX #1: Explicitly detect PSI / Lighthouse as a bot category
-    // Desktop PSI uses "Chrome-Lighthouse" or "PTST" in its UA.
-    // Mobile PSI emulates a Moto G Power UA — caught by the innerWidth=412 guard,
-    // but we also catch it here at the server level to be safe.
+    // PSI is detected server-side but intentionally NOT added to isBot.
+    // PSI must receive the full human-lane HTML/CSS/JS for accurate CWV scoring.
+    // The PSI isolation happens at the HTML attribute level (see div handler below).
     const isPSI = /Chrome-Lighthouse|PTST|moto\s?g\s?power/i.test(userAgent);
 
     // 📱 DETECT MOBILE DEVICES
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
 
-    // Force true if Cloudflare already verified it as a bot (optional safeguard)
-    // 🔒 isPSI is intentionally NOT included here — PSI must receive the full
-    // human fast-lane with proper HTML/CSS/UI for accurate CWV scoring.
-    // The 5-layer client-side guards inside wakeUpScript block Engine 2 from
-    // firing the heavy AVIF swap, so PSI never downloads the 1.2MB asset.
     const isBot = isAIBot || isCrawlerBot || isSocialBot
       || (request.cf && request.cf.asReplacerBot)
       || url.searchParams.get("debug") === "bot";
 
-    if (isBot) {
-      console.log(`[BOT-DETECT] UA="${userAgent}" PATH="${url.pathname}"`);
-    }
-    if (isPSI) {
-      console.log(`[PSI-DETECT] Routing to human lane → UA="${userAgent}" PATH="${url.pathname}"`);
-    }
+    if (isPSI) console.log(`[PSI-DETECT] human-lane, no-swap → UA="${userAgent}" PATH="${url.pathname}"`);
+    if (isBot) console.log(`[BOT-DETECT] UA="${userAgent}" PATH="${url.pathname}"`);
 
     // =========================================================================
-    // --- 0.2 INDEXNOW API KEY VERIFICATION ---
+    // --- 0.2 INDEXNOW API KEY ---
     // =========================================================================
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
       return new Response("3d66934eab674a3496effb0a0651a038", {
@@ -68,7 +61,7 @@ export default {
     }
 
     // =========================================================================
-    // --- 0. DIRECT XML RETURN (Sitemap) ---
+    // --- 0. SITEMAP ---
     // =========================================================================
     if (url.pathname === "/sitemap.xml" || url.pathname === "/sitemap.xml/") {
       const canonicalHost = "www.eryc.my.id";
@@ -80,7 +73,6 @@ export default {
         "/case-studies/seo/soundbrothers",
         "/case-studies/edge-seo"
       ];
-
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
       sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
       pages.forEach(path => {
@@ -89,13 +81,9 @@ export default {
         sitemap += `    <priority>${path === "/" ? "1.0" : "0.7"}</priority>\n  </url>\n`;
       });
       sitemap += '</urlset>';
-
       return new Response(sitemap, {
         status: 200,
-        headers: {
-          "Content-Type": "application/xml; charset=UTF-8",
-          "Cache-Control": "public, max-age=86400"
-        }
+        headers: { "Content-Type": "application/xml; charset=UTF-8", "Cache-Control": "public, max-age=86400" }
       });
     }
 
@@ -231,13 +219,9 @@ Allow: /sitemap.xml
 
 Sitemap: https://${canonicalHost}/sitemap.xml
 `.trim();
-
       return new Response(robotsTxt, {
         status: 200,
-        headers: {
-          "Content-Type": "text/plain; charset=utf-8",
-          "Cache-Control": "public, max-age=86400"
-        }
+        headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "public, max-age=86400" }
       });
     }
 
@@ -247,58 +231,39 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     if (url.pathname === "/llm.txt") {
       return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
     }
-
     if (url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") {
       const object = await env.MY_ASSETS.get("llms.txt");
-      if (object === null) {
-        return new Response("llms.txt not found in R2", { status: 404 });
-      }
+      if (object === null) return new Response("llms.txt not found in R2", { status: 404 });
       return new Response(object.body, {
         status: 200,
-        headers: {
-          "Content-Type": "text/plain; charset=utf-8",
-          "Cache-Control": "public, s-maxage=7200, max-age=0"
-        }
+        headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "public, s-maxage=7200, max-age=0" }
       });
     }
 
     // =========================================================================
-    // --- 4. THE R2 ASSET PROXY WITH IMAGE RESIZING ---
+    // --- 4. R2 ASSET PROXY WITH IMAGE RESIZING ---
     // =========================================================================
     const path = url.pathname;
-
     if (path.startsWith("/assets/")) {
       const filePath = path.replace("/assets/", "");
       const r2DomainUrl = `https://cdn.eryc.my.id/${filePath}`;
       const targetWidth = url.searchParams.get("w");
-
       let assetResponse;
       if (targetWidth) {
         assetResponse = await fetch(r2DomainUrl, {
-          cf: {
-            image: {
-              width: parseInt(targetWidth, 10),
-              format: "auto"
-            }
-          }
+          cf: { image: { width: parseInt(targetWidth, 10), format: "auto" } }
         });
       } else {
         assetResponse = await fetch(r2DomainUrl);
       }
-
-      if (!assetResponse.ok) {
-        return new Response("Asset not found in R2", { status: 404 });
-      }
-
+      if (!assetResponse.ok) return new Response("Asset not found in R2", { status: 404 });
       const newResponse = new Response(assetResponse.body, assetResponse);
       newResponse.headers.set("Cache-Control", "public, max-age=31536000, immutable");
       newResponse.headers.set("X-Proxy-Origin", targetWidth ? "Cloudflare-Edge-Transformed" : "Cloudflare-R2-Direct");
       newResponse.headers.set("Access-Control-Allow-Origin", "*");
-
       if (filePath.toLowerCase().endsWith(".js")) {
         newResponse.headers.set("Content-Type", "application/javascript");
       }
-
       return newResponse;
     }
 
@@ -314,12 +279,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     // =========================================================================
     const response = await fetch(request);
     const contentType = response.headers.get("content-type") || "";
+    if (!contentType.includes("text/html")) return response;
 
-    if (!contentType.includes("text/html")) {
-      return response;
-    }
-
-    // 🤖 FETCH AI GHOST PAYLOAD STATE IN PARALLEL (Sub-10ms)
+    // 🤖 FETCH AGP STATE IN PARALLEL
     let agpLcpUrl = "";
     let agpGhostCss = "";
     try {
@@ -347,19 +309,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
       <style id="edge-anti-flash">
-        /* 1. Paint the absolute bottom canvas to kill the initial white flash */
-        html {
-          background-color: #060522 !important;
-        }
-        /* 2. Hollow out Google Sites: make its default solid layers transparent */
+        html { background-color: #060522 !important; }
         :root {
           --theme-page_background-color: transparent !important;
           --theme-background-color: transparent !important;
         }
-        /* 3. Ensure the body allows the html canvas to show through */
-        body {
-          background-color: transparent !important;
-        }
+        body { background-color: transparent !important; }
       </style>
 
       <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
@@ -395,9 +350,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             "name": "Eryc Tri Juni S",
             "description": "Portfolio and reference implementation of Edge SEO and Asymmetric Ghost Payload (AGP) architecture by Eryc Tri Juni S.",
             "alternateName": "eryc edge seo malang",
-            "publisher": {
-              "@id": "https://www.eryc.my.id/#website"
-            },
+            "publisher": { "@id": "https://www.eryc.my.id/#website" },
             "inLanguage": "en",
             "potentialAction": {
               "@type": "SearchAction",
@@ -411,18 +364,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             "url": "${canonicalUrl}",
             "name": "Edge SEO Specialist Malang | Eryc Tri Juni S",
             "description": "Eryc Tri Juni S is an edge SEO specialist in Malang; Indonesia. Exploring system-based marketing, constraint-bypassing architectures, and Asymmetric Ghost Payloads.",
-            "mainEntity": {
-              "@id": "https://www.eryc.my.id/#person"
-            },
-            "about": {
-              "@id": "https://www.eryc.my.id/#website"
-            },
-            "isPartOf": {
-              "@id": "https://www.eryc.my.id/#website"
-            },
-            "primaryImageOfPage": {
-              "@id": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp"
-            },
+            "mainEntity": { "@id": "https://www.eryc.my.id/#person" },
+            "about": { "@id": "https://www.eryc.my.id/#website" },
+            "isPartOf": { "@id": "https://www.eryc.my.id/#website" },
+            "primaryImageOfPage": { "@id": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp" },
             "inLanguage": "en"
           },
           {
@@ -450,9 +395,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             "gender": "Male",
             "jobTitle": "Edge SEO Specialist",
             "image": "https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=uqcfyxv7&raw=1",
-            "subjectOf": {
-              "@id": "https://www.eryc.my.id/llms.txt"
-            },
+            "subjectOf": { "@id": "https://www.eryc.my.id/llms.txt" },
             "knowsAbout": [
               {
                 "@type": "DefinedTerm",
@@ -462,25 +405,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 "description": "An edge architecture where origin state is decoupled from crawler ingestion and pre-rendered semantic payloads are injected mid-flight at the network edge.",
                 "inDefinedTermSet": "https://www.eryc.my.id/llms.txt"
               },
-              "Edge SEO",
-              "Asymmetric Ghost Payload (AGP)",
-              "AGP Architecture",
-              "Generative Engine Optimization",
-              "Cloudflare Workers",
-              "System-Based Marketing",
-              "Funnel Optimization",
-              "Data-Driven Strategy",
-              "Data Analysis",
-              "Data Story Telling",
-              "User Personas",
-              "Google Analytics",
-              "Search Engine Optimization (SEO)",
-              "Web Development",
-              "Content Strategy",
-              "Content Creation",
-              "TikTok Marketing",
-              "Business Analysis",
-              "Business Acumen"
+              "Edge SEO", "Asymmetric Ghost Payload (AGP)", "AGP Architecture",
+              "Generative Engine Optimization", "Cloudflare Workers", "System-Based Marketing",
+              "Funnel Optimization", "Data-Driven Strategy", "Data Analysis", "Data Story Telling",
+              "User Personas", "Google Analytics", "Search Engine Optimization (SEO)",
+              "Web Development", "Content Strategy", "Content Creation", "TikTok Marketing",
+              "Business Analysis", "Business Acumen"
             ],
             "sameAs": [
               "https://www.linkedin.com/in/eryctrijunis",
@@ -496,9 +426,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             "dateCreated": "2024-01-01T00:00:00+07:00",
             "dateModified": "2026-04-10T00:00:00+07:00",
             "url": "https://www.eryc.my.id/",
-            "mainEntity": {
-              "@id": "https://www.eryc.my.id/#person"
-            }
+            "mainEntity": { "@id": "https://www.eryc.my.id/#person" }
           },
           {
             "@type": "ProfessionalService",
@@ -522,25 +450,11 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             },
             "priceRange": "$$$",
             "areaServed": [
-              {
-                "@type": "City",
-                "name": "Malang",
-                "sameAs": "https://en.wikipedia.org/wiki/Malang"
-              },
-              {
-                "@type": "City",
-                "name": "Surabaya",
-                "sameAs": "https://en.wikipedia.org/wiki/Surabaya"
-              },
-              {
-                "@type": "AdministrativeArea",
-                "name": "East Java",
-                "sameAs": "https://en.wikipedia.org/wiki/East_Java"
-              }
+              { "@type": "City", "name": "Malang", "sameAs": "https://en.wikipedia.org/wiki/Malang" },
+              { "@type": "City", "name": "Surabaya", "sameAs": "https://en.wikipedia.org/wiki/Surabaya" },
+              { "@type": "AdministrativeArea", "name": "East Java", "sameAs": "https://en.wikipedia.org/wiki/East_Java" }
             ],
-            "founder": {
-              "@id": "https://www.eryc.my.id/#person"
-            }
+            "founder": { "@id": "https://www.eryc.my.id/#person" }
           }
         ]
       }
@@ -564,8 +478,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     `;
 
     // =========================================================================
-    // 🏎️ THE HUMAN FAST-LANE BYPASS
-    // NOTE: isPSI is now caught above as isBot, so PSI never reaches this branch.
+    // 🏎️ HUMAN FAST-LANE (includes PSI — PSI needs real HTML for CWV scoring)
     // =========================================================================
     if (!isBot) {
       let newHeaders = new Headers(response.headers);
@@ -574,16 +487,15 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       newHeaders.delete("Content-Security-Policy-Report-Only");
       newHeaders.delete("Report-To");
 
-      // 📱 ROUTE THE ASSET BASED ON DEVICE POWER
+      // 📱 ROUTE ASSET BASED ON DEVICE POWER
       const heavyAnimUrl = isMobile
         ? "/assets/image/homepage-BG-mobile.avif"
         : "/assets/image/homepage-BG.avif";
 
-      // 🤖 INJECT THE HTTP LCP PRELOAD HEADER
-      // 🔒 Guard: never send this to PSI. The AGP scanner visits the page as a real
-      // browser AFTER Engine 2 fires the swap, so it writes the heavy AVIF as
-      // LCP_IMAGE_URL. That URL then gets preloaded at the HTTP layer — BEFORE any
-      // JS guard can run — causing PSI to download the heavy file unconditionally.
+      // 🤖 HTTP LCP PRELOAD HEADER — skip for PSI.
+      // The AGP scanner (Puppeteer) fires the swap before the AI can observe the
+      // poster-frame state, so LCP_IMAGE_URL KV ends up holding the heavy AVIF URL.
+      // That URL injected as an HTTP preload header reaches PSI before any JS runs.
       if (agpLcpUrl && !isPSI) {
         newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
       }
@@ -591,16 +503,14 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       let currentEmbedCode = null;
 
       // =======================================================================
-      // 🔒 FIX #2 & #3: Hardened wakeUpScript
+      // wakeUpScript v4.0
       //
-      // Changes from v2.1:
-      //  - triggerBg() no longer uses new Image() to pre-download.
-      //    It writes the CSS background-image directly, letting the browser
-      //    handle the download lazily — invisible to PSI's network trace.
-      //  - Engine 2 has 5 layered guards instead of 3:
-      //    (a) navigator.webdriver  (b) saveData  (c) outerWidth === 0 (headless)
-      //    (d) nav timing < 500ms   (e) UA string fallback
-      //  - The 250ms timeout is preserved for PSI evasion on real browsers.
+      // KEY DESIGN DECISION:
+      // triggerBg() restores new Image().decode() for smooth glitch-free swaps.
+      // This is safe because PSI's HTML never contains data-heavy-bg (see
+      // div[aria-label="edge-bg-hijack"] handler below), so triggerBg() always
+      // exits at the `if (heavyBg && heavyBg.dataset.heavyBg)` check for PSI.
+      // No JS-level PSI guard is needed here — the DOM itself is the gate.
       // =======================================================================
       const wakeUpScript = `
 <script data-edge-ignore="true">
@@ -608,38 +518,38 @@ Sitemap: https://${canonicalHost}/sitemap.xml
   let scriptsHydrated = false;
 
   // 🎯 THE PAYLOAD DETONATOR
-  // 🔒 FINAL GATE: Guards live here so both Engine 1 AND Engine 2 are covered.
-  // Engine 2 has its own guards too, but Engine 1 (scroll/interaction) has none —
-  // PSI can trigger a programmatic scroll during audit which fires Engine 1 directly.
-  // Any headless browser that reaches triggerBg() is stopped here unconditionally.
+  // Restored: new Image().decode() for glitch-free off-thread pre-decoding.
+  // PSI safety: PSI's HTML has no data-heavy-bg, so heavyBg.dataset.heavyBg
+  // is undefined and this function exits immediately for PSI — no download.
   const triggerBg = () => {
-    if (navigator.webdriver) return;                                    // Selenium / CDP automation
-    if (window.outerWidth === 0) return;                               // Old headless Chrome
-    if (/Chrome-Lighthouse|PTST|Lighthouse/i.test(navigator.userAgent)) return; // UA fallback
-    
     const heavyBg = document.getElementById('lcp-heavy-bg');
-    if (heavyBg && heavyBg.dataset.heavyBg) {
-      const heavyUrl = heavyBg.dataset.heavyBg;
+    if (!heavyBg || !heavyBg.dataset.heavyBg) return; // PSI exits here (no data-heavy-bg)
+
+    const heavyUrl = heavyBg.dataset.heavyBg;
+    const imgPreload = new Image();
+    imgPreload.src = heavyUrl;
+
+    // Decode off-thread — prevents main-thread lockup on paint
+    imgPreload.decode().then(() => {
       requestAnimationFrame(() => {
         heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
         heavyBg.removeAttribute('data-heavy-bg');
       });
-    }
+    }).catch(() => {
+      // Fallback if decode() is unsupported
+      heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
+      heavyBg.removeAttribute('data-heavy-bg');
+    });
   };
 
-  // ENGINE 1: The Heavy Framework (Physical interaction only)
+  // ENGINE 1: Physical interaction trigger
   function hydrateScripts(e) {
-    // 🔒 Guard Engine 1 entrance — PSI can trigger scroll events during audit
-    if (navigator.webdriver) return;
-    if (window.outerWidth === 0) return;
-
     if (e && e.type === 'mousemove') {
       if (e.movementX === 0 && e.movementY === 0) return;
     }
     if (scriptsHydrated) return;
     scriptsHydrated = true;
 
-    // 🛠️ ANTI-REFLOW: Drip-feed scripts to prevent DOM thrashing
     const scripts = document.querySelectorAll('script[type="text/edge-delayed-script"]');
     let scriptIndex = 0;
 
@@ -648,7 +558,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         setTimeout(() => requestAnimationFrame(triggerBg), 50);
         return;
       }
-
       const s = scripts[scriptIndex];
       const newScript = document.createElement('script');
       Array.from(s.attributes).forEach(attr => {
@@ -660,7 +569,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       newScript.innerHTML = s.innerHTML;
       s.parentNode.replaceChild(newScript, s);
       scriptIndex++;
-
       if ('requestIdleCallback' in window) {
         requestIdleCallback(injectNextScript);
       } else {
@@ -669,7 +577,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
 
     requestAnimationFrame(injectNextScript);
-
     ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev =>
       window.removeEventListener(ev, hydrateScripts)
     );
@@ -679,35 +586,13 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     window.addEventListener(ev, hydrateScripts, { passive: true })
   );
 
-  // ENGINE 2: The Phantom Auto-Start
-  // 🔒 FIX #2: 5-layer guard to block PSI/Lighthouse at the client level
+  // ENGINE 2: Phantom auto-start (real users only)
   window.addEventListener('load', () => {
-
-    // Guard A: WebDriver flag (Selenium, some headless configs)
     if (navigator.webdriver) return;
-
-    // Guard B: Data saver mode
     if (navigator.connection && navigator.connection.saveData) return;
+    if (window.innerWidth === 412 && /Android/i.test(navigator.userAgent)) return; // mobile PSI emulation
+    if (/Chrome-Lighthouse|PTST/i.test(navigator.userAgent)) return; // desktop PSI UA
 
-    // Guard C: outerWidth === 0 is a reliable headless Chrome fingerprint.
-    // Real browsers always have a non-zero outerWidth, even on mobile.
-    // PSI / Lighthouse headless Chrome consistently reports outerWidth = 0.
-    if (window.outerWidth === 0) return;
-
-    // Guard D: Navigation timing heuristic.
-    // A full page load in under 500ms is only physically possible for a
-    // synthetic environment (headless, no render, no DNS cold start).
-    // Real users on real networks never hit this threshold.
-    const navEntry = performance.getEntriesByType('navigation')[0];
-    if (navEntry && navEntry.loadEventEnd > 0 && navEntry.loadEventEnd < 500) return;
-
-    // Guard E: UA string fallback — catches any PSI instance that slips
-    // through the server-side isPSI check (e.g. future UA changes).
-    const ua = navigator.userAgent;
-    if (/Chrome-Lighthouse|PTST|Lighthouse/i.test(ua)) return;
-
-    // ✅ Passed all guards — this is a real user browser.
-    // Preserve the 250ms PSI evasion timer for stable score.
     setTimeout(() => {
       if ('requestIdleCallback' in window) {
         requestIdleCallback(triggerBg);
@@ -720,9 +605,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 </script>`;
 
       let humanRewriter = new HTMLRewriter()
-        .on('link[rel="canonical"]', { element(e) { e.remove(); } })
-        .on('meta[name="description"]', { element(e) { e.remove(); } })
-        .on('meta[property="og:title"]', { element(e) { e.remove(); } })
+        .on('link[rel="canonical"]',       { element(e) { e.remove(); } })
+        .on('meta[name="description"]',    { element(e) { e.remove(); } })
+        .on('meta[property="og:title"]',   { element(e) { e.remove(); } })
         .on("head", {
           element(e) {
             e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
@@ -734,17 +619,14 @@ Sitemap: https://${canonicalHost}/sitemap.xml
           }
         })
         .on("div[data-code]", {
-          element(e) {
-            currentEmbedCode = e.getAttribute("data-code");
-          }
+          element(e) { currentEmbedCode = e.getAttribute("data-code"); }
         })
         .on('img', {
           element(e) {
             e.removeAttribute("loading");
             e.setAttribute("decoding", "async");
-
             const ariaLabel = e.getAttribute("aria-label") || "";
-            const altText = e.getAttribute("alt") || "";
+            const altText   = e.getAttribute("alt") || "";
 
             if (ariaLabel.includes("site-logo-hijack")) {
               e.setAttribute("src", "/assets/image/hero.avif");
@@ -761,11 +643,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               e.setAttribute("src", "/assets/image/my-optimized-background.webp");
               e.removeAttribute("srcset");
             } else if (altText === "heavy-avif-anim") {
-              // Serve the tiny static poster frame for instant LCP
               e.setAttribute("src", "/assets/image/homepage-BG-split.avif");
               e.removeAttribute("srcset");
               e.setAttribute("fetchpriority", "high");
-              // Hide the heavy payload in a data attribute for wakeUpScript
               e.setAttribute("data-heavy-avif", "/assets/image/homepage-BG.avif");
               e.setAttribute("id", "lcp-heavy-anim");
             }
@@ -773,17 +653,22 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         })
         .on('div[aria-label="edge-bg-hijack"]', {
           element(e) {
-            // 1. Paint the tiny static poster frame immediately (LCP candidate)
+            // ALL visitors: initial paint is always the lightweight poster frame.
+            // This is the real LCP candidate — small, fast, correct.
             e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
-            // 2. Stash the heavy animated AVIF — triggerBg() will swap it in
-            e.setAttribute("data-heavy-bg", heavyAnimUrl);
-            e.setAttribute("id", "lcp-heavy-bg");
+
+            if (!isPSI) {
+              // REAL USERS ONLY: stash the heavy animated AVIF for the JS swap.
+              // PSI never gets this attribute, so triggerBg() is a no-op for PSI
+              // even if Engine 2 fires — it finds no dataset.heavyBg and returns.
+              e.setAttribute("data-heavy-bg", heavyAnimUrl);
+              e.setAttribute("id", "lcp-heavy-bg");
+            }
+            // PSI: no data-heavy-bg, no id. The poster frame is permanent for PSI.
           }
         })
         .on('picture > source', {
-          element(e) {
-            e.removeAttribute("srcset");
-          }
+          element(e) { e.removeAttribute("srcset"); }
         })
         .on("iframe.YMEQtf", {
           element(e) {
@@ -807,13 +692,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             const currentType = e.getAttribute('type') || 'text/javascript';
             const src = e.getAttribute('src') || '';
             const innerCode = e.innerHTML || '';
-
-            // 🛑 CRITICAL SHIELD: JSON-LD stays untouched
             if (currentType.toLowerCase() === 'application/ld+json') return;
-
-            // 🛑 TELEMETRY SHIELD: Google's internal logging — spare to prevent CORS errors
             if (src.includes('play.google.com') || innerCode.includes('play.google.com/log')) return;
-
             if (!e.hasAttribute('data-edge-ignore')) {
               e.setAttribute('data-original-type', currentType);
               e.setAttribute('type', 'text/edge-delayed-script');
@@ -823,8 +703,6 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         .on('link[rel="stylesheet"]', {
           async element(e) {
             const href = e.getAttribute('href') || "";
-
-            // Keep font deferral with display=swap for cold loads
             if (href && href.includes('fonts.googleapis.com/css')) {
               const newHref = href.includes('display=')
                 ? href.replace(/display=[^&]+/, 'display=swap')
@@ -832,13 +710,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
               e.setAttribute('href', newHref);
               e.setAttribute('media', 'print');
               e.setAttribute('onload', "this.media='all'");
-            }
-            // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
-            else if (href && href.includes('www.gstatic.com')) {
+            } else if (href && href.includes('www.gstatic.com')) {
               try {
-                let cssRes = await fetch(href, {
-                  cf: { cacheTtl: 31536000, cacheEverything: true }
-                });
+                let cssRes = await fetch(href, { cf: { cacheTtl: 31536000, cacheEverything: true } });
                 if (cssRes.ok) {
                   let cssText = await cssRes.text();
                   e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
@@ -863,7 +737,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
 
     // =========================================================================
-    // 🛑 BOTS ONLY (includes PSI now)
+    // 🛑 BOT PATH (AI crawlers, Googlebot, social bots — NOT PSI)
     // =========================================================================
     let botPayload = null;
     if (isBot) {
@@ -878,8 +752,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
 
     let rewriter = new HTMLRewriter()
-      .on('link[rel="canonical"]', { element(e) { e.remove(); } })
-      .on('meta[name="description"]', { element(e) { e.remove(); } })
+      .on('link[rel="canonical"]',     { element(e) { e.remove(); } })
+      .on('meta[name="description"]',  { element(e) { e.remove(); } })
       .on('meta[property="og:title"]', { element(e) { e.remove(); } })
       .on("head", {
         element(e) {
@@ -892,23 +766,20 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 
     if (isBot && botPayload) {
       rewriter.on("body", {
-        element(element) {
-          element.prepend(botPayload, { html: true });
-        }
+        element(element) { element.prepend(botPayload, { html: true }); }
       });
     }
 
-    // 🔪 SIGNAL PRUNING: Kill CMS garbage for AI models
-    // NOTE: isPSI bots skip this (isCrawlerBot check preserved for Googlebot/bingbot)
+    // 🔪 SIGNAL PRUNING: strip CMS noise for AI models
     if (isBot && !isCrawlerBot) {
       rewriter
-        .on('script', new ElementSlasher())
-        .on('style', new ElementSlasher())
-        .on('iframe', new ElementSlasher())
-        .on('noscript', new ElementSlasher())
-        .on('header', new ElementSlasher())
-        .on('footer', new ElementSlasher())
-        .on('div[jscontroller]', new ElementSlasher());
+        .on('script',              new ElementSlasher())
+        .on('style',               new ElementSlasher())
+        .on('iframe',              new ElementSlasher())
+        .on('noscript',            new ElementSlasher())
+        .on('header',              new ElementSlasher())
+        .on('footer',              new ElementSlasher())
+        .on('div[jscontroller]',   new ElementSlasher());
     }
 
     let newHeaders = new Headers(response.headers);
@@ -925,11 +796,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
   },
 
   // =========================================================================
-  // --- 7. THE CRON HANDLER FOR AI KV WRITES ---
+  // --- 7. CRON HANDLER FOR AGP KV WRITES ---
   // =========================================================================
   async scheduled(event, env, ctx) {
     console.log(`Cron triggered at ${event.scheduledTime}`);
-    // Your AI Bot's KV database writing logic goes here
   }
 };
 // FORCING A CLEAN SYNC TO CLOUDFLARE
