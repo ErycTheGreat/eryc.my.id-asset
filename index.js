@@ -684,24 +684,6 @@ const wakeUpScript = `
                     currentEmbedCode = e.getAttribute("data-code");
                 }
             })
-			
-			
-			// --- 7. GRAB THE ASYMMETRIC GHOST PAYLOAD FROM KV ---
-    
-			const lcpImageUrl = await env.AGP_STATE.get("LCP_IMAGE_URL") || "/assets/image/hero.webp";
-			const ghostCss = await env.AGP_STATE.get("GHOST_CSS") || "body { background-color: #020617 !important; }";
-
-			// --- 8. THE REWRITER INJECTION ---
-			const humanRewriter = new HTMLRewriter()
-				// 🚀 NEW: INJECT PRELOAD & GHOST CSS INTO THE <HEAD>
-				.on('head', {
-					element(e) {
-						e.append(`<style>${ghostCss}</style>`, { html: true });
-						e.append(`<link rel="preload" as="image" href="${lcpImageUrl}?w=120" fetchpriority="high">`, { html: true });
-					}
-				})
-			
-			
            .on('img', {
                 element(e) {
                     e.removeAttribute("loading"); 
