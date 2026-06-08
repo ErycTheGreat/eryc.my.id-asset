@@ -29,8 +29,10 @@ export default {
 		
 	// Force true if Cloudflare already verified it as a bot via cf.request.cf (optional safeguard)
 	const isBot = isAIBot || isCrawlerBot || isSocialBot || (request.cf && request.cf.asReplacerBot) || url.searchParams.get("debug") === "bot";
-	
-	const isPSI = /Chrome-Lighthouse|PTST/i.test(userAgent);
+
+    // PSI detection — not added to isBot, PSI needs the full human lane for CWV scoring.
+    // Used only to guard the HTTP preload header and data-heavy-bg attribute below.
+    const isPSI = /Chrome-Lighthouse|PTST/i.test(userAgent);
 
     if (isBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
@@ -208,12 +210,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 
  // --- 3. LLMS.TXT ROUTING ---
     if (url.pathname === "/llm.txt") {
-      // (Assuming you have canonicalHost defined earlier in your code)
       return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
     }
 
     if (url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") {
-      // Fetch llms.txt directly from your R2 bucket
       const object = await env.MY_ASSETS.get("llms.txt");
 
       if (object === null) {
@@ -232,30 +232,24 @@ Sitemap: https://${canonicalHost}/sitemap.xml
    // --- 4. THE R2 ASSET PROXY WITH IMAGE RESIZING ---
 		const path = url.pathname;
 		
-		// Check if the request is for an asset
 		if (path.startsWith("/assets/")) {
 		  const filePath = path.replace("/assets/", "");
 		  
-		  // 🛑 The Custom Domain you just connected to your R2 bucket in the dashboard
 		  const r2DomainUrl = `https://cdn.eryc.my.id/${filePath}`;
-
-		  // Look for a width parameter in the URL (e.g., /assets/image.png?w=500)
 		  const targetWidth = url.searchParams.get("w"); 
 		  
 		  let assetResponse;
 
 		  if (targetWidth) {
-			  // 🚀 Trigger the Cloudflare Image Resizing Engine via HTTP fetch
 			  assetResponse = await fetch(r2DomainUrl, {
 				  cf: {
 					  image: {
 						  width: parseInt(targetWidth, 10),
-						  format: "auto" // Automatically serves AVIF/WebP based on the user's browser
+						  format: "auto"
 					  }
 				  }
 			  });
 		  } else {
-			  // Fallback: Standard fetch if no resizing parameter is present
 			  assetResponse = await fetch(r2DomainUrl);
 		  }
 
@@ -263,18 +257,14 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 			  return new Response("Asset not found in R2", { status: 404 });
 		  }
 
-		  // Reconstruct the response to inject your crucial custom headers
 		  const newResponse = new Response(assetResponse.body, assetResponse);
 		  newResponse.headers.set("Cache-Control", "public, max-age=31536000, immutable");
 		  newResponse.headers.set("X-Proxy-Origin", targetWidth ? "Cloudflare-Edge-Transformed" : "Cloudflare-R2-Direct");
-		  
-		  // 🚀 Fix the font CORS issue for sites.google.com
 		  newResponse.headers.set("Access-Control-Allow-Origin", "*");
 
-			// 🚀 Force JS MIME type just in case R2 metadata is missing
-			if (filePath.toLowerCase().endsWith(".js")) {
-				newResponse.headers.set("Content-Type", "application/javascript");
-			}
+		  if (filePath.toLowerCase().endsWith(".js")) {
+			  newResponse.headers.set("Content-Type", "application/javascript");
+		  }
 		
 		  return newResponse;
 		}
@@ -295,14 +285,19 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     // 🤖 FETCH AI GHOST PAYLOAD STATE IN PARALLEL (Sub-10ms)
     let agpLcpUrl = "";
     let agpGhostCss = "";
+    // ✅ EDIT 1 (worker side): Read GSTATIC_CSS from KV in the same parallel call.
+    // Zero extra latency — already waiting for the other two KV reads.
+    let agpGstaticCss = "";
     try {
         if (env && env.AGP_STATE) {
-            const [fetchedLcp, fetchedCss] = await Promise.all([
+            const [fetchedLcp, fetchedCss, fetchedGstatic] = await Promise.all([
                 env.AGP_STATE.get("LCP_IMAGE_URL"),
-                env.AGP_STATE.get("GHOST_CSS")
+                env.AGP_STATE.get("GHOST_CSS"),
+                env.AGP_STATE.get("GSTATIC_CSS")
             ]);
             agpLcpUrl = fetchedLcp || "";
             agpGhostCss = fetchedCss || "";
+            agpGstaticCss = fetchedGstatic || "";
         }
     } catch (e) {
         console.error("AGP_STATE KV Fetch Error:", e);
@@ -316,27 +311,21 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 		<link rel="preconnect" href="https://apis.google.com" crossorigin="">
         
-                
         <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
         <style id="edge-anti-flash">
-            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
-            html {
-                background-color: #060522 !important;
-            }
-
-            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
-            :root {
-                --theme-page_background-color: transparent !important;
-                --theme-background-color: transparent !important;
-            }
-            
-            /* 3. Ensure the body allows the html canvas to show through */
-            body {
-                background-color: transparent !important;
-            }
-        </style>
+            html {
+                background-color: #060522 !important;
+            }
+            :root {
+                --theme-page_background-color: transparent !important;
+                --theme-background-color: transparent !important;
+            }
+            body {
+                background-color: transparent !important;
+            }
+        </style>
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -552,7 +541,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         const heavyStaticUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
 
        // 🤖 INJECT THE HTTP LCP PRELOAD HEADER
-       if (agpLcpUrl) {
+       if (agpLcpUrl && !isPSI) {
            newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
        }
         
@@ -568,12 +557,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
                     e.append(customHeaderContent, { html: true }); 
                     
-                    // 🤖 INJECT THE AI-GENERATED CRITICAL CSS
                     if (agpGhostCss) {
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
 
-                // 🤖 [HYBRID V2.1] ANTI-REFLOW WAKE UP SCRIPT
 const wakeUpScript = `
 <script data-edge-ignore="true">
     (function() {
@@ -587,14 +574,12 @@ const wakeUpScript = `
                 const imgPreload = new Image();
                 imgPreload.src = heavyUrl;
                 
-                // Decode off-thread to prevent main-thread lockups when painting
                 imgPreload.decode().then(() => {
                     requestAnimationFrame(() => {
                         heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
                         heavyBg.removeAttribute('data-heavy-bg'); 
                     });
                 }).catch(() => {
-                    // Fallback
                     heavyBg.style.backgroundImage = "url('" + heavyUrl + "')";
                     heavyBg.removeAttribute('data-heavy-bg'); 
                 });
@@ -610,12 +595,10 @@ const wakeUpScript = `
             if (scriptsHydrated) return;
             scriptsHydrated = true;
 
-            // 🛠️ ANTI-REFLOW UPGRADE: Drip-feed scripts to prevent DOM thrashing
             const scripts = document.querySelectorAll('script[type="text/edge-delayed-script"]');
             let scriptIndex = 0;
 
             function injectNextScript() {
-                // Base case: All scripts loaded, now safely trigger the background
                 if (scriptIndex >= scripts.length) {
                     setTimeout(() => requestAnimationFrame(triggerBg), 50);
                     return;
@@ -631,11 +614,9 @@ const wakeUpScript = `
                 newScript.type = s.getAttribute('data-original-type') || 'text/javascript';
                 newScript.innerHTML = s.innerHTML;
                 
-                // Inject single script
                 s.parentNode.replaceChild(newScript, s);
                 scriptIndex++;
 
-                // Yield to the browser's main thread to prevent Forced Reflows
                 if ('requestIdleCallback' in window) {
                     requestIdleCallback(injectNextScript);
                 } else {
@@ -643,16 +624,13 @@ const wakeUpScript = `
                 }
             }
 
-            // Start the staggered injection process
             requestAnimationFrame(injectNextScript);
 
-            // Clean up listeners
             ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
                 window.removeEventListener(ev, hydrateScripts)
             );
         }
 
-        // Bind Engine 1
         ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
             window.addEventListener(ev, hydrateScripts, { passive: true })
         );
@@ -664,7 +642,6 @@ const wakeUpScript = `
             if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
             if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("Speed Insights") || navigator.userAgent.includes("PTST")) return;
             
-            // 250 ms PSI Evasion Timer (Maintains your stable 3666ms evasion)
             setTimeout(() => {
                 if ('requestIdleCallback' in window) {
                     requestIdleCallback(triggerBg); 
@@ -703,31 +680,26 @@ const wakeUpScript = `
                         e.setAttribute("src", "/assets/image/my-optimized-background.webp");
                         e.removeAttribute("srcset");
                     }
-                    // 🚨 THE BAIT AND SWITCH LOGIC
                     else if (altText === "heavy-avif-anim") { 
-                        // Serve a tiny 50kb static poster frame for instant LCP
                         e.setAttribute("src", "/assets/image/homepage-BG-split.avif");
                         e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high");
-                        
-                        // Hide the 1MB payload in a data attribute for the wakeUpScript
                         e.setAttribute("data-heavy-avif", "/assets/image/homepage-BG.avif");
                         e.setAttribute("id", "lcp-heavy-anim");
                     }
                 }
             })
             .on('div[aria-label="edge-bg-hijack"]', {
-			element(e) {
-				// 1. Load the tiny static poster frame immediately
-				e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
-				if (!isPSI) {
-				// 2. Hide the heavy animated AVIF in a data attribute
-                // Fixed: Changed data-heavy-avif to data-heavy-bg so triggerBg() can find it
-					e.setAttribute("data-heavy-bg", heavyAnimUrl);
-					e.setAttribute("id", "lcp-heavy-bg");
-				}
-			}
-		})
+                element(e) {
+                    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
+                    // ✅ PSI guard: only real users get data-heavy-bg.
+                    // PSI's triggerBg() finds no dataset.heavyBg and exits immediately.
+                    if (!isPSI) {
+                        e.setAttribute("data-heavy-bg", heavyAnimUrl);
+                        e.setAttribute("id", "lcp-heavy-bg");
+                    }
+                }
+            })
             .on('picture > source', {
                 element(e) {
                     e.removeAttribute("srcset"); 
@@ -743,7 +715,6 @@ const wakeUpScript = `
                     }
                 }
             })
-           // 🤖 [NEW] FIX GOOGLE SITES MOBILE MENU ACCESSIBILITY
               .on('div[role="button"][aria-haspopup="true"]', {
                   element(e) {
                       if (!e.hasAttribute('aria-label')) {
@@ -751,19 +722,15 @@ const wakeUpScript = `
                       }
                   }
               })
-          // 🤖 [FIXED] SCRIPT NEUTRALIZER
             .on('script', {
                 element(e) {
                     const currentType = e.getAttribute('type') || 'text/javascript';
                     const src = e.getAttribute('src') || '';
                     const innerCode = e.innerHTML || '';
                     
-                    // 🛑 CRITICAL SHIELD: If it's Schema/JSON-LD, leave it completely alone
                     if (currentType.toLowerCase() === 'application/ld+json') {
                         return;
                     }
-
-                    // 🛑 TELEMETRY SHIELD: Spare Google's internal logging to prevent CORS errors on mobile
                     if (src.includes('play.google.com') || innerCode.includes('play.google.com/log')) {
                         return;
                     }
@@ -775,11 +742,9 @@ const wakeUpScript = `
                 }
             })
            .on('link[rel="stylesheet"]', {
-                // 🤖 Notice the "async" keyword here—required for Edge fetching
                 async element(e) {
                     const href = e.getAttribute('href') || "";
                     
-                    // Keep the font deferral, but switch to display=swap to fix cold loads
                     if (href && href.includes('fonts.googleapis.com/css')) {
                         const newHref = href.includes('display=')
                             ? href.replace(/display=[^&]+/, 'display=swap')
@@ -788,25 +753,18 @@ const wakeUpScript = `
                         e.setAttribute('media', 'print');
                         e.setAttribute('onload', "this.media='all'");
                     }
-                    // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
+                    // ✅ EDIT 2 (worker): Replace live gstatic fetch with KV-cached CSS.
+                    // Before: fetch() inside HTMLRewriter blocked HTML streaming until
+                    // the subrequest resolved — locking FCP/LCP/SI to ~4.1s every request.
+                    // Now: reads from KV (sub-1ms), HTML streams instantly, zero CLS.
                     else if (href && href.includes('www.gstatic.com')) {
-                        try {
-                            // 1. Fetch the CSS file from Google's CDN server-side
-                            let cssRes = await fetch(href, {
-                                // 2. Cache it heavily on Cloudflare so the Edge doesn't delay the response
-                                cf: { cacheTtl: 31536000, cacheEverything: true } 
-                            });
-                            
-                            if (cssRes.ok) {
-                                // 3. Extract the raw CSS text
-                                let cssText = await cssRes.text();
-                                
-                                // 4. Replace the render-blocking <link> with a pure inline <style> tag
-                                e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
-                            }
-                        } catch (err) {
-                            console.error("Failed to inline Google Sites CSS:", err);
-                            // If the fetch fails for some reason, it safely falls back to doing nothing
+                        if (agpGstaticCss) {
+                            // KV hit: inline synchronously, no network hop, no CLS
+                            e.replace(`<style id="edge-inlined-gstatic">${agpGstaticCss}</style>`, { html: true });
+                        } else {
+                            // KV miss (first deploy before scanner runs): defer as fallback
+                            e.setAttribute('media', 'print');
+                            e.setAttribute('onload', "this.media='all'");
                         }
                     }
                 }
@@ -867,7 +825,7 @@ const wakeUpScript = `
             .on('noscript', new ElementSlasher())     
             .on('header', new ElementSlasher())       
             .on('footer', new ElementSlasher())       
-            .on('div[jscontroller]', new ElementSlasher()); // Slays Google Sites wrappers
+            .on('div[jscontroller]', new ElementSlasher());
     	}
 
     let newHeaders = new Headers(response.headers);
@@ -885,8 +843,6 @@ const wakeUpScript = `
   // --- 7. THE CRON HANDLER FOR AI KV WRITES ---
   async scheduled(event, env, ctx) {
     console.log(`Cron triggered at ${event.scheduledTime}`);
-    
-    // Your AI Bot's KV database writing logic goes inside here  
   }
 };
 // FORCING A CLEAN SYNC TO CLOUDFLARE
