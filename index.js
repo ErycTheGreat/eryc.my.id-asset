@@ -683,16 +683,17 @@ const wakeUpScript = `
 
                     if (ariaLabel.includes("site-logo-hijack")) {
                         e.setAttribute("src", "/assets/image/hero.avif");
-                        e.removeAttribute("srcset");
-						e.removeAttribute("data-src");        // ← kill lazy load source
-						e.removeAttribute("data-iml");        // ← kill Google Sites lazy trigger
-						e.removeAttribute("data-atf");        // ← kill above-the-fold lazy flag
-						e.setAttribute("class", "");          // ← strip lzy1Td class entirely
-						e.setAttribute("fetchpriority", "high"); 
-						e.setAttribute("loading", "eager");   // ← force eager, override lazy
-						e.setAttribute("width", "120"); 
-						e.setAttribute("height", "120"); 
-						e.setAttribute("style", "width: 120px !important; height: 120px !important; object-fit: contain; border-radius: 50%;");
+						e.removeAttribute("srcset");
+						e.removeAttribute("data-src");
+						e.removeAttribute("data-iml");
+						e.removeAttribute("data-atf");
+						const currentClass = e.getAttribute("class") || "";
+						e.setAttribute("class", currentClass.replace("lzy1Td", "").trim()); // ← only kills lazy class
+						e.setAttribute("fetchpriority", "high");
+						e.setAttribute("loading", "eager");
+						e.setAttribute("width", "120");
+						e.setAttribute("height", "120");
+						e.setAttribute("style", "width: auto !important; object-fit: contain;");
                     }
                     else if (altText === "edge-bg-hijack") { 
                         e.setAttribute("src", "/assets/image/my-optimized-background.webp");
