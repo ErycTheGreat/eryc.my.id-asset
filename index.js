@@ -557,12 +557,17 @@ const wakeUpScript = `
             }
 
             requestAnimationFrame(injectNextScript);
-            ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+            ['mousemove','keydown','touchstart','touchmove'].forEach(ev => 
                 window.removeEventListener(ev, hydrateScripts)
             );
         }
 
-        ['mousemove','keydown','touchstart','touchmove','wheel','scroll'].forEach(ev => 
+        // ✅ FIX 2: Removed 'scroll' and 'wheel' from Engine 1 triggers.
+        // scroll/wheel fire constantly during normal browsing — every scroll session
+        // was triggering hydrateScripts(), injecting all deferred Google Sites JS,
+        // causing 2,696ms INP and CLS ~1.0 on real users.
+        // Real intentional interactions (click, tap, keydown) still trigger hydration.
+        ['mousemove','keydown','touchstart','touchmove'].forEach(ev => 
             window.addEventListener(ev, hydrateScripts, { passive: true })
         );
 
