@@ -315,7 +315,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 		<link rel="preconnect" href="https://apis.google.com" crossorigin="">
         
                 
-        <link rel="preload" as="image" href="/assets/image/hero.webp?w=120" fetchpriority="high">
+        <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
         <style id="edge-anti-flash">
@@ -693,7 +693,7 @@ const wakeUpScript = `
                     let altText = e.getAttribute("alt") || ""; 
 
                     if (ariaLabel.includes("site-logo-hijack")) {
-					e.setAttribute("src", "/assets/image/hero.webp?w=120");
+					e.setAttribute("src", "/assets/image/hero.avif");
 					e.removeAttribute("srcset");
                         e.setAttribute("fetchpriority", "high"); 
                         e.setAttribute("width", "120"); 
@@ -857,7 +857,7 @@ const wakeUpScript = `
                 let ariaLabel = e.getAttribute("aria-label") || "";
                 
                 if (ariaLabel.includes("site-logo-hijack")) {
-                    e.setAttribute("src", "/assets/image/hero.webp?w=120");
+                    e.setAttribute("src", "/assets/image/hero.avif");
                     e.removeAttribute("srcset");
                     e.removeAttribute("data-src");
                     e.removeAttribute("data-iml");
