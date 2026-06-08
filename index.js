@@ -233,11 +233,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 			  cf: { image: { width: parseInt(targetWidth, 10), format: "auto" } }
 		  });
 	  } else {
-		  // ✅ Cache R2 assets at Cloudflare edge — subsequent requests served
-		  // from memory without hitting R2, reducing latency for all users
-		  assetResponse = await fetch(r2DomainUrl, {
-			  cf: { cacheTtl: 31536000, cacheEverything: true }
-		  });
+		  assetResponse = await fetch(r2DomainUrl);
 	  }
 
 	  if (!assetResponse.ok) {
@@ -279,19 +275,16 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     let agpLcpUrl = "";
     let agpGhostCss = "";
     let agpGstaticReady = "";
-    let agpCriticalCss = "";
     try {
         if (env && env.AGP_STATE) {
-            const [fetchedLcp, fetchedCss, fetchedGstatic, fetchedCritical] = await Promise.all([
+            const [fetchedLcp, fetchedCss, fetchedGstatic] = await Promise.all([
                 env.AGP_STATE.get("LCP_IMAGE_URL"),
                 env.AGP_STATE.get("GHOST_CSS"),
-                env.AGP_STATE.get("GSTATIC_CSS"),
-                env.AGP_STATE.get("CRITICAL_CSS")
+                env.AGP_STATE.get("GSTATIC_CSS")
             ]);
             agpLcpUrl = fetchedLcp || "";
             agpGhostCss = fetchedCss || "";
             agpGstaticReady = fetchedGstatic || "";
-            agpCriticalCss = fetchedCritical || "";
         }
     } catch (e) {
         console.error("AGP_STATE KV Fetch Error:", e);
@@ -691,21 +684,12 @@ const wakeUpScript = `
                     // Fallback: if scanner hasn't run yet (KV empty), defer the original
                     // link instead — no crash, page loads slower until scanner populates R2.
                     else if (href && href.includes('www.gstatic.com')) {
-                        if (agpCriticalCss && agpGstaticReady === "ready") {
-                            // ✅ BEST CASE: Critical CSS (~2-30 KiB) inlined synchronously
-                            // + full CSS deferred non-blocking from R2.
-                            // Browser paints immediately using critical CSS, then full CSS
-                            // loads in background — no render-block, no CLS.
-                            e.replace(
-                                `<style id="edge-critical-gstatic">${agpCriticalCss}</style>` +
-                                `<link rel="stylesheet" href="/assets/css/gstatic-cache.css" media="print" onload="this.media='all'">`,
-                                { html: true }
-                            );
-                        } else if (agpGstaticReady === "ready") {
-                            // Full CSS from R2 (no critical CSS yet — scanner hasn't done FCP pass)
+                        if (agpGstaticReady === "ready") {
+                            // R2 file confirmed populated by scanner — serve from edge
                             e.replace(`<link rel="stylesheet" href="/assets/css/gstatic-cache.css">`, { html: true });
                         } else {
-                            // Fallback: scanner hasn't run yet — defer original gstatic link
+                            // Fallback: scanner hasn't run yet, defer original gstatic link
+                            // Page renders with slight CLS but no broken layout
                             e.setAttribute('media', 'print');
                             e.setAttribute('onload', "this.media='all'");
                         }
