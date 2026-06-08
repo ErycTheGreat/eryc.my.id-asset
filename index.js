@@ -283,7 +283,33 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
 
    // --- 6. EDGE DYNAMIC RENDERING ---
-    const response = await fetch(request);
+    // 🚀 THE TTFB KILLER: Native Edge HTML Caching
+    const cache = caches.default;
+    const cacheUrl = new URL(request.url);
+    
+    // Strip query parameters so we don't fragment the cache
+    cacheUrl.search = ''; 
+    const cacheKey = new Request(cacheUrl.toString(), request);
+    
+    let response = await cache.match(cacheKey);
+
+    if (!response) {
+        console.log("HTML Cache MISS - Fetching from Google Sites");
+        response = await fetch(request); // The original fetch is now safely wrapped inside this fallback!
+        
+        // Clone the response so we can modify headers for caching
+        response = new Response(response.body, response);
+        
+        // Force the edge to hold this HTML for 60 seconds
+        response.headers.set("Cache-Control", "s-maxage=60");
+        
+        // Save it to the Edge cache in the background
+        ctx.waitUntil(cache.put(cacheKey, response.clone()));
+    } else {
+        console.log("HTML Cache HIT - Zero Origin Latency!");
+        // We must clone cached responses before modifying headers downstream
+        response = new Response(response.body, response);
+    }
     const contentType = response.headers.get("content-type") || "";
 
     if (!contentType.includes("text/html")) {
