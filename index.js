@@ -227,55 +227,52 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       });
     }
       
-  // --- 4. THE R2 ASSET PROXY WITH IMAGE RESIZING ---
-    const path = url.pathname;
-    
-    // Check if the request is for an asset
-    if (path.startsWith("/assets/")) {
-      const filePath = path.replace("/assets/", "");
-      
-      // 🛑 The Custom Domain you just connected to your R2 bucket in the dashboard
-      const r2DomainUrl = `https://cdn.eryc.my.id/${filePath}`;
+	  // --- 4. THE R2 ASSET PROXY WITH IMAGE RESIZING ---
+	const path = url.pathname;
 
-      // Look for a width parameter in the URL (e.g., /assets/image.png?w=500)
-      const targetWidth = url.searchParams.get("w"); 
-      
-      let assetResponse;
+	if (path.startsWith("/assets/")) {
+	  const filePath = path.replace("/assets/", "");
+	  const r2DomainUrl = `https://cdn.eryc.my.id/${filePath}`;
+	  const targetWidth = url.searchParams.get("w");
 
-      if (targetWidth) {
-          // 🚀 Trigger the Cloudflare Image Resizing Engine via HTTP fetch
-          assetResponse = await fetch(r2DomainUrl, {
-              cf: {
-                  image: {
-                      width: parseInt(targetWidth, 10),
-                      format: "auto" // Automatically serves AVIF/WebP based on the user's browser
-                  }
-              }
-          });
-      } else {
-          // Fallback: Standard fetch if no resizing parameter is present
-          assetResponse = await fetch(r2DomainUrl);
-      }
+	  // 🚀 CHECK EDGE CACHE FIRST — return immediately if hit
+	  const cache = caches.default;
+	  const cached = await cache.match(request);
+	  if (cached) return cached;
 
-      if (!assetResponse.ok) {
-          return new Response("Asset not found in R2", { status: 404 });
-      }
+	  // --- CACHE MISS: fetch from R2 ---
+	  let assetResponse;
+	  if (targetWidth) {
+		  assetResponse = await fetch(r2DomainUrl, {
+			  cf: {
+				  image: {
+					  width: parseInt(targetWidth, 10),
+					  format: "auto"
+				  }
+			  }
+		  });
+	  } else {
+		  assetResponse = await fetch(r2DomainUrl);
+	  }
 
-      // Reconstruct the response to inject your crucial custom headers
-      const newResponse = new Response(assetResponse.body, assetResponse);
-      newResponse.headers.set("Cache-Control", "public, max-age=31536000, immutable");
-      newResponse.headers.set("X-Proxy-Origin", targetWidth ? "Cloudflare-Edge-Transformed" : "Cloudflare-R2-Direct");
-      
-      // 🚀 Fix the font CORS issue for sites.google.com
-      newResponse.headers.set("Access-Control-Allow-Origin", "*");
+	  if (!assetResponse.ok) {
+		  return new Response("Asset not found in R2", { status: 404 });
+	  }
 
-		// 🚀 Force JS MIME type just in case R2 metadata is missing
-		if (filePath.toLowerCase().endsWith(".js")) {
-			newResponse.headers.set("Content-Type", "application/javascript");
-		}
-	
-      return newResponse;
-    }
+	  const newResponse = new Response(assetResponse.body, assetResponse);
+	  newResponse.headers.set("Cache-Control", "public, max-age=31536000, immutable");
+	  newResponse.headers.set("X-Proxy-Origin", targetWidth ? "Cloudflare-Edge-Transformed" : "Cloudflare-R2-Direct");
+	  newResponse.headers.set("Access-Control-Allow-Origin", "*");
+
+	  if (filePath.toLowerCase().endsWith(".js")) {
+		  newResponse.headers.set("Content-Type", "application/javascript");
+	  }
+
+	  // 🚀 STORE IN EDGE CACHE (non-blocking — doesn't delay the response)
+	  ctx.waitUntil(cache.put(request, newResponse.clone()));
+
+	  return newResponse;
+	}
 
    // --- 5. ASSET BYPASS ---
     if (url.pathname.includes(".") && !url.pathname.endsWith(".html")) {
@@ -293,14 +290,17 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     // 🤖 FETCH AI GHOST PAYLOAD STATE IN PARALLEL (Sub-10ms)
     let agpLcpUrl = "";
     let agpGhostCss = "";
+	let gstaticCss = "";
     try {
         if (env && env.AGP_STATE) {
             const [fetchedLcp, fetchedCss] = await Promise.all([
                 env.AGP_STATE.get("LCP_IMAGE_URL"),
-                env.AGP_STATE.get("GHOST_CSS")
+                env.AGP_STATE.get("GHOST_CSS"),
+				env.AGP_STATE.get("GSTATIC_CSS")
             ]);
             agpLcpUrl = fetchedLcp || "";
             agpGhostCss = fetchedCss || "";
+			gstaticCss = fetchedGstatic || "";
         }
     } catch (e) {
         console.error("AGP_STATE KV Fetch Error:", e);
@@ -315,26 +315,29 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 		<link rel="preconnect" href="https://apis.google.com" crossorigin="">
         
                 
-        <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
+        <link rel="preload" as="image" href="/assets/image/hero.webp?w=120" fetchpriority="high">
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
 
-        <style id="edge-anti-flash">
-            /* 1. Paint the absolute bottom canvas to kill the initial white flash */
-            html {
-                background-color: #060522 !important;
-            }
+			<style id="edge-anti-flash">
+				html {
+					background-color: #060522 !important;
+				}
 
-            /* 2. Hollow out Google Sites: make its default solid layers transparent so they don't flash #04122d */
-            :root {
-                --theme-page_background-color: transparent !important;
-                --theme-background-color: transparent !important;
-            }
-            
-            /* 3. Ensure the body allows the html canvas to show through */
-            body {
-                background-color: transparent !important;
-            }
-        </style>
+				:root {
+					--theme-page_background-color: transparent !important;
+					--theme-background-color: transparent !important;
+				}
+				
+				body {
+					background-color: transparent !important;
+				}
+
+				/* ✅ NEW — holds space before Google Sites JS sets main's dimensions */
+				main {
+					min-width: 1200px;
+					min-height: 100vh;
+				}
+			</style>
             
         <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
         <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
@@ -566,7 +569,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             
             .on("head", {
                 element(e) {
-                    e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
+                     e.append("<style>.EmVfjc { visibility: hidden !important; height: 0 !important; overflow: hidden !important; pointer-events: none !important; }</style>", { html: true });
                     e.append(customHeaderContent, { html: true }); 
                     
                     // 🤖 INJECT THE AI-GENERATED CRITICAL CSS
@@ -779,42 +782,25 @@ const wakeUpScript = `
                 }
             })
            .on('link[rel="stylesheet"]', {
-                // 🤖 Notice the "async" keyword here—required for Edge fetching
-                async element(e) {
-                    const href = e.getAttribute('href') || "";
-                    
-                    // Keep the font deferral, but switch to display=swap to fix cold loads
-                    if (href && href.includes('fonts.googleapis.com/css')) {
-                        const newHref = href.includes('display=')
-                            ? href.replace(/display=[^&]+/, 'display=swap')
-                            : href + (href.includes('?') ? '&' : '?') + 'display=swap';
-                        e.setAttribute('href', newHref);
-                        e.setAttribute('media', 'print');
-                        e.setAttribute('onload', "this.media='all'");
-                    }
-                    // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
-                    else if (href && href.includes('www.gstatic.com')) {
-                        try {
-                            // 1. Fetch the CSS file from Google's CDN server-side
-                            let cssRes = await fetch(href, {
-                                // 2. Cache it heavily on Cloudflare so the Edge doesn't delay the response
-                                cf: { cacheTtl: 31536000, cacheEverything: true } 
-                            });
-                            
-                            if (cssRes.ok) {
-                                // 3. Extract the raw CSS text
-                                let cssText = await cssRes.text();
-                                
-                                // 4. Replace the render-blocking <link> with a pure inline <style> tag
-                                e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
-                            }
-                        } catch (err) {
-                            console.error("Failed to inline Google Sites CSS:", err);
-                            // If the fetch fails for some reason, it safely falls back to doing nothing
-                        }
-                    }
-                }
-             })
+    element(e) {   // ← async keyword gone
+        const href = e.getAttribute('href') || "";
+        
+        if (href.includes('fonts.googleapis.com/css')) {
+            const newHref = href.includes('display=')
+                ? href.replace(/display=[^&]+/, 'display=swap')
+                : href + (href.includes('?') ? '&' : '?') + 'display=swap';
+            e.setAttribute('href', newHref);
+            e.setAttribute('media', 'print');
+            e.setAttribute('onload', "this.media='all'");
+        }
+        // ✅ No fetch, just inject the string already in memory from KV
+        else if (href.includes('www.gstatic.com')) {
+            if (gstaticCss) {
+                e.replace(`<style id="edge-inlined-gstatic">${gstaticCss}</style>`, { html: true });
+            }
+        }
+    }
+})
             .on('a[aria-selected]', {
                 element(e) {
                     e.removeAttribute('aria-selected');
@@ -911,8 +897,18 @@ const wakeUpScript = `
   // --- 7. THE CRON HANDLER FOR AI KV WRITES ---
   async scheduled(event, env, ctx) {
     console.log(`Cron triggered at ${event.scheduledTime}`);
-    
-    // Your AI Bot's KV database writing logic goes inside here  
-  }
+
+    // 🚀 NEW: Fetch and cache gstatic CSS into KV once per day
+    try {
+        const cssRes = await fetch("https://www.gstatic.com/sites-ng/css/v23/main.css"); // ← your real URL
+        if (cssRes.ok) {
+            const cssText = await cssRes.text();
+            await env.AGP_STATE.put("GSTATIC_CSS", cssText);
+            console.log("gstatic CSS cached to KV successfully");
+        }
+    } catch (e) {
+        console.error("Failed to cache gstatic CSS:", e);
+    }
+}
 };
 // FORCING A CLEAN SYNC TO CLOUDFLARE
