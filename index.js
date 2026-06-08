@@ -233,7 +233,11 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 			  cf: { image: { width: parseInt(targetWidth, 10), format: "auto" } }
 		  });
 	  } else {
-		  assetResponse = await fetch(r2DomainUrl);
+		  // ✅ Cache R2 assets at Cloudflare edge — subsequent requests served
+		  // from memory without hitting R2, reducing latency for all users
+		  assetResponse = await fetch(r2DomainUrl, {
+			  cf: { cacheTtl: 31536000, cacheEverything: true }
+		  });
 	  }
 
 	  if (!assetResponse.ok) {
