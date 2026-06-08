@@ -692,7 +692,7 @@ const wakeUpScript = `
 						e.setAttribute("loading", "eager");   // ← force eager, override lazy
 						e.setAttribute("width", "120"); 
 						e.setAttribute("height", "120"); 
-						e.setAttribute("style", "width: auto !important; object-fit: contain;");
+						e.setAttribute("style", "width: 120px !important; height: 120px !important; object-fit: contain; border-radius: 50%;");
                     }
                     else if (altText === "edge-bg-hijack") { 
                         e.setAttribute("src", "/assets/image/my-optimized-background.webp");
