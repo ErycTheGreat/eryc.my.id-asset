@@ -695,11 +695,14 @@ const wakeUpScript = `
                     if (ariaLabel.includes("site-logo-hijack")) {
 					e.setAttribute("src", "/assets/image/hero.avif");
 					e.removeAttribute("srcset");
-                        e.setAttribute("fetchpriority", "high"); 
-                        e.setAttribute("width", "120"); 
-                        e.setAttribute("height", "120"); 
-                        e.setAttribute("style", "width: auto !important; object-fit: contain;"); 
-                    
+					e.removeAttribute("data-src");
+					e.removeAttribute("data-iml");
+					e.removeAttribute("data-atf");				
+					e.setAttribute("fetchpriority", "high");
+					e.setAttribute("loading", "eager");
+					e.setAttribute("width", "120");
+					e.setAttribute("height", "120");
+					e.setAttribute("style", "width: auto !important; object-fit: contain;"); 
 				}
                     else if (altText === "edge-bg-hijack") { 
                         e.setAttribute("src", "/assets/image/my-optimized-background.webp");
