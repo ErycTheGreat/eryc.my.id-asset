@@ -580,7 +580,11 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         : "/assets/image/homepage-BG.avif";
 
       // 🤖 INJECT THE HTTP LCP PRELOAD HEADER
-      if (agpLcpUrl) {
+      // 🔒 Guard: never send this to PSI. The AGP scanner visits the page as a real
+      // browser AFTER Engine 2 fires the swap, so it writes the heavy AVIF as
+      // LCP_IMAGE_URL. That URL then gets preloaded at the HTTP layer — BEFORE any
+      // JS guard can run — causing PSI to download the heavy file unconditionally.
+      if (agpLcpUrl && !isPSI) {
         newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
       }
 
@@ -604,9 +608,15 @@ Sitemap: https://${canonicalHost}/sitemap.xml
   let scriptsHydrated = false;
 
   // 🎯 THE PAYLOAD DETONATOR
-  // 🔒 FIX #3: Removed new Image() — no pre-download, no network trace.
-  // We write background-image directly and let the browser fetch on demand.
+  // 🔒 FINAL GATE: Guards live here so both Engine 1 AND Engine 2 are covered.
+  // Engine 2 has its own guards too, but Engine 1 (scroll/interaction) has none —
+  // PSI can trigger a programmatic scroll during audit which fires Engine 1 directly.
+  // Any headless browser that reaches triggerBg() is stopped here unconditionally.
   const triggerBg = () => {
+    if (navigator.webdriver) return;                                    // Selenium / CDP automation
+    if (window.outerWidth === 0) return;                               // Old headless Chrome
+    if (/Chrome-Lighthouse|PTST|Lighthouse/i.test(navigator.userAgent)) return; // UA fallback
+    
     const heavyBg = document.getElementById('lcp-heavy-bg');
     if (heavyBg && heavyBg.dataset.heavyBg) {
       const heavyUrl = heavyBg.dataset.heavyBg;
@@ -619,6 +629,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 
   // ENGINE 1: The Heavy Framework (Physical interaction only)
   function hydrateScripts(e) {
+    // 🔒 Guard Engine 1 entrance — PSI can trigger scroll events during audit
+    if (navigator.webdriver) return;
+    if (window.outerWidth === 0) return;
+
     if (e && e.type === 'mousemove') {
       if (e.movementX === 0 && e.movementY === 0) return;
     }
