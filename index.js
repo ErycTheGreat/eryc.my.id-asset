@@ -29,6 +29,8 @@ export default {
 		
 	// Force true if Cloudflare already verified it as a bot via cf.request.cf (optional safeguard)
 	const isBot = isAIBot || isCrawlerBot || isSocialBot || (request.cf && request.cf.asReplacerBot) || url.searchParams.get("debug") === "bot";
+	
+	const isPSI = /Chrome-Lighthouse|PTST/i.test(userAgent);
 
     if (isBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
@@ -715,16 +717,17 @@ const wakeUpScript = `
                 }
             })
             .on('div[aria-label="edge-bg-hijack"]', {
-                element(e) {
-                    // 1. Load the tiny static poster frame immediately
-                    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
-                    
-                    // 2. Hide the heavy animated AVIF in a data attribute
-                    // Fixed: Changed data-heavy-avif to data-heavy-bg so triggerBg() can find it
-                    e.setAttribute("data-heavy-bg", heavyAnimUrl);
-                    e.setAttribute("id", "lcp-heavy-bg");
-                }
-            })
+			element(e) {
+				// 1. Load the tiny static poster frame immediately
+				e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
+				if (!isPSI) {
+				// 2. Hide the heavy animated AVIF in a data attribute
+                // Fixed: Changed data-heavy-avif to data-heavy-bg so triggerBg() can find it
+					e.setAttribute("data-heavy-bg", heavyAnimUrl);
+					e.setAttribute("id", "lcp-heavy-bg");
+				}
+			}
+		})
             .on('picture > source', {
                 element(e) {
                     e.removeAttribute("srcset"); 
