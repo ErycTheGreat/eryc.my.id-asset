@@ -283,33 +283,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
 
    // --- 6. EDGE DYNAMIC RENDERING ---
-    // 🚀 THE TTFB KILLER: Native Edge HTML Caching
-    const cache = caches.default;
-    const cacheUrl = new URL(request.url);
-    
-    // Strip query parameters so we don't fragment the cache
-    cacheUrl.search = ''; 
-    const cacheKey = new Request(cacheUrl.toString(), request);
-    
-    let response = await cache.match(cacheKey);
-
-    if (!response) {
-        console.log("HTML Cache MISS - Fetching from Google Sites");
-        response = await fetch(request); // The original fetch is now safely wrapped inside this fallback!
-        
-        // Clone the response so we can modify headers for caching
-        response = new Response(response.body, response);
-        
-        // Force the edge to hold this HTML for 60 seconds
-        response.headers.set("Cache-Control", "s-maxage=60");
-        
-        // Save it to the Edge cache in the background
-        ctx.waitUntil(cache.put(cacheKey, response.clone()));
-    } else {
-        console.log("HTML Cache HIT - Zero Origin Latency!");
-        // We must clone cached responses before modifying headers downstream
-        response = new Response(response.body, response);
-    }
+    const response = await fetch(request);
     const contentType = response.headers.get("content-type") || "";
 
     if (!contentType.includes("text/html")) {
@@ -710,6 +684,24 @@ const wakeUpScript = `
                     currentEmbedCode = e.getAttribute("data-code");
                 }
             })
+			
+			
+			// --- 7. GRAB THE ASYMMETRIC GHOST PAYLOAD FROM KV ---
+    
+			const lcpImageUrl = await env.AGP_STATE.get("LCP_IMAGE_URL") || "/assets/image/hero.webp";
+			const ghostCss = await env.AGP_STATE.get("GHOST_CSS") || "body { background-color: #020617 !important; }";
+
+			// --- 8. THE REWRITER INJECTION ---
+			const humanRewriter = new HTMLRewriter()
+				// 🚀 NEW: INJECT PRELOAD & GHOST CSS INTO THE <HEAD>
+				.on('head', {
+					element(e) {
+						e.append(`<style>${ghostCss}</style>`, { html: true });
+						e.append(`<link rel="preload" as="image" href="${lcpImageUrl}?w=120" fetchpriority="high">`, { html: true });
+					}
+				})
+			
+			
            .on('img', {
                 element(e) {
                     e.removeAttribute("loading"); 
