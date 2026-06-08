@@ -235,7 +235,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       const filePath = path.replace("/assets/", "");
       
       // 🛑 The Custom Domain you just connected to your R2 bucket in the dashboard
-      const r2DomainUrl = `https://media.eryc.my.id/${filePath}`;
+      const r2DomainUrl = `https://cdn.eryc.my.id/${filePath}`;
 
       // Look for a width parameter in the URL (e.g., /assets/image.png?w=500)
       const targetWidth = url.searchParams.get("w"); 
