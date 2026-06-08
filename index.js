@@ -555,7 +555,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
             
             .on("head", {
                 element(e) {
-                    e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; } .GAuSPc { width: 120px !important; height: 120px !important; overflow: hidden !important; } .GAuSPc img { width: 120px !important; height: 120px !important; object-fit: contain !important; }</style>", { html: true });
+                    e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
                     e.append(customHeaderContent, { html: true }); 
                     
                     // 🤖 INJECT THE AI-GENERATED CRITICAL CSS
@@ -688,7 +688,7 @@ const wakeUpScript = `
 						e.removeAttribute("data-iml");
 						e.removeAttribute("data-atf");
 						const currentClass = e.getAttribute("class") || "";
-						e.setAttribute("class", currentClass.replace("lzy1Td", "").trim()); // ← only kills lazy class
+						e.setAttribute("class", currentClass.replace("GAuSPc", "").trim()); // ← only kills lazy class
 						e.setAttribute("fetchpriority", "high");
 						e.setAttribute("loading", "eager");
 						e.setAttribute("width", "120");
