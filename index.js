@@ -790,25 +790,9 @@ const wakeUpScript = `
                     }
                     // 🚀 THE ASTRO METHOD: Inline the core CSS at the Edge
                     else if (href && href.includes('www.gstatic.com')) {
-                        try {
-                            // 1. Fetch the CSS file from Google's CDN server-side
-                            let cssRes = await fetch(href, {
-                                // 2. Cache it heavily on Cloudflare so the Edge doesn't delay the response
-                                cf: { cacheTtl: 31536000, cacheEverything: true } 
-                            });
-                            
-                            if (cssRes.ok) {
-                                // 3. Extract the raw CSS text
-                                let cssText = await cssRes.text();
-                                
-                                // 4. Replace the render-blocking <link> with a pure inline <style> tag
-                                e.replace(`<style id="edge-inlined-gstatic">${cssText}</style>`, { html: true });
-                            }
-                        } catch (err) {
-                            console.error("Failed to inline Google Sites CSS:", err);
-                            // If the fetch fails for some reason, it safely falls back to doing nothing
-                        }
-                    }
+				    e.setAttribute('media', 'print');
+				    e.setAttribute('onload', "this.media='all'");
+				}
                 }
              })
             .on('a[aria-selected]', {
