@@ -857,7 +857,7 @@ const wakeUpScript = `
                 let ariaLabel = e.getAttribute("aria-label") || "";
                 
                 if (ariaLabel.includes("site-logo-hijack")) {
-                    e.setAttribute("src", "/assets/image/hero.avif");
+                    e.setAttribute("src", "/assets/image/hero.webp?w=120");
                     e.removeAttribute("srcset");
                     e.removeAttribute("data-src");
                     e.removeAttribute("data-iml");
