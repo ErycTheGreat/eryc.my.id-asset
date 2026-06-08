@@ -42,12 +42,19 @@ export default {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
 
     // Force true if Cloudflare already verified it as a bot (optional safeguard)
-    const isBot = isAIBot || isCrawlerBot || isSocialBot || isPSI
+    // 🔒 isPSI is intentionally NOT included here — PSI must receive the full
+    // human fast-lane with proper HTML/CSS/UI for accurate CWV scoring.
+    // The 5-layer client-side guards inside wakeUpScript block Engine 2 from
+    // firing the heavy AVIF swap, so PSI never downloads the 1.2MB asset.
+    const isBot = isAIBot || isCrawlerBot || isSocialBot
       || (request.cf && request.cf.asReplacerBot)
       || url.searchParams.get("debug") === "bot";
 
     if (isBot) {
-      console.log(`[BOT-DETECT] UA="${userAgent}" PATH="${url.pathname}" isPSI=${isPSI}`);
+      console.log(`[BOT-DETECT] UA="${userAgent}" PATH="${url.pathname}"`);
+    }
+    if (isPSI) {
+      console.log(`[PSI-DETECT] Routing to human lane → UA="${userAgent}" PATH="${url.pathname}"`);
     }
 
     // =========================================================================
