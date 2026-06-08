@@ -296,13 +296,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     // ✅ EDIT 1: Added preload hint for the R2-cached gstatic CSS.
     // Tells the browser to fetch it early in parallel with the HTML stream.
     const customHeaderContent = `
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-		<link rel="preconnect" href="https://apis.google.com" crossorigin="">
-        
         <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
         <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
-        ${agpGstaticReady ? '<link rel="preload" as="style" href="/assets/css/gstatic-cache.css">' : ''}
+        ${agpGstaticReady === "ready" ? '<link rel="preload" as="style" href="/assets/css/gstatic-cache.css">' : ''}
 
         <style id="edge-anti-flash">
             html { background-color: #060522 !important; }
