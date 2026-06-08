@@ -684,10 +684,15 @@ const wakeUpScript = `
                     if (ariaLabel.includes("site-logo-hijack")) {
                         e.setAttribute("src", "/assets/image/hero.avif");
                         e.removeAttribute("srcset");
-                        e.setAttribute("fetchpriority", "high"); 
-                        e.setAttribute("width", "120"); 
-                        e.setAttribute("height", "120"); 
-                        e.setAttribute("style", "width: auto !important; object-fit: contain;"); 
+						e.removeAttribute("data-src");        // ← kill lazy load source
+						e.removeAttribute("data-iml");        // ← kill Google Sites lazy trigger
+						e.removeAttribute("data-atf");        // ← kill above-the-fold lazy flag
+						e.setAttribute("class", "");          // ← strip lzy1Td class entirely
+						e.setAttribute("fetchpriority", "high"); 
+						e.setAttribute("loading", "eager");   // ← force eager, override lazy
+						e.setAttribute("width", "120"); 
+						e.setAttribute("height", "120"); 
+						e.setAttribute("style", "width: auto !important; object-fit: contain;");
                     }
                     else if (altText === "edge-bg-hijack") { 
                         e.setAttribute("src", "/assets/image/my-optimized-background.webp");
@@ -839,7 +844,7 @@ const wakeUpScript = `
             }
         });
 
-    if (isBot && botPayload) {
+    if (isBot && !isCrawlerBot) {
         rewriter.on("body", {
             element(element) {
                 element.prepend(botPayload, { html: true }); 
@@ -848,7 +853,7 @@ const wakeUpScript = `
     }
 
     // 🔪 SIGNAL PRUNING: Kill CMS garbage for AI models
-    if (isBot && !isCrawlerBot) {
+    if (isAIBot || isSocialBot) {
         rewriter
             .on('script', new ElementSlasher())    
             .on('style', new ElementSlasher())        
