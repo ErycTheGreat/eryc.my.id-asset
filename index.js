@@ -227,46 +227,49 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       });
     }
       
-   // --- 4. THE R2 ASSET PROXY ---
+  // --- 4. THE R2 ASSET PROXY WITH IMAGE RESIZING ---
     const path = url.pathname;
     
     // Check if the request is for an asset
     if (path.startsWith("/assets/")) {
-      // Extract the filename/path (e.g., "image.png")
       const filePath = path.replace("/assets/", "");
       
-      // Fetch the object directly from the R2 bucket we bound as MY_ASSETS
-      const object = await env.MY_ASSETS.get(filePath);
+      // 🛑 The Custom Domain you just connected to your R2 bucket in the dashboard
+      const r2DomainUrl = `https://media.eryc.my.id/${filePath}`;
 
-      if (object === null) {
-        return new Response("Asset not found in R2", { status: 404 });
+      // Look for a width parameter in the URL (e.g., /assets/image.png?w=500)
+      const targetWidth = url.searchParams.get("w"); 
+      
+      let assetResponse;
+
+      if (targetWidth) {
+          // 🚀 Trigger the Cloudflare Image Resizing Engine via HTTP fetch
+          assetResponse = await fetch(r2DomainUrl, {
+              cf: {
+                  image: {
+                      width: parseInt(targetWidth, 10),
+                      format: "auto" // Automatically serves AVIF/WebP based on the user's browser
+                  }
+              }
+          });
+      } else {
+          // Fallback: Standard fetch if no resizing parameter is present
+          assetResponse = await fetch(r2DomainUrl);
       }
 
-      const newHeaders = new Headers();
-      newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
-      newHeaders.set("X-Proxy-Origin", "Cloudflare-R2");
-	  
-	   // 🚀 ADD THIS LINE TO FIX THE FONT CORS ISSUE FOR SITES.GOOGLE.COM
-      newHeaders.set("Access-Control-Allow-Origin", "*");
-
-      // R2 automatically stores the content-type when you upload, 
-      // but we can enforce it just like your old code did just to be safe.
-      const lowerPath = filePath.toLowerCase();
-      if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
-      else if (lowerPath.endsWith(".css")) newHeaders.set("Content-Type", "text/css");
-      else if (lowerPath.endsWith(".html")) newHeaders.set("Content-Type", "text/html; charset=UTF-8");
-      else if (lowerPath.endsWith(".json")) newHeaders.set("Content-Type", "application/json");
-      else if (lowerPath.endsWith(".svg")) newHeaders.set("Content-Type", "image/svg+xml");
-      else if (lowerPath.endsWith(".webp")) newHeaders.set("Content-Type", "image/webp");
-      else if (lowerPath.endsWith(".woff")) newHeaders.set("Content-Type", "font/woff");
-      else if (lowerPath.endsWith(".woff2")) newHeaders.set("Content-Type", "font/woff2");
-      else if (object.httpMetadata && object.httpMetadata.contentType) {
-          // Fallback to whatever content-type R2 detected
-          newHeaders.set("Content-Type", object.httpMetadata.contentType);
+      if (!assetResponse.ok) {
+          return new Response("Asset not found in R2", { status: 404 });
       }
 
-      // Return the file stream directly from R2
-      return new Response(object.body, { status: 200, headers: newHeaders });
+      // Reconstruct the response to inject your crucial custom headers
+      const newResponse = new Response(assetResponse.body, assetResponse);
+      newResponse.headers.set("Cache-Control", "public, max-age=31536000, immutable");
+      newResponse.headers.set("X-Proxy-Origin", targetWidth ? "Cloudflare-Edge-Transformed" : "Cloudflare-R2-Direct");
+      
+      // 🚀 Fix the font CORS issue for sites.google.com
+      newResponse.headers.set("Access-Control-Allow-Origin", "*");
+
+      return newResponse;
     }
 
    // --- 5. ASSET BYPASS ---
