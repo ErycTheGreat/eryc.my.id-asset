@@ -853,30 +853,8 @@ const wakeUpScript = `
                 }
             }
         })
-		
-		// 🚀 Force LCP optimization for Bots & Lab Tests
-        .on('img', {
-            element(e) {
-                let ariaLabel = e.getAttribute("aria-label") || "";
-                
-                if (ariaLabel.includes("site-logo-hijack")) {
-                    e.setAttribute("src", "/assets/image/hero.avif");
-                    e.removeAttribute("srcset");
-                    e.removeAttribute("data-src");
-                    e.removeAttribute("data-iml");
-                    e.removeAttribute("data-atf");
-                    
-                    // Force the scanner to prioritize this image
-                    e.setAttribute("fetchpriority", "high");
-                    e.setAttribute("loading", "eager");
-                    e.setAttribute("width", "120");
-                    e.setAttribute("height", "120");
-                    e.setAttribute("style", "width: auto !important; object-fit: contain;"); 
-                }
-            }
-        });
 
-    if (isBot && !isCrawlerBot) {
+    if (isBot && botPayload) {
         rewriter.on("body", {
             element(element) {
                 element.prepend(botPayload, { html: true }); 
@@ -885,7 +863,7 @@ const wakeUpScript = `
     }
 
     // 🔪 SIGNAL PRUNING: Kill CMS garbage for AI models
-    if (isAIBot || isSocialBot) {
+    if (isBot && !isCrawlerBot) {
         rewriter
             .on('script', new ElementSlasher())    
             .on('style', new ElementSlasher())        
