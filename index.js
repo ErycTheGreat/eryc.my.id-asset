@@ -269,6 +269,11 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       // 🚀 Fix the font CORS issue for sites.google.com
       newResponse.headers.set("Access-Control-Allow-Origin", "*");
 
+		// 🚀 Force JS MIME type just in case R2 metadata is missing
+		if (filePath.toLowerCase().endsWith(".js")) {
+			newResponse.headers.set("Content-Type", "application/javascript");
+		}
+	
       return newResponse;
     }
 
@@ -539,6 +544,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         let newHeaders = new Headers(response.headers);
         newHeaders.delete("Content-Length"); 
         newHeaders.delete("Content-Security-Policy");
+		
+		newHeaders.delete("Content-Security-Policy-Report-Only");
+		newHeaders.delete("Report-To");
 		
 		// 📱 ROUTE THE ASSET BASED ON DEVICE POWER
        const heavyAnimUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
