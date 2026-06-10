@@ -1,11 +1,10 @@
 // --- THE EXECUTIONER CLASS ---
 class ElementSlasher {
   element(element) {
+    if (element.getAttribute('data-agp-protected') === 'true') return;
     if (element.tagName === 'script') {
-        const type = element.getAttribute('type') || '';
-        if (type.toLowerCase() === 'application/ld+json') {
-            return;
-        }
+      const type = element.getAttribute('type') || '';
+      if (type.toLowerCase() === 'application/ld+json') return;
     }
     element.remove();
   }
