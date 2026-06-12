@@ -187,7 +187,7 @@ Allow: /
 Allow: /llms.txt
 Allow: /sitemap.xml
 
-Sitemap: https://${canonicalHost}/sitemap-v2.xml
+Sitemap: https://${canonicalHost}/sitemap.xml
 `.trim();
 
       return new Response(robotsTxt, {
@@ -217,21 +217,7 @@ Sitemap: https://${canonicalHost}/sitemap-v2.xml
         }
       });
     }
-
-	 if (url.pathname === "/sitemap-v2.xml") {
-        const object = await env.MY_ASSETS.get("sitemap-v2.xml");
-        if (object === null) {
-            return new Response("sitemap not found in R2", { status: 404 });
-        }
-        return new Response(object.body, {
-            status: 200,
-            headers: {
-                "Content-Type": "text/xml; charset=UTF-8",
-                "Cache-Control": "no-store"
-            }
-        });
-    }
-	  
+      
     // --- 4. THE R2 ASSET PROXY WITH IMAGE RESIZING ---
 	const path = url.pathname;
 		
