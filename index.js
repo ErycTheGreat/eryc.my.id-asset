@@ -187,7 +187,7 @@ Allow: /
 Allow: /llms.txt
 Allow: /sitemap.xml
 
-Sitemap: https://${canonicalHost}/sitemap.xml
+Sitemap: https://${canonicalHost}/sitemap-v2.xml
 `.trim();
 
       return new Response(robotsTxt, {
