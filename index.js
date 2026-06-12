@@ -55,7 +55,7 @@ export default {
       return new Response(sitemap, {
         status: 200,
         headers: {
-          "Content-Type": "application/xml; charset=UTF-8",
+          "Content-Type": "text/xml; charset=UTF-8",
           "Cache-Control": "public, max-age=86400"
         }
       });
