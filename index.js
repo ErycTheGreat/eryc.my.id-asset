@@ -542,6 +542,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 			  "@type": "ProfessionalService",
 			  "@id": "https://www.eryc.my.id/#localbusiness",
 			  "name": "Eryc Tri Juni S – Edge SEO Specialist Malang",
+			  "telephone": "+6282220888819",
 			  "url": "https://www.eryc.my.id",
 			  "logo": { "@id": "https://www.eryc.my.id/assets/image/logo-512x512.webp" },
 			  "image": { "@id": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp" },
