@@ -217,6 +217,20 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         }
       });
     }
+
+	if (url.pathname === "/llms-full.txt" || url.pathname === "/llms-full.txt/") {
+      const object = await env.MY_ASSETS.get("llms-full.txt");
+      if (object === null) {
+        return new Response("llms-full.txt not found in R2", { status: 404 });
+      }
+      return new Response(object.body, {
+        status: 200,
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          "Cache-Control": "public, s-maxage=7200, max-age=0"
+        }
+      });
+    }
       
     // --- 4. THE R2 ASSET PROXY WITH IMAGE RESIZING ---
 	const path = url.pathname;
