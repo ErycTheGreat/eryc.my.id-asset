@@ -217,7 +217,21 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         }
       });
     }
-      
+
+	 if (url.pathname === "/sitemap-v2.xml") {
+        const object = await env.MY_ASSETS.get("sitemap.xml");
+        if (object === null) {
+            return new Response("sitemap not found in R2", { status: 404 });
+        }
+        return new Response(object.body, {
+            status: 200,
+            headers: {
+                "Content-Type": "text/xml; charset=UTF-8",
+                "Cache-Control": "no-store"
+            }
+        });
+    }
+	  
     // --- 4. THE R2 ASSET PROXY WITH IMAGE RESIZING ---
 	const path = url.pathname;
 		
