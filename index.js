@@ -471,7 +471,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     if (!isBot) {
         let newHeaders = new Headers(response.headers);
         newHeaders.delete("Content-Length"); 
-        newHeaders.delete("Content-Security-Policy");
+        //newHeaders.delete("Content-Security-Policy");
 		
         const heavyAnimUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
 
