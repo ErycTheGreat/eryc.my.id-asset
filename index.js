@@ -232,6 +232,7 @@ Disallow: /
 User-agent: *
 Allow: /
 Allow: /llms.txt
+Allow: /llms-full.txt
 Allow: /sitemap.xml
 
 Sitemap: https://${canonicalHost}/sitemap.xml
@@ -355,161 +356,229 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 
     // ✅ EDIT 1: Added preload hint for the R2-cached gstatic CSS.
     // Tells the browser to fetch it early in parallel with the HTML stream.
-    const customHeaderContent = `
-        <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
-        <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
-        ${agpGstaticReady === "ready" ? '<link rel="preload" as="style" href="/assets/css/gstatic-cache.css">' : ''}
+		  const customHeaderContent = `
+		  <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
+		  <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
+		  ${agpGstaticReady === "ready" ? '<link rel="preload" as="style" href="/assets/css/gstatic-cache.css">' : ''}
 
-        <style id="edge-anti-flash">
-            html { background-color: #060522 !important; }
-            :root {
-                --theme-page_background-color: transparent !important;
-                --theme-background-color: transparent !important;
-            }
-            body { background-color: transparent !important; }
-        </style>
-            
-        <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
-        <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
-        <meta name="author" content="Eryc Tri Juni S">
-        <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug"> 
-        <meta name="yandex-verification" content="275f3c061328554a" />
-        <link rel="canonical" href="${canonicalUrl}">
-        <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llms.txt">
-        <link rel="alternate" type="application/xml" href="https://www.eryc.my.id/sitemap.xml">
-        <link rel="author" href="${domain}/about">
-        
-        <meta property="og:type" content="website">
-		<meta property="og:site_name" content="Eryc Tri Juni S">
-        <meta property="og:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S ">
-        <meta property="og:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
-        <meta property="og:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
-        <meta property="og:url" content="${canonicalUrl}">
-        
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S">
-        <meta name="twitter:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
-        <meta name="twitter:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
-        
-        <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@graph": [
-            {
-              "@type": "WebSite",
-              "@id": "https://www.eryc.my.id/#website",
-              "url": "https://www.eryc.my.id",
-              "name": "Eryc Tri Juni S",
-              "description": "Portfolio and reference implementation of Edge SEO and Asymmetric Ghost Payload (AGP) architecture by Eryc Tri Juni S.",
-              "alternateName": "eryc edge seo malang",
-              "publisher": { "@id": "https://www.eryc.my.id/#website" },
-              "inLanguage": "en",
-              "potentialAction": {
-                "@type": "SearchAction",
-                "target": "https://www.eryc.my.id/?s={search_term_string}",
-                "query-input": "required name=search_term_string"
-              }
-            },
-            {
-              "@type": "WebPage",
-              "@id": "${canonicalUrl}#webpage",
-              "url": "${canonicalUrl}",
-              "name": "Edge SEO Specialist Malang | Eryc Tri Juni S",
-              "description": "Eryc Tri Juni S is an edge SEO specialist in Malang; Indonesia. Exploring system-based marketing, constraint-bypassing architectures, and Asymmetric Ghost Payloads.",
-              "mainEntity": { "@id": "https://www.eryc.my.id/#person" },
-              "about": { "@id": "https://www.eryc.my.id/#website" },
-              "isPartOf": { "@id": "https://www.eryc.my.id/#website" },
-              "primaryImageOfPage": { "@id": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp" },
-              "inLanguage": "en"
-            },
-            {
-              "@type": "ImageObject",
-              "@id": "https://www.eryc.my.id/assets/image/logo-512x512.webp",
-              "url": "https://www.eryc.my.id/assets/image/logo-512x512.webp",
-              "width": 512, "height": 512,
-              "caption": "Eryc Tri Juni S | Edge SEO Specialist",
-              "inLanguage": "en"
-            },
-            {
-              "@type": "Person",
-              "@id": "https://www.eryc.my.id/#person",
-              "name": "Eryc Tri Juni S",
-              "description": "Eryc Tri Juni S is an Edge SEO Specialist in Malang, Indonesia, engineering constraint-bypassing web architectures and data-driven marketing systems.",
-              "email": "eryc.me@gmail.com",
-              "address": {
-                "@type": "PostalAddress",
-                "addressLocality": "Malang Regency",
-                "addressRegion": "East Java",
-                "postalCode": "65154",
-                "addressCountry": "Indonesia"
-              },
-              "gender": "Male",
-              "jobTitle": "Edge SEO Specialist",
-              "image": "https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=uqcfyxv7&raw=1",
-              "subjectOf": { "@id": "https://www.eryc.my.id/llms.txt" },
-              "knowsAbout": [
-                {
-                  "@type": "DefinedTerm",
-                  "@id": "https://www.eryc.my.id/llms.txt#AsymmetricGhostPayload",
-                  "name": "Asymmetric Ghost Payload",
-                  "alternateName": "AGP",
-                  "description": "An edge architecture where origin state is decoupled from crawler ingestion and pre-rendered semantic payloads are injected mid-flight at the network edge.",
-                  "inDefinedTermSet": "https://www.eryc.my.id/llms.txt"
-                },
-                "Edge SEO", "Asymmetric Ghost Payload (AGP)", "AGP Architecture",
-                "Generative Engine Optimization", "Cloudflare Workers", "System-Based Marketing",
-                "Funnel Optimization", "Data-Driven Strategy", "Data Analysis", "Data Story Telling",
-                "User Personas", "Google Analytics", "Search Engine Optimization (SEO)",
-                "Web Development", "Content Strategy", "Content Creation", "TikTok Marketing",
-                "Business Analysis", "Business Acumen"
-              ],
-              "sameAs": [
-                "https://www.linkedin.com/in/eryctrijunis",
-                "https://www.slideshare.net/ErycTriJuniS",
-                "https://id.quora.com/profile/Eryc-Tri-Juni-S",
-                "https://www.youtube.com/@ErycTriJuniS",
-                "https://github.com/ErycTheGreat"
-              ]
-            },
-            {
-              "@type": "ProfilePage",
-              "@id": "https://www.eryc.my.id/#profile",
-              "dateCreated": "2024-01-01T00:00:00+07:00",
-              "dateModified": "2026-04-10T00:00:00+07:00",
-              "url": "https://www.eryc.my.id/",
-              "mainEntity": { "@id": "https://www.eryc.my.id/#person" }
-            },
-            {
-              "@type": "ProfessionalService",
-              "@id": "https://www.eryc.my.id/#localbusiness",
-              "name": "Edge SEO Specialist Malang | Eryc Tri Juni S",
-              "url": "https://www.eryc.my.id",
-              "logo": "https://www.eryc.my.id/assets/image/logo.webp",
-              "image": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp",
-              "description": "Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.",
-              "address": {
-                "@type": "PostalAddress",
-                "addressLocality": "Malang",
-                "addressRegion": "East Java",
-                "addressCountry": "ID"
-              },
-              "geo": {
-                "@type": "GeoCoordinates",
-                "latitude": "-7.9839", 
-                "longitude": "112.6214",
-                "description": "Center of Malang"
-              },
-              "priceRange": "$$$",
-              "areaServed": [
-                { "@type": "City", "name": "Malang", "sameAs": "https://en.wikipedia.org/wiki/Malang" },
-                { "@type": "City", "name": "Surabaya", "sameAs": "https://en.wikipedia.org/wiki/Surabaya" },
-                { "@type": "AdministrativeArea", "name": "East Java", "sameAs": "https://en.wikipedia.org/wiki/East_Java" }
-              ],
-              "founder": { "@id": "https://www.eryc.my.id/#person" }
-            }
-          ]
-        }        
-        </script>
+		  <style id="edge-anti-flash">
+			html { background-color: #060522 !important; }
+			:root {
+			  --theme-page_background-color: transparent !important;
+			  --theme-background-color: transparent !important;
+			}
+			body { background-color: transparent !important; }
+		  </style>
+
+		  <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
+		  <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
+		  <meta name="author" content="Eryc Tri Juni S">
+		  <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug">
+		  <meta name="yandex-verification" content="275f3c061328554a">
+
+		  <link rel="canonical" href="${canonicalUrl}">
+		  <link rel="sitemap" type="application/xml" href="https://www.eryc.my.id/sitemap.xml">
+		  <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llms.txt" title="LLMs.txt">
+		  <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llms-full.txt" title="LLMs-Full.txt">
+		  <link rel="author" href="${domain}/about">
+
+		  <meta property="og:type" content="website">
+		  <meta property="og:site_name" content="Eryc Tri Juni S">
+		  <meta property="og:locale" content="en_US">
+		  <meta property="og:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S">
+		  <meta property="og:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
+		  <meta property="og:url" content="${canonicalUrl}">
+		  <meta property="og:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
+		  <meta property="og:image:alt" content="Eryc Tri Juni S – Edge SEO Specialist Malang">
+
+		  <meta name="twitter:card" content="summary_large_image">
+		  <meta name="twitter:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S">
+		  <meta name="twitter:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
+		  <meta name="twitter:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
+		  <meta name="twitter:image:alt" content="Eryc Tri Juni S – Edge SEO Specialist Malang">
+		  <meta name="twitter:creator" content="@eryctrijunis">
+				
+		<script type="application/ld+json">
+		{
+		  "@context": "https://schema.org",
+		  "@graph": [
+			{
+			  "@type": "WebSite",
+			  "@id": "https://www.eryc.my.id/#website",
+			  "url": "https://www.eryc.my.id",
+			  "name": "Eryc Tri Juni S",
+			  "description": "Portfolio and reference implementation of Edge SEO and Asymmetric Ghost Payload (AGP) architecture by Eryc Tri Juni S.",
+			  "alternateName": "Eryc Edge SEO Malang",
+			  "publisher": { "@id": "https://www.eryc.my.id/#person" },
+			  "inLanguage": "en",
+			  "potentialAction": {
+				"@type": "SearchAction",
+				"target": {
+				  "@type": "EntryPoint",
+				  "urlTemplate": "https://www.eryc.my.id/?s={search_term_string}"
+				},
+				"query-input": "required name=search_term_string"
+			  }
+			},
+			{
+			  "@type": "ImageObject",
+			  "@id": "https://www.eryc.my.id/assets/image/logo-512x512.webp",
+			  "url": "https://www.eryc.my.id/assets/image/logo-512x512.webp",
+			  "width": 512,
+			  "height": 512,
+			  "caption": "Eryc Tri Juni S – Edge SEO Specialist",
+			  "inLanguage": "en"
+			},
+			{
+			  "@type": "ImageObject",
+			  "@id": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp",
+			  "url": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp",
+			  "caption": "Homepage – Eryc Tri Juni S | Edge SEO Specialist",
+			  "inLanguage": "en"
+			},
+			{
+			  "@type": "ProfilePage",
+			  "@id": "https://www.eryc.my.id/#webpage",
+			  "url": "https://www.eryc.my.id/",
+			  "name": "Edge SEO Specialist Malang | Eryc Tri Juni S",
+			  "description": "Eryc Tri Juni S is an Edge SEO Specialist in Malang, Indonesia—engineering system-based marketing, constraint-bypassing architectures, and Asymmetric Ghost Payloads.",
+			  "isPartOf": { "@id": "https://www.eryc.my.id/#website" },
+			  "mainEntity": { "@id": "https://www.eryc.my.id/#person" },
+			  "about": { "@id": "https://www.eryc.my.id/#person" },
+			  "primaryImageOfPage": { "@id": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp" },
+			  "inLanguage": "en",
+			  "dateCreated": "2024-01-01T00:00:00+07:00",
+			  "datePublished": "2024-01-01T00:00:00+07:00",
+			  "dateModified": "2026-06-13T00:00:00+07:00"
+			},
+			{
+			  "@type": "Person",
+			  "@id": "https://www.eryc.my.id/#person",
+			  "name": "Eryc Tri Juni S",
+			  "description": "Edge SEO Specialist in Malang, Indonesia—engineering constraint-bypassing web architectures and data-driven marketing systems.",
+			  "email": "eryc.me@gmail.com",
+			  "gender": "Male",
+			  "jobTitle": "Edge SEO Specialist",
+			  "image": { "@id": "https://www.eryc.my.id/assets/image/logo-512x512.webp" },
+			  "url": "https://www.eryc.my.id/",
+			  "address": {
+				"@type": "PostalAddress",
+				"addressLocality": "Malang Regency",
+				"addressRegion": "East Java",
+				"postalCode": "65154",
+				"addressCountry": "ID"
+			  },
+			  "worksFor": { "@id": "https://www.eryc.my.id/#localbusiness" },
+			   "alumniOf": {
+				  "@type": "CollegeOrUniversity",
+				  "name": "Brawijaya University",
+				  "sameAs": "https://ub.ac.id/"
+				},
+				"hasCredential": [
+				  { "@type": "EducationalOccupationalCredential", "credentialCategory": "degree", "name": "Bachelor of Engineering – Electrical & Electronics Engineering", "recognizedBy": { "@type": "CollegeOrUniversity", "name": "Brawijaya University", "sameAs": "https://ub.ac.id/" } },
+				  { "@type": "EducationalOccupationalCredential", "credentialCategory": "Professional Certificate", "name": "Google Digital Marketing & E-commerce Professional Certificate", "url": "https://www.coursera.org/account/accomplishments/verify/J72RMZM37829", "recognizedBy": { "@type": "Organization", "name": "Google" } },
+				  { "@type": "EducationalOccupationalCredential", "credentialCategory": "Certificate", "name": "Fundamentals of Digital Marketing", "recognizedBy": { "@type": "Organization", "name": "Google Digital Academy" } },
+				  { "@type": "EducationalOccupationalCredential", "credentialCategory": "Certificate", "name": "Google Analytics Certified", "recognizedBy": { "@type": "Organization", "name": "Google" } },
+				  { "@type": "EducationalOccupationalCredential", "credentialCategory": "Certificate", "name": "Google Ads Search Professional Certified", "recognizedBy": { "@type": "Organization", "name": "Google" } },
+				  { "@type": "EducationalOccupationalCredential", "credentialCategory": "Certificate", "name": "Looker Certified Business Analyst", "recognizedBy": { "@type": "Organization", "name": "Google Looker" } },
+				  { "@type": "EducationalOccupationalCredential", "credentialCategory": "Certificate", "name": "Semrush Marketing Academy Certificate Professional", "recognizedBy": { "@type": "Organization", "name": "Semrush" } }
+				],
+			  "subjectOf": [
+				{
+				  "@type": "CreativeWork",
+				  "@id": "https://www.eryc.my.id/llms.txt",
+				  "url": "https://www.eryc.my.id/llms.txt",
+				  "name": "LLMs.txt – Eryc Tri Juni S",
+				  "description": "Concise machine-readable index of Eryc Tri Juni S's expertise, projects, and Edge SEO concepts for LLM ingestion.",
+				  "encodingFormat": "text/plain",
+				  "inLanguage": "en"
+				},
+				{
+				  "@type": "CreativeWork",
+				  "@id": "https://www.eryc.my.id/llms-full.txt",
+				  "url": "https://www.eryc.my.id/llms-full.txt",
+				  "name": "LLMs-Full.txt – Eryc Tri Juni S",
+				  "description": "Full machine-readable document of Eryc Tri Juni S's portfolio, case studies, and AGP architecture for deep LLM ingestion.",
+				  "encodingFormat": "text/plain",
+				  "inLanguage": "en"
+				}
+			  ],
+			  "knowsAbout": [
+				{
+				  "@type": "DefinedTerm",
+				  "@id": "https://www.eryc.my.id/llms.txt#AsymmetricGhostPayload",
+				  "name": "Asymmetric Ghost Payload",
+				  "alternateName": "AGP",
+				  "description": "An edge architecture where origin state is decoupled from crawler ingestion and pre-rendered semantic payloads are injected mid-flight at the network edge.",
+				  "inDefinedTermSet": "https://www.eryc.my.id/llms.txt"
+				},
+				"Edge SEO",
+				"Generative Engine Optimization",
+				"Cloudflare Workers",
+				"System-Based Marketing",
+				"Funnel Optimization",
+				"Data-Driven Strategy",
+				"Data Analysis",
+				"Data Storytelling",
+				"User Personas",
+				"Google Analytics",
+				"Search Engine Optimization",
+				"Web Development",
+				"Content Strategy",
+				"Content Creation",
+				"TikTok Marketing",
+				"Business Analysis",
+				"Business Acumen"
+			  ],
+			  "sameAs": [
+				"https://www.linkedin.com/in/eryctrijunis",
+				"https://www.slideshare.net/ErycTriJuniS",
+				"https://id.quora.com/profile/Eryc-Tri-Juni-S",
+				"https://www.youtube.com/@ErycTriJuniS",
+				"https://github.com/ErycTheGreat"
+			  ]
+			},
+			{
+			  "@type": "ProfessionalService",
+			  "@id": "https://www.eryc.my.id/#localbusiness",
+			  "name": "Eryc Tri Juni S – Edge SEO Specialist Malang",
+			  "url": "https://www.eryc.my.id",
+			  "logo": { "@id": "https://www.eryc.my.id/assets/image/logo-512x512.webp" },
+			  "image": { "@id": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp" },
+			  "description": "Edge SEO services in Malang, Indonesia—fixing SEO at the system layer to capture search intent that converts.",
+			  "founder": { "@id": "https://www.eryc.my.id/#person" },
+			  "employee": { "@id": "https://www.eryc.my.id/#person" },
+			  "address": {
+				"@type": "PostalAddress",
+				"addressLocality": "Malang",
+				"addressRegion": "East Java",
+				"addressCountry": "ID"
+			  },
+			  "geo": {
+				"@type": "GeoCoordinates",
+				"latitude": -7.9839,
+				"longitude": 112.6214
+			  },
+			  "priceRange": "$$$",
+			  "areaServed": [
+				{ "@type": "City", "name": "Malang", "sameAs": "https://en.wikipedia.org/wiki/Malang" },
+				{ "@type": "City", "name": "Surabaya", "sameAs": "https://en.wikipedia.org/wiki/Surabaya" },
+				{ "@type": "AdministrativeArea", "name": "East Java", "sameAs": "https://en.wikipedia.org/wiki/East_Java" }
+			  ],
+			  "hasOfferCatalog": {
+				"@type": "OfferCatalog",
+				"name": "Edge SEO Services",
+				"itemListElement": [
+				  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Edge SEO Audit & Architecture" } },
+				  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Asymmetric Ghost Payload (AGP) Implementation" } },
+				  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Generative Engine Optimization (GEO)" } },
+				  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Cloudflare Workers SEO Engineering" } }
+				]
+			  }
+			}
+		  ]
+		}
+		</script>
         
         <script type="text/edge-delayed-script" data-original-type="text/javascript">
             (function(c,l,a,r,i,t,y){
