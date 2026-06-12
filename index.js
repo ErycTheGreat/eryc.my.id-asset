@@ -219,7 +219,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     }
 
 	 if (url.pathname === "/sitemap-v2.xml") {
-        const object = await env.MY_ASSETS.get("sitemap.xml");
+        const object = await env.MY_ASSETS.get("sitemap-v2.xml");
         if (object === null) {
             return new Response("sitemap not found in R2", { status: 404 });
         }
