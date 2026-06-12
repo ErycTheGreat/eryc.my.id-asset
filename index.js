@@ -20,8 +20,6 @@ export default {
 	const isCrawlerBot = /Googlebot|bingbot|Yandexbot/i.test(userAgent);
 	const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
 
-	const isRenderer = /Google-InspectionTool|Chrome-Lighthouse|PTST/i.test(userAgent);
-
 	const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
 		
 	const isBot = isAIBot || isCrawlerBot || isSocialBot || (request.cf && request.cf.asReplacerBot) || url.searchParams.get("debug") === "bot";
@@ -470,7 +468,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         `;
       
     // 🏎️ THE HUMAN FAST-LANE BYPASS
-    if (!isBot || isRenderer) {
+    if (!isBot) {
         let newHeaders = new Headers(response.headers);
         newHeaders.delete("Content-Length"); 
         newHeaders.delete("Content-Security-Policy");
@@ -568,13 +566,7 @@ const wakeUpScript = `
             window.addEventListener(ev, hydrateScripts, { passive: true })
         );
 
-		window.addEventListener('load', () => {
-
-		if (navigator.webdriver || navigator.userAgent.includes('Google-InspectionTool')) {
-        hydrateScripts();
-        return;
-   		 }
-		
+        window.addEventListener('load', () => {
             if (navigator.webdriver) return; 
             if (navigator.connection && navigator.connection.saveData) return; 
             if (window.innerWidth === 412 && navigator.userAgent.includes('Android')) return; 
