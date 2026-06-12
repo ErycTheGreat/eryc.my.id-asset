@@ -40,7 +40,7 @@ export default {
    // --- 0. DIRECT XML RETURN ---
     if (url.pathname === "/sitemap.xml" || url.pathname === "/sitemap.xml/") {
       const canonicalHost = "www.eryc.my.id";
-      const lastmod = new Date().toISOString().split('T')[0];
+      const lastmod = "2026-04-10";
       const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/bukanbrokerbiasa", "/case-studies/seo/soundbrothers", "/case-studies/edge-seo"];
       
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
