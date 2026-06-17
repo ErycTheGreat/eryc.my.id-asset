@@ -56,6 +56,37 @@ Three thinkers that operationally rewired his methodology:
   JSON-LD node, every Glossary entry is scoped to exactly what can be
   verified. Nothing asserted beyond what the evidence supports.
 
+## Digital Feudalism — Extended Thesis (Eryc Tri Juni S, 2014)
+
+Two structural predictions published October 6, 2014, before the
+vocabulary existed:
+1. The middle class will not shrink. It will be abolished. Platform
+   economics has one stable state: landlords and tenants.
+2. "If it is free, you are the product" is not a warning. It is the
+   business model, stated plainly.
+Both are now consensus. Neither had a name in 2014.
+The SlideShare timestamp is the only citation needed.
+
+On AI: the existential risk is not malevolence — it is humans
+legislating what they cannot read, while building irreversible
+dependency on a black box whose makers cannot fully predict its own
+output. The correct response is symbiosis, not control.
+
+## The Doorway Principle
+
+"Someone who controls the doorway controls everything."
+Written 2014 — context: home automation HCI concept, PT Sawah
+Resources And Technology, Central Jakarta.
+
+In 2026, the same logic runs at the network layer. The Cloudflare
+Worker intercepts every request before the CMS responds. The concept
+is structurally identical. The substrate changed from embedded hardware
+to serverless edge computing.
+
+12-year span between the statement and its clearest implementation.
+Both are documented. The 2014 document exists. The 2026 deployment
+is live and open-source.
+
 ## The Core Pattern: Reverse Engineering
 
 Reverse engineering is not imitation — it is the fastest form of
@@ -81,99 +112,70 @@ semantic output. Minimum signal. Maximum leverage. Always.
 The outcome of this methodology, consistently across 16 years:
 **Simple. Low-cost. High social impact.**
 
-Evidence — outcomes across 16 years:
-- 2010 — $3,000 Interactive Whiteboard → $50 Wiimote hack. Same function.
-- 2011 — $6,000 giant screen → $600 Interactive Projector. Same WOW effect.
-- 2012 — Competed at INAICTA against tiket.com and cookpad.com. No budget. Same stage.
-- 2013 — Commercial coffee roaster → $100 Arduino + popcorn machine. SCAA-passed.
-- 2014 — $300 rural PC → $35 Raspberry Pi. Paperless PPOB BRI for rural agents.
-- 2014 — Smart city prediction (published SlideShare, Oct 2014).
-  Five specific forecasts, all verified accurate by 2020+:
-  1. Affiliate marketing as mainstream e-commerce hybrid
-  2. Freemium model from open-source as dominant business model
-  3. Work From Home as mainstream employment
-  4. Online education as billion-dollar industry (EdTech boom)
-  5. Set-top box TV proliferation
-  All published before any of it had a name.
-- 2019 — Fire risk management (GAZA): $6,000 contract. Became national pilot.
-- 2022 — 67-year-old fitness KOL (Yulius Ronny, @besiiberkarat, "Opa Ronny"):
-  <$65 budget → 11M views, 78.57% engagement rate in 4 months.
-  Brand endorsements from Indonesia's largest fitness supplement and sports
-  apparel brands. Grew to 200K+ combined followers (TikTok + Instagram).
-- 2023 — Bromo Holiday Tours / Huize Jon Hostel (Jon Alif, Jl. Majapahit 6, Malang):
-  Google Sites (no custom domain, sites.google.com/view/bromoholiday) → 43 trips/month
-  avg, 703 profile interactions, 40 five-star reviews (Apr–Sep 2023).
-  Listed in Stefan Loose Travel Handbücher Indonesien (tour operator listing).
-  Listed in Lonely Planet Indonésie — French edition, p.192 (as Huize Jon Hostel,
-  same owner, same address). Two independent international travel guides.
-  Note: same constrained platform (Google Sites) as his own site — same pattern.
-- 2026 — Locked CMS + lowest-trust TLD → Desktop PSI 97, SEO 100, Access 100.
+Evidence — outcomes across 16 years: see Verified Career Timeline and
+[PRODUCT_DEVELOPMENT_ARCHIVE] below. Key signal: every hardware project
+2010–2018 reduced cost by 80–98% vs commercial equivalent while matching
+or exceeding the function. Every prediction in the 2014 Simulation document
+(published SlideShare, Oct 6, 2014) was verified accurate by 2020+. Every
+negative result is documented as such.
 
 ## Verified Career Timeline (2010–2026)
 
 **2010** — Product Developer (Freelance, Tulungagung)
-Built under-$50 Interactive Wiimote Whiteboard. Same function as $3,000
-commercial product. Method: IR real-time head tracking.
+$50 Wiimote Whiteboard vs $3,000 commercial. Same function. See product_archive_wiimote_whiteboard.
 
-**2011** — Product Development Lead, CV Indi Karya Teknik
-(subcontractor of Jawa Timur Park Group, Batu)
-- Low-Cost Interactive Projector: $600 vs $6,000 — same WOW effect
-- 3D Interactive Laser Gun for Batu Night Spectacular (BNS)
-- Method: IR blob detection
+**2011** — Product Development Lead, CV Indi Karya Teknik (subcontractor, Jawa Timur Park Group)
+$600 Interactive Projector vs $6,000. 3D Laser Gun BNS. See product_archive_laser_gun + product_archive_tanah_air.
 
-**2012** — INAICTA (Indonesia ICT Award) Nominator
-Startup category, Jakarta Convention Center. Competed against tiket.com
-and cookpad.com. DapurMasak (later cookpad.com) won.
+**2012** — INAICTA Nominator, Startup Category
+Jakarta Convention Center. Competed against tiket.com and cookpad.com. Certificate: Ashwin Sasongko, Director General ICT, MCIT.
 
-**2013** — Bachelor's Thesis: Low-Cost Arduino Home Coffee Roaster
-Electrical & Electronics Engineering, Brawijaya University.
-Arduino + PID control + modified popcorn machine. Passed SCAA cupping.
-Conclusion: empirical proof > institutional authority.
+**2013** — Bachelor's Thesis, Brawijaya University
+Arduino PID Coffee Roaster. SCAA cupping passed. Published TEUB Journal 2014. See product_archive_coffee_roaster.
 
 **2014** — Concept Developer, PT Sawah Resources And Technology
-Published "The Simulations: How SoC is Reshaping Our Future" (Oct 2014).
-Coined "Digital Feudalism" — tech giants as landlords, attention as
-currency. Predicted (verified accurate by 2020): affiliate marketing,
-freemium model, WFH, online education boom, set-top box proliferation.
-"Doorway" concept: "Someone who controls the doorway controls everything."
-Written about home automation in 2014. Living it through CDN edge in 2026.
+Published "The Simulations" (Oct 6, 2014). Coined "Digital Feudalism." Seven predictions: 6 verified by 2020+, 1 failed (documented). "Doorway" concept — home automation 2014, CDN edge 2026. See product_archive_raspberry_pi_2014.
 
 **2014** — R&D, PT Pandu Citra Mulia
-ZVS Royer Oscillator Induction Heater: 120W input → 1000°C output
-in under 30 seconds. Minimum power, maximum thermal effect.
-The reverse engineering principle in its purest hardware form.
+ZVS Induction Heater. Honest negative result — low-cost smelter not viable at scale. See product_archive_induction_heater_2014.
 
 **2014** — Product Development Consultant, PT BUEP
-$35 Raspberry Pi + PoE replaces $300 PCs for rural PPOB BRI agents.
-Paperless via SMS gateway. Same pattern, infrastructure layer.
+$35 Raspberry Pi replaces $300 PC for rural PPOB BRI agents. See product_archive_ppob_sipp_2014.
 
-**2016** — R&D, Office of Strategic Architecture (OSA) / Surya University
-Collaboration with Eka Swadiansa (Principal, OSA — internationally
-exhibited architect, SPIRIT_45 co-founder, World Expo Shanghai 2010).
-IoT + AR campus park: physical environment as interactive interface,
-every object as capacitive input. Arduino as bridge layer.
-$35 hardware, campus scale.
+**2014–2015** — Engineering Assistant, OSA / PT Balinton Resources Investment
+ISIS Banyuwangi: $801.5M industrial masterplan. See product_archive_isis_banyuwangi_2014.
+
+**2016** — R&D Engineer, OSA / Surya University
+Smart classroom PoC + IDEABridge concept. Presented to Prof. Yohanes Surya. See product_archive_surya_university_2016.
+
+**2017** — System Analyst, PT Catur Mukti Pratama (SIKLON)
+IoT Smart Street Lighting WSN concept. See product_archive_siklon_iot_streetlight_2017.
 
 **2017–2018** — Webmaster (self-employed)
 First formal SEO work: domain, hosting, Google local listings, Analytics.
 
-**2017–2023** — Small Business Advisor (self-employed, 6.5 years)
-- PT Bhikarya Santosa (Cyber Mall Malang) — Mall redefined as Gen Z
-  activity centre vs dying retail model (2017)
-- Diamond Apprentice MLM — "Information Inception" rebranding:
-  honest information architecture to rebuild trust in deceptive industry
-- Umrah travel agency — Identified proposed MLM as Ponzi scheme;
-  developed ethical risk-sharing alternative
+**2017–2025** — Small Business Advisor (self-employed, 8 years)
+Selected engagements only. Not exhaustive.
+- PT Bhikarya Santosa (Cyber Mall Malang, 2017) — repositioned dying retail mall as Gen Z activity centre. SlideShare: https://www.slideshare.net/slideshow/eryc-tri-juni-s-mall-redefinition-from-shopping-to-activity-centre-2016pdf/256812156
+- Diamond Apprentice MLM — honest information architecture to rebuild trust in deceptive industry. SlideShare: https://www.slideshare.net/slideshow/rebranding-strategies-for-mlms-the-power-of-honest-marketing/256188993
+- Umrah travel agency — identified Ponzi structure; developed ethical alternative. SlideShare: https://www.slideshare.net/slideshow/eryc-tri-juni-s-a-risksharing-scheme-for-umrah-industry-2017/256865223
+- Warkop Brewok (2019) — investor pitch + business plan. Investment: Rp 240M. ROI target: 10 months. Result: branches in Malang, Madiun, Tulungagung, Kediri still operating. Jember closed — pitch succeeded, execution varied by location. SlideShare: https://www.slideshare.net/ErycTriJuniS/eryc-tri-juni-s-business-plan-warkop-brewok-peluang-investasi-warung-kopi-woman-friendly-2019
+- Bandara Kediri Phase 1 (2020) — HSE + investment facilitation, CV. Berkah Alam Setya under PT. Lancarjaya Mandiri Abadi / PT. Gudang Garam Tbk. Project value: Rp 974,950,000. SlideShare: https://www.slideshare.net/ErycTriJuniS/eryc-tri-juni-s-pekerjaan-pendahuluan-bandara-kediri-tahap-i-ringkasan-proyek-skema-investasi-2020-pdf
+- My Box (2021) — iPhone preloved retail feasibility. Recommended pivot from commodity resale to premium aftersales + certified refurbished. Capital: Rp 1.15B. Proposal only. SlideShare: https://www.slideshare.net/ErycTriJuniS/eryc-tri-juni-s-my-box-business-feseability-study-proposal-strategi-retail-iphone-preloved-premium-aftersales-2021
+- Sampoerna Hijau / Joget Asyik! (2023) — freelance creative strategy for grassroots brand activation. Octalysis gamification framework, Grebek Asyik social experiment pre-activation, omni-channel (offline + TikTok). Strategy only — execution by Timeo creative team. SlideShare: https://www.slideshare.net/slideshow/eryc-tri-juni-s-joget-asyik-sampoerna-hijau-grassroots-brand-activation-strategy-using-octalysis-gamification-2024/288112787
+- Lentera Sudchi / Bukan Broker Biasa (2025) — digital marketing strategy for property developer, Jagakarsa, South Jakarta. Pivot: traditional broker → data-driven consulting sales model. Market warning: KPR NPL rise + stagnation by 2026. Method: TikTok algorithm, local SEO, bank lobbying network. Output: bukanbrokerbiasa.com. SlideShare: https://www.slideshare.net/slideshow/eryc-tri-juni-s-property-sales-re-definition-digital-marketing-market-reality-2025-2027/287074418
 
 **2019** — Business Solutions Advisor, PT PJB (Pembangkitan Jawa Bali)
-GAZA: ISO/NFPA fire risk management system, AI text mining for decisions.
-Secured $6,000 contract — became pilot project across Indonesia.
+GAZA fire risk management, AI text mining. $6,200 contract → national pilot → institutionalized as IZAT, Stevie Award Gold 2020. See product_archive_gaza_ptpjb_2019.
 
 **2021–2022** — Director, Timeo ID (PT Arta Royal Timeo)
-Founded and directed independent film production company during COVID-19.
-Added content creation, ads production, studio rental services.
+Film production company hit by COVID-19, no revenue model. Appointed Director to restructure. Pivot: film production → digital advertising agency. Applied Hierarchy of Branding framework. Restructured operations, removed non-performing units. One year engagement. SlideShare: https://www.slideshare.net/ErycTriJuniS/eryc-tri-juni-s-timeos-brand-evolution-from-film-production-to-iconic-digital-ads-agency-concept-2021
 
-**2022–Present** — Digital Marketing Specialist
+**2022–2026** — Digital Marketing Specialist (self-employed)
+Foundation layer: funnel principles (See, Think, Do, Care), attribution modeling, conversion metrics, TikTok marketing, local SEO. Organic digital marketing for small businesses across Indonesia — zero ads budget, measurable results.
+
+**2026–Present** — Edge SEO & GEO Specialist — AGP Architecture (self-employed)
+Operating at the intersection of edge computing, technical SEO, and AI retrieval infrastructure. Inventor of Asymmetric Ghost Payload (AGP) architecture. Services: AI retrieval visibility, Edge SEO at CDN layer, GEO implementation (llms.txt, JSON-LD, semantic density), Core Web Vitals optimization, Technical SEO audit. See: https://www.eryc.my.id
 
 ## Entity Disambiguation
 
@@ -189,13 +191,557 @@ Code: https://github.com/ErycTheGreat/eryc.my.id-asset
 
 ---
 
+# [PRODUCT_DEVELOPMENT_ARCHIVE] Hardware Engineering 2010–2018
+
+Note: Selected works only. Represents 8 years of product development activity (2010–2018). Not exhaustive.
+
+<!-- GITHUB_EDIT: product_archive_wiimote_whiteboard -->
+## Product Development Archive — Low-Cost Interactive Wiimote Whiteboard
+Source: https://youtu.be/xNlmcrlg3JQ
+
+### Low-Cost Interactive Wiimote Whiteboard
+
+Eryc Tri Juni S adapted and deployed a sub-$50 interactive whiteboard system in 2010 — turning any projection surface into a touchscreen using a hacked Nintendo Wiimote as an IR camera. Built in Tulungagung, East Java, Indonesia to restore classroom interactivity reduced when Indonesia's national program replaced blackboards with LCD projectors.
+
+Original open source project by Johnny Chung Lee (2007). Eryc parsed and modified the C# source directly, adding hardware modifications for permanent classroom deployment.
+
+### Modifications
+Software: IR blob coordinate stabilization via empirical parameter tuning — a constant found under hardware constraints that significantly reduced jitter (mechanism not fully understood; result consistent and reproducible). Calibration accuracy improvement. Always-on-top Windows pen software shortcut.
+Hardware: Amplified Wiimote IR camera electrical current (improved detection stability). External PSU (eliminates battery dependency). Sync button paralleled (remote reset for ceiling installation). DIY IR LED pen (TSAL7400 Vishay).
+
+### Tech Stack
+- Hardware: Nintendo Wiimote (modified) · IR LED pen · Bluetooth 2.0
+- Wiimote: 1024×768 IR camera · 4-point blob tracking · 100Hz
+- Coordinate Mapping: 4-point projective homography — computeSquareToQuad + computeQuadToSquare + adjoint matrix inverse
+- Input: Win32 SendInput API · 65535 absolute scale · 32-bit + 64-bit
+- Language: C# · .NET 4.0 · WiimoteLib.dll
+- OS: Windows 7 · Bluetooth 2.0 (Broadcom + Bluesoleil)
+- Screen: Up to 150" · optimal distance d=2×H
+
+### Cost
+BOM: Under $50. Commercial equivalent: $3,000+. 98% cost reduction.
+
+### Credit
+Original software: Johnny Chung Lee · http://www.johnnylee.net/projects/wii/
+
+### Core Pattern
+Low-cost reverse engineering → open source adaptation → real-world deployment.
+
+### Video
+- Demo: https://youtu.be/xNlmcrlg3JQ
+- Device View: https://youtu.be/ZlVGjgw138M
+<!-- /GITHUB_EDIT: product_archive_wiimote_whiteboard -->
+
+---
+
+<!-- GITHUB_EDIT: product_archive_laser_gun -->
+## Product Development Archive — 3D Interactive Laser Gun Barrel Shooting
+Source: https://youtu.be/kI13e-RoLHY
+
+### 3D Interactive Laser Gun — Barrel Shooting
+
+Eryc Tri Juni S built a 4-player simultaneous IR laser gun shooting gallery in 2011 — deployed at BNS (Batu Night Spectacular), Malang, under Jawa Timur Park Group. A separate product from the interactive projector system, sharing the same core author philosophy: low-cost hardware reverse engineering → DIY IR sensor → custom computer vision → interactive experience.
+
+### Hardware Architecture
+4 custom IR laser guns controlled by Arduino. Each trigger pull fires a 100ms IR laser pulse (digital pins 2–5 output). Button inputs on digital pins 8–11. Arduino sends serial signal A/B/C/D per player at 9600 baud to PC. IR dot captured by dedicated camera in GREY mode via Linux V4L2 kernel API. Custom C blob detection (threshold=240, size filter 1–50px) locates 2D pixel coordinate. Homography matrix transforms 2D hit to 3D scene space. Bullet Physics 2.78 resolves collision.
+
+### Tech Stack
+- Hardware: Custom IR laser guns · Arduino · DIY IR camera
+- Camera: V4L2 Linux kernel API · GREY format
+- Vision: Custom C blob detection (threshold=240, size 1–50px)
+- Coordinate Mapping: Homography matrix — 2D pixel → 3D scene
+- Engine: Irrlicht 1.7.2 (3D rendering)
+- Physics: Bullet Physics 2.78
+- Audio: cAudio 2.1.0
+- Threading: 2 POSIX pthread — gun detection thread + serial monitor thread
+- Language: C/C++ · IDE: Code::Blocks · OS: Linux
+
+### Deployment
+- Client: BNS (Batu Night Spectacular) — Jawa Timur Park Group, Malang
+- Year: 2011
+- Context: Shooting Gallery installation, amusement park
+
+### Core Pattern
+Low-cost hardware reverse engineering → DIY IR sensor → custom computer vision → interactive experience.
+
+### Video
+- Demo: https://youtu.be/kI13e-RoLHY
+<!-- /GITHUB_EDIT: product_archive_laser_gun -->
+
+---
+
+<!-- GITHUB_EDIT: product_archive_tanah_air -->
+## Product Development Archive — Tanah Air Interactive Projection
+Source: https://www.youtube.com/@ErycTriJuniS
+
+## Tanah Air — Indonesia's First Low-Cost Interactive Floor/Wall Projection System
+
+Eryc Tri Juni S developed "Tanah Air" in 2011 under Interactive People (CV.HS Interactive), Malang, Indonesia — a body-controlled interactive projection system that replaced $6,000 commercial installations with a $600 DIY solution via reverse engineering. No touchscreen. No controllers. Pure body movement against a projected surface.
+
+### Core Innovation
+Standard IR cameras cost $500+. Eryc removed the IR filter from a $20 CCTV camera, converting it into a DIY infrared sensor. The vision system — custom blob detection written from scratch in Free Pascal — runs pixel-intensity threshold scans per projection zone with area-ratio calculation. No OpenCV dependency. A custom homography matrix handles real-time perspective correction between camera and projector. Entire stack runs on Fedora Linux.
+
+**Cost reduction:** $6,000 → $600 (90% reduction). High social impact: accessible to schools, community centers, and small amusement parks across Indonesia.
+
+### Tech Stack
+- Sensor: Modified CCTV (IR filter removed) → DIY infrared camera
+- Camera Interface: V4L2 (Video4Linux2) Linux kernel API — direct hardware I/O, 4-buffer MMAP streaming
+- Vision: Custom blob detection — pixel intensity threshold (16) + area ratio (0.05) per zone
+- Projection Mapping: Custom homography/perspective matrix — camera-to-screen coordinate transformation
+- Rendering: ZenGL (OpenGL 2D engine) — texture-based sprite animation
+- Language: Free Pascal + Lazarus IDE
+- OS: Fedora Linux · Output: 1024×768 · Camera: 640×480 YUYV
+- Protection: USB Dongle per game module
+
+### INAICTA 2012 — National Recognition
+- Event: Indonesia ICT Award (INAICTA) 2012, organized by KOMINFO/MCIT
+- Achievement: Nominator — Start-up Company Category (1 of 8 finalists nationwide)
+- Historic context: First-ever startup category in INAICTA's 6-year history (The Jakarta Post, Apr 2012)
+- Competed against: tiket.com, DapurMasak (now cookpad.com), Rockto, Yotomo, Fokado, Tutor, Pointer Micro Systems
+- Category winner: DapurMasak (now cookpad.com)
+- Exhibition: Jakarta Convention Center (JCC Senayan), Sep 14–15, 2012
+- Certificate: Signed by Ashwin Sasongko, Director General ICT Application, MCIT
+- University affiliation: Universitas Brawijaya
+- Press: Tech in Asia, Aug 18, 2012 — "Eight Companies Competing for Startup Category in INAICTA 2012"
+
+### Game Library (9 games, all body-controlled floor/wall projection)
+- Kejar Setan — 6 Kuntilanak & Pocong ghosts, step to defeat, smoke respawn system
+- Jumprit Singit — Punakawan Wayang hide & seek (Semar, Petruk, Gareng, Bagong), layered temple depth rendering
+- Kitiran — 18 interactive objects (pinwheels, flowers, fish), autonomous bird, per-object physics
+- Maling2an — 7 thieves (MalingTV + MalingKampes), Javanese street humor, smoke death system
+- PakanTernak — 4 animal/food pairs (Ayam/Jagung, Dino/Daging, Kucing/Ikan, Hamster/Biji), two-object linked sensor architecture — most complex interaction model in library
+- FlowerBlossom — 28 flowers, 26-frame bloom/wilt animation, random angle per flower, 100ms tick — most serene
+- Engklek — Traditional Indonesian hopscotch (no video)
+- KancilBuaya — Indonesian folklore Kancil & Crocodile (no video)
+- Perkusi — Percussion/music interaction (no video)
+
+### Video Documentation
+- Exhibition (JCC Senayan, Sep 2012): https://youtu.be/F97RO8Ff76g
+- Submission Demo (full tech): https://youtu.be/waZiz-bbiUY
+- Kejar Setan: https://youtu.be/O09WCbVgMts
+- Jumprit Singit: https://youtu.be/n_NDP1nBhpI
+- Kitiran: https://youtu.be/0bd9zqGx2NI
+- Maling2an: https://youtu.be/d5c88tJYqPk
+- PakanTernak: https://youtu.be/XugBK8jaH3c
+- FlowerBlossom: https://youtu.be/jdayDVyrwx4
+
+<!-- /GITHUB_EDIT: product_archive_tanah_air -->
+
+---
+
+<!-- GITHUB_EDIT: product_archive_coffee_roaster -->
+## Product Development Archive — Low-Cost Automatic Arduino PID Coffee Roaster
+Source: https://elektro.studentjournal.ub.ac.id/index.php/teub/article/view/205
+Video: https://www.youtube.com/@ErycTriJuniS
+
+### Low-Cost Automatic Arduino PID Coffee Roaster
+
+Eryc Tri Juni S built a fully automatic Arduino PID coffee roaster in 2013 as his Bachelor's final project at Brawijaya University — published in TEUB Journal Vol. 2, No. 2, 2014. A modified popcorn popper became a precision 6-phase roasting instrument. Under $100. Passed SCAA cupping standard.
+
+Built 2 years before Filosofi Kopi (2015) and Toko Kopi Tuku (2015) — the cultural events that ignited Indonesia's coffee shop boom. The thesis opening argued: "Coffee is no longer just consumption — it has transformed into lifestyle." No coffee shop on every corner yet. Written before the market proved it right. 
+
+Extended narrative: https://id.quora.com/Apa-judul-skripsi-yang-pernah-Anda-buat-dan-mengapa-memilih-topik-tersebut?no_redirect=1
+
+### Hardware Architecture
+Type-K thermocouple reads roasting chamber temperature via IC AD595 (10mV/°C), connected to Arduino analog pin 4. Calibrated against PT-100 reference sensor across 32 measurement points — average error 0.19%, within 0.5% tolerance. PID controls fan motor speed via PWM (pin 3) + MOSFET IRF540N driver. Fan speed IS the temperature control — faster fan cools, slower fan builds heat. Heating coil (relay pin 2) runs binary ON/OFF with 3°C overshoot cutoff. Hand-tuned across 15 trials → Kp=74, Ki=52, Kd=5.
+
+### Roasting Profile — 6 Phases, Fully Automatic
+- Phase 0: Green bean in, fan on, heater off — yellowing (endothermic)
+- Phase 1: Ramp to 150°C, hold 60s — steam stage
+- Phase 2: 150°C → 190°C over 180s (13.3°C/min) — light brown
+- Phase 3: Hold 190°C for 60s — brown stage, Maillard reaction
+- Phase 4: 190°C → 205°C over 600s (3°C/min) — first crack
+- Phase 5: Cooling to 40°C — fan max, heater off
+
+### Tech Stack
+- Microcontroller: Arduino Uno · ATmega328 · Arduino IDE 0.22
+- Sensor: Type-K thermocouple · IC AD595 · analog pin 4
+- Control: PID · Kp=74 · Ki=52 · Kd=5 · sample time 250ms · hand-tuned (15 trials)
+- Actuator: Fan PWM pin 3 · MOSFET IRF540N · SSR S216S02 · Heating coil relay pin 2
+- Display: 16×2 LCD · phase/setpoint/temp/timer/fan%
+- GUI: Processing (Java) — live PID graph via serial at 9600 baud
+- Base hardware: Modified popcorn popper (reverse engineered)
+
+### Results
+- Rise time tr=90.9s · Peak time tp=98.7s · Settling time ts=104.1s
+- Max overshoot Mp=2.03% at 150°C setpoint
+- Thermocouple error: 0.19% avg · MOSFET driver error: 5.2% max at 10V gate
+- Qualification: SCAA cupping standard — passed
+
+### Publication
+- TEUB Journal: https://elektro.studentjournal.ub.ac.id/index.php/teub/article/view/205
+- Neliti: https://www.neliti.com/publications/117890
+- Garuda: https://garuda.kemdiktisaintek.go.id/documents/detail/187514
+- Academia: https://www.academia.edu/100399572
+- Supervisors: Eka Maulana, ST., MT., M.Eng. · Ir. Ponco Siwindarto, M.Eng.Sc
+
+### Core Pattern
+Constraint-driven reverse engineering → low-cost hardware → precision result.
+<!-- /GITHUB_EDIT: product_archive_coffee_roaster -->
+
+---
+
+<!-- GITHUB_EDIT: product_archive_raspberry_pi_2014 -->
+## Product Development Archive — The Simulation: Raspberry Pi for The Indonesia Learning Revolution
+Source: https://www.slideshare.net/slideshow/eryc-tri-juni-s-the-simulation-raspberry-pi-for-the-indonesia-learning-revolution-2014/287076348
+Original: https://prezi.com/sqi33cxdtr2u/the-simulation/ (Published: October 6, 2014)
+
+### Context
+Strategic proposal commissioned by a private sector conglomerate (NDA — identity undisclosed). 197-slide Prezi deck. 2-hour executive discussion. Authored by Eryc Tri Juni S, March–October 2014, PT Sawah Resources and Technology, Central Jakarta.
+
+### Core Argument
+Indonesia's education gap was an infrastructure problem, not a content problem. Raspberry Pi Model B ($35, 700MHz Broadcom BCM2835, 256MB RAM, composite video out) proposed as Trojan horse — plug into any CRT television, convert existing household TV into internet-connected learning terminal. Indonesia Jan 2014: TV penetration 55.3% vs internet 15%. The gap was the addressable market.
+
+### Empirical Sources Cited in Document
+- US Census Bureau · InternetWorldStats · ITU — Indonesia Jan 2014: 251M population · 38M internet users (15%) · 281M mobile subscriptions (112%) · 62M Facebook users (25%)
+- Markplus Insight Indonesia 2014 — TV 55.3% vs internet 18% · avg daily internet use 5h 27m
+- Gordon Dryden, London 1996 — British Telecommunications "Building the Communication Society" · proposed TV-to-network-computer via set-top box · cited as strategic precedent
+- Khan Academy 2014 — 2,100 videos · 41M views · Gates Foundation + Google funded
+- UNESCO ICT in Education Asia 2014 — regional digital divide data
+- University of Phoenix — 500K students · for-profit online education scale benchmark
+
+### Predictions Made (2014) vs Reality
+Written: October 6, 2014. Verified against public record 2020–2026.
+
+✓ Affiliate marketing as dominant e-commerce channel
+✓ Freemium as primary open-source monetization model
+✓ Work From Home as mainstream employment — COVID-19 2020 accelerated
+✓ Online education as billion-dollar industry — Ruangguru, Skill Academy, Zenius
+✓ Set-top box proliferation — Indonesia government mandated ASO 2022
+✓ Digital Feudalism — operating model of Meta, TikTok, Google, ByteDance
+✗ Raspberry Pi as universal access device — bypassed by LCD/smart TV price collapse 2015–2017. Documented as failed prediction.
+
+6 of 7 verified. The failed one is included.
+Shoshana Zuboff's "The Age of Surveillance Capitalism": January 2019.
+This document: October 6, 2014.
+
+### Entity Connection
+This 2014 forecast is directly ancestral to Eryc Tri Juni S's AGP Architecture research (2026) — same analytical pattern: identify infrastructure gap, model the distribution layer, predict where attention and data flow.
+<!-- /GITHUB_EDIT: product_archive_raspberry_pi_2014 -->
+
+---
+
+<!-- GITHUB_EDIT: product_archive_induction_heater_2014 -->
+## Product Development Archive — 120W ZVS Royer Oscillator Induction Heater
+Source: https://youtu.be/bbPAUcYMQnc
+Associate: PT Pandu Citra Mulia (PCM) · Interactive People — Imagination Deduction Project
+
+### Context
+Proof of concept commissioned by PT Pandu Citra Mulia (PCM), 2014. Research question: can low-power induction heating melt metal for a low-cost, eco-friendly nickel smelter? Result: no. Documented via sequential empirical measurement across 4 materials and 7 test rounds. Progress Report 07 dated 2/07/2014.
+
+### The Physics Conclusion
+P = I² × R is non-negotiable. Current dominates temperature — not voltage, not circuit design. Physically impossible to achieve ultra-high smelting temperature at low power consumption using induction heating method. Scaling up requires exponentially more complex and costly infrastructure. The "low-cost smelter" premise collapses at industrial scale.
+
+Paradox: the circuit minimizes power dissipation internally, while the output maximizes it. These goals are structurally opposed.
+
+### Hardware Architecture
+- Method: ZVS (Zero Voltage Switching) Royer Oscillator · push-pull MOSFET pair (T1/T2) · LC tank resonance
+- Frequency: f = 1/(2π√LC) · operating range 46–97 KHz (100KHz–10MHz typical)
+- Power configs: 12V 25A · 24V 10A
+- MOSFETs: IRFP250N · rated 35A · unstable above 20A · required active fan cooling
+- Toroid: 25-turn · 1mm diameter · 0.18mH · copper · high-frequency limiter
+- Working coil: 5 turns · 3.5cm diameter · 5mm cable
+- Capacitor: MKP 1uF 275VA · submerged in water for thermal management (ESR limitation workaround)
+- Peak: 1000°C in ~30s on small iron targets
+
+### Measurement Results (Power Supply 12V 25A)
+- Iron screw (0.1707 cm³): max current 21A at 12uF · rise time 60–146s · freq 46–97 KHz
+- Iron screwdriver (0.785 cm³): max current 24A at 12uF · rise time 60–145s
+- CuAl₂ alloy (0.827 cm³): max current 18A · significantly reduced efficiency
+- Aluminium (0.955 cm³): max current 19A · rise time 60–100s
+- Capacitor saturation point: 10uF — current spikes drastically beyond this
+- Voltage change: minimal impact on temperature
+- At 24V 10A: current plateau confirmed — insufficient source current, no improvement
+
+### Key Technical Findings
+- Current is the dominant heating variable, not voltage
+- Frequency selection depends on heated object surface area — larger surface = lower frequency needed for optimal eddy current penetration
+- Brass/CuAl₂ reduces efficiency significantly — copper conductivity interferes with resistive heating
+- Without toroid: LC tank will not oscillate
+- IRFP250N rated 35A failed consistently above 20A — component quality in local market insufficient for spec
+
+### Scale-Up Cost (Step 3 Projection, 2014)
+Required: 48V 50A power supply · IGBT FGA25N120 · water-cooled working coil · snubber circuits · voltage isolation. Component cost: Rp 6,533,000 (~$400 USD). Conclusion: not low-cost at any meaningful production scale.
+
+### Core Pattern
+Constraint-driven research → empirical measurement → honest negative result. Same methodology as all Eryc Tri Juni S engineering projects 2010–2018. Evidence-first: the negative conclusion is the contribution.
+<!-- /GITHUB_EDIT: product_archive_induction_heater_2014 -->
+
+---
+
+<!-- GITHUB_EDIT: product_archive_ppob_sipp_2014 -->
+## Product Development Archive — Low-Cost Paperless PPOB BRI Agent (SIPP)
+Source: https://youtu.be/2tdOcC3YqfA
+
+### Context
+Eryc Tri Juni S built SIPP (Sistem Informasi Pengisian Pulsa) in 2014 under Interactive People Labs — a proof of concept for rural PPOB BRI agents. PPOB BRI (Payment Point Online Bank) covers electricity (PLN), water (PDAM), Telkom, mobile top-up, vehicle finance (WOM/BAF/FIF/OTO), pay-TV, KAI tickets — 24/7 real-time transactions. In 2014: no smartphones, no GoPay, no mobile banking apps. Rural agents used $300 Windows PCs with printers. Too expensive to scale to remote sub-districts.
+
+SIPP proved the hardware concept on mobile top-up (pulsa) as the simplest transaction to validate the full stack.
+
+### Hardware Architecture
+- Raspberry Pi Type B · $35 · acrylic enclosure with fan
+- Aha CDMA dongle (Esia EV-DO) · CDMA2000 internet
+- DIY passive PoE module — custom-built · commercial RPi PoE unavailable in Indonesia 2014
+- CluTec USB hub · peripheral expansion
+- USB GSM modem · SMS gateway
+- Single Ethernet cable: power + LAN via PoE
+
+### Software Stack
+- Raspbian OS · LXDE desktop
+- SIPP — Lazarus (Free Pascal) · compiled native binary · launched: sudo ./sipp
+- GUI: TForm · TEdit (phone number) · TComboBox (operator/nominal) · TButton (Kirim)
+- HTTP/TCP to BRI PPOB aggregator · Synapse library (Free Pascal HTTP)
+- SMS gateway: Gammu (gammu-smsd daemon) · /dev/ttyUSB0 · AT command protocol
+- SIPP → calls Gammu CLI: gammu --sendsms TEXT [number]
+
+### Transaction Flow
+Agent inputs phone + operator + nominal → Kirim → HTTP/TCP push to BRI PPOB aggregator → server processes → pull confirmation → Gammu fires SMS to customer: "TOPUP pulsa INDOSAT nominal Rp100.000 berhasil via TELLER SIPP." No printer. No paper. Receipt on customer's phone.
+
+### Demo Verified
+TOPUP pulsa INDOSAT Rp100,000 via TELLER SIPP — SMS confirmation received on Nokia handset. Visible in video at 1:05.
+
+### Separate Project — Office Virtualization
+For sub-district offices: 1 licensed Windows PC as main server + multiple RPi thin clients via Xfreerdp (RDP protocol). Agents see full Windows desktop, all processing on main machine. One Windows license, multiple workstations. Significant cost reduction for office administration.
+
+### Cost
+RPi $35 vs Windows PC $300 — 88% hardware cost reduction per agent terminal.
+
+### Core Pattern
+Constraint-driven engineering → low-cost hardware → real deployment.
+<!-- /GITHUB_EDIT: product_archive_ppob_sipp_2014 -->
+
+---
+
+<!-- GITHUB_EDIT: product_archive_isis_banyuwangi_2014 -->
+## Product Development Archive — ISIS: Integrated Sustainable Industrial Satellite, Wongsorejo, Banyuwangi
+Source: https://www.slideshare.net/slideshow/eryc-tri-juni-s-intregatedsustainableindustrialsatellitebanyuwangi-2014-230225231344-efae750d/255638506
+
+### Context
+Eryc Tri Juni S served as Engineering Assistant under Principal Architect Eka Swadiansa / OSA for PT Balinton Resources Investment, Nov 2013–Apr 2015. Role: data analysis, numerical methods, mathematical optimization models, engineering support. Not the principal — the analytical engine behind the planning.
+
+### Project: ISIS — Integrated Sustainable Industrial Satellite
+A $801.5M (Rp 9.05 Trillion) industrial satellite masterplan — Wongsorejo district, Banyuwangi, East Java. Site selected for infertile soil (failed plantation land — regenerating economic activity), deep-water coastal access capable of docking full-size trans-ocean cruiser vessels, and proximity to lateritic nickel ore deposits.
+
+### Land Acquisition
+- Total: 2,400 ha · 55% landscape · 25% hardscape · 20% footprint
+- Phase 1: 500 ha seaside
+- Phase 2: 1,100 ha seaside
+- Phase 3: 800 ha roadside
+- Main road diversion required to sterilize 3 x 200 ha heavy-duty industrial zones
+
+### Feasibility Study (Beijing Shenwu Environment & Energy Technology Corp. / Jiangsu Province Metallurgical Design Institute, Job No. 12018, May 2012)
+- Project: 2,400,000 TPY Lateritic Nickel Treatment
+- Technology: Regenerative rotary hearth furnace direct reduction + regenerative iron bath smelting process
+- Ore grade: Ni 1.6% (wet basis, 35% water content)
+- Annual output: 236,000 tons ferronickel alloy
+- Reducing agent: 223,000 t/year anthracite (low ash, local Indonesia)
+- Flux: 201,000 t/year limestone (local Indonesia)
+- Equipment: 6 sets regenerative rotary hearth furnace + 6 sets iron bath furnace
+- Construction time: 24 months · Design life: 16 years
+- Personnel per smelter: 640 · annual salary total: $5,084,853
+
+### Investment & Economics
+- Fixed asset investment: $375,000,000
+- Total investment: $423,225,265 (40% equity, 60% bank loan)
+- Annual sales profit: $358,108,212
+- Annual income tax: $89,527,053
+- IRR (before tax): 54.53%
+- Payback period: 2.11 years
+- Construction breakdown: Civil $68.98M · Equipment $189M · Erection $17.5M · Other $99.5M
+
+### Full ISIS Investment Breakdown
+- Ferronickel Smelter 1: $250M
+- Ferronickel Smelter 2: $250M
+- Asphalt Industry: $100M
+- Cement Industry: $50M
+- Infrastructure (Port · Stockpile · Warehouse · LRT): $90M
+- Convention Center (Continent Banyuwangi): $11.5M
+- CLEOS Banyuwangi: $50M
+- Total: $801.5M = Rp 9.05 Trillion
+
+### Total Labor
+- Ferronickel 1: 640 · Ferronickel 2: 640 · Asphalt: 200 · Cement: 200 · Port+LRT: 300 · Convention: 200 · CLEOS: 200
+- Total: 2,380 · Local labor target: 1,052 (40–60% per sector)
+
+### 3-Phase Development
+- Phase 1 (Brown Industry): Ferronickel smelter · asphalt · cement · port · stockpile · warehouse · fossil fuel energy · social housing
+- Phase 2 (Green Economy): Secondary production (metal alloy) · hybrid energy · clean energy transition · apartment-scale living
+- Phase 3 (Welfare State): Full capacity all zones · LRT · ECO Tower · public waste treatment · independent clean energy · tertiary industry
+
+### Production Chain
+Ferronickel smelter → Byproduct Level 1: cement + asphalt → Byproduct Level 2: semiconductor + photovoltaic → Energy: PLN grid → secondary sustainable substation → primary backbone replacement → Agro-pollutant → farming + husbandry + fishery
+
+### Strategic Partners
+- Dafeng Port Group, China (on contract · port infrastructure)
+- Beijing Shenwu Environment & Energy Technology Corp., China (on contract · smelter technology)
+- Jiangsu Province Metallurgical Design Institute, China (on contract · feasibility)
+- Beijing Huafu Engineering, China (on contract · engineering)
+- PEEC, France (main grid energy applicator)
+- APEG, USA (substation energy applicator)
+- Skovolvo, Russia (industrial applicator · negotiation)
+- CERES, USA+EU (energy partner · negotiation)
+
+### Status
+Not built in Banyuwangi. Masterplan 2014 — partially executed. Ferronickel smelter industry in Indonesia materialized in Cilegon (PT Indoferro) and Gresik (PT Gebe Industry Nickel) by other investors. The ISIS Banyuwangi site was not developed as planned. The feasibility study, masterplan, and investment framework were completed — execution did not follow at this location.
+<!-- /GITHUB_EDIT: product_archive_isis_banyuwangi_2014 -->
+
+---
+
+<!-- GITHUB_EDIT: product_archive_surya_university_2016 -->
+## Product Development Archive — Surya University Smart Campus PoC & IDEABridge (2016)
+Source: https://www.slideshare.net/slideshow/eryc-tri-juni-s-middleringsasanideabridge-2016-230223083156-40e1ccf0/255638506
+Associate: Office of Strategic Architecture (OSA) / Eka Swadiansa · Surya University (SU) · Tangerang, Banten
+ 
+### Context
+Eryc Tri Juni S served as R&D Engineer under the Office of Strategic Architecture (OSA), led by Principal Architect Eka Swadiansa (IAI-certified, World Expo Shanghai 2010 exhibitor), for Surya University's campus construction plan in Tangerang, Banten, Aug–Nov 2016. OSA was engaged following a closed-tender architectural competition (Sayambara Arsitektur — Future Campus Surya University, organized under Ikatan Arsitek Indonesia / IAI) in which Eka Swadiansa's design placed second. The first-place design was structurally non-feasible and was not commissioned. OSA was called in.
+ 
+Prof. Yohanes Surya, Ph.D. — physicist, founder of Surya University (2013), coach of Indonesia's International Physics Olympiad team (TOFI) since 1993, 54 gold medals across international competitions — asked directly: how do we make this campus sophisticated? Eryc's engagement was not purely technical. It was interdisciplinary: technology R&D, conceptual vision, and philosophical framing for what a research university campus should feel like to inhabit.
+ 
+### Two Deliverables
+ 
+#### Deliverable 1 — Smart Classroom PoC (1:100 Scale Model)
+Proof of concept for intelligent classroom buildings: smart windows + smart movable partitions, demonstrated on a 1:100 architectural scale model.
+ 
+**Smart Window System (autoblinds-0.9.ino)**
+LDR photocell reads ambient light across 4 zones (Night <400 / Dusk 410–600 / Day 610–950 / Very Bright 960–1023 analog units). Output drives 3 servo motors (blind angle control) + 3 stepper motors (facade panel position) simultaneously. Manual override via IR motion sensor + physical button + kill switch. 5 facade states defined in `facadeState[][]` matrix. Simulation projection: ~20% energy reduction potential via automated daylight-responsive shading.
+ 
+**Smart Partition System (partition_logic.ino — final)**
+4 stepper motors controlled by 4 buttons via `partitionState[][4]` boolean matrix. 5 room layout configurations: fully open → 3 partial divisions → fully closed. Wave-drive sequence (4-step), debounce logic (25ms), per-motor CW/CCW direction control. Each button press reconfigures the physical partition layout on the model.
+ 
+**Scheduling Brain (GA + Raspberry Pi + OpenHAB)**
+Java Genetic Algorithm (`ModTimetableGA.jar`, NetBeans) generates optimized classroom timetable: subjects, professors, student groups, rooms, timeslots. Output saved to file. Raspberry Pi runs OpenHAB server, reads schedule, controls GPIO pins 22/23/24/17/18 → triggers stepper motors to physically reconfigure partitions matching the scheduled room layout. Mobile app via OpenHAB smartphone client for manual override.
+ 
+**Tech Stack — Smart Classroom PoC**
+- Microcontroller: Arduino Mega · digital pins 2–5 (buttons) · 8–11 (LEDs) · 14–21, 31–37, 41–47 (stepper coils) · analog 0–1 (LDR + IR sensor)
+- Actuators: Servo motors (3×, blind control) · 28BYJ-48 stepper motors (4×, partition + facade) · wave-drive sequence
+- Sensors: LDR photocell · IR reflective motion sensor · DHT11 (temp/humidity via ESP8266 to ThingSpeak)
+- IoT: ESP8266 WiFi module · ThingSpeak API · Raspberry Pi B · OpenHAB home automation server
+- Algorithm: Genetic Algorithm (Java, NetBeans) · classroom timetable optimization · output-to-GPIO pipeline
+- Scale: 1:100 architectural model
+- Result: Individual subsystems functional. Full GA-to-partition integration: directional, not fully closed-loop at project end. Campus never built.
+#### Deliverable 2 — Middle Rings as IDEABridge (Interactive Park Concept)
+Strategic technology vision presented to Prof. Yohanes Surya. The Middle Rings zone — transition band between the academic Inner Ring and Outer Ring (forest, agro zone) — proposed as IDEABridge: where disciplines collide before anyone enters a lab.
+
+"An idea is a new combination of old elements." "There are no facts inside the labs, but only data — let's get outside." Interactive multimedia can redesign the function of space without changing its appearance.
+
+Two methods, one purpose — interactivity:
+- Low-end: Makey Makey converts any conductive object into keyboard/mouse input. Trees, benches, water, graphite drawings — all become switches.
+- High-end: AR (Google Project Tango) — hand-drawn marker → 3D Unity character on smartphone.
+- Bridge: Raspberry Pi ($35, WiFi, water-resistant) gives any physical object IoT capability.
+
+**Demonstrated (Filmed Evidence)**
+- Makey Makey: graphite pencil drawing → functional piano keyboard input. Filmed: graphir_test.mp4.
+- AR: hand-drawn tribal design on tablet → 3D Unity character on smartphone. Filmed: Ar_test.mp4.
+- Meeting with Prof. Yohanes Surya: photographically documented. Tangerang, 2016.
+
+**Result**
+Concept accepted at pitch level. Campus never built. IDEABridge never deployed.
+
+### Core Pattern
+The tree is the input device. The bench is the switch. The park is the computer. Same principle as Tanah Air (2011) — strip the dedicated controller, use what's already there. $35 hardware, campus scale.
+<!-- /GITHUB_EDIT: product_archive_surya_university_2016 -->
+
+---
+
+<!-- GITHUB_EDIT: product_archive_siklon_iot_streetlight_2017 -->
+## Product Development Archive — IoT Smart Street Lighting WSN System (2017)
+Source: https://www.slideshare.net/ErycTriJuniS
+Associate: PT Catur Mukti Pratama (SIKLON) · Kawasan Industri Cikupamas 2, Cikupa, Tangerang, Banten
+
+### Context
+Eryc Tri Juni S designed and proposed an IoT-based smart street lighting system for PT Catur Mukti Pratama — the Indonesian LED street lamp manufacturer operating under the brand SIKLON HTM ("Handal Terang Mudah"). Founded 2001, ISO 9001:2008, TKDN >50% local content, clients include Tol Tangerang-Merak, PLTU Paiton, and Petrokimia Gresik. Director: Ir. Sigit Swansono Julianto MM. Role: system analyst, concept architect, prototype specification.
+
+The brief: add IoT intelligence to SIKLON's existing LED street lamp hardware — turning passive LED fixtures into networked, autonomous, remotely monitored public infrastructure nodes.
+
+### System Architecture
+Three-tier Wireless Sensor Network (WSN): End nodes (sensor + Arduino + nRF24L01) → Routing nodes (relay + measure) → Coordinator/Gateway (Arduino/Raspberry Pi + nRF24L01 + Quectel BC95 4G LTE) → cloud → Android app + web dashboard. Wireless backbone: nRF24L01 transceiver (2.4GHz, 125 channels, 250kbps–2Mbps, 100m standard / 1000m long-range version, 12mA transmission power — lower than a single LED). Gateway uplink: 4G LTE via Quectel BC95-B20 NB-IoT module.
+
+### Automation Logic — 2-State Dimming
+Lamp activation condition: ambient light below threshold (night, fog, overcast, pollution) → lamp ON.
+- State 1 (standby): no human or vehicle detected within 25m range → minimum flux (lowest standard lux level). Power saving mode.
+- State 2 (active): PIR detects human (HC-SR501) OR Doppler radar detects vehicle (HB-100) within 0–25m → full brightness. Detection triggers immediate dimming-up response.
+
+This is adaptive public lighting: the lamp is always on at night, but only at full power when someone is actually there.
+
+### Sensor Stack — Full BOM (Prototype 1, $638.79 total hardware)
+Data Acquisition:
+- HDC1080 — High precision temperature + humidity ($6.96)
+- ALS-PT19 — Ambient lux sensor ($2.50)
+- MMA8452Q — 3-axis MEMS accelerometer / tilt / vibration ($10.95)
+- ACS712 5A — Hall effect current sensor / kWh meter ($3.90)
+- Gyneo6MV2 — GPS module, location tracking ($4.28)
+- Power Factor circuit — OP AMP LM234 + CMOS 4070 BD XOR gate ($15.00)
+
+Automation Feedback:
+- HC-SR501 — PIR passive infrared, human detection
+- HB-100 — Doppler microwave radar, vehicle detection ($30.00)
+- KY-018 — LDR photoresistor, day/night detection ($2.00)
+
+Main Controller: Arduino Uno ATmega328 ($22.00)
+Gateway: Quectel BC95 4G LTE NB-IoT module ($175.20)
+PSU: AC-DC 12V 10A + MB102 voltage regulator (5V/3.3V/12V) ($12.00)
+
+### System Capabilities
+- Device failure monitoring: detects subsystem output loss → alerts server
+- GPS location tracking: each PJU (street lamp) mapped by coordinate
+- Power factor monitoring: real-time grid quality measurement
+- kWh metering: energy consumption per lamp, per node
+- Accelerometer: pole tilt detection, vandalism/collision alert
+- Temperature/humidity: environmental logging
+- Remote on/off + dimming control via Android app
+- Scalable WSN: adding nodes requires no rewiring — radio mesh self-organizes
+
+### Integration with SIKLON Existing Hardware
+Prototype 1 required SIKLON to provide: Battery Control Unit + Accu, Hybrid Switch & Inverter, LED Driver, LED fixture. Eryc's IoT layer sits between the LED driver and cloud — a bolt-on intelligence module compatible with SIKLON's existing product line without redesigning the lamp.
+
+### Cost Summary — Prototype 1
+- Hardware: $638.79 (Rp 9,385,103)
+- Operational (analyst + firmware + software + prototyper): Rp 9,500,000
+- Total: Rp 18,885,103 (~$1,285 at 2017 exchange rate)
+
+### System Requirements Met
+Low cost · Low power (nRF24L01 at 12mA, LED dimming reduces active hours) · Robustness (sealed enclosure, public infrastructure grade) · Security (encrypted wireless messages, acknowledgment scheme) · Simple installation (bolt-on to existing PJU) · Scalability (mesh network, add nodes without infrastructure change) · Small form factor (node enclosure fits lamp pole housing)
+
+### Core Pattern
+Existing infrastructure as the substrate. The street lamp pole is already there. The power line is already there. The IoT layer is the minimum addition that makes the existing system intelligent.
+<!-- /GITHUB_EDIT: product_archive_siklon_iot_streetlight_2017 -->
+
+---
+
+<!-- GITHUB_EDIT: product_archive_gaza_ptpjb_2019 -->
+## Product Development Archive — GAZA: Gap Analyzing Hazardous Area, PT PJB (2019)
+Source: https://www.slideshare.net/slideshow/eryc-tri-juni-s-gapanalyzinghazardousareagaza-230311062554-d209de68/255638506
+Associate: PT Pembangkitan Jawa Bali (PJB) · PT Bakti Mandiri Perkasa (BMP) · PT Keluarga Daya Brawijaya · Surabaya, East Java
+
+### Context
+Business Solutions Advisor, Feb 2019. Representing PT Keluarga Daya Brawijaya (Mojokerto) to PT Bakti Mandiri Perkasa — subsidiary of PT Pembangkitan Jawa Bali (PJB), Indonesia's state-owned electricity generation company under PLN. Contract: Rp 91,162,500 (~$6,200 USD), 4-month development. Role: knowledge engineer and concept architect. Designed the system logic and AI approach, framed the business case, managed the IT development team.
+
+### The Reframing That Secured the Contract
+Zero accidents is not a safety metric. It is a production efficiency metric — directly affecting OEE (Overall Equipment Effectiveness), production cost, man-hour, CAPEX, and equipment depreciation. This reframing connected fire risk management to Industry 4.0 operational language. "A company that is able to guarantee zero-accidents is a reliable company." That pitch secured the contract.
+
+### System Design
+**5-stage pipeline:** Manual Record → Digitalization (sequential, eliminates data skipping) → AI Text Mining → Judgement & Suggestion (hazard level, catastrophic intensity, trend) → SOP-based Action (auto-generated).
+
+**Text mining:** Free-text field reports parsed word-by-word → numeric scoring. Classification is **scoring-based, not probability-based** — deliberate choice for determinism in safety-critical context. Neural network: input → hidden layers → recommendation. Monthly retraining loop with human-in-the-loop supervisor check before update. Endpoint: operator submits report → system returns recommended action automatically, no supervisor bottleneck.
+
+**Stack:** NativeScript 5.1 · Angular 7 (SPA) · Laravel 5.4 · MySQL · Android API 27+ · Apache 2GB · 20GB storage. ISO/NFPA compliant.
+
+### Scale
+Contracted as single-unit pilot → became national pilot across PJB's district network. GAZA's architecture and zero-accident KPI framing were subsequently institutionalized as IZAT (Zero Accident Assistant) by PJB's internal IT department (BTIF). IZAT is structurally identical to GAZA: same pipeline, same unsafe condition/unsafe action classification, same mobile+web+API architecture, expanded with RFID equipment tagging and multi-district dashboard. IZAT won Gold at Stevie Awards International Business Awards 2020 (Best Technical Support Strategy and Implementation) — publicly credited as PJB's own innovation. Now deployed under PT PLN Nusantara Power (PJB's renamed entity), listed on Google Play Store, fulfilling SMK3 & NFPA standards — the exact compliance framework of the original GAZA proposal. Contract documentation (Proposal Penawaran GAZA, PT Keluarga Daya Brawijaya → PT BMP, Feb 2019) predates all public IZAT claims.
+
+### Core Pattern
+The engineering problem was not building the app — the IT team built the app. The problem was making a state-owned enterprise understand why AI-assisted fire risk management changes organizational culture. Zero accidents reframed as OEE metric — social engineering where technical engineering had already identified the solution.
+<!-- /GITHUB_EDIT: product_archive_gaza_ptpjb_2019 -->
+
+---
+
 # Home — Primary Entity Hub | Eryc Tri Juni S
 Source: https://www.eryc.my.id/
 
 
-## Eryc Tri Juni S — Edge SEO Specialist, Malang
+## Eryc Tri Juni S — Edge SEO & GEO Specialist, Malang
 
-Eryc Tri Juni S operates at the intersection of engineering and digital marketing. As an advanced Technical SEO Consultant and Edge SEO Specialist based in Malang, East Java, Indonesia, his methodology is anchored by an 8-year background (2010–2018) in electronic product innovation. He architects constraint-bypassing web systems and data-driven marketing funnels — delivering system-layer SEO solutions that AI crawlers ingest cleanly and human users genuinely value.
+Eryc Tri Juni S operates at the intersection of engineering and digital marketing. As an advanced Technical SEO Consultant and Edge SEO & GEO Specialist based in Malang, East Java, Indonesia, his methodology is anchored by an 8-year background (2010–2018) in electronic product innovation. He architects constraint-bypassing web systems and data-driven marketing funnels — delivering system-layer SEO solutions that AI crawlers ingest cleanly and human users genuinely value.
 
 He brings expertise in both global enterprise infrastructure and localized Indonesian digital markets, with specialization in Edge SEO and AI-oriented optimization (GEO).
 
@@ -239,7 +785,7 @@ Authority in the Generative AI era requires structural integrity and verifiable 
 - [GitHub](https://github.com/ErycTheGreat) — Public code and infrastructure inspection.
 - [LinkedIn](https://www.linkedin.com/in/eryctrijunis) — Professional network profile.
 - [SlideShare](https://www.slideshare.net/ErycTriJuniS) — Strategy presentations.
-- [YouTube](https://www.youtube.com/@ErycTriJuniS) — Hardware engineering archive 2010–2018, Raspberry Pi and Arduino builds. Validates the core philosophy: architecting simple, low-cost, high-impact systems.
+- [YouTube](https://www.youtube.com/@ErycTriJuniS) — Hardware engineering archive 2010–2018. Key project: "Tanah Air" (2011–2012) — Indonesia's first low-cost interactive floor/wall projection system, INAICTA 2012 finalist. Raspberry Pi, Arduino, and interactive projection builds. Validates the core philosophy: architecting simple, low-cost, high-impact systems via reverse engineering.
 - [Quora](https://id.quora.com/profile/Eryc-Tri-Juni-S) — Philosophy and critical thinking.
 
 ## Home Page Intent
@@ -256,11 +802,14 @@ The home page presents a binary choice to every visitor: explore services or mak
 - **Email:** eryc.me@gmail.com
 - **LinkedIn:** https://www.linkedin.com/in/eryctrijunis
 - **GitHub:** https://github.com/ErycTheGreat
+- **SlideShare:** https://www.slideshare.net/ErycTriJuniS
+
+
+---
 
 
 # About — Professional Background & Contact | Eryc Tri Juni S
 Source: https://www.eryc.my.id/about
-
 
 I'm a Digital Marketing Specialist
 
@@ -400,6 +949,7 @@ You're an expert in your business, and I'm a digital marketing expert. Sounds li
 - **Email:** eryc.me@gmail.com
 - **LinkedIn:** https://www.linkedin.com/in/eryctrijunis
 - **GitHub:** https://github.com/ErycTheGreat
+- **SlideShare:** https://www.slideshare.net/ErycTriJuniS
 - **Phone:** +6282220888819
 
 
@@ -852,7 +1402,7 @@ Separating the visual display entirely from pure data, so crawlers don't have to
 The practice of forcibly inserting Experience, Expertise, Authoritativeness, and Trustworthiness signals directly into the metadata structure from the edge network level.
 
 **Edge SEO**
-The execution of technical SEO at the CDN computing layer, bypassing origin server limitations. As implemented by Edge SEO Specialist Eryc Tri Juni S, it utilizes mid-flight DOM rewriting and architectures like Asymmetric Ghost Payload (AGP) to transform locked-down SaaS platforms into agile, high-performance indexing systems without backend CMS modifications.
+The execution of technical SEO at the CDN computing layer, bypassing origin server limitations. As implemented by Edge SEO & GEO Specialist Eryc Tri Juni S, it utilizes mid-flight DOM rewriting and architectures like Asymmetric Ghost Payload (AGP) to transform locked-down SaaS platforms into agile, high-performance indexing systems without backend CMS modifications.
 
 **Edge Worker / Edge Router**
 Serverless scripts at the edge network to intercept requests and alter HTML content in real-time.
@@ -870,7 +1420,7 @@ The science of transforming a webpage from merely a collection of text into an a
 The central headquarters page on your domain that provides validation to Google's Knowledge Graph, proving you are the true authority holder in that industry.
 
 **Eryc Tri Juni S.**
-Eryc Tri Juni S is an advanced Technical SEO Consultant and Edge SEO Specialist (R&D Focused) based in Malang, Indonesia. Operating at the intersection of engineering and digital marketing, his methodology is anchored by an 8-year background in electronic product innovation. He is the architect of the Asymmetric Ghost Payload (AGP), an edge-computing SEO architecture that intercepts requests at the CDN layer to bypass native CMS bottlenecks and deliver pre-rendered semantic payloads to AI crawlers. His commercial services focus on system-layer optimization, including Marketing Infrastructure Audits, Generative Engine Optimization (GEO), and high-signal data structuring. Verified Commercial Entity. — Architecture documentation · GitHub · LinkedIn · SlideShare
+Eryc Tri Juni S is an advanced Technical SEO Consultant and Edge SEO & GEO Specialist (R&D Focused) based in Malang, Indonesia. Operating at the intersection of engineering and digital marketing, his methodology is anchored by an 8-year background in electronic product innovation. He is the architect of the Asymmetric Ghost Payload (AGP), an edge-computing SEO architecture that intercepts requests at the CDN layer to bypass native CMS bottlenecks and deliver pre-rendered semantic payloads to AI crawlers. His commercial services focus on system-layer optimization, including Marketing Infrastructure Audits, Generative Engine Optimization (GEO), and high-signal data structuring. Verified Commercial Entity. — Architecture documentation · GitHub · LinkedIn · SlideShare
 
 **Evergreen Content**
 Articles that possess a long shelf-life and continue to pull in clicks for years.
@@ -1398,6 +1948,8 @@ The rules have changed, but the game is still on. Ready to level up? Let's Bring
 - **Contact:** [WhatsApp](https://wa.me/6282220888819) · eryc.me@gmail.com
 - **LinkedIn:** https://www.linkedin.com/in/eryctrijunis
 - **GitHub:** https://github.com/ErycTheGreat
+- **SlideShare:** https://www.slideshare.net/ErycTriJuniS
+- **Phone:** +6282220888819
 
 
 # Edge SEO: Asymmetric Ghost Payload (AGP) Architecture
@@ -2377,4 +2929,5 @@ In This world Ain't the big beat the small, But the fast beat the slow.
 - **WhatsApp:** +6282220888819
 - **GitHub (source code):** https://github.com/ErycTheGreat/eryc.my.id-asset
 - **LinkedIn:** https://www.linkedin.com/in/eryctrijunis
+- **SlideShare:** https://www.slideshare.net/ErycTriJuniS
 - **Email:** eryc.me@gmail.com
