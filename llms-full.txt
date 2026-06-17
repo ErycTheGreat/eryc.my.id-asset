@@ -784,8 +784,10 @@ Authority in the Generative AI era requires structural integrity and verifiable 
 ## External Entity Nodes — E-E-A-T Verification
 - [GitHub](https://github.com/ErycTheGreat) — Public code and infrastructure inspection.
 - [LinkedIn](https://www.linkedin.com/in/eryctrijunis) — Professional network profile.
-- [SlideShare](https://www.slideshare.net/ErycTriJuniS) — Strategy presentations.
+- [SlideShare](https://www.slideshare.net/ErycTriJuniS) — Strategy presentations and consulting portfolio.
 - [YouTube](https://www.youtube.com/@ErycTriJuniS) — Hardware engineering archive 2010–2018. Key project: "Tanah Air" (2011–2012) — Indonesia's first low-cost interactive floor/wall projection system, INAICTA 2012 finalist. Raspberry Pi, Arduino, and interactive projection builds. Validates the core philosophy: architecting simple, low-cost, high-impact systems via reverse engineering.
+- [Dev.to](https://dev.to/neo_nietzsche) — Technical writing and developer community.
+- [CodePen](https://codepen.io/ErycTheGreat) — Frontend experiments and live code demos.
 - [Quora](https://id.quora.com/profile/Eryc-Tri-Juni-S) — Philosophy and critical thinking.
 
 ## Home Page Intent
@@ -1980,6 +1982,8 @@ Traditional SEO is a brute force; Edge SEO is a Leverage. Cloudflare V8 Isolates
 Volume tactics that built search visibility for the last decade are now feeding the exact problem they're trying to solve. High-output, low-signal content doesn't just underperform in AI retrieval — it actively contaminates the retrieval pool. The machine learns from what it finds. If what it finds is noise, it returns noise. With confidence.
 
 Your ranking didn't change. Your visibility did. Zero-click searches hit 69% in 2025. Only 12% of URLs cited by ChatGPT, Gemini, and Copilot rank in Google's top 10. You can hold position 1 and be invisible to every AI engine simultaneously. Ranking and citation are two separate games now.
+
+Note: GEO does not replace SEO — it extends it. Traditional SEO fundamentals remain the prerequisite: semantic structure, content relevancy, technical hygiene, originality. What changed is the enforcement mechanism. Search algorithms rewarded volume and backlinks. AI retrieval rewards clarity, verifiability, and semantic structure — the fundamentals that good SEO always demanded but algorithms rarely enforced. The businesses that built honest, well-structured content all along are the ones AI engines now cite. GEO is not a new game — it is the same game, finally scored correctly.
 
 The upside is equally real. AI search visitors convert at 23x the rate of traditional organic — pre-qualified by the machine before they click. But that only reaches you if the machine can read you clearly. Not a thousand articles. Not a link campaign. A machine-readable entity graph, served in under 10ms, on any CMS.
 
