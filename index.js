@@ -370,8 +370,8 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 			body { background-color: transparent !important; }
 		  </style>
 
-		  <meta name="description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
-		  <meta name="keywords" content="eryc tri juni s, edge SEO specialist, digital marketing specialist, portfolio, malang, indonesia">
+		  <meta name="description" content="Eryc Tri Juni S: Edge SEO & GEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
+		  <meta name="keywords" content="eryc tri juni s, edge SEO & GEO specialist, digital marketing specialist, portfolio, malang, indonesia">
 		  <meta name="author" content="Eryc Tri Juni S">
 		  <meta name="google-site-verification" content="Qval4eNJhMpInxPCHk-08v6D9sxftApTQc1E8Z6hbug">
 		  <meta name="yandex-verification" content="275f3c061328554a">
@@ -385,17 +385,17 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 		  <meta property="og:type" content="website">
 		  <meta property="og:site_name" content="Eryc Tri Juni S">
 		  <meta property="og:locale" content="en_US">
-		  <meta property="og:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S">
-		  <meta property="og:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
+		  <meta property="og:title" content="Edge SEO & GEO Specialist Malang | Eryc Tri Juni S">
+		  <meta property="og:description" content="Eryc Tri Juni S: Edge SEO & GEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
 		  <meta property="og:url" content="${canonicalUrl}">
 		  <meta property="og:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
-		  <meta property="og:image:alt" content="Eryc Tri Juni S – Edge SEO Specialist Malang">
+		  <meta property="og:image:alt" content="Eryc Tri Juni S – Edge SEO & GEO Specialist Malang">
 
 		  <meta name="twitter:card" content="summary_large_image">
-		  <meta name="twitter:title" content="Edge SEO Specialist Malang | Eryc Tri Juni S">
-		  <meta name="twitter:description" content="Eryc Tri Juni S: Edge SEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
+		  <meta name="twitter:title" content="Edge SEO & GEO Specialist Malang | Eryc Tri Juni S">
+		  <meta name="twitter:description" content="Eryc Tri Juni S: Edge SEO & GEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
 		  <meta name="twitter:image" content="https://www.dropbox.com/scl/fi/erfruldeb5w2ownre5qn8/eryctrijunis-lv-0-20260225023845.gif?rlkey=yo5h6ye46dkb0ailv3t7v244l&st=7zq9vfpx&raw=1">
-		  <meta name="twitter:image:alt" content="Eryc Tri Juni S – Edge SEO Specialist Malang">
+		  <meta name="twitter:image:alt" content="Eryc Tri Juni S – Edge SEO & GEO Specialist Malang">
 		  <meta name="twitter:creator" content="@eryctrijunis">
 				
 		<script type="application/ld+json">
@@ -426,22 +426,22 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 			  "url": "https://www.eryc.my.id/assets/image/logo-512x512.webp",
 			  "width": 512,
 			  "height": 512,
-			  "caption": "Eryc Tri Juni S – Edge SEO Specialist",
+			  "caption": "Eryc Tri Juni S – Edge SEO & GEO Specialist",
 			  "inLanguage": "en"
 			},
 			{
 			  "@type": "ImageObject",
 			  "@id": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp",
 			  "url": "https://www.eryc.my.id/assets/image/homepage-screenshot.webp",
-			  "caption": "Homepage – Eryc Tri Juni S | Edge SEO Specialist",
+			  "caption": "Homepage – Eryc Tri Juni S | Edge SEO & GEO Specialist",
 			  "inLanguage": "en"
 			},
 			{
 			  "@type": "ProfilePage",
 			  "@id": "https://www.eryc.my.id/#webpage",
 			  "url": "https://www.eryc.my.id/",
-			  "name": "Edge SEO Specialist Malang | Eryc Tri Juni S",
-			  "description": "Eryc Tri Juni S is an Edge SEO Specialist in Malang, Indonesia—engineering system-based marketing, constraint-bypassing architectures, and Asymmetric Ghost Payloads.",
+			  "name": "Edge SEO & GEO Specialist Malang | Eryc Tri Juni S",
+			  "description": "Eryc Tri Juni S is an Edge SEO & GEO Specialist in Malang, Indonesia—engineering system-based marketing, constraint-bypassing architectures, and Asymmetric Ghost Payloads.",
 			  "isPartOf": { "@id": "https://www.eryc.my.id/#website" },
 			  "mainEntity": { "@id": "https://www.eryc.my.id/#person" },
 			  "about": { "@id": "https://www.eryc.my.id/#person" },
@@ -449,16 +449,16 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 			  "inLanguage": "en",
 			  "dateCreated": "2024-01-01T00:00:00+07:00",
 			  "datePublished": "2024-01-01T00:00:00+07:00",
-			  "dateModified": "2026-06-13T00:00:00+07:00"
+			  "dateModified": "2026-06-18T00:00:00+07:00"
 			},
 			{
 			  "@type": "Person",
 			  "@id": "https://www.eryc.my.id/#person",
 			  "name": "Eryc Tri Juni S",
-			  "description": "Edge SEO Specialist in Malang, Indonesia—engineering constraint-bypassing web architectures and data-driven marketing systems.",
+			  "description": "Edge SEO & GEO Specialist in Malang, Indonesia—engineering constraint-bypassing web architectures and data-driven marketing systems.",
 			  "email": "eryc.me@gmail.com",
 			  "gender": "Male",
-			  "jobTitle": "Edge SEO Specialist",
+			  "jobTitle": "Edge SEO & GEO Specialist",
 			  "image": { "@id": "https://www.eryc.my.id/assets/image/logo-512x512.webp" },
 			  "url": "https://www.eryc.my.id/",
 			  "address": {
@@ -535,13 +535,15 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 				"https://www.slideshare.net/ErycTriJuniS",
 				"https://id.quora.com/profile/Eryc-Tri-Juni-S",
 				"https://www.youtube.com/@ErycTriJuniS",
-				"https://github.com/ErycTheGreat"
+				"https://github.com/ErycTheGreat",
+				"https://dev.to/neo_nietzsche",
+         		"https://codepen.io/ErycTheGreat"
 			  ]
 			},
 			{
 			  "@type": "ProfessionalService",
 			  "@id": "https://www.eryc.my.id/#localbusiness",
-			  "name": "Eryc Tri Juni S – Edge SEO Specialist Malang",
+			  "name": "Eryc Tri Juni S – Edge SEO & GEO Specialist Malang",
 			  "telephone": "+6282220888819",
 			  "url": "https://www.eryc.my.id",
 			  "logo": { "@id": "https://www.eryc.my.id/assets/image/logo-512x512.webp" },
