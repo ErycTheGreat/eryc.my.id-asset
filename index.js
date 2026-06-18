@@ -275,7 +275,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         status: 200,
         headers: {
           "Content-Type": "text/plain; charset=utf-8",
-          "Cache-Control": "public, s-maxage=7200, max-age=0"
+          "Cache-Control": "public, s-maxage=7200, max-age=3600"
+		  "Access-Control-Allow-Origin": "*",
+		  "Content-Length": object.size
         }
       });
     }
