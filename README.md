@@ -1,6 +1,13 @@
 # Google Sites + Cloudflare... this combo is underrated
 
-**By Eryc Tri Juni S — Edge SEO & GEO Specialist**
+<p>
+  <img src="https://img.shields.io/badge/architecture-AGP-1bc7fb" alt="Architecture: AGP">
+  <img src="https://img.shields.io/badge/status-live%20production-00bba9" alt="Status: Live Production">
+  <img src="https://img.shields.io/badge/edge-Cloudflare%20Workers-ff6a00" alt="Edge: Cloudflare Workers">
+  <img src="https://img.shields.io/badge/license-MIT-4386c3" alt="License: MIT">
+</p>
+
+**By Eryc Tri Juni S — Edge SEO Specialist**
 
 > **Google:** "A simple, locked-down drag-and-drop builder."
 > **User:** "Hold my Cloudflare edge router."
@@ -27,17 +34,17 @@ This README covers **what's in the repo and how to run it.** For the *why* and t
 
 ```text
 eryc.my.id-asset/
-├── index.js                # PRIMARY WORKER — the AGP router (see below)
-├── wrangler.toml           # Deploy config for the primary router
+├── index.js              # PRIMARY WORKER — the AGP router (see below)
+├── wrangler.toml          # Deploy config for the primary router
 ├── cloudflare-worker/      # SECONDARY WORKER — the AI Scanner (cron job, see below)
-├── home-page/              # Embedded HTML/CSS/JS for the Google Sites home page
-├── about-page/             # Embedded code for the cyberpunk terminal About page
-├── glossary-page/          # Embedded code for the searchable glossary
+├── home-page/             # Embedded HTML/CSS/JS for the Google Sites home page
+├── about-page/            # Embedded code for the cyberpunk terminal About page
+├── glossary-page/         # Embedded code for the searchable glossary
 ├── seo-page/               # Embedded code for the RPG-dialog SEO explainer page
 ├── footer-page/            # Shared footer embed
-├── font/                   # Self-hosted font files served via the R2 asset proxy
-├── image/                  # Static images referenced in this README
-├── llms.txt                # Machine-readable entity summary, served from R2
+├── font/                  # Self-hosted font files served via the R2 asset proxy
+├── image/                 # Static images referenced in this README
+├── llms.txt               # Machine-readable entity summary, served from R2
 ├── llms-full.txt           # Full machine-readable entity graph, served from R2
 ├── sitemap-v2.xml          # Static sitemap reference (the live /sitemap.xml is generated dynamically — see below)
 ├── color-mood-board.txt    # Design reference
@@ -52,6 +59,13 @@ eryc.my.id-asset/
 
 ## Worker 1 — The AGP Router (`index.js`)
 
+<p>
+  <img src="https://img.shields.io/badge/R2-MY__ASSETS-ff6a00" alt="R2 binding: MY_ASSETS">
+  <img src="https://img.shields.io/badge/KV-SEO__PAYLOADS-eab308" alt="KV binding: SEO_PAYLOADS">
+  <img src="https://img.shields.io/badge/KV-AGP__STATE-eab308" alt="KV binding: AGP_STATE">
+  <img src="https://img.shields.io/badge/cron-*/30_*_*_*_*-4386c3" alt="Cron: every 30 minutes">
+</p>
+
 This is the Worker that's actually bound to the live domain via `wrangler.toml`. It runs on **every request** to `www.eryc.my.id` and does all of the following, in order, before the response reaches the browser or crawler:
 
 1. **Bot classification** — regex-matches the `User-Agent` against known AI bots (`GPTBot`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`, etc.), search crawlers (`Googlebot`, `bingbot`, `Applebot`), and social bots (`FacebookBot`, `Twitterbot`, etc.). A `?debug=bot` query param is also a deterministic override for manual testing.
@@ -63,6 +77,9 @@ This is the Worker that's actually bound to the live domain via `wrangler.toml`.
 **On IndexNow:** the key-verification file (`/3d66934eab674a3496effb0a0651a038.txt`) is served, confirming domain ownership — but there's currently no code that actively *pushes* URLs to the IndexNow submit endpoint on content change. Verification only, not full automation, as of this writing.
 
 ### Deploy config (`wrangler.toml`)
+
+<details>
+<summary>Show full <code>wrangler.toml</code></summary>
 
 ```toml
 name = "homepage-sitemap-robots-txt"
@@ -96,9 +113,18 @@ enabled = true
 invocation_logs = false   # only logs when a bot is detected — keeps log volume sane
 ```
 
+</details>
+
 ---
 
 ## Worker 2 — The AI Scanner (`/cloudflare-worker`)
+
+<p>
+  <img src="https://img.shields.io/badge/AI-Workers_AI-1bc7fb" alt="Workers AI binding">
+  <img src="https://img.shields.io/badge/browser-MYBROWSER-e0287d" alt="Browser rendering binding: MYBROWSER">
+  <img src="https://img.shields.io/badge/KV-AGP__STATE-eab308" alt="KV binding: AGP_STATE">
+  <img src="https://img.shields.io/badge/R2-MY__ASSETS-ff6a00" alt="R2 binding: MY_ASSETS">
+</p>
 
 This is the Worker referenced in the case study's "Autonomous Feedback" step. It runs **off the request path**, on the same 30-minute cron schedule, and does the AI-side prep work so the primary router never has to think at request time:
 
@@ -110,6 +136,61 @@ This is the Worker referenced in the case study's "Autonomous Feedback" step. It
 
 > [!NOTE]
 > This Worker needs its own `wrangler.toml` with `[ai]`, browser-rendering (`MYBROWSER`), and shared KV/R2 bindings. That config isn't finalized in this repo yet — full deploy docs for this Worker are pending (see [Roadmap](#roadmap)).
+
+---
+
+## Related infrastructure (not in this repo)
+
+The live PSI/GSC telemetry shown on the [case study page](https://www.eryc.my.id/case-studies/edge-seo) — the "Live Architecture Performance" readings and the before/after Lighthouse dashboards — is powered by a **third Worker that lives in a separate project**, not this repo. At a high level: a weekly cron job authenticates against the Google Search Console API and PageSpeed Insights API v5, pulls desktop + mobile scores for both the origin and edge domains plus 30-day GSC totals, and writes the result into its own KV namespace. The case-study page then reads that KV at request time and injects the numbers into both the visible widget and a `Dataset`/`Observation` JSON-LD block, so the live metrics are exposed as structured, machine-readable claims rather than just text on the page.
+
+It's mentioned here for architectural completeness since it's part of the same broader system, but its code isn't published in this repository.
+
+### What that pipeline actually produces — results snapshot
+
+Static snapshot, not live — the numbers below update weekly on the case study itself via the pipeline described above. This is what they showed as of **2026-06-14**.
+
+<p>
+  <img src="https://img.shields.io/badge/LCP-88%25_faster-00bba9" alt="LCP 88% faster">
+  <img src="https://img.shields.io/badge/TBT-eliminated_(0ms)-00bba9" alt="TBT eliminated">
+  <img src="https://img.shields.io/badge/SEO-100%2F100-00bba9" alt="SEO 100/100">
+  <img src="https://img.shields.io/badge/Mobile_Perf-%2B32_pts-00bba9" alt="Mobile Performance +32 points">
+</p>
+
+**Mobile PSI — Origin (Google Sites) vs. Edge (AGP)**
+
+| Metric | Origin | Edge | Change |
+|---|---|---|---|
+| Performance | 48/100 | 80/100 | +32 |
+| Accessibility | 100/100 | 100/100 | — |
+| Best Practices | 100/100 | 100/100 | — |
+| SEO | 92/100 | 100/100 | +8 |
+| FCP | 9.1 s | 3.8 s | 58% faster |
+| Speed Index | 9.7 s | 3.8 s | 61% faster |
+| LCP | 30.6 s | 3.8 s | 88% faster |
+| TTI | 9.7 s | 3.8 s | 61% faster |
+| TBT | 360 ms | 0 ms | -100% |
+| CLS | 0 | 0.005 | negligible |
+
+**Desktop PSI — Origin (Google Sites) vs. Edge (AGP)**
+
+| Metric | Origin | Edge | Change |
+|---|---|---|---|
+| Performance | 54/100 | 98/100 | +44 |
+| Accessibility | 95/100 | 100/100 | +5 |
+| Best Practices | 100/100 | 100/100 | — |
+| SEO | 92/100 | 100/100 | +8 |
+| FCP | 0.9 s | 0.9 s | maintained |
+| Speed Index | 1.4 s | 1.0 s | 29% faster |
+| LCP | 3.9 s | 0.9 s | 77% faster |
+| TTI | 3.9 s | 0.9 s | 77% faster |
+| TBT | 560 ms | 0 ms | -100% |
+| CLS | 0.051 | 0.002 | 96% reduction |
+
+**Google Search Console (trailing 30 days):** 24 clicks · 1,779 impressions · 1.35% CTR · 24.68 avg. position
+
+One honest caveat carried over from the engineering log: 194 KiB of unused CSS remains as an accepted trade-off — it's the cost of inlining `gstatic` CSS server-side to kill the 4,050ms render-blocking penalty in Row 1. Fixing one regressed the other slightly; this was the deliberate trade.
+
+For the full row-by-row breakdown (what broke, why, and the exact fix per category) plus the live, auto-updating version of these tables, see the [case study](https://www.eryc.my.id/case-studies/edge-seo#the-engineering-log-matrix-interactive-transformation-diagram).
 
 ---
 
@@ -136,7 +217,7 @@ This is the Worker referenced in the case study's "Autonomous Feedback" step. It
 
 - **R2-backed edge asset proxy** — `/assets/*` served from Cloudflare R2 with on-the-fly resizing, full cache-header control, and zero dependency on Google Sites' (nonexistent) file hosting.
 - **Responsive widget sandboxing** — fully responsive HTML/CSS UI components running inside Google Sites' native iframes, with core JS logic decoupled and deferred until real user interaction.
-- **Live SEO telemetry** — PSI and GSC metrics rendered directly on the live page, sourced from a dedicated KV namespace updated weekly via Cron + the PSI/GSC APIs.
+- **Live SEO telemetry** — PSI and GSC metrics rendered directly on the live page, sourced from a dedicated KV namespace updated weekly via Cron + the PSI/GSC APIs. See [Related infrastructure](#related-infrastructure-not-in-this-repo).
 
 ## Interactive Highlights
 
@@ -205,7 +286,8 @@ The boundary condition is strict semantic equivalence between both payloads. Sam
 
 ## Compatibility
 
-Built on Google Sites, but not tied to it. If a platform accepts embedded HTML, this architecture extends to it — Wix, Webflow, Weebly, WordPress.com, Squarespace, and similar closed-ecosystem builders all have the same fundamental problem AGP solves: no `<head>` access, no native SEO infrastructure.
+> [!TIP]
+> Built on Google Sites, but not tied to it. If a platform accepts embedded HTML, this architecture extends to it — Wix, Webflow, Weebly, WordPress.com, Squarespace, and similar closed-ecosystem builders all have the same fundamental problem AGP solves: no `<head>` access, no native SEO infrastructure.
 
 This approach also lines up with where edge-native CMS platforms are heading — see [Emdash](https://github.com/emdash-cms/emdash) for a from-scratch take on the same idea (the edge *is* the origin, no mid-flight interception needed).
 
