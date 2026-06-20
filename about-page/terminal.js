@@ -1,7 +1,7 @@
 const app = document.querySelector("#app");
 const delay = ms => new Promise(res => setTimeout(res, ms));
 // The master list of available terminal commands
-const availableCommands = ["clear", "ls", "matrix", "proof", "scan", "sudo", "skill", "sysinfo", "whoami"];
+const availableCommands = ["clear", "ls", "matrix", "proof", "scan", "sudo", "skill", "sysinfo", "whoami", "remote"];
 app.addEventListener("keypress", async function(event) {
 	if (event.key === "Enter") {
 		// If Matrix is active, stop processing the terminal command!
@@ -185,7 +185,7 @@ async function getInputValue() {
 		createCode("> whoami", "Eryc – In a Nutshell.");
 		createCode("> proof", "My qualifications.");
 		createCode("> skill", "Unlocked skills so far");
-		createCode("> remote", "Open to remote work? Check here.");
+		createCode("> remote", "Open to remote work?");
 		createCode("> scan", "Run system diagnostic.");
 		createCode("> clear", "Clean the terminal.");
 	} else if (value === "skill") {
@@ -196,7 +196,7 @@ async function getInputValue() {
 	} else if (value === "whoami") {
 		trueValue(value);
 		createText("I wear two hats: Engineer & Digital Marketer. My engineering roots fuel my <span class='blue'>data-driven strategies</span>, allowing me to engineer <span class='blue'>constraint-bypassing web architectures</span> and <span class='blue'>full-stack funnels</span>. The result? Scalable, measurable business solutions. The core? Deep, honest understanding through empathy. <span class='blue'>No B.S.</span>");
-		createText("Constraint doesn't stop me — I bend physical law around it. Tanah Air's computer vision was written from scratch, no OpenCV dependency; a modified popcorn popper became an Arduino PID coffee roaster, published in a university journal; rural BRI payment terminals on $35 single-board computers, replacing $300 PCs — DIY PoE since no commercial module existed locally, paperless receipts via SMS before that was standard. That discipline now produces <span class='blue'>AGP</span>. Documented on <a href='https://www.youtube.com/@ErycTriJuniS' target='_blank'>YouTube</a>.");
+		createText("Constraint doesn't stop me — I bend physical law around it. <span class='blue'>Tanah Air</span>'s computer vision was written from scratch, <span class='blue'>no OpenCV dependency</span>; a modified popcorn popper became an Arduino PID coffee roaster, published in a university journal; rural BRI payment terminals on <span class='blue'>$35 single-board computers</span>, replacing $300 PCs — DIY PoE since no commercial module existed locally, paperless receipts via SMS before that was standard. That discipline now produces <span class='blue'>AGP</span>. Documented on <a href='https://www.youtube.com/@ErycTriJuniS' target='_blank'><i class='fa fa-youtube white'></i> YouTube</a>.");
 		createText("<a href='https://drive.google.com/uc?id=1jZGpfGOVA7SyieMhNXl5unk2EEe8E-OX&export=download' target='_blank'><i class='fa fa-file-pdf-o white'></i> Download Resume</a>");
 	} else if (value === "remote") {
 		trueValue(value);
