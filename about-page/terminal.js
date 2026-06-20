@@ -185,6 +185,7 @@ async function getInputValue() {
 		createCode("> whoami", "Eryc – In a Nutshell.");
 		createCode("> proof", "My qualifications.");
 		createCode("> skill", "Unlocked skills so far");
+		createCode("> remote", "Open to remote work? Check here.");
 		createCode("> scan", "Run system diagnostic.");
 		createCode("> clear", "Clean the terminal.");
 	} else if (value === "skill") {
@@ -195,7 +196,14 @@ async function getInputValue() {
 	} else if (value === "whoami") {
 		trueValue(value);
 		createText("I wear two hats: Engineer & Digital Marketer. My engineering roots fuel my <span class='blue'>data-driven strategies</span>, allowing me to engineer <span class='blue'>constraint-bypassing web architectures</span> and <span class='blue'>full-stack funnels</span>. The result? Scalable, measurable business solutions. The core? Deep, honest understanding through empathy. <span class='blue'>No B.S.</span>");
+		createText("Constraint doesn't stop me — I bend physical law around it. Tanah Air's computer vision was written from scratch, no OpenCV dependency; a modified popcorn popper became an Arduino PID coffee roaster, published in a university journal; rural BRI payment terminals on $35 single-board computers, replacing $300 PCs — DIY PoE since no commercial module existed locally, paperless receipts via SMS before that was standard. That discipline now produces <span class='blue'>AGP</span>. Documented on <a href='https://www.youtube.com/@ErycTriJuniS' target='_blank'>YouTube</a>.");
 		createText("<a href='https://drive.google.com/uc?id=1jZGpfGOVA7SyieMhNXl5unk2EEe8E-OX&export=download' target='_blank'><i class='fa fa-file-pdf-o white'></i> Download Resume</a>");
+	} else if (value === "remote") {
+		trueValue(value);
+		createText("Open to <span class='blue'>remote full-time or contract roles</span>, alongside independent consulting — priority region <span class='blue'>Australia / APAC</span>.");
+		createText("Based in Malang, Indonesia (WIB, UTC+7) — a smaller timezone gap to Australian business hours than most remote candidates from US or EU regions.");
+		createText("Open to fully remote roles or relocation to Australia, depending on the offer. Visa sponsorship welcomed, not strictly required.");
+		createText("<a href='https://wa.me/6282220888819' target='_blank'><i class='fa fa-whatsapp white'></i> Let's talk</a>");
 	} else if (value === "dir") {
 		trueValue(value);
 		createText("Nice try.<br/>> try sudo");
@@ -207,7 +215,7 @@ async function getInputValue() {
 		createText("<br>");
 		createText("The real proof isn't a certificate—it's the terminal you are reading right now.");
 		createText("This site is a live demonstration of <span class='blue'>Edge SEO</span>. It runs on a locked-down platform, bypassed at the CDN layer using my <span class='blue'>(AGP) Asymmetric Ghost Payload</span> architecture.");
-		createText("Want to see how the system routes human execution versus crawler ingestion? Check the <a href='https://github.com/ErycTheGreat/eryc.my.id-asset' target='_blank'><i class='fa fa-github white'></i> GitHub docs</a> or parse my <a href='https://www.eryc.my.id/llm.txt' target='_blank'><i class='fa fa-terminal white'></i> llm.txt</a>.");
+		createText("Want to see how the system routes human execution versus crawler ingestion? Check the <a href='https://github.com/ErycTheGreat/eryc.my.id-asset/blob/main/README.md' target='_blank'><i class='fa fa-github white'></i> architecture README</a>, browse the <a href='https://github.com/ErycTheGreat/eryc.my.id-asset' target='_blank'><i class='fa fa-github white'></i> full repo</a>, or parse my <a href='https://www.eryc.my.id/llms.txt' target='_blank'><i class='fa fa-terminal white'></i> llms.txt</a>.");
 	} else if (value === "sudo" || value === "sudo su") {
 		// Hide the real input cursor
 		document.querySelector(".type").style.display = "none";
