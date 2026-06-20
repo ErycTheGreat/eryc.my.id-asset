@@ -140,7 +140,7 @@ A: For WordPress (most common case, often single-page), the process is concrete 
 - [Glossary — Edge SEO & Industry Definitions](https://www.eryc.my.id/glossary) — A-to-Z definitions including proprietary Edge SEO/GEO terminology not found in any other public reference.
   - Schema: DefinedTermSet
 
-- [SEO Services & Protocol](https://www.eryc.my.id/case-studies/seo) — 8-step protocol and full commercial service tiers with pricing.
+- [Traditional SEO Services & Protocol](https://www.eryc.my.id/case-studies/seo) — 8-step protocol and full commercial service tiers with pricing, including Edge GEO Services.
   - Schema: hasOfferCatalog, Offer
 
 - [Technical Specs — Edge SEO & AGP Architecture](https://www.eryc.my.id/case-studies/edge-seo) — Official engineering log, 9-step implementation, live PSI telemetry, open-source code.
