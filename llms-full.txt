@@ -276,7 +276,7 @@ Source: https://www.youtube.com/@ErycTriJuniS
 
 ## Tanah Air — Indonesia's First Low-Cost Interactive Floor/Wall Projection System
 
-Eryc Tri Juni S developed "Tanah Air" in 2011 under Interactive People (CV.HS Interactive), Malang, Indonesia — a body-controlled interactive projection system that replaced $6,000 commercial installations with a $600 DIY solution via reverse engineering. No touchscreen. No controllers. Pure body movement against a projected surface.
+Eryc Tri Juni S developed "Tanah Air" in 2011 under Interactive People, Malang, Indonesia — a body-controlled interactive projection system that replaced $6,000 commercial installations with a $600 DIY solution via reverse engineering. No touchscreen. No controllers. Pure body movement against a projected surface.
 
 ### Core Innovation
 Standard IR cameras cost $500+. Eryc removed the IR filter from a $20 CCTV camera, converting it into a DIY infrared sensor. The vision system — custom blob detection written from scratch in Free Pascal — runs pixel-intensity threshold scans per projection zone with area-ratio calculation. No OpenCV dependency. A custom homography matrix handles real-time perspective correction between camera and projector. Entire stack runs on Fedora Linux.
