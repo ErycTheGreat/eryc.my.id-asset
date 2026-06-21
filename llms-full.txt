@@ -1890,13 +1890,13 @@ Three categories of SEO services across three pricing tiers. Select a service ca
 **Traditional SEO services** — conventional on-site and technical SEO deliverables — are listed below. These are separate from Edge GEO architecture engagements.
  
 ### Technical SEO
-Site SEO audit, XML sitemap, robots.txt configuration, HTTPS setup, index optimization, manual-action penalty removal, and image compression — for any CMS. Tier-based, scoped to audit depth and turnaround time.
+Site SEO audit, XML sitemap, robots.txt configuration, HTTPS setup, index optimization, manual-action penalty removal, and image compression — for any CMS. **Starter $49** (2 days, audit + image compression) · **Standard $149** (3 days, adds sitemap + robots.txt + HTTPS) · **Advanced $249** (5 days, adds index optimization + penalty removal). Full pricing table below.
  
 ### On-Page SEO
-Title optimization, heading hierarchy (H1–H3), meta descriptions, image alt tags, schema markup, and page audits — scoped by page count and keyword count per tier. For any CMS.
+Title optimization, heading hierarchy (H1–H3), meta descriptions, image alt tags, schema markup, and page audits. For any CMS. **Starter $49** (1 page, 3 keywords) · **Standard $199** (6 pages, 6 keywords) · **Advanced $449** (12 pages, 20 keywords). Full pricing table below.
  
 ### CWV SEO — Core Web Vitals
-Performance SEO targeting Lighthouse Core Web Vitals: LCP, TBT, CLS, FCP. Asset optimization, script deferral, image compression, render-blocking elimination, and cache header configuration — applied to your existing site, whatever the stack. PSI 100 guaranteed only on the WordPress Build From Zero package, where the full stack (LiteSpeed Cache + QUIC.cloud CDN) is built from scratch and fully controlled.
+Performance SEO targeting Lighthouse Core Web Vitals: LCP, TBT, CLS, FCP. Applied to your existing site, whatever the stack. **Starter $40** (3 days, 1 revision) · **Standard $80** (7 days, 2 revisions) · **Advanced $150** (10 days, 3 revisions). PSI 100 guaranteed only on the separate WordPress Build From Zero package. Full pricing table below.
  
 ### Build From Zero — Complete One-Page Website
 For businesses with no website yet. A complete one-page scroll site built from scratch — not just optimization, full construction — guaranteed 100 across all PageSpeed Insights parameters (Performance, Accessibility, Best Practices, SEO). Built on WordPress, RankMath, LiteSpeed Cache + QUIC.cloud CDN. Keyword research mined directly from real questions people ask Google (autosuggest, People Also Ask), competitor H1/meta audit, content locked to a genuine USP from the start — not bolted on after. Local-SEO-ready from launch via Google Business Profile optimization and compliant review schema, plus social media integration (TikTok, Facebook, Instagram with alt-text indexing).
