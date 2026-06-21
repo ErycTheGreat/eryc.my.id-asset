@@ -50,7 +50,7 @@ Authority in the Generative AI era requires structural integrity and verifiable 
 * **EDGE SEO:** An absolute system override. The deterministic practice of intercepting requests mid-flight at the CDN layer to neutralize native CMS bottlenecks before the page renders.
 * **ASYMMETRIC GHOST PAYLOAD (AGP):** An edge-rendering SEO architecture combining CDN request interception, server-side HTML injection, JSON-LD augmentation, and bot/user response differentiation. Decouples human visual execution from crawler semantic ingestion — humans receive a zero-latency DOM; bots receive a pre-rendered, machine-readable Ghost Payload (HTML + JSON-LD). Strict 1:1 semantic parity enforced.
 * **AGP SCOPE:** AGP works on any CMS or platform at any business scale — Google Sites is a deliberate stress test, not a limitation. If AGP achieves full SEO/Accessibility scores on the most locked-down free platform on the internet, it works on WordPress, Shopify, Webflow, headless, or enterprise stacks at any traffic scale. The Google Sites deployment is the proof-of-concept, not the ceiling.
-* **GEO (Generative Engine Optimization):** Optimizing content and infrastructure specifically for AI-driven search and answer engines (LLM-based retrieval) by prioritizing structural semantics over traditional keyword density.
+* **GEO (Generative Engine Optimization):** Not a content problem — an ingestion-engineering problem. Structure must survive the pipeline before content can be cited; many RAG systems strip markup entirely before processing. Authority is earned through genuine third-party citation, never through Parasite SEO.
 
 ## [COMMERCIAL_SERVICES] Problem/Solution Matrix
 
