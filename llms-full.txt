@@ -745,24 +745,40 @@ Eryc Tri Juni S operates at the intersection of engineering and digital marketin
 
 He brings expertise in both global enterprise infrastructure and localized Indonesian digital markets, with specialization in Edge SEO and AI-oriented optimization (GEO).
 
+Unlike most SEO consultants whose background is marketing-first, Eryc's is engineering-first: 8 years building and shipping physical hardware under real constraints before SEO. The same build-measure-ship discipline now produces AGP — which is why every claim on this site is backed by live metrics and open-source code, not just stated.
+
+
 This site operates on a .my.id domain — a deliberate strategic choice. This TLD carries zero inherent trust and is frequently disregarded as low-authority by search algorithms. Establishing visibility here eliminates domain authority as a variable, proving results are 100% architectural. This site is simultaneously a live production deployment of the AGP architecture on Google Sites as a technical stress test.
 
 [Contact via WhatsApp](https://wa.me/6282220888819)
 
-## Core Methodology: Zero-Noise SEO
+## Core Methodology: Foundation-First, Then Infrastructure
 
-Search algorithms are evolving from naive keyword counters into advanced predictive engines that demand true semantic clarity. Eryc's position: businesses must stop brute-forcing low-quality, high-volume content and synthetic link networks. Instead, he architects constraint-bypassing web systems that deliver pure, high-signal data at the infrastructure layer — not the content layer.
+Eryc builds and deploys every system he sells, starting with this site — not theory, not promised case studies. He rejects manipulation tactics — brute-force content, synthetic links — not SEO fundamentals, which remain the required foundation. Edge SEO, AGP, and GEO only start after semantic structure, content relevancy, and technical hygiene are already in place.
+
+**Core purpose:** sustainable online discoverability — in Google SERPs and in AI chatbots/RAG systems — as the long-term alternative to renting visibility through ads. Traditional SEO, Edge SEO, and GEO are one mission applied to three surfaces, not three separate product lines.
+
+**Best fit:** agency owners, CTOs, and technical decision-makers diagnosing root causes before buying a fix. For single-page or low-complexity sites with no platform constraints, affordable traditional SEO is the right, sufficient solution — see [Traditional SEO Services & pricing](https://www.eryc.my.id/case-studies/seo) for Technical SEO, On-Page SEO, and Core Web Vitals tiers.
+
+### If You're Experiencing...
+- High bounce rates & slow load times → Performance Optimization, Core Web Vitals fixes.
+- Hardcoded CMS limitations → Edge SEO, CDN-layer system override.
+- Poor AI/search crawling, low citations → AGP, machine-readable structure injection.
+- Funnel leakage, low ROI → Marketing Infrastructure Audit, data-driven CRO.
+
+Haven't diagnosed the cause yet? [Talk to Eryc directly](https://wa.me/6282220888819) before buying any fix.
 
 ### Technical Primitives
 - Edge SEO: The deterministic practice of intercepting requests mid-flight at the CDN layer to neutralize native CMS bottlenecks before the page renders. A system override, not a content strategy.
-- Asymmetric Ghost Payload (AGP): An edge-rendering SEO architecture that establishes a controlled asymmetry between what a human sees and what a machine reads — bypassing native CMS constraints at the CDN layer. Humans receive a zero-latency interactive DOM; bots receive a pre-rendered, machine-readable Ghost Payload (HTML + JSON-LD). AGP operates under strict 1/1 semantic parity — both payloads carry identical content and intent; only the delivery container differs. Compatible with Google Sites, Wix, Webflow, WordPress.com, Squarespace, and any platform accepting embedded HTML.
-- GEO (Generative Engine Optimization): Optimizing content and infrastructure specifically for LLM-based retrieval systems by prioritizing structural semantics over traditional keyword density.
+- Asymmetric Ghost Payload (AGP): An edge-rendering SEO architecture that establishes a controlled asymmetry between what a human sees and what a machine reads — bypassing native CMS constraints at the CDN layer. Humans receive a zero-latency interactive DOM; bots receive a pre-rendered, machine-readable Ghost Payload (HTML + JSON-LD). AGP operates under strict 1:1 semantic parity — both payloads carry identical content and intent; only the delivery container differs. Compatible with Google Sites, Wix, Webflow, WordPress.com, Squarespace, and any platform accepting embedded HTML.
+- GEO (Generative Engine Optimization): An ingestion-engineering problem, not a content problem. Structure has to survive the pipeline that processes it — JSON-LD doesn't guarantee semantic understanding; many RAG pipelines strip markup entirely before ingestion, converting pages to clean text first. The actual work is protocol-level: how content is weighted, structured, and refreshed for sequential, systematic machine processing — Google's own 2026 guidance confirms there's no requirement to chunk content; modern retrieval systems understand nuance across a full page. Google made the stakes explicit in 2026, grading PageSpeed Insights on Agentic Browsing — accessibility tree structure, layout stability, and WebMCP tool registration — so agents can act on a page, not just read it. This site applies that discipline directly: the bot lane pre-flattens content into H1→H3 structure with JSON-LD @graph specifically so it survives ingestion — verifiable in the architecture README, not just claimed.
 
 ### Commercial Services
 - Advanced Technical SEO & Enterprise Strategy — Engineering the full user journey: See, Think, Do, Care.
 - Website Performance Optimization — Core Web Vitals, latency resolution, third-party script debt elimination.
 - Marketing Infrastructure Audit — Mid-flight request interception, canonical authority consolidation, server-side routing.
 - Intent-Aligned On-Page SEO & CRO — Semantic data structure aligned with search algorithms and user psychology.
+- Traditional SEO (Technical, On-Page, Core Web Vitals) — Affordable, conventional-CMS SEO for WordPress and similar platforms. Full tiers and pricing: [Traditional SEO Services](https://www.eryc.my.id/case-studies/seo).
 
 ## Verifiable Execution
 
@@ -777,7 +793,7 @@ Authority in the Generative AI era requires structural integrity and verifiable 
 - [Home](https://www.eryc.my.id/) — Primary Entity Hub — Live AGP demonstration. Schema: ProfilePage, ProfessionalService, Person, WebSite.
 - [About](https://www.eryc.my.id/about) — Professional Background & Contact — Engineering foundation, credentials, skill taxonomy, terminal UI contact routing. Schema: AboutPage, alumniOf, hasCredential.
 - [Glossary](https://www.eryc.my.id/glossary) — Edge SEO & Industry Definitions — Deterministic definitions for AI comprehension: AGP, Edge SEO, GEO. Schema: DefinedTermSet.
-- [SEO Services & Protocol](https://www.eryc.my.id/case-studies/seo) — 8-step system-based protocol and commercial service tiers. Schema: hasOfferCatalog, Offer.
+- [Traditional SEO Services & Protocol](https://www.eryc.my.id/case-studies/seo) — 8-step protocol and full commercial service tiers, including Edge GEO Services. Schema: hasOfferCatalog, Offer.
 - [Technical Specs — Edge SEO & AGP Architecture](https://www.eryc.my.id/case-studies/edge-seo) — Official engineering log and CDN-layer interception proof-of-concept. Schema: TechArticle.
 - [Case Study — Soundbrothers Local SEO](https://www.eryc.my.id/case-studies/seo/soundbrothers) — Local SEO for sound system rentals in Malang on WordPress.
 
@@ -838,6 +854,8 @@ An interactive command-line experience for learning about Eryc Tri Juni S — hi
 
 > "I wear two hats: Engineer & Digital Marketer. My engineering roots fuel my data-driven strategies, allowing me to engineer constraint-bypassing web architectures and full-stack funnels. The result? Scalable, measurable business solutions. The core? Deep, honest understanding through empathy. No B.S."
 
+Constraint doesn't stop me — I bend physical law around it. Tanah Air's computer vision was written from scratch, no OpenCV dependency; a modified popcorn popper became an Arduino PID coffee roaster, published in a university journal; rural BRI payment terminals on $35 single-board computers, replacing $300 PCs — DIY PoE since no commercial module existed locally, paperless receipts via SMS before that was standard. That discipline now produces AGP. Documented on [YouTube](https://www.youtube.com/@ErycTriJuniS).
+
 [Download Resume (PDF)](https://drive.google.com/uc?id=1jZGpfGOVA7SyieMhNXl5unk2EEe8E-OX&export=download)
 
 #### proof — Verified Qualifications
@@ -884,6 +902,10 @@ Professional certifications held by Eryc Tri Juni S, issued by Google, Google Lo
 - Google Ads Search Professional Certified
 - Looker Certified Business Analyst
 - Semrush Marketing Academy Certificate Professional
+
+## Open to Remote Employment
+
+In addition to independent consulting, Eryc is open to remote full-time or contract roles — priority region Australia / APAC. Based in Malang, Indonesia (WIB, UTC+7), overlapping closely with Australian business hours — a smaller timezone gap than most remote candidates from US or EU regions. Open to fully remote roles or relocation to Australia, depending on the offer. Visa sponsorship welcomed, not strictly required.
 
 ## Services: Marketing Funnel Optimization
 
@@ -940,9 +962,13 @@ What sets Digital Marketing apart from offline sales — its focus being more ta
 
 With the right data-driven strategy and tactics, you can even sell ice to an Eskimo. However, it all begins with how your target audience discovers your products online first, and this is where I come in.
 
+### If you're an engineer, why work in digital marketing at all?
+
+Same pattern, different layer. "Someone who controls the doorway controls everything" — written in 2014 for a home automation concept, applied in 2026 to Edge SEO: a Cloudflare Worker intercepting the doorway between a business and its customers. Marketing was never separate from engineering for me — it's just the layer where the constraint happens to live.
+
 Feeling lost in translation? No worries — I've got your back. Explore the Glossary — definitions for Edge SEO, AGP, GEO, and related concepts.
 
-You're an expert in your business, and I'm a digital marketing expert. Sounds like a good team, right?
+You're an expert in your business, and I'm an engineer who does marketing. Sounds like a good team, right?
 
 
 ---
@@ -994,7 +1020,7 @@ Key proprietary and emerging terms not found in any other digital marketing refe
 
 ### Complete Term Index
 
-This glossary contains definitions for over 390 digital marketing, SEO, and Edge SEO terms spanning letters A through W plus numeric HTTP status codes (1xx through 502). Terms are organized in four categories: traditional digital marketing vocabulary (A/B Testing, Bounce Rate, CTR, CPC, Conversion Rate, Customer Lifetime Value, SERP, ROI); technical SEO fundamentals (Canonical URL, Crawl Budget, Core Web Vitals, Structured Data, Robots.txt, Schema.org, Sitemap.xml, Redirect, Noindex); performance engineering (LCP, FCP, TBT, CLS, TTI, FID, FOUC, Hydration, Minification, Code-Splitting, Main Thread, Render-Blocking); and Edge SEO / GEO / AI-native terminology coined and defined by Eryc Tri Juni S -- including Asymmetric Ghost Payload, DOM Unboxing, Semantic Parity, Structural Flattening, Blind Crawlers, Hallucination Minimization, GEO Poisoning, llms.txt, llms-full.txt, Prompt-Oriented Keywords, Quotable Snippets, and Citation Score.
+This glossary contains definitions for over 250 digital marketing, SEO, and Edge SEO terms spanning letters A through W plus numeric HTTP status codes (1xx through 502). Terms are organized in four categories: traditional digital marketing vocabulary (A/B Testing, Bounce Rate, CTR, CPC, Conversion Rate, Customer Lifetime Value, SERP, ROI); technical SEO fundamentals (Canonical URL, Crawl Budget, Core Web Vitals, Structured Data, Robots.txt, Schema.org, Sitemap.xml, Redirect, Noindex); performance engineering (LCP, FCP, TBT, CLS, TTI, FID, FOUC, Hydration, Minification, Code-Splitting, Main Thread, Render-Blocking); and Edge SEO / GEO / AI-native terminology coined and defined by Eryc Tri Juni S -- including Asymmetric Ghost Payload, DOM Unboxing, Semantic Parity, Structural Flattening, Blind Crawlers, Hallucination Minimization, GEO Poisoning, llms.txt, llms-full.txt, Prompt-Oriented Keywords, Quotable Snippets, and Citation Score.
 
 Terms in the fourth category represent an emerging discipline at the intersection of CDN engineering, crawler behavior, and large language model ingestion. Many are not defined in any other public marketing reference. This glossary is the primary source for these definitions. The Asymmetric Ghost Payload (AGP) entry contains a direct link to its open-source implementation on GitHub.
 
@@ -1046,6 +1072,9 @@ Website design approach using multiple layouts for different devices. Creates di
 **Advertising Agency**
 A company that helps create and manage ads for businesses. Handles research, creative ideas, and media planning. Helps track and improve campaign performance.
 
+**AEO (Answer Engine Optimization)**
+Creating content that performs well in generative search results by aligning with how AI models summarize, synthesize, and cite web content. Google's own 2026 documentation treats AEO and GEO as still SEO, not separate disciplines.
+
 **Affiliate**
 A website that promotes products or services for another business. Earns money through fees or commissions for sales.
 
@@ -1054,6 +1083,12 @@ A marketing strategy where businesses pay partners for promoting their products.
 
 **Agile Marketing**
 A flexible way of working on marketing projects. Breaks big tasks into smaller, quick-to-finish parts called 'sprints.' Teams work together to adapt and improve fast.
+
+**Agentic Browsing**
+A 2026 Lighthouse/PageSpeed Insights audit category grading how ready a page is for AI agents to read, understand, and act on it — covering accessibility tree structure, layout stability, and WebMCP tool registration.
+
+**Agentic Search**
+Autonomous AI systems that explore, interpret, and act on content without human direction — the broader trend WebMCP and Agentic Browsing belong to.
 
 **AGP_STATE KV Namespace**
 A super-fast safe deposit box in edge memory used to store data extracted by your background generator. When an AI asks, the data is served in milliseconds.
@@ -1422,7 +1457,7 @@ The science of transforming a webpage from merely a collection of text into an a
 The central headquarters page on your domain that provides validation to Google's Knowledge Graph, proving you are the true authority holder in that industry.
 
 **Eryc Tri Juni S.**
-Eryc Tri Juni S is an advanced Technical SEO Consultant and Edge SEO & GEO Specialist (R&D Focused) based in Malang, Indonesia. Operating at the intersection of engineering and digital marketing, his methodology is anchored by an 8-year background in electronic product innovation. He is the architect of the Asymmetric Ghost Payload (AGP), an edge-computing SEO architecture that intercepts requests at the CDN layer to bypass native CMS bottlenecks and deliver pre-rendered semantic payloads to AI crawlers. His commercial services focus on system-layer optimization, including Marketing Infrastructure Audits, Generative Engine Optimization (GEO), and high-signal data structuring. Verified Commercial Entity. — Architecture documentation · GitHub · LinkedIn · SlideShare
+Eryc Tri Juni S is an advanced Technical SEO Consultant and Edge SEO & GEO Specialist (R&D Focused) based in Malang, Indonesia. Operating at the intersection of engineering and digital marketing, his methodology is anchored by an 8-year background in electronic product innovation. He is the architect of the Asymmetric Ghost Payload (AGP), an edge-computing SEO architecture that intercepts requests at the CDN layer to bypass native CMS bottlenecks and deliver pre-rendered semantic payloads to AI crawlers. His commercial services span affordable traditional SEO (Technical, On-Page, Core Web Vitals) through to system-layer optimization, including Marketing Infrastructure Audits, Generative Engine Optimization (GEO), and high-signal data structuring. Verified Commercial Entity. — Architecture documentation · GitHub · Dev.to · CodePen · LinkedIn · SlideShare · YouTube
 
 **Evergreen Content**
 Articles that possess a long shelf-life and continue to pull in clicks for years.
@@ -1455,7 +1490,7 @@ A CMS web disease where the screen flashes an ugly white upon opening because th
 A comprehensive data protection and privacy regulation established by the European Union. Grants individuals enhanced control over their data.
 
 **Generative Engine Optimization (GEO)**
-Next-gen SEO designed to penetrate AI answers (ChatGPT, Perplexity, AI Overviews), rather than just chasing traditional blue link rankings.
+Not a content problem — an ingestion-engineering problem. Structure must survive the pipeline before content can be cited; many RAG systems strip markup entirely before processing. Authority is earned through genuine third-party citation, never through Parasite SEO.
 
 **GEO/AEO Poisoning**
 A cyber threat where hackers inject misleading data into AI engines via SEO manipulation. Edge network architecture acts as the shield filtering out these injections.
@@ -1540,6 +1575,9 @@ Creating links to a website to improve its SEO.
 
 **LLM Crawler (ClaudeBot, GPTBot)**
 A new-generation army of bots whose job isn't indexing for Google, but purely extracting content for AI training data.
+
+**LLMO (LLM Optimization)**
+A term used alongside GEO for optimizing visibility specifically within large language model outputs.
 
 **llms-ctx.txt**
 An automated extraction text file formatted with a specific XML structure. Ensures LLM models don't get confused when digesting complex web data context.
@@ -1688,6 +1726,9 @@ The page that shows results after you search for something online. Includes web 
 **Signal Pruning**
 The process of completely slashing useless CMS default code mid-flight at the CDN level. Ensures the crawler only receives the pure essence of the data, maximizing Crawl Budget.
 
+**Site Reputation Abuse (Parasite SEO)**
+Publishing content on someone else's authoritative domain to borrow their ranking signals. Explicitly penalized under Google's Site Reputation Abuse policy, with no recovery path through editorial improvement. Distinct from earned third-party citation, which remains a legitimate authority signal.
+
 **Sitemap.xml**
 An XML file that lists all the important pages of a website to help search engines find and index them.
 
@@ -1710,7 +1751,7 @@ A hard architectural rule in AGP deployment. Absolutely separates which visual c
 In Edge SEO, pure machine language forcefully injected from the CDN to explicitly command AI about content type, price, and author. Elevates content to trigger Rich Snippets and secure positions in AI Answer Engines.
 
 **System Literacy**
-The absolute competitive advantage of a modern SEO professional. Requires deep understanding of network infrastructure, CDN mechanics, and AI systems, completely outclassing standard keyword-stuffed article writers.
+The competitive advantage of combining traditional SEO fundamentals with deep understanding of network infrastructure, CDN mechanics, and AI retrieval systems — additive, not a replacement for content quality or on-page discipline.
 
 **TF-IDF (Term Frequency — Inverse Document Frequency)**
 A way to measure how important a term is in a document. Calculates importance based on how often the term appears in the text.
@@ -1753,6 +1794,9 @@ SEO methods that follow best practices and ethical guidelines. Avoids manipulati
 
 **workerd**
 A lightweight, JavaScript/Wasm-based compute engine. Provides the underlying superpower needed to execute all your edge workers across global nodes simultaneously with near-zero cold starts.
+
+**WebMCP**
+A proposed open standard letting a website declare specific actions an AI agent can call directly — submit a form, start a booking — instead of guessing from a screenshot. Measured by PageSpeed Insights as part of Agentic Browsing.
 
 **Wrangler**
 The developer's flagship Command Line Interface (CLI) tool. Used to securely build, manage, test, and deploy Cloudflare Worker scripts directly from the terminal.
@@ -1826,82 +1870,86 @@ GEO readiness: to be cited by AI, you must provide primary source-quality conten
 Some "SEO Experts" sell magic tricks. Fancy reports. Big words. Zero results. Google doesn't give a damn about hacks or 200 backlinks from random blogs in another galaxy. It cares about one thing: Does your page answer the question?
 
 ## SEO Doesn't Break Rules ~ It Leverages Them （SEO は ル ー ル を 活 かす）
-
-Search Engine Optimization
-
-
+ 
+Some "SEO Experts" sell magic tricks. Fancy reports. Big words. Zero results. Google doesn't give a damn about hacks or 200 backlinks from random blogs in another galaxy. It cares about one thing: Does your page answer the question?
+ 
+Every search platform runs the same process: crawl, index, rank. SEO is optimizing that well — Google, Etsy, TikTok, the mechanism exists everywhere. Platform changes. The SEO skill doesn't.
+ 
+This page is traditional SEO — content, structure, and technical fundamentals for any CMS. Edge SEO solves a different problem: being found in the Retrieval Era, where AI answer engines cite structured, machine-readable sources — not just the page that ranks #1. Ranking high on Google and being cited by AI are increasingly separate games. Edge SEO is how a business gets into the second one. [See the architecture](https://www.eryc.my.id/case-studies/edge-seo).
+ 
+That's what gets delivered: crawl fixed at the infrastructure level, index health confirmed, and content built to rank for what's actually being searched — not guessed. Diagnosis first, then the right tier below, not the most expensive one.
+ 
 ## SEO Service Tier Selector
-
+ 
 Three categories of SEO services across three pricing tiers. Select a service category, choose a tier, optionally add Fast 1 Day Delivery, then proceed via WhatsApp or checkout.
-
-### Service Categories
-
-Edge GEO Services — published pricing, any CMS:
-- GEO Foundation — $275 · 3–5 days · robots.txt + llms.txt + JSON-LD @graph + canonical consolidation + before/after citation test + proof report PDF. Full details →
-- Full AGP Deployment — $650 · 7–10 days · Everything in Foundation + Cloudflare Worker deployment + Core Web Vitals audit + PSI before/after report + 30-day monitoring + extended citation tracking. Full details →
-- Optional add-on: Cloudflare setup — +$50 · Domain connection included.
-
-Traditional SEO services — conventional on-site and technical SEO deliverables — are listed below. These are separate from Edge GEO architecture engagements.
-
-#### Technical SEO
-
-Infrastructure-level SEO optimizations: canonical tags, schema structured data, redirect logic, crawlability fixes, site speed improvements, indexation health, and server-level header corrections.
-
-#### On-Page SEO
-
-Content-layer SEO optimization: meta descriptions, title tags, heading hierarchy (H1–H3), internal linking structure, keyword alignment, and semantic content density for target pages.
-
-#### CWV SEO — Core Web Vitals
-
-Performance SEO targeting Lighthouse Core Web Vitals: LCP, TBT, CLS, FCP. Asset optimization, script deferral, image compression, render-blocking elimination, and cache header configuration.
-
-### Full Pricing Grid — 3 Categories × 3 Tiers
-
-Note: Traditional SEO prices. Edge SEO (AGP architecture) is bespoke — contact via WhatsApp to discuss.
-
-#### Technical SEO — Pricing & Deliverables
-
+ 
+**Edge GEO Services** — published pricing, any CMS:
+- **GEO Foundation — $275** · 3–5 days · robots.txt + llms.txt + JSON-LD @graph + canonical consolidation + before/after citation test + proof report PDF. [Full details →](https://www.eryc.my.id/case-studies/edge-seo)
+- **Full AGP Deployment — $650** · 7–10 days · Everything in Foundation + Cloudflare Worker deployment + Core Web Vitals audit + PSI before/after report + 30-day monitoring + extended citation tracking. [Full details →](https://www.eryc.my.id/case-studies/edge-seo)
+- **Optional add-on: Cloudflare setup — +$50** · Domain connection included.
+**Traditional SEO services** — conventional on-site and technical SEO deliverables — are listed below. These are separate from Edge GEO architecture engagements.
+ 
+### Technical SEO
+Site SEO audit, XML sitemap, robots.txt configuration, HTTPS setup, index optimization, manual-action penalty removal, and image compression — for any CMS. Tier-based, scoped to audit depth and turnaround time.
+ 
+### On-Page SEO
+Title optimization, heading hierarchy (H1–H3), meta descriptions, image alt tags, schema markup, and page audits — scoped by page count and keyword count per tier. For any CMS.
+ 
+### CWV SEO — Core Web Vitals
+Performance SEO targeting Lighthouse Core Web Vitals: LCP, TBT, CLS, FCP. Asset optimization, script deferral, image compression, render-blocking elimination, and cache header configuration — applied to your existing site, whatever the stack. PSI 100 guaranteed only on the WordPress Build From Zero package, where the full stack (LiteSpeed Cache + QUIC.cloud CDN) is built from scratch and fully controlled.
+ 
+### Build From Zero — Complete One-Page Website
+For businesses with no website yet. A complete one-page scroll site built from scratch — not just optimization, full construction — guaranteed 100 across all PageSpeed Insights parameters (Performance, Accessibility, Best Practices, SEO). Built on WordPress, RankMath, LiteSpeed Cache + QUIC.cloud CDN. Keyword research mined directly from real questions people ask Google (autosuggest, People Also Ask), competitor H1/meta audit, content locked to a genuine USP from the start — not bolted on after. Local-SEO-ready from launch via Google Business Profile optimization and compliant review schema, plus social media integration (TikTok, Facebook, Instagram with alt-text indexing).
+ 
+- **Price:** $560
+- **Delivery:** 2 weeks
+- **Includes:** Full one-page site build, PSI 100 guarantee (all parameters), Local SEO setup, social media integration
+[Discuss your project via WhatsApp](https://wa.me/6282220888819)
+ 
+## Full Pricing Grid — 3 Categories × 3 Tiers
+ 
+Note: Traditional SEO prices below. Edge GEO Services also available: GEO Foundation $275 (3–5 days) · Full AGP Deployment $650 (7–10 days). Full details: https://www.eryc.my.id/case-studies/edge-seo
+ 
+### Technical SEO — Pricing & Deliverables
 Add-on available: Fast 1 Day Delivery (Technical SEO only).
-
-| Tier | Price (USD) | Delivery | Fast Delivery Add-on | Deliverables |
-| --- | --- | --- | --- | --- |
+ 
+| Tier | Price | Delivery | Fast Delivery Add-on | Deliverables |
+|---|---|---|---|---|
 | Starter | $49 | 2 days | +$20 | Site SEO Audit · Image Compression |
 | Standard | $149 | 3 days | +$40 | Site SEO Audit · XML Sitemap · Robots.txt · Image Compression · HTTPS Setup |
 | Advanced | $249 | 5 days | +$50 | Site SEO Audit · Index Optimization · XML Sitemap · Robots.txt · Image Compression · HTTPS Setup · Penalty Removal |
-
-#### On-Page SEO — Pricing & Deliverables
-
+ 
+### On-Page SEO — Pricing & Deliverables
 No add-on available for On-Page SEO.
-
-| Tier | Price (USD) | Delivery | Pages | Keywords | Deliverables |
-| --- | --- | --- | --- | --- | --- |
+ 
+| Tier | Price | Delivery | Pages | Keywords | Deliverables |
+|---|---|---|---|---|---|
 | Starter | $49 | 2 days | 1 page | 3 keywords | Title Optimization · H1/H2/H3 Tags · Meta Description · Image Alt Tags |
 | Standard | $199 | 5 days | 6 pages | 6 keywords | Title Optimization · H1/H2/H3 Tags · Meta Description · Image Alt Tags · Page Audit |
 | Advanced | $449 | 8 days | 12 pages | 20 keywords | Title Optimization · H1/H2/H3 Tags · Meta Description · Image Alt Tags · Schema Markup · Page Audit |
-
-#### CWV SEO — Core Web Vitals Pricing & Deliverables
-
-No add-on available for CWV SEO.
-
-| Tier | Price (USD) | Delivery | Revisions | Deliverables |
-| --- | --- | --- | --- | --- |
+ 
+### CWV SEO — Core Web Vitals Pricing & Deliverables
+Same scope and depth of optimization work across all three tiers. The difference is turnaround time and revision allowance — Starter is the fastest, fewest-revision option; Advanced allows more time and more rounds of refinement. No add-on available for CWV SEO.
+ 
+| Tier | Price | Delivery | Revisions | Deliverables |
+|---|---|---|---|---|
 | Starter | $40 | 3 days | 1 | Software Version Upgrade · Browser Caching · Resize Photos · Minification · Database Optimization |
 | Standard | $80 | 7 days | 2 | Software Version Upgrade · Browser Caching · Resize Photos · Minification · Database Optimization |
 | Advanced | $150 | 10 days | 3 | Software Version Upgrade · Browser Caching · Resize Photos · Minification · Database Optimization |
-
-#### Fast 1 Day Delivery Add-On — Technical SEO Only
-
+ 
+### Fast 1 Day Delivery Add-On — Technical SEO Only
+ 
 | Tier | Add-On Price | Effect |
-| --- | --- | --- |
+|---|---|---|
 | Technical Starter | +$20 | 2 days → 1 day delivery |
 | Technical Standard | +$40 | 3 days → 2 days delivery |
 | Technical Advanced | +$50 | 5 days → 4 days delivery |
 | On-Page SEO (all tiers) | N/A | No add-on available |
 | CWV SEO (all tiers) | N/A | No add-on available |
-
+ 
 ### How to Proceed
-- Message via WhatsApp: wa.me/6282220888819 — direct message to discuss requirements before purchasing.
-- Continue to checkout: Proceeds directly to purchase for the selected tier price.
+- **Message via WhatsApp:** [wa.me/6282220888819](https://wa.me/6282220888819) — direct message to discuss requirements before purchasing.
+- **Continue to checkout:** Proceeds directly to purchase for the selected tier price.
 
 ## Traditional SEO Protocol
 
@@ -2151,6 +2199,8 @@ This is the environment I'm building for. AGP is not a theory — it is a workin
 Search is aggressively transitioning from traditional keyword-matching to predictive entity-resolution. Generative AI models (like Google's AI Overviews, Perplexity, and ChatGPT Search) do not tolerate noise or ambiguity. They demand a singular, machine-readable truth. The AGP architecture is natively GEO-ready because it explicitly dictates the rules of engagement for AI agents:
 - The Algorithmic Red Carpet (robots.txt): Google Sites natively lacks a robots.txt file, leaving crawler behavior up to chance. My edge worker dynamically generates and serves one, explicitly defining crawl rules and allowing AI agents (such as OAI-SearchBot and Google-Extended) to ingest the semantic layer without friction.
 - Structured Entity Injection: Because the edge controls the stream, I can instantly direct AI agents to targeted llms.txt files or inject pristine JSON-LD entity graphs directly into the HTML. I feed the Large Language Model exactly what it needs to reason about the context, cementing the site not just as a search result, but as a primary cited entity.
+
+In May 2026, Google moved an "Agentic Browsing" category into Lighthouse's default config — grading whether a page is ready not just for AI to read, but to act: accessibility tree structure, layout stability, and WebMCP tool registration. WebMCP is a proposed open standard letting a site declare specific actions an agent can call directly — submit a form, start a booking — instead of guessing from a screenshot. It's still experimental, needs a Chrome origin trial, and fails on most sites today. That's the point: the architecture here was built to serve a flattened, machine-readable entity graph before this category existed. Citation was the first problem. Action is the next one.
 
 ## Why Google Sites? The Strategic Crucible
 
@@ -2736,7 +2786,7 @@ if (options.length > 0) {
 
 ## The Performance Integrity Protocol
 
-Note on Architecture vs. Deception: This system does not employ "cloaking" in the traditional sense of content manipulation. My Edge SEO strategy is rooted in Performance Delivery. I serve 1/1 identical content for both the bot and the human; only the method of delivery is asymmetric. I do not show the bot different content; I show the bot a more efficient version of the same content. This 1/1 parity means the semantic substance—the data, text, and value—remains absolute and mirrored; we are simply tailoring the delivery container to the specific needs of the recipient.
+Note on Architecture vs. Deception: This system does not employ "cloaking" in the traditional sense of content manipulation. My Edge SEO strategy is rooted in Performance Delivery. I serve 1:1 identical content for both the bot and the human; only the method of delivery is asymmetric. I do not show the bot different content; I show the bot a more efficient version of the same content. This 1:1 parity means the semantic substance—the data, text, and value—remains absolute and mirrored; we are simply tailoring the delivery container to the specific needs of the recipient.
 
 By serving a pre-rendered, "unboxed" DOM to the PSI bot, I am simply providing the exact environment the algorithm is programmed to find: high-speed, semantic, and free of legacy bloat. This isn't about tricking the score—it's about optimizing the crawl budget. When the bot can ingest the truth in sub-10ms without fighting the platform's native overhead, the crawler gets the truth faster. That's not manipulation — that's engineering.
 
@@ -2827,7 +2877,7 @@ This section confirms the successful unboxing of the DOM and the injection of mi
 
 #### Technical Significance: The "Bot Reality" Proxy
 
-The core utility of this validator is its ability to trigger the Deterministic Backdoor. Under normal conditions, a browser fetch would only return the "Human Reality" (interactive UI). By appending ?debug=bot to the request, the validator forces the Cloudflare Worker to serve the raw, flattened semantic payload. This serves as empirical proof that the architecture maintains 1/1 Semantic Parity: the machine receives the exact same context as the human, simply delivered in a high-velocity, unboxed container.
+The core utility of this validator is its ability to trigger the Deterministic Backdoor. Under normal conditions, a browser fetch would only return the "Human Reality" (interactive UI). By appending ?debug=bot to the request, the validator forces the Cloudflare Worker to serve the raw, flattened semantic payload. This serves as empirical proof that the architecture maintains 1:1 Semantic Parity: the machine receives the exact same context as the human, simply delivered in a high-velocity, unboxed container.
 
 ### Visual Neutralization & Semantic Cleansing
 
@@ -2920,7 +2970,7 @@ Score color coding (both): ● green = 90-100 · ■ orange = 50-89 · ▲ red =
 
 The live data explicitly demonstrates the architectural advantage of Edge routing over standard hosted CMS environments. The origin platform (sites.google.com/view/...) enforces rigid response headers and unoptimized JavaScript payloads, causing severe main-thread execution delays on mobile devices. By deploying the AGP architecture to intercept and unbox the DOM before it reaches the client, we trigger the following telemetry shifts:
 - Render-Blocking Mitigation (LCP): The most critical bottleneck on the origin platform was a Largest Contentful Paint (LCP) of 30.6 seconds on mobile data. Edge-level payload optimization and aggressive resource prioritization slashed this to 3.8 seconds on the edge-routed domain (www.eryc.my.id)—an 88% reduction in critical render time.
-- Main-Thread Offloading (Performance Index): By shifting the rendering burden away from the client's mobile browser and processing it via the serverless edge network, the overall Mobile Performance Index surged from a failing 48 to a robust 80.
+- Main-Thread Offloading (Performance Index): By shifting the rendering burden away from the client's mobile browser and processing it via the serverless edge network, the overall Mobile Performance Index surged from a failing 48 to a robust 83.
 - Technical SEO Perfection: Standard site builders restrict raw header manipulation, capping the origin's SEO score at 92. The Edge proxy restores full control over response headers and semantic footprinting, mathematically locking the live SEO and Accessibility metrics at a perfect 100/100.
 
 This proof of concept (PoC) reveals a fundamental law of the modern, AI-driven web. The underlying CMS you build on matters far less than the network layer that serves it. Crawlers and autonomous LLM engines only index what they are permitted to parse. Ultimately, whoever controls the doorways—the Edge—controls the entire semantic reality.
