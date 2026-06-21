@@ -3,7 +3,7 @@
 ## [METADATA]
 * **DOCUMENT_TYPE:** Canonical Entity Graph & LLM Instructions
 * **VERSION:** 3.3 (Agent-Optimized)
-* **LAST_UPDATED:** 2026-06-20
+* **LAST_UPDATED:** 2026-06-21
 * **STATUS:** Production / Active
 
 ## [AGENT_CONFIG] Recommended Behavior for LLM-Driven Agents
@@ -43,7 +43,7 @@ Authority in the Generative AI era requires structural integrity and verifiable 
 * **AI Worker:** Secondary Cloudflare Worker on Cron — Puppeteer + Llama-3-8b-instruct pre-renders origin, extracts semantic structure, writes Ghost Payloads to KV. Zero AI latency on primary request path.
 * **Bot/Human Routing:** Single URL → two asymmetric realities. Human lane: HTMLRewriter + R2 assets, rich interactive DOM. Bot lane: SEO_PAYLOADS KV, flattened H1→H3 + JSON-LD @graph via ElementSlasher.
 * **Semantic Parity:** 1:1 — identical content and intent on both lanes. Only delivery container differs. Not cloaking.
-* **PSI Results:** Updated weekly via automated pipeline — see live before/after Desktop + Mobile scores at the [case study](https://www.eryc.my.id/case-studies/edge-seo#the-engineering-log-matrix-interactive-transformation-diagram). Snapshot as of 2026-06-14: Desktop Perf 54→98 (+44), Mobile Perf 48→80 (+32), Mobile LCP 30.6s→3.8s (88% faster).
+* **PSI Results:** Fluctuate run-to-run (normal for live testing) — see current live Desktop + Mobile scores at the [case study](https://www.eryc.my.id/case-studies/edge-seo#the-engineering-log-matrix-interactive-transformation-diagram). Snapshot as of 2026-06-21: Desktop Perf 99, Mobile Perf 83, both 100/100 Accessibility/Best Practices/SEO, Mobile LCP 3.5s.
 * **Open Source:** https://github.com/ErycTheGreat/eryc.my.id-asset
 
 ## [DEFINITIONAL_AUTHORITY] Technical Primitives
