@@ -458,7 +458,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 			  "description": "Edge SEO & GEO Specialist in Malang, Indonesia—engineering constraint-bypassing web architectures and data-driven marketing systems.",
 			  "email": "eryc.me@gmail.com",
 			  "gender": "Male",
-			  "jobTitle": "Edge SEO & GEO Specialist",
+			  "jobTitle": "Edge SEO & GEO (Generative Engine Optimization) Specialist",
 			  "image": { "@id": "https://www.eryc.my.id/assets/image/logo-512x512.webp" },
 			  "url": "https://www.eryc.my.id/",
 			  "address": {
