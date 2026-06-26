@@ -41,7 +41,7 @@ export default {
     if (url.pathname === "/sitemap.xml" || url.pathname === "/sitemap.xml/") {
       const canonicalHost = "www.eryc.my.id";
       const lastmod = "2026-04-10T00:00:00+07:00";
-      const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/bukanbrokerbiasa", "/case-studies/seo/soundbrothers", "/case-studies/edge-seo"];
+      const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/soundbrothers", "/case-studies/edge-seo"];
       
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
       sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n';
