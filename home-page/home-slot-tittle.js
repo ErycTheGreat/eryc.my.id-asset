@@ -489,16 +489,7 @@
             });
         }
 
-
-		function getGlyphColor(glyph, defaultColor) {
-            if (glyph === ICONS.HEART) return "#e0287d";  // Neon Pink/Red
-            if (glyph === ICONS.CROSS) return "#00fcf4";  // Error Red
-            if (glyph === ICONS.BROBOT) return "#1bc7fb"; // Warning Yellow
-            return defaultColor;
-        }
-
-
-       function loop(t) {
+        function loop(t) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             reelState.forEach(function (reel) {
@@ -509,9 +500,6 @@
                         reel.colorPhase = Math.min(1, reel.colorPhase + 0.02);
                         displayColor = lerpColor(reel.lockedColor, TEAL, reel.colorPhase);
                     }
-                    // OVERRIDE FOR FAULT GLYPHS
-                    displayColor = getGlyphColor(reel.currentGlyph, displayColor);
-                    
                     drawGlyphAt(reel.colOffset, reel.currentGlyph, displayColor, true);
                 }
 
@@ -524,18 +512,11 @@
                     if (elapsed < spinEnd) {
                         var stepDur = spinEnd / reel.spinFrames.length;
                         var idx = Math.max(0, Math.min(reel.spinFrames.length - 1, Math.floor(elapsed / stepDur)));
-                        
-                        // OVERRIDE FOR SPINNING FAULT GLYPHS
-                        var spinColor = getGlyphColor(reel.spinFrames[idx], TEAL);
-                        drawGlyphAt(reel.colOffset, reel.spinFrames[idx], spinColor, false);
-                        
+                        drawGlyphAt(reel.colOffset, reel.spinFrames[idx], TEAL, false);
                     } else if (elapsed < noiseEnd) {
                         drawNoiseAt(reel.colOffset, 0.5);
                     } else {
                         var resolveColor = reel.isLock ? reel.flash : TEAL;
-                        
-                        // OVERRIDE FOR RESOLVING FAULT GLYPHS
-                        resolveColor = getGlyphColor(reel.targetGlyph, resolveColor);
                         drawGlyphAt(reel.colOffset, reel.targetGlyph, resolveColor, true);
                     }
 
