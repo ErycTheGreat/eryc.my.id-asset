@@ -90,7 +90,7 @@ export async function handleMCPRequest(request, env) {
 
 // Bulletproof regex scanner for <dt> and <dd> glossary terms
 function extractDefinitionFromHtml(htmlString, query) {
-    const regex = /<dt>\s*(?:<strong>)?([\s\S]*?)(?:<\/strong>)?\s*<\/dt>\s*<dd>([\s\S]*?)<\/dd>/gi;
+    const regex = /<dt[^>]*>\s*(?:<strong>)?([\s\S]*?)(?:<\/strong>)?\s*<\/dt>\s*<dd[^>]*>([\s\S]*?)<\/dd>/gi;
     let match;
 
     while ((match = regex.exec(htmlString)) !== null) {
