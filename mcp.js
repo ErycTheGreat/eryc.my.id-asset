@@ -62,13 +62,13 @@ export async function handleMCPRequest(request, env) {
                         },
                         {
                             name: "get_seo_service_tiers",
-                            description: "Retrieve pricing, delivery time, and features for Eryc's Traditional SEO services.",
+                            description: "Retrieve pricing, delivery time, and features for Eryc's Traditional SEO services and website builds.",
                             inputSchema: { 
                                 type: "object", 
                                 properties: {
                                     category: { 
                                         type: "string", 
-                                        enum: ["Technical", "OnPage", "CWV"],
+                                        enum: ["Technical", "OnPage", "CWV", "BuildFromZero"],
                                         description: "The SEO service category to fetch pricing for." 
                                     }
                                 },
@@ -195,17 +195,26 @@ export async function handleMCPRequest(request, env) {
                             Starter: "Delivery: 3 days. Revisions: 1. Features: Software Version Upgrade, Browser Caching, Resize Photos, Minification, Database Optimization. Price: $40.",
                             Standard: "Delivery: 7 days. Revisions: 2. Features: Software Version Upgrade, Browser Caching, Resize Photos, Minification, Database Optimization. Price: $80.",
                             Advanced: "Delivery: 10 days. Revisions: 3. Features: Software Version Upgrade, Browser Caching, Resize Photos, Minification, Database Optimization. Price: $150."
+                        },
+                        BuildFromZero: {
+                            Complete: "Delivery: 2 weeks. Features: Full one-page scroll site built from scratch (WordPress, RankMath, LiteSpeed Cache + QUIC.cloud CDN), PSI 100 guarantee across all parameters, Local SEO setup (Google Business Profile + compliant review schema), social media integration, keyword research mined directly from PAA/autosuggest, competitor H1/meta audit. Price: $560."
                         }
                     };
 
                     if (pricingData[category]) {
                         const catData = pricingData[category];
-                        resultText = `Service Category: ${category} SEO\n\n` +
-                                     `1. STARTER TIER:\n${catData.Starter}\n\n` +
-                                     `2. STANDARD TIER:\n${catData.Standard}\n\n` +
-                                     `3. ADVANCED TIER:\n${catData.Advanced}`;
+                        
+                        if (category === "BuildFromZero") {
+                            resultText = `Service Category: Complete Website Build\n\n` +
+                                         `1. BUILD FROM ZERO TIER:\n${catData.Complete}`;
+                        } else {
+                            resultText = `Service Category: ${category} SEO\n\n` +
+                                         `1. STARTER TIER:\n${catData.Starter}\n\n` +
+                                         `2. STANDARD TIER:\n${catData.Standard}\n\n` +
+                                         `3. ADVANCED TIER:\n${catData.Advanced}`;
+                        }
                     } else {
-                        resultText = `Category not found. Available categories: Technical, OnPage, CWV.`;
+                        resultText = `Category not found. Available categories: Technical, OnPage, CWV, BuildFromZero.`;
                     }
                 }
 
