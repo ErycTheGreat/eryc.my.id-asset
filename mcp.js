@@ -81,8 +81,12 @@ export async function handleMCPRequest(request, env) {
                 }), { headers: { "Content-Type": "application/json" } });
             }
         }
-        
-// Helper function to scan HTML for <h3> headers and extract their sibling <p> content flexibly
+
+    } catch (err) {
+        return new Response(JSON.stringify({ error: "Invalid MCP JSON-RPC Payload" }), { status: 400 });
+    }
+}
+
 // Bulletproof regex scanner for <dt> and <dd> glossary terms
 function extractDefinitionFromHtml(htmlString, query) {
     const regex = /<dt>\s*(?:<strong>)?([\s\S]*?)(?:<\/strong>)?\s*<\/dt>\s*<dd>([\s\S]*?)<\/dd>/gi;
