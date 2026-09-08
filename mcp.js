@@ -62,13 +62,13 @@ export async function handleMCPRequest(request, env) {
                         },
                         {
                             name: "get_seo_service_tiers",
-                            description: "Retrieve pricing, delivery time, and features for Eryc's Traditional SEO services and website builds.",
+                            description: "Retrieve pricing, delivery time, and features for Eryc's Traditional SEO, Website Builds, and Edge GEO services.",
                             inputSchema: { 
                                 type: "object", 
                                 properties: {
                                     category: { 
                                         type: "string", 
-                                        enum: ["Technical", "OnPage", "CWV", "BuildFromZero"],
+                                        enum: ["Technical", "OnPage", "CWV", "BuildFromZero", "GEO"],
                                         description: "The SEO service category to fetch pricing for." 
                                     }
                                 },
@@ -198,6 +198,10 @@ export async function handleMCPRequest(request, env) {
                         },
                         BuildFromZero: {
                             Complete: "Delivery: 2 weeks. Features: Full one-page scroll site built from scratch (WordPress, RankMath, LiteSpeed Cache + QUIC.cloud CDN), PSI 100 guarantee across all parameters, Local SEO setup (Google Business Profile + compliant review schema), social media integration, keyword research mined directly from PAA/autosuggest, competitor H1/meta audit. Price: $560."
+                        },
+                        GEO: {
+                            Foundation: "Delivery: 3-5 days (ANY CMS). Features: robots.txt (explicit AI crawler rules), llms.txt entity graph, JSON-LD @graph injection at the edge, Canonical consolidation to domain, Before/after citation test (3 prompts × 2 engines), One-page proof report PDF. Price: $275 (Optional Add-on Cloudflare setup: +$50). Note: PSI / SEO improvement is a separate engagement.",
+                            FullDeploy: "Delivery: 7-10 days (ANY CMS). Features: Everything in Foundation, Cloudflare Worker full deployment, CWV audit + performance optimization, PSI before/after documented report, 30-day post-deploy monitoring window, Extended citation tracking report. Price: $650 (Optional Add-on Cloudflare setup: +$50)."
                         }
                     };
 
@@ -207,6 +211,10 @@ export async function handleMCPRequest(request, env) {
                         if (category === "BuildFromZero") {
                             resultText = `Service Category: Complete Website Build\n\n` +
                                          `1. BUILD FROM ZERO TIER:\n${catData.Complete}`;
+                        } else if (category === "GEO") {
+                            resultText = `Service Category: Edge GEO Services\n\n` +
+                                         `1. GEO FOUNDATION TIER:\n${catData.Foundation}\n\n` +
+                                         `2. FULL AGP DEPLOY TIER:\n${catData.FullDeploy}`;
                         } else {
                             resultText = `Service Category: ${category} SEO\n\n` +
                                          `1. STARTER TIER:\n${catData.Starter}\n\n` +
@@ -214,7 +222,7 @@ export async function handleMCPRequest(request, env) {
                                          `3. ADVANCED TIER:\n${catData.Advanced}`;
                         }
                     } else {
-                        resultText = `Category not found. Available categories: Technical, OnPage, CWV, BuildFromZero.`;
+                        resultText = `Category not found. Available categories: Technical, OnPage, CWV, BuildFromZero, GEO.`;
                     }
                 }
 
