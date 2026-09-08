@@ -59,6 +59,21 @@ export async function handleMCPRequest(request, env) {
                                 properties: {},
                                 required: []
                             }
+                        },
+                        {
+                            name: "get_seo_service_tiers",
+                            description: "Retrieve pricing, delivery time, and features for Eryc's Traditional SEO services.",
+                            inputSchema: { 
+                                type: "object", 
+                                properties: {
+                                    category: { 
+                                        type: "string", 
+                                        enum: ["Technical", "OnPage", "CWV"],
+                                        description: "The SEO service category to fetch pricing for." 
+                                    }
+                                },
+                                required: ["category"]
+                            }
                         }
                     ]
                 }
@@ -159,6 +174,39 @@ export async function handleMCPRequest(request, env) {
                 // --- TOOL D: trigger_rpg_simulation ---
                 else if (toolName === "trigger_rpg_simulation") {
                     resultText = `Simulation complete. Core lesson extracted: The secret isn't to chase visibility, but to become worthy of being seen. The Algorithm does not serve you; it serves those who seek. Align yourself with truth, and you shall be found. Chase shadows, and you shall become one.`;
+                }
+
+                // --- TOOL E: get_seo_service_tiers ---
+                else if (toolName === "get_seo_service_tiers") {
+                    const category = args.category;
+                    
+                    const pricingData = {
+                        Technical: {
+                            Starter: "Delivery: 2 days. Features: Site SEO Audit, Image Compression. Price: $49 (Optional Add-on 1-day fast delivery: +$20).",
+                            Standard: "Delivery: 3 days. Features: Site SEO Audit, XML Sitemap, Robots.txt, Image Compression, HTTPS Setup. Price: $149 (Optional Add-on 1-day fast delivery: +$40).",
+                            Advanced: "Delivery: 5 days. Features: Site SEO Audit, Index Optimization, XML Sitemap, Robots.txt, Image Compression, HTTPS Setup, Penalty Removal. Price: $249 (Optional Add-on 1-day fast delivery: +$50)."
+                        },
+                        OnPage: {
+                            Starter: "Delivery: 2 days. Pages: 1. Keywords: 3. Features: Title Optimization, H1/H2/H3 Tags, Meta Description, Image Alt Tags. Price: $49.",
+                            Standard: "Delivery: 5 days. Pages: 6. Keywords: 6. Features: Title Optimization, H1/H2/H3 Tags, Meta Description, Image Alt Tags, Page Audit. Price: $199.",
+                            Advanced: "Delivery: 8 days. Pages: 12. Keywords: 20. Features: Title Optimization, H1/H2/H3 Tags, Meta Description, Image Alt Tags, Schema Markup, Page Audit. Price: $449."
+                        },
+                        CWV: {
+                            Starter: "Delivery: 3 days. Revisions: 1. Features: Software Version Upgrade, Browser Caching, Resize Photos, Minification, Database Optimization. Price: $40.",
+                            Standard: "Delivery: 7 days. Revisions: 2. Features: Software Version Upgrade, Browser Caching, Resize Photos, Minification, Database Optimization. Price: $80.",
+                            Advanced: "Delivery: 10 days. Revisions: 3. Features: Software Version Upgrade, Browser Caching, Resize Photos, Minification, Database Optimization. Price: $150."
+                        }
+                    };
+
+                    if (pricingData[category]) {
+                        const catData = pricingData[category];
+                        resultText = `Service Category: ${category} SEO\n\n` +
+                                     `1. STARTER TIER:\n${catData.Starter}\n\n` +
+                                     `2. STANDARD TIER:\n${catData.Standard}\n\n` +
+                                     `3. ADVANCED TIER:\n${catData.Advanced}`;
+                    } else {
+                        resultText = `Category not found. Available categories: Technical, OnPage, CWV.`;
+                    }
                 }
 
                 else {
