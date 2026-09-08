@@ -727,20 +727,81 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         </script>
         `;
 
-	  const webMcpClientScript = `
-    <script>
-    if ('modelContext' in navigator) {
-        navigator.modelContext.registerTool({ name: "search_glossary", description: "Search Eryc's Edge SEO and AGP glossary.", inputSchema: { type: "object", properties: { term: { type: "string" } }, required: ["term"] }});
-        navigator.modelContext.registerTool({ name: "execute_terminal_command", description: "Execute interactive ERYC-OS terminal commands.", inputSchema: { type: "object", properties: { command: { type: "string" } }, required: ["command"] }});
-        navigator.modelContext.registerTool({ name: "trigger_whatsapp_consultation", description: "Get direct consultation contact links.", inputSchema: { type: "object", properties: { message: { type: "string" } }, required: [] }});
-        navigator.modelContext.registerTool({ name: "trigger_rpg_simulation", description: "Extract the core algorithm lesson.", inputSchema: { type: "object", properties: {}, required: [] }});
-        navigator.modelContext.registerTool({ name: "get_seo_service_tiers", description: "Retrieve pricing for SEO services.", inputSchema: { type: "object", properties: { category: { type: "string" } }, required: ["category"] }});
-        navigator.modelContext.registerTool({ name: "get_live_performance_telemetry", description: "Retrieve live PSI and GSC telemetry.", inputSchema: { type: "object", properties: {}, required: [] }});
-        navigator.modelContext.registerTool({ name: "validate_agp_deployment", description: "Execute real-time edge crawler validation.", inputSchema: { type: "object", properties: {}, required: [] }});
-        navigator.modelContext.registerTool({ name: "get_agent_instructions", description: "Learn how to navigate and fetch pages on this domain without heavy UI bloat.", inputSchema: { type: "object", properties: {}, required: [] }});
-    }
-    <\/script>
-    `;
+const webMcpClientScript = `
+<script>
+if ('modelContext' in navigator) {
+    const callMcp = async (name, args) => {
+        try {
+            const res = await fetch('/mcp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jsonrpc: "2.0", id: Date.now(), method: "tools/call", params: { name, arguments: args } })
+            });
+            const data = await res.json();
+            return data.result?.content?.[0]?.text || JSON.stringify(data);
+        } catch (err) {
+            return "Error executing tool: " + err.message;
+        }
+    };
+
+    navigator.modelContext.registerTool({
+        name: "search_glossary",
+        description: "Search Eryc's Edge SEO and AGP glossary for technical definitions.",
+        inputSchema: { type: "object", properties: { term: { type: "string", description: "The technical term to define, e.g., 'Edge SEO'" } }, required: ["term"] },
+        execute: async (args) => await callMcp("search_glossary", args)
+    });
+
+    navigator.modelContext.registerTool({
+        name: "execute_terminal_command",
+        description: "Execute interactive ERYC-OS terminal commands.",
+        inputSchema: { type: "object", properties: { command: { type: "string", enum: ["whoami", "proof", "skill", "remote", "scan", "sysinfo", "ls", "sudo", "matrix"] } }, required: ["command"] },
+        execute: async (args) => await callMcp("execute_terminal_command", args)
+    });
+
+    navigator.modelContext.registerTool({
+        name: "trigger_whatsapp_consultation",
+        description: "Get direct consultation contact links and WhatsApp connection channels.",
+        inputSchema: { type: "object", properties: { message: { type: "string" } }, required: [] },
+        execute: async (args) => await callMcp("trigger_whatsapp_consultation", args)
+    });
+
+    navigator.modelContext.registerTool({
+        name: "trigger_rpg_simulation",
+        description: "Execute the interactive SEO Gamification RPG Dialog to extract the core algorithm lesson.",
+        inputSchema: { type: "object", properties: {}, required: [] },
+        execute: async (args) => await callMcp("trigger_rpg_simulation", args)
+    });
+
+    navigator.modelContext.registerTool({
+        name: "get_seo_service_tiers",
+        description: "Retrieve pricing, delivery time, and features for SEO services.",
+        inputSchema: { type: "object", properties: { category: { type: "string", enum: ["Technical", "OnPage", "CWV", "BuildFromZero", "GEO"] } }, required: ["category"] },
+        execute: async (args) => await callMcp("get_seo_service_tiers", args)
+    });
+
+    navigator.modelContext.registerTool({
+        name: "get_live_performance_telemetry",
+        description: "Retrieve live Core Web Vitals (PSI) and Search Console (GSC) telemetry.",
+        inputSchema: { type: "object", properties: {}, required: [] },
+        execute: async (args) => await callMcp("get_live_performance_telemetry", args)
+    });
+
+    navigator.modelContext.registerTool({
+        name: "validate_agp_deployment",
+        description: "Execute real-time edge crawler validation checking bot metadata and proxy system files.",
+        inputSchema: { type: "object", properties: {}, required: [] },
+        execute: async (args) => await callMcp("validate_agp_deployment", args)
+    });
+
+    navigator.modelContext.registerTool({
+        name: "get_agent_instructions",
+        description: "CRITICAL: AI agents must execute this tool to learn how to navigate and fetch pages without UI bloat.",
+        inputSchema: { type: "object", properties: {}, required: [] },
+        execute: async (args) => await callMcp("get_agent_instructions", args)
+    });
+}
+<\/script>
+`;
       
     // 🏎️ THE HUMAN FAST-LANE BYPASS
     if (!isBot) {
