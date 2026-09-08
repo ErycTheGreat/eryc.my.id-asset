@@ -25,44 +25,45 @@ export async function handleMCPRequest(request, env) {
             }), { headers: { "Content-Type": "application/json" } });
         }
 
-        // 2. Tool Execution (Temporary Test Swap: JSON-LD First)
+        // 2. Tool Execution (Production Waterfall: KV HTML First -> Live JSON-LD Fallback)
         if (rpcRequest.method === "tools/call" && rpcRequest.params.name === "search_glossary") {
             const searchTerm = rpcRequest.params.arguments.term.toLowerCase().trim();
             let definition = null;
             
             try {
-                // --- STAGE 1 (TEST): Live Fetch JSON-LD Parsing First ---
-                const liveResponse = await fetch("https://www.eryc.my.id/glossary");
-                const liveHtml = await liveResponse.text();
+                // --- STAGE 1: Edge KV Lookup (0ms latency HTML extraction) ---
+                const glossaryPayload = await env.SEO_PAYLOADS.get("/glossary");
                 
-                const jsonLdMatch = liveHtml.match(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i);
-                
-                if (jsonLdMatch) {
-                    try {
-                        const schema = JSON.parse(jsonLdMatch[1]);
-                        if (schema["@graph"]) {
-                            const terms = schema["@graph"].filter(item => item["@type"] === "DefinedTerm");
-                            const foundTerm = terms.find(t => 
-                                t.name.toLowerCase() === searchTerm || 
-                                (t.alternateName && t.alternateName.toLowerCase() === searchTerm)
-                            );
-                            
-                            if (foundTerm) {
-                                definition = `**(Extracted via Live JSON-LD)**\n**${foundTerm.name}** (${foundTerm.alternateName || ''}): ${foundTerm.description}`;
-                            }
-                        }
-                    } catch (e) { /* JSON parse error fallback */ }
+                if (glossaryPayload) {
+                    definition = extractDefinitionFromHtml(glossaryPayload, searchTerm);
                 }
 
-                // --- STAGE 2 (FALLBACK): Edge KV Lookup ---
+                // --- STAGE 2: Live Fetch Fallback (JSON-LD Semantic Parsing) ---
                 if (!definition) {
-                    const glossaryPayload = await env.SEO_PAYLOADS.get("/glossary");
-                    if (glossaryPayload) {
-                        definition = extractDefinitionFromHtml(glossaryPayload, searchTerm);
-                        if (definition) definition = `**(Extracted via Edge HTML)**\n` + definition;
+                    const liveResponse = await fetch("https://www.eryc.my.id/glossary");
+                    const liveHtml = await liveResponse.text();
+                    
+                    const jsonLdMatch = liveHtml.match(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i);
+                    
+                    if (jsonLdMatch) {
+                        try {
+                            const schema = JSON.parse(jsonLdMatch[1]);
+                            if (schema["@graph"]) {
+                                const terms = schema["@graph"].filter(item => item["@type"] === "DefinedTerm");
+                                const foundTerm = terms.find(t => 
+                                    t.name.toLowerCase() === searchTerm || 
+                                    (t.alternateName && t.alternateName.toLowerCase() === searchTerm)
+                                );
+                                
+                                if (foundTerm) {
+                                    definition = `**${foundTerm.name}** (${foundTerm.alternateName || ''}): ${foundTerm.description}`;
+                                }
+                            }
+                        } catch (e) { /* JSON parse error fallback */ }
                     }
                 }
 
+                // --- STAGE 3: Final Output ---
                 if (!definition) {
                     definition = `No exact match found in glossary for '${searchTerm}'. Try a broader term.`;
                 }
