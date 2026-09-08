@@ -24,7 +24,7 @@ export async function handleMCPRequest(request, env) {
                         },
                         {
                             name: "execute_terminal_command",
-                            description: "Execute interactive ERYC-OS terminal commands (whoami, proof, skill, remote, scan, ls, sudo, matrix).",
+                            description: "Execute interactive ERYC-OS terminal commands (whoami, proof, skill, remote, scan, sysinfo, ls, sudo, matrix).",
                             inputSchema: { 
                                 type: "object", 
                                 properties: {
@@ -48,6 +48,15 @@ export async function handleMCPRequest(request, env) {
                                         description: "Optional context or inquiry message for the consultation." 
                                     }
                                 },
+                                required: []
+                            }
+                        },
+                        {
+                            name: "trigger_rpg_simulation",
+                            description: "Execute the interactive SEO Gamification RPG Dialog to extract the core algorithm lesson.",
+                            inputSchema: { 
+                                type: "object", 
+                                properties: {},
                                 required: []
                             }
                         }
@@ -145,6 +154,11 @@ export async function handleMCPRequest(request, env) {
                     const whatsappUrl = `https://wa.me/6282220888819?text=${encodeURIComponent(userMessage)}`;
                     
                     resultText = `Direct consultation channels initialized:\n• WhatsApp: ${whatsappUrl}\n• Email: eryc.me@gmail.com\n• Direct Phone: +6282220888819\n\nPriority region: Australia / APAC & Global Remote.`;
+                }
+
+                // --- TOOL D: trigger_rpg_simulation ---
+                else if (toolName === "trigger_rpg_simulation") {
+                    resultText = `Simulation complete. Core lesson extracted: The secret isn't to chase visibility, but to become worthy of being seen. The Algorithm does not serve you; it serves those who seek. Align yourself with truth, and you shall be found. Chase shadows, and you shall become one.`;
                 }
 
                 else {
