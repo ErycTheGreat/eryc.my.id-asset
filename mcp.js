@@ -72,26 +72,26 @@ export async function handleMCPRequest(request, env) {
 
 // Helper function to scan HTML for <h3> headers and extract their sibling <p> content flexibly
 function extractDefinitionFromHtml(htmlString, query) {
-    // Split HTML by <h3> tags to isolate each glossary entry
-    const sections = htmlString.split('<h3>');
+    // Split by glossary items to isolate individual definitions
+    const items = htmlString.split('class="glossary-item"');
     
-    for (let i = 1; i < sections.length; i++) {
-        const section = sections[i];
-        const h3EndIndex = section.indexOf('</h3>');
-        if (h3EndIndex === -1) continue;
+    for (let i = 1; i < items.length; i++) {
+        const item = items[i];
+        const h3Match = item.match(/<h3>([\s\S]*?)<\/h3>/i);
         
-        const termTitle = section.substring(0, h3EndIndex).replace(/<[^>]*>?/gm, '').trim();
-        
-        // Check if the term matches or contains the user's query
-        if (termTitle.toLowerCase().includes(query)) {
-            const contentAfterH3 = section.substring(h3EndIndex + 5);
-            const pMatch = contentAfterH3.match(/<p[^>]*>([\s\S]*?)<\/p>/i);
+        if (h3Match) {
+            const termTitle = h3Match[1].replace(/<[^>]*>?/gm, '').trim();
             
-            if (pMatch) {
-                let rawHtml = pMatch[1];
-                rawHtml = rawHtml.replace(/&#8226;/g, '•');
-                const cleanText = rawHtml.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim();
-                return `**${termTitle}**\n${cleanText}`;
+            // Match the term title accurately
+            if (termTitle.toLowerCase().includes(query)) {
+                const pMatch = item.match(/<p[^>]*>([\s\S]*?)<\/p>/i);
+                
+                if (pMatch) {
+                    let rawHtml = pMatch[1];
+                    rawHtml = rawHtml.replace(/&#8226;/g, '•');
+                    const cleanText = rawHtml.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim();
+                    return `**${termTitle}**\n${cleanText}`;
+                }
             }
         }
     }
