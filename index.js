@@ -726,12 +726,30 @@ Sitemap: https://${canonicalHost}/sitemap.xml
           gtag('config', 'G-460EZRLTB6');
         </script>
         `;
+
+	  const webMcpClientScript = `
+    <script>
+    if ('modelContext' in navigator) {
+        navigator.modelContext.registerTool({ name: "search_glossary", description: "Search Eryc's Edge SEO and AGP glossary.", inputSchema: { type: "object", properties: { term: { type: "string" } }, required: ["term"] }});
+        navigator.modelContext.registerTool({ name: "execute_terminal_command", description: "Execute interactive ERYC-OS terminal commands.", inputSchema: { type: "object", properties: { command: { type: "string" } }, required: ["command"] }});
+        navigator.modelContext.registerTool({ name: "trigger_whatsapp_consultation", description: "Get direct consultation contact links.", inputSchema: { type: "object", properties: { message: { type: "string" } }, required: [] }});
+        navigator.modelContext.registerTool({ name: "trigger_rpg_simulation", description: "Extract the core algorithm lesson.", inputSchema: { type: "object", properties: {}, required: [] }});
+        navigator.modelContext.registerTool({ name: "get_seo_service_tiers", description: "Retrieve pricing for SEO services.", inputSchema: { type: "object", properties: { category: { type: "string" } }, required: ["category"] }});
+        navigator.modelContext.registerTool({ name: "get_live_performance_telemetry", description: "Retrieve live PSI and GSC telemetry.", inputSchema: { type: "object", properties: {}, required: [] }});
+        navigator.modelContext.registerTool({ name: "validate_agp_deployment", description: "Execute real-time edge crawler validation.", inputSchema: { type: "object", properties: {}, required: [] }});
+        navigator.modelContext.registerTool({ name: "get_agent_instructions", description: "Learn how to navigate and fetch pages on this domain without heavy UI bloat.", inputSchema: { type: "object", properties: {}, required: [] }});
+    }
+    <\/script>
+    `;
       
     // 🏎️ THE HUMAN FAST-LANE BYPASS
     if (!isBot) {
         let newHeaders = new Headers(response.headers);
         newHeaders.delete("Content-Length"); 
         newHeaders.delete("Content-Security-Policy");
+
+		// --- ORIGIN WEBMCP TRIAL TOKEN HERE ---
+        newHeaders.set("Origin-Trial", "AtzSJ4g48wlbM4k3Rcm44Q5uSUYhaw/3CiuyfUlfR9mcWWo6/drv2U+ctBZyTC/HhO1aZSLniZHV29lj/sjRSQEAAABOeyJvcmlnaW4iOiJodHRwczovL3d3dy5lcnljLm15LmlkOjQ0MyIsImZlYXR1cmUiOiJXZWJNQ1AiLCJleHBpcnkiOjE3OTQ4NzM2MDB9");
 		
         const heavyAnimUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
 
@@ -750,7 +768,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                 element(e) {
                     e.append("<style>.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }</style>", { html: true });
                     e.append(customHeaderContent, { html: true }); 
-                    
+
+					// --- 1. INJECT WEBMCP SCRIPT HERE ---
+                    e.append(webMcpClientScript, { html: true });
+					
                     if (agpGhostCss) {
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
                     }
@@ -1015,6 +1036,9 @@ const wakeUpScript = `
 
     let newHeaders = new Headers(response.headers);
     newHeaders.delete("Content-Length");
+
+	// --- ORIGIN WEBMCP TRIAL TOKEN HERE ---
+    newHeaders.set("Origin-Trial", "AtzSJ4g48wlbM4k3Rcm44Q5uSUYhaw/3CiuyfUlfR9mcWWo6/drv2U+ctBZyTC/HhO1aZSLniZHV29lj/sjRSQEAAABOeyJvcmlnaW4iOiJodHRwczovL3d3dy5lcnljLm15LmlkOjQ0MyIsImZlYXR1cmUiOiJXZWJNQ1AiLCJleHBpcnkiOjE3OTQ4NzM2MDB9");
     
     if (agpLcpUrl) {
         newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image`);
