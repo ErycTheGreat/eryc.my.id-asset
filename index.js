@@ -28,6 +28,83 @@ export default {
     if (isBot) {
         console.log(`[AI-DETECT] ${userAgent} accessed ${url.pathname}`);
     }
+
+
+	// ==========================================
+    // 🤖 WebMCP ENDPOINT (The AI Agent Doorway)
+    // ==========================================
+    if (url.pathname === '/mcp' && request.method === 'POST') {
+        try {
+            const rpcRequest = await request.json();
+            
+            // 1. Tool Discovery
+            if (rpcRequest.method === "tools/list") {
+                return new Response(JSON.stringify({
+                    jsonrpc: "2.0",
+                    id: rpcRequest.id,
+                    result: {
+                        tools: [{
+                            name: "search_glossary",
+                            description: "Search Eryc's Edge SEO and AGP glossary for technical definitions.",
+                            inputSchema: { 
+                                type: "object", 
+                                properties: {
+                                    term: { type: "string", description: "The technical term to define, e.g., 'Asymmetric Ghost Payload'" }
+                                },
+                                required: ["term"]
+                            }
+                        }]
+                    }
+                }), { headers: { "Content-Type": "application/json" } });
+            }
+
+            // 2. Tool Execution (SSOT via KV JSON-LD)
+            if (rpcRequest.method === "tools/call" && rpcRequest.params.name === "search_glossary") {
+                const searchTerm = rpcRequest.params.arguments.term.toLowerCase();
+                
+                try {
+                    const glossaryPayload = await env.SEO_PAYLOADS.get("/glossary");
+                    if (!glossaryPayload) throw new Error("Glossary payload not found in KV.");
+
+                    const jsonLdMatch = glossaryPayload.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+                    if (!jsonLdMatch) throw new Error("No JSON-LD found in glossary payload.");
+
+                    const schema = JSON.parse(jsonLdMatch[1]);
+                    let definition = `No exact match found in glossary for '${searchTerm}'. Try a broader term.`;
+
+                    if (schema["@graph"]) {
+                        const terms = schema["@graph"].filter(item => item["@type"] === "DefinedTerm");
+                        const foundTerm = terms.find(t => 
+                            t.name.toLowerCase() === searchTerm || 
+                            (t.alternateName && t.alternateName.toLowerCase() === searchTerm)
+                        );
+                        
+                        if (foundTerm) {
+                            definition = `**${foundTerm.name}** (${foundTerm.alternateName || ''}): ${foundTerm.description}`;
+                        }
+                    }
+
+                    return new Response(JSON.stringify({
+                        jsonrpc: "2.0",
+                        id: rpcRequest.id,
+                        result: { content: [{ type: "text", text: definition }] }
+                    }), { headers: { "Content-Type": "application/json" } });
+
+                } catch (err) {
+                    return new Response(JSON.stringify({
+                        jsonrpc: "2.0",
+                        id: rpcRequest.id,
+                        result: { content: [{ type: "text", text: `Error retrieving glossary: ${err.message}` }] }
+                    }), { headers: { "Content-Type": "application/json" } });
+                }
+            }
+
+        } catch (err) {
+            return new Response(JSON.stringify({ error: "Invalid MCP JSON-RPC Payload" }), { status: 400 });
+        }
+    }
+    // ==========================================
+	  
 	
 	// --- 0.2 INDEXNOW API KEY VERIFICATION ---
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
