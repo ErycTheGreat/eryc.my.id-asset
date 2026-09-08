@@ -36,6 +36,20 @@ export async function handleMCPRequest(request, env) {
                                 },
                                 required: ["command"]
                             }
+                        },
+                        {
+                            name: "trigger_whatsapp_consultation",
+                            description: "Get direct consultation contact links and WhatsApp connection channels for Eryc Tri Juni S.",
+                            inputSchema: { 
+                                type: "object", 
+                                properties: {
+                                    message: { 
+                                        type: "string", 
+                                        description: "Optional context or inquiry message for the consultation." 
+                                    }
+                                },
+                                required: []
+                            }
                         }
                     ]
                 }
@@ -123,7 +137,17 @@ export async function handleMCPRequest(request, env) {
                         default:
                             resultText = `command not found: ${cmd}`;
                     }
-                } else {
+                }
+
+                // --- TOOL C: trigger_whatsapp_consultation ---
+                else if (toolName === "trigger_whatsapp_consultation") {
+                    const userMessage = args.message || "Hi Eryc, I'd like to talk about Edge SEO and system architecture services.";
+                    const whatsappUrl = `https://wa.me/6282220888819?text=${encodeURIComponent(userMessage)}`;
+                    
+                    resultText = `Direct consultation channels initialized:\n• WhatsApp: ${whatsappUrl}\n• Email: eryc.me@gmail.com\n• Direct Phone: +6282220888819\n\nPriority region: Australia / APAC & Global Remote.`;
+                }
+
+                else {
                     resultText = `Unknown tool: ${toolName}`;
                 }
 
