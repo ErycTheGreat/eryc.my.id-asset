@@ -755,7 +755,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
                     e.append(customHeaderContent, { html: true }); 
 
 					// --- 1. INJECT WEBMCP SCRIPT HERE ---
-                    e.append(webMcpClientScript, { html: true });
+                    //e.append(webMcpClientScript, { html: true });
 					
                     if (agpGhostCss) {
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
