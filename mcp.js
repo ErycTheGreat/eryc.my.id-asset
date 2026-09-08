@@ -25,27 +25,44 @@ export async function handleMCPRequest(request, env) {
             }), { headers: { "Content-Type": "application/json" } });
         }
 
-        // 2. Tool Execution (Flexible Substring Waterfall)
+        // 2. Tool Execution (Temporary Test Swap: JSON-LD First)
         if (rpcRequest.method === "tools/call" && rpcRequest.params.name === "search_glossary") {
             const searchTerm = rpcRequest.params.arguments.term.toLowerCase().trim();
             let definition = null;
             
             try {
-                // --- STAGE 1: Edge KV Lookup ---
-                const glossaryPayload = await env.SEO_PAYLOADS.get("/glossary");
+                // --- STAGE 1 (TEST): Live Fetch JSON-LD Parsing First ---
+                const liveResponse = await fetch("https://www.eryc.my.id/glossary");
+                const liveHtml = await liveResponse.text();
                 
-                if (glossaryPayload) {
-                    definition = extractDefinitionFromHtml(glossaryPayload, searchTerm);
+                const jsonLdMatch = liveHtml.match(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i);
+                
+                if (jsonLdMatch) {
+                    try {
+                        const schema = JSON.parse(jsonLdMatch[1]);
+                        if (schema["@graph"]) {
+                            const terms = schema["@graph"].filter(item => item["@type"] === "DefinedTerm");
+                            const foundTerm = terms.find(t => 
+                                t.name.toLowerCase() === searchTerm || 
+                                (t.alternateName && t.alternateName.toLowerCase() === searchTerm)
+                            );
+                            
+                            if (foundTerm) {
+                                definition = `**(Extracted via Live JSON-LD)**\n**${foundTerm.name}** (${foundTerm.alternateName || ''}): ${foundTerm.description}`;
+                            }
+                        }
+                    } catch (e) { /* JSON parse error fallback */ }
                 }
 
-                // --- STAGE 2: Live Fetch Fallback ---
+                // --- STAGE 2 (FALLBACK): Edge KV Lookup ---
                 if (!definition) {
-                    const liveResponse = await fetch("https://www.eryc.my.id/glossary");
-                    const liveHtml = await liveResponse.text();
-                    definition = extractDefinitionFromHtml(liveHtml, searchTerm);
+                    const glossaryPayload = await env.SEO_PAYLOADS.get("/glossary");
+                    if (glossaryPayload) {
+                        definition = extractDefinitionFromHtml(glossaryPayload, searchTerm);
+                        if (definition) definition = `**(Extracted via Edge HTML)**\n` + definition;
+                    }
                 }
 
-                // --- STAGE 3: Final Output ---
                 if (!definition) {
                     definition = `No exact match found in glossary for '${searchTerm}'. Try a broader term.`;
                 }
@@ -64,12 +81,7 @@ export async function handleMCPRequest(request, env) {
                 }), { headers: { "Content-Type": "application/json" } });
             }
         }
-
-    } catch (err) {
-        return new Response(JSON.stringify({ error: "Invalid MCP JSON-RPC Payload" }), { status: 400 });
-    }
-}
-
+        
 // Helper function to scan HTML for <h3> headers and extract their sibling <p> content flexibly
 // Bulletproof regex scanner for <dt> and <dd> glossary terms
 function extractDefinitionFromHtml(htmlString, query) {
