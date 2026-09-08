@@ -16,7 +16,7 @@ export async function handleMCPRequest(request, env) {
                         inputSchema: { 
                             type: "object", 
                             properties: {
-                                term: { type: "string", description: "The technical term to define, e.g., 'Asymmetric Ghost Payload'" }
+                                term: { type: "string", description: "The technical term to define, e.g., 'Edge SEO'" }
                             },
                             required: ["term"]
                         }
@@ -25,49 +25,24 @@ export async function handleMCPRequest(request, env) {
             }), { headers: { "Content-Type": "application/json" } });
         }
 
-        // 2. Tool Execution (Waterfall: KV HTML -> Live JSON-LD)
+        // 2. Tool Execution (Flexible Substring Waterfall)
         if (rpcRequest.method === "tools/call" && rpcRequest.params.name === "search_glossary") {
-            const searchTerm = rpcRequest.params.arguments.term.toLowerCase();
+            const searchTerm = rpcRequest.params.arguments.term.toLowerCase().trim();
             let definition = null;
             
             try {
-                // --- STAGE 1: Edge KV Lookup (0ms latency HTML extraction) ---
+                // --- STAGE 1: Edge KV Lookup ---
                 const glossaryPayload = await env.SEO_PAYLOADS.get("/glossary");
                 
                 if (glossaryPayload) {
-                    const escapedTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                    const htmlRegex = new RegExp(`<h3>\\s*${escapedTerm}\\s*<\\/h3>[\\s\\S]*?<p[^>]*>([\\s\\S]*?)<\\/p>`, 'i');
-                    const htmlMatch = glossaryPayload.match(htmlRegex);
-
-                    if (htmlMatch) {
-                        let rawHtml = htmlMatch[1];
-                        rawHtml = rawHtml.replace(/&#8226;/g, '•'); // Fix bullet points
-                        const cleanText = rawHtml.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim(); 
-                        definition = `**(Extracted via Edge HTML)**\n**${searchTerm.toUpperCase()}**: ${cleanText}`;
-                    }
+                    definition = extractDefinitionFromHtml(glossaryPayload, searchTerm);
                 }
 
-                // --- STAGE 2: Live Fetch Fallback (JSON-LD Semantic Parsing) ---
+                // --- STAGE 2: Live Fetch Fallback ---
                 if (!definition) {
                     const liveResponse = await fetch("https://www.eryc.my.id/glossary");
                     const liveHtml = await liveResponse.text();
-                    
-                    const jsonLdMatch = liveHtml.match(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i);
-                    
-                    if (jsonLdMatch) {
-                        const schema = JSON.parse(jsonLdMatch[1]);
-                        if (schema["@graph"]) {
-                            const terms = schema["@graph"].filter(item => item["@type"] === "DefinedTerm");
-                            const foundTerm = terms.find(t => 
-                                t.name.toLowerCase() === searchTerm || 
-                                (t.alternateName && t.alternateName.toLowerCase() === searchTerm)
-                            );
-                            
-                            if (foundTerm) {
-                                definition = `**(Extracted via Live JSON-LD)**\n**${foundTerm.name}** (${foundTerm.alternateName || ''}): ${foundTerm.description}`;
-                            }
-                        }
-                    }
+                    definition = extractDefinitionFromHtml(liveHtml, searchTerm);
                 }
 
                 // --- STAGE 3: Final Output ---
@@ -93,4 +68,32 @@ export async function handleMCPRequest(request, env) {
     } catch (err) {
         return new Response(JSON.stringify({ error: "Invalid MCP JSON-RPC Payload" }), { status: 400 });
     }
+}
+
+// Helper function to scan HTML for <h3> headers and extract their sibling <p> content flexibly
+function extractDefinitionFromHtml(htmlString, query) {
+    // Split HTML by <h3> tags to isolate each glossary entry
+    const sections = htmlString.split('<h3>');
+    
+    for (let i = 1; i < sections.length; i++) {
+        const section = sections[i];
+        const h3EndIndex = section.indexOf('</h3>');
+        if (h3EndIndex === -1) continue;
+        
+        const termTitle = section.substring(0, h3EndIndex).replace(/<[^>]*>?/gm, '').trim();
+        
+        // Check if the term matches or contains the user's query
+        if (termTitle.toLowerCase().includes(query)) {
+            const contentAfterH3 = section.substring(h3EndIndex + 5);
+            const pMatch = contentAfterH3.match(/<p[^>]*>([\s\S]*?)<\/p>/i);
+            
+            if (pMatch) {
+                let rawHtml = pMatch[1];
+                rawHtml = rawHtml.replace(/&#8226;/g, '•');
+                const cleanText = rawHtml.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim();
+                return `**${termTitle}**\n${cleanText}`;
+            }
+        }
+    }
+    return null;
 }
