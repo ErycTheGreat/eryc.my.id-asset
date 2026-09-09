@@ -949,9 +949,9 @@ const wakeUpScript = `
                     //
                     // Fallback: if scanner hasn't run yet (KV empty), defer the original
                     // link instead — no crash, page loads slower until scanner populates R2.
-                   	else if (href && href.includes('www.gstatic.com')) {
+                    else if (href && href.includes('www.gstatic.com')) {
                         if (agpGstaticReady === "ready") {
-                            // Standard blocking link to eliminate Desktop CLS
+                            // R2 file confirmed populated by scanner — serve from edge
                             e.replace(`<link rel="stylesheet" href="/assets/css/gstatic-cache.css">`, { html: true });
                         } else {
                             // Fallback: scanner hasn't run yet, defer original gstatic link
