@@ -77,10 +77,10 @@ export default {
     const host = url.hostname;
     const canonicalHost = "www.eryc.my.id";
     if (host !== canonicalHost) {
-      return .redirect(`https://${canonicalHost}${url.pathname}`, 301);
+      return Response.redirect(`https://${canonicalHost}${url.pathname}`, 301);
     }
     if (url.pathname === "/home" || url.pathname === "/home/") {
-      return .redirect(`https://${canonicalHost}/`, 301);
+      return Response.redirect(`https://${canonicalHost}/`, 301);
     }
 
     // --- 2. ROBOTS.TXT ---
