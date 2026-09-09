@@ -1,5 +1,6 @@
 import { handleMCPRequest } from './mcp.js';
 import { handleAgentSkillsRequest } from './agent-skills.js';
+import { handleMCPServerCardRequest } from './mcp-server-card.js';
 
 // --- THE EXECUTIONER CLASS ---
 class ElementSlasher {
@@ -265,8 +266,13 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     if (url.pathname === "/.well-known/agent-skills/index.json") {
         return handleAgentSkillsRequest();
     }
+
+	// --- 3.1 MCP SERVER CARD ---
+        if (url.pathname === "/.well-known/mcp/server-card.json") {
+            return handleMCPServerCardRequest();
+    }
 	  
-    // --- 3.1 LLMS.TXT ROUTING ---
+    // --- 3.2 LLMS.TXT ROUTING ---
     if (url.pathname === "/llm.txt") {
       return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
     }
