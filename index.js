@@ -757,7 +757,10 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         if (agpLcpUrl) {
             newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
         }
-        
+
+		// 🔗 ADD AI DISCOVERY HEADER TO HUMAN LANE
+        newHeaders.append("Link", '<https://www.eryc.my.id/llms.txt>; rel="alternate"; type="text/markdown"');
+		
         let currentEmbedCode = null;
 
         let humanRewriter = new HTMLRewriter()
