@@ -1046,7 +1046,7 @@ const wakeUpScript = `
     }
 
 	// 🔗 INJECT AI DISCOVERY HEADER HERE
-    //newHeaders.append("Link", '<https://www.eryc.my.id/llms.txt>; rel="alternate"; type="text/markdown"');
+    // newHeaders.append("Link", '<https://www.eryc.my.id/llms.txt>; rel="alternate"; type="text/markdown"');
 	  
     return new Response(rewriter.transform(response).body, {
       status: response.status,
