@@ -15,6 +15,12 @@ routes = [
 binding = "EDGE_SEO_WORKER"
 service = "edge-seo"
 
+# Shared telemetry database from the Edge SEO worker
+# for WEBMCP GSC LIVE TELEMETRY
+[[kv_namespaces]]
+binding = "GSC_PSI_EDGE_SEO"
+id = "d44101c3a5114dac85b46c9ee74ff573"
+
 # --- R2 ASSET BINDING ---
 # This connects your new Edge proxy bucket directly to the Worker
 [[r2_buckets]]
