@@ -15,7 +15,7 @@ routes = [
 binding = "EDGE_SEO_WORKER"
 service = "edge-seo"
 
-# --- SERVICE BINDING ---
+# --- KV BINDING ---
 # for WEBMCP GSC PSI LIVE TELEMETRY
 [[kv_namespaces]]
 binding = "GSC_PSI_EDGE_SEO"
