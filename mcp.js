@@ -273,7 +273,15 @@ export async function handleMCPRequest(request, env) {
                                 gscStats.impressions = parseInt(parsed.impressions) || 0;
                                 gscStats.ctr = parsed.ctr || "0.00%";
                                 gscStats.position = parsed.position || "0.00";
-                                gscStats.keywords = parsed.keywords || "edge seo";
+                                let rawKeywords = parsed.keywords || "edge seo";
+                                gscStats.keywords = rawKeywords.split(',')
+                                    .map(kw => kw.trim())
+                                    // Filter out anomalies: must be under 40 chars and contain no HTML/code brackets
+                                    .filter(kw => kw.length < 40 && !kw.includes('<') && !kw.includes('{'))
+                                    .join(', ');
+                                
+                                // Fallback in case the spam filter removes everything
+                                if (!gscStats.keywords) gscStats.keywords = "edge seo, eryc tri juni s";
                                 if (parsed.originMetrics) gscStats.originMetrics = parsed.originMetrics;
                                 if (parsed.edgeMetrics) gscStats.edgeMetrics = parsed.edgeMetrics;
                                 if (parsed.originMobileMetrics) gscStats.originMobileMetrics = parsed.originMobileMetrics;
