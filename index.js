@@ -84,6 +84,9 @@ export default {
     // --- 2. ROBOTS.TXT ---
     if (url.pathname === "/robots.txt" || url.pathname === "/robots.txt/") {
       const robotsTxt = `
+# Global AI Data Permissions (GEO Compliance)
+Content-Signal: ai-train=yes, search=yes, ai-input=yes
+
 # Explicitly ALLOW AI Crawlers for GEO
 User-agent: OAI-SearchBot
 Allow: /
