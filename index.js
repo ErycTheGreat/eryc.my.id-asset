@@ -16,13 +16,6 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-	// 🛑 LIGHTHOUSE KILL SWITCH: Force network idle by killing WebMCP polling
-        if (request.headers.get("User-Agent")?.includes("Chrome-Lighthouse") || request.headers.get("User-Agent")?.includes("Googlebot")) {
-            if (url.pathname.includes(".webmcp") || url.pathname === "/mcp") {
-                return new Response(null, { status: 204 });
-            }
-        }
-
     // --- 0.1 BOT TRACKER & DETECTION ---
 	const userAgent = request.headers.get("User-Agent") || "";
 	const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|Google-Agent|GoogleAgent-Search|GoogleOther|Gemini-Deep-Research|Google-Extended|gemini|vertex|apis-google|google-read-aloud|anthropic-ai/i.test(userAgent);
