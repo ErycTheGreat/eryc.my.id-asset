@@ -1,4 +1,5 @@
 import { handleMCPRequest } from './mcp.js';
+import { handleAgentSkillsRequest } from './agent-skills.js';
 
 // --- THE EXECUTIONER CLASS ---
 class ElementSlasher {
@@ -260,7 +261,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       });
     }
 
-    // --- 3. LLMS.TXT ROUTING ---
+	// --- 3. AGENT SKILLS INDEX ---
+    if (url.pathname === "/.well-known/agent-skills/index.json") {
+        return handleAgentSkillsRequest();
+    }
+	  
+    // --- 3.1 LLMS.TXT ROUTING ---
     if (url.pathname === "/llm.txt") {
       return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
     }
