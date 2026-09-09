@@ -1044,7 +1044,10 @@ const wakeUpScript = `
     if (agpLcpUrl) {
         newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image`);
     }
-      
+
+	// Inject the AI Link Header here
+    newHeaders.append("Link", '<https://www.eryc.my.id/llms.txt>; rel="alternate"; type="text/markdown"');
+	  
     return new Response(rewriter.transform(response).body, {
       status: response.status,
       headers: newHeaders
