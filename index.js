@@ -274,7 +274,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 	  
     // --- 3.2 LLMS.TXT ROUTING ---
     if (url.pathname === "/llm.txt") {
-      return .redirect(`https://${canonicalHost}/llms.txt`, 301);
+      return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
     }
 
     if (url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") {
