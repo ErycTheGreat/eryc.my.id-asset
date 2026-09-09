@@ -948,10 +948,10 @@ const wakeUpScript = `
                     //
                     // Fallback: if scanner hasn't run yet (KV empty), defer the original
                     // link instead — no crash, page loads slower until scanner populates R2.
-                    else if (href && href.includes('www.gstatic.com')) {
-                        if (agpGstaticReady === "ready") {
-                            // R2 file confirmed populated by scanner — serve from edge
-                            e.replace(`<link rel="stylesheet" href="/assets/css/gstatic-cache.css">`, { html: true });
+                   	else if (href && href.includes('www.gstatic.com')) {
+					if (agpGstaticReady === "ready") {
+						// Load CSS asynchronously to clear the render-blocking warning
+						e.replace(`<link rel="stylesheet" href="/assets/css/gstatic-cache.css" media="print" onload="this.media='all'">`, { html: true });
                         } else {
                             // Fallback: scanner hasn't run yet, defer original gstatic link
                             // Page renders with slight CLS but no broken layout
