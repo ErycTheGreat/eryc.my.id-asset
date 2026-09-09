@@ -77,10 +77,10 @@ export default {
     const host = url.hostname;
     const canonicalHost = "www.eryc.my.id";
     if (host !== canonicalHost) {
-      return Response.redirect(`https://${canonicalHost}${url.pathname}`, 301);
+      return .redirect(`https://${canonicalHost}${url.pathname}`, 301);
     }
     if (url.pathname === "/home" || url.pathname === "/home/") {
-      return Response.redirect(`https://${canonicalHost}/`, 301);
+      return .redirect(`https://${canonicalHost}/`, 301);
     }
 
     // --- 2. ROBOTS.TXT ---
@@ -274,7 +274,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 	  
     // --- 3.2 LLMS.TXT ROUTING ---
     if (url.pathname === "/llm.txt") {
-      return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
+      return .redirect(`https://${canonicalHost}/llms.txt`, 301);
     }
 
     if (url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") {
@@ -1044,9 +1044,6 @@ const wakeUpScript = `
     if (agpLcpUrl) {
         newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image`);
     }
-
-	// 🔗 INJECT AI DISCOVERY HEADER HERE
-     newHeaders.append("Link", '<https://www.eryc.my.id/llms.txt>; rel="alternate"; type="text/markdown"');
 	  
     return new Response(rewriter.transform(response).body, {
       status: response.status,
