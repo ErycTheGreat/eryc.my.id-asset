@@ -952,7 +952,7 @@ const wakeUpScript = `
                     else if (href && href.includes('www.gstatic.com')) {
                         if (agpGstaticReady === "ready") {
                             // R2 file confirmed populated by scanner — serve from edge
-                            e.replace(`<link rel="stylesheet" href="/assets/css/gstatic-cache.css">`, { html: true });
+                            e.replace(`<link rel="stylesheet" href="/assets/css/gstatic-cache.css" fetchpriority="high">`, { html: true });
                         } else {
                             // Fallback: scanner hasn't run yet, defer original gstatic link
                             // Page renders with slight CLS but no broken layout
