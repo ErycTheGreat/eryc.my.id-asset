@@ -369,6 +369,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 		  const customHeaderContent = `
 		  <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
 		  <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
+		  <link rel="preload" href="/.webmcp/bridge.js" as="script" fetchpriority="high">
 		  ${agpGstaticReady === "ready" ? '<link rel="preload" as="style" href="/assets/css/gstatic-cache.css">' : ''}
 
 		  <style id="edge-anti-flash">
@@ -734,7 +735,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         newHeaders.delete("Content-Security-Policy");
 
 		// --- ORIGIN WEBMCP TRIAL TOKEN HERE ---
-        //newHeaders.set("Origin-Trial", "AtzSJ4g48wlbM4k3Rcm44Q5uSUYhaw/3CiuyfUlfR9mcWWo6/drv2U+ctBZyTC/HhO1aZSLniZHV29lj/sjRSQEAAABOeyJvcmlnaW4iOiJodHRwczovL3d3dy5lcnljLm15LmlkOjQ0MyIsImZlYXR1cmUiOiJXZWJNQ1AiLCJleHBpcnkiOjE3OTQ4NzM2MDB9");
+        newHeaders.set("Origin-Trial", "AtzSJ4g48wlbM4k3Rcm44Q5uSUYhaw/3CiuyfUlfR9mcWWo6/drv2U+ctBZyTC/HhO1aZSLniZHV29lj/sjRSQEAAABOeyJvcmlnaW4iOiJodHRwczovL3d3dy5lcnljLm15LmlkOjQ0MyIsImZlYXR1cmUiOiJXZWJNQ1AiLCJleHBpcnkiOjE3OTQ4NzM2MDB9");
 		
         const heavyAnimUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
 
@@ -949,9 +950,9 @@ const wakeUpScript = `
                     // Fallback: if scanner hasn't run yet (KV empty), defer the original
                     // link instead — no crash, page loads slower until scanner populates R2.
                    	else if (href && href.includes('www.gstatic.com')) {
-					if (agpGstaticReady === "ready") {
-						// Load CSS asynchronously to clear the render-blocking warning
-						e.replace(`<link rel="stylesheet" href="/assets/css/gstatic-cache.css" media="print" onload="this.media='all'">`, { html: true });
+                        if (agpGstaticReady === "ready") {
+                            // Standard blocking link to eliminate Desktop CLS
+                            e.replace(`<link rel="stylesheet" href="/assets/css/gstatic-cache.css">`, { html: true });
                         } else {
                             // Fallback: scanner hasn't run yet, defer original gstatic link
                             // Page renders with slight CLS but no broken layout
