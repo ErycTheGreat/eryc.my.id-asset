@@ -43,7 +43,7 @@ export default {
 	
 	// --- 0.2 INDEXNOW API KEY VERIFICATION ---
     if (url.pathname === "/3d66934eab674a3496effb0a0651a038.txt") {
-      return new Response("3d66934eab674a3496effb0a0651a038", {
+      return new ("3d66934eab674a3496effb0a0651a038", {
         status: 200,
         headers: { "Content-Type": "text/plain" }
       });
@@ -64,7 +64,7 @@ export default {
       });
       sitemap += '</urlset>';
 
-      return new Response(sitemap, {
+      return new (sitemap, {
         status: 200,
         headers: {
           "Content-Type": "text/xml; charset=UTF-8",
@@ -77,10 +77,10 @@ export default {
     const host = url.hostname;
     const canonicalHost = "www.eryc.my.id";
     if (host !== canonicalHost) {
-      return Response.redirect(`https://${canonicalHost}${url.pathname}`, 301);
+      return .redirect(`https://${canonicalHost}${url.pathname}`, 301);
     }
     if (url.pathname === "/home" || url.pathname === "/home/") {
-      return Response.redirect(`https://${canonicalHost}/`, 301);
+      return .redirect(`https://${canonicalHost}/`, 301);
     }
 
     // --- 2. ROBOTS.TXT ---
@@ -253,7 +253,7 @@ Allow: /sitemap.xml
 Sitemap: https://${canonicalHost}/sitemap.xml
 `.trim();
 
-      return new Response(robotsTxt, {
+      return new (robotsTxt, {
         status: 200,
         headers: { 
           "Content-Type": "text/plain; charset=utf-8",
@@ -274,15 +274,15 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 	  
     // --- 3.2 LLMS.TXT ROUTING ---
     if (url.pathname === "/llm.txt") {
-      return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
+      return .redirect(`https://${canonicalHost}/llms.txt`, 301);
     }
 
     if (url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") {
       const object = await env.MY_ASSETS.get("llms.txt");
       if (object === null) {
-        return new Response("llms.txt not found in R2", { status: 404 });
+        return new ("llms.txt not found in R2", { status: 404 });
       }
-      return new Response(object.body, {
+      return new (object.body, {
         status: 200,
         headers: {
           "Content-Type": "text/plain; charset=utf-8",
@@ -294,9 +294,9 @@ Sitemap: https://${canonicalHost}/sitemap.xml
 	if (url.pathname === "/llms-full.txt" || url.pathname === "/llms-full.txt/") {
       const object = await env.MY_ASSETS.get("llms-full.txt", { type: "text" });
       if (object === null) {
-        return new Response("llms-full.txt not found in R2", { status: 404 });
+        return new ("llms-full.txt not found in R2", { status: 404 });
       }
-      return new Response(object.body, {
+      return new (object.body, {
         status: 200,
         headers: {
           "Content-Type": "text/plain; charset=utf-8",
@@ -1044,7 +1044,10 @@ const wakeUpScript = `
     if (agpLcpUrl) {
         newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image`);
     }
-      
+
+	// 🔗 INJECT AI DISCOVERY HEADER HERE
+    newHeaders.append("Link", '<https://www.eryc.my.id/llms.txt>; rel="alternate"; type="text/markdown"');
+	  
     return new Response(rewriter.transform(response).body, {
       status: response.status,
       headers: newHeaders
