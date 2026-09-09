@@ -734,7 +734,7 @@ Sitemap: https://${canonicalHost}/sitemap.xml
         newHeaders.delete("Content-Security-Policy");
 
 		// --- ORIGIN WEBMCP TRIAL TOKEN HERE ---
-        newHeaders.set("Origin-Trial", "AtzSJ4g48wlbM4k3Rcm44Q5uSUYhaw/3CiuyfUlfR9mcWWo6/drv2U+ctBZyTC/HhO1aZSLniZHV29lj/sjRSQEAAABOeyJvcmlnaW4iOiJodHRwczovL3d3dy5lcnljLm15LmlkOjQ0MyIsImZlYXR1cmUiOiJXZWJNQ1AiLCJleHBpcnkiOjE3OTQ4NzM2MDB9");
+        //newHeaders.set("Origin-Trial", "AtzSJ4g48wlbM4k3Rcm44Q5uSUYhaw/3CiuyfUlfR9mcWWo6/drv2U+ctBZyTC/HhO1aZSLniZHV29lj/sjRSQEAAABOeyJvcmlnaW4iOiJodHRwczovL3d3dy5lcnljLm15LmlkOjQ0MyIsImZlYXR1cmUiOiJXZWJNQ1AiLCJleHBpcnkiOjE3OTQ4NzM2MDB9");
 		
         const heavyAnimUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
 
