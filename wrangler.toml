@@ -9,6 +9,12 @@ routes = [
   { pattern = "www.eryc.my.id/assets/*", zone_name = "eryc.my.id" }
 ]
 
+# --- SERVICE BINDING ---
+# for WEBMCP AGP VALIDATOR
+[[services]]
+binding = "EDGE_SEO_WORKER"
+service = "edge-seo"
+
 # --- R2 ASSET BINDING ---
 # This connects your new Edge proxy bucket directly to the Worker
 [[r2_buckets]]
