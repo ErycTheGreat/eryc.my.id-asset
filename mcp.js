@@ -253,8 +253,10 @@ export async function handleMCPRequest(request, env) {
                     }
                 }
 
-              // --- TOOL F: get_live_performance_telemetry ---
+               // --- TOOL F: get_live_performance_telemetry ---
+
                 else if (toolName === "get_live_performance_telemetry") {
+
                     let gscStats = { 
                         clicks: 0, impressions: 0, ctr: "0.00%", position: "0.00", keywords: "edge seo", 
                         originMetrics: { perf: "54", access: "95", bp: "100", seo: "92", fcp: "0.9 s", si: "1.4 s", lcp: "3.9 s", tti: "3.9 s", tbt: "560 ms", cls: "0.051" },
@@ -265,24 +267,23 @@ export async function handleMCPRequest(request, env) {
                     };
 
                     try {
-                        // Use the new secret binding name!
-                        if (env && env.MCP_TELEMETRY_KV) {
-                            const storedStats = await env.MCP_TELEMETRY_KV.get('global_gsc_stats');
+                        if (env && env.GSC_PSI_EDGE_SEO) {
+                            const storedStats = await env.GSC_PSI_EDGE_SEO.get('global_gsc_stats');
                             if (storedStats) {
                                 const parsed = JSON.parse(storedStats);
                                 gscStats.clicks = parseInt(parsed.clicks) || 0;
                                 gscStats.impressions = parseInt(parsed.impressions) || 0;
                                 gscStats.ctr = parsed.ctr || "0.00%";
                                 gscStats.position = parsed.position || "0.00";
-                                
-                                // Clean the GSC spam keywords
                                 let rawKeywords = parsed.keywords || "edge seo";
                                 gscStats.keywords = rawKeywords.split(',')
                                     .map(kw => kw.trim())
+                                    // Filter out anomalies: must be under 40 chars and contain no HTML/code brackets
                                     .filter(kw => kw.length < 40 && !kw.includes('<') && !kw.includes('{'))
                                     .join(', ');
+                                
+                                // Fallback in case the spam filter removes everything
                                 if (!gscStats.keywords) gscStats.keywords = "edge seo, eryc tri juni s";
-
                                 if (parsed.originMetrics) gscStats.originMetrics = parsed.originMetrics;
                                 if (parsed.edgeMetrics) gscStats.edgeMetrics = parsed.edgeMetrics;
                                 if (parsed.originMobileMetrics) gscStats.originMobileMetrics = parsed.originMobileMetrics;
@@ -290,9 +291,9 @@ export async function handleMCPRequest(request, env) {
                                 gscStats.lastUpdated = parsed.lastUpdated || new Date().toISOString();
                             }
                         }
-                    } catch (e) { /* Fallback */ }
-
+                    } catch (e) { /* Fallback to default stats if KV read fails */ }
                     resultText = `Live Performance Telemetry (As of ${gscStats.lastUpdated}):
+
 
 Google Search Console (Last 30 Days):
 - Clicks: ${gscStats.clicks}
@@ -300,6 +301,7 @@ Google Search Console (Last 30 Days):
 - CTR: ${gscStats.ctr}
 - Avg Position: ${gscStats.position}
 - Top Keywords: ${gscStats.keywords}
+
 
 PageSpeed Insights (Desktop) - Origin vs Edge SEO:
 - Performance: ${gscStats.originMetrics.perf}/100 -> ${gscStats.edgeMetrics.perf}/100
@@ -312,6 +314,8 @@ PageSpeed Insights (Desktop) - Origin vs Edge SEO:
 - TBT: ${gscStats.originMetrics.tbt} -> ${gscStats.edgeMetrics.tbt}
 - CLS: ${gscStats.originMetrics.cls} -> ${gscStats.edgeMetrics.cls}
 
+
+
 PageSpeed Insights (Mobile) - Origin vs Edge SEO:
 - Performance: ${gscStats.originMobileMetrics.perf}/100 -> ${gscStats.edgeMobileMetrics.perf}/100
 - Accessibility: ${gscStats.originMobileMetrics.access}/100 -> ${gscStats.edgeMobileMetrics.access}/100
@@ -322,7 +326,8 @@ PageSpeed Insights (Mobile) - Origin vs Edge SEO:
 - TTI: ${gscStats.originMobileMetrics.tti} -> ${gscStats.edgeMobileMetrics.tti}
 - TBT: ${gscStats.originMobileMetrics.tbt} -> ${gscStats.edgeMobileMetrics.tbt}
 - CLS: ${gscStats.originMobileMetrics.cls} -> ${gscStats.edgeMobileMetrics.cls}`;
-                }
+
+              }
 
                // --- TOOL G: validate_agp_deployment ---
                 else if (toolName === "validate_agp_deployment") {
@@ -337,7 +342,6 @@ PageSpeed Insights (Mobile) - Origin vs Edge SEO:
                         }
 
                         const html = await pageRes.text();
-                        
                         const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
                         const rawMeta = html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']+)["'][^>]*>/i) ||
                                         html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*name=["']description["'][^>]*>/i);
