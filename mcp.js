@@ -253,7 +253,7 @@ export async function handleMCPRequest(request, env) {
                     }
                 }
 
-                // --- TOOL F: get_live_performance_telemetry ---
+               // --- TOOL F: get_live_performance_telemetry ---
                 else if (toolName === "get_live_performance_telemetry") {
                     let gscStats = { 
                         clicks: 0, impressions: 0, ctr: "0.00%", position: "0.00", keywords: "edge seo", 
@@ -265,23 +265,24 @@ export async function handleMCPRequest(request, env) {
                     };
 
                     try {
-                        if (env && env.GSC_PSI_EDGE_SEO) {
-                            const storedStats = await env.GSC_PSI_EDGE_SEO.get('global_gsc_stats');
+                        // Use the new secret binding name!
+                        if (env && env.MCP_TELEMETRY_KV) {
+                            const storedStats = await env.MCP_TELEMETRY_KV.get('global_gsc_stats');
                             if (storedStats) {
                                 const parsed = JSON.parse(storedStats);
                                 gscStats.clicks = parseInt(parsed.clicks) || 0;
                                 gscStats.impressions = parseInt(parsed.impressions) || 0;
                                 gscStats.ctr = parsed.ctr || "0.00%";
                                 gscStats.position = parsed.position || "0.00";
+                                
+                                // Clean the GSC spam keywords
                                 let rawKeywords = parsed.keywords || "edge seo";
                                 gscStats.keywords = rawKeywords.split(',')
                                     .map(kw => kw.trim())
-                                    // Filter out anomalies: must be under 40 chars and contain no HTML/code brackets
                                     .filter(kw => kw.length < 40 && !kw.includes('<') && !kw.includes('{'))
                                     .join(', ');
-                                
-                                // Fallback in case the spam filter removes everything
                                 if (!gscStats.keywords) gscStats.keywords = "edge seo, eryc tri juni s";
+
                                 if (parsed.originMetrics) gscStats.originMetrics = parsed.originMetrics;
                                 if (parsed.edgeMetrics) gscStats.edgeMetrics = parsed.edgeMetrics;
                                 if (parsed.originMobileMetrics) gscStats.originMobileMetrics = parsed.originMobileMetrics;
@@ -289,7 +290,7 @@ export async function handleMCPRequest(request, env) {
                                 gscStats.lastUpdated = parsed.lastUpdated || new Date().toISOString();
                             }
                         }
-                    } catch (e) { /* Fallback to default stats if KV read fails */ }
+                    } catch (e) { /* Fallback */ }
 
                     resultText = `Live Performance Telemetry (As of ${gscStats.lastUpdated}):
 
