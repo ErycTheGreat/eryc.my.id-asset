@@ -107,12 +107,6 @@ export default {
       return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
     }
 
-	// --- 3.3 FAVICON & MANIFEST ROUTING ---
-    const faviconResponse = await handleFaviconRequest(url);
-    if (faviconResponse) {
-        return faviconResponse;
-    }
-
     if (url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") {
       const object = await env.MY_ASSETS.get("llms.txt");
       if (object === null) {
@@ -139,6 +133,12 @@ export default {
           "Cache-Control": "public, s-maxage=7200, max-age=0",
         }
       });
+    }
+	  
+	// --- 3.3 FAVICON & MANIFEST ROUTING ---
+    const faviconResponse = await handleFaviconRequest(url);
+    if (faviconResponse) {
+        return faviconResponse;
     }
       
     // --- 4. THE R2 ASSET PROXY WITH IMAGE RESIZING ---
