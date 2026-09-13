@@ -1,6 +1,6 @@
 export function handleRobotsTxtRequest(url, canonicalHost) {
   if (url.pathname === "/robots.txt" || url.pathname === "/robots.txt/") {
-    const robotsTxt = `
+  const robotsTxt = `
 # Global AI Data Permissions (GEO Compliance)
 Content-Signal: ai-train=yes, search=yes, ai-input=yes
 
@@ -44,7 +44,7 @@ User-agent: PerplexityBot
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Allow: /sitemap-main.xml
+Allow: /sitemap.xml
 
 User-agent: Perplexity-User
 Allow: /
@@ -55,7 +55,7 @@ User-agent: Google-Agent
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Allow: /sitemap-main.xml
+Allow: /sitemap.xml
 
 User-agent: GoogleAgent-Search
 Allow: /
@@ -81,25 +81,25 @@ User-agent: Google-Extended
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Allow: /sitemap-main.xml
+Allow: /sitemap.xml
 
 User-agent: Google Inspection Tool
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Allow: /sitemap-main.xml
+Allow: /sitemap.xml
 
 User-agent: Googlebot
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Allow: /sitemap-main.xml
+Allow: /sitemap.xml
 
 User-agent: bingbot
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Allow: /sitemap-main.xml
+Allow: /sitemap.xml
 
 User-agent: Applebot-Extended
 Allow: /
@@ -110,37 +110,51 @@ User-agent: Applebot
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Allow: /sitemap-main.xml
+Allow: /sitemap.xml
 
 # Explicitly BLOCK useless commercial scrapers
 User-agent: PetalBot
 Disallow: /
+
 User-agent: MJ12bot
 Disallow: /
+
 User-agent: DotBot
 Disallow: /
+
 User-agent: AhrefsBot
 Disallow: /
+
 User-agent: SemrushBot
 Disallow: /
+
 User-agent: SiteAuditBot
 Disallow: /
+
 User-agent: MBCrawler
 Disallow: /
+
 User-agent: seositecheckup
 Disallow: /
+
 User-agent: Bytespider
 Disallow: /
+
 User-agent: CCBot
 Disallow: /
+
 User-agent: Scrapy
 Disallow: /
+
 User-agent: DataForSeoBot
 Disallow: /
+
 User-agent: serpstatbot
 Disallow: /
+
 User-agent: SEOkicks
 Disallow: /
+
 User-agent: rogerbot
 Disallow: /
 
@@ -149,18 +163,18 @@ User-agent: *
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Allow: /sitemap-main.xml
+Allow: /sitemap.xml
 
-Sitemap: https://${canonicalHost}/sitemap-main.xml
+Sitemap: https://${canonicalHost}/sitemap.xml
 `.trim();
 
-    return new Response(robotsTxt, {
-      status: 200,
-      headers: { 
-        "Content-Type": "text/plain; charset=utf-8",
-        "Cache-Control": "public, max-age=86400" 
-      }
-    });
-  }
+      return new Response(robotsTxt, {
+        status: 200,
+        headers: { 
+          "Content-Type": "text/plain; charset=utf-8",
+          "Cache-Control": "public, max-age=86400" 
+        }
+      });
+    }
   return null; 
 }
