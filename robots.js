@@ -44,7 +44,7 @@ User-agent: PerplexityBot
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Allow: /sitemap-main.xml
+Allow: /sitemap.xml
 
 User-agent: Perplexity-User
 Allow: /
@@ -55,7 +55,7 @@ User-agent: Google-Agent
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Allow: /sitemap-main.xml
+Allow: /sitemap.xml
 
 User-agent: GoogleAgent-Search
 Allow: /
@@ -81,25 +81,25 @@ User-agent: Google-Extended
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Allow: /sitemap-main.xml
+Allow: /sitemap.xml
 
 User-agent: Google Inspection Tool
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Allow: /sitemap-main.xml
+Allow: /sitemap.xml
 
 User-agent: Googlebot
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Allow: /sitemap-main.xml
+Allow: /sitemap.xml
 
 User-agent: bingbot
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Allow: /sitemap-main.xml
+Allow: /sitemap.xml
 
 User-agent: Applebot-Extended
 Allow: /
@@ -110,7 +110,7 @@ User-agent: Applebot
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Allow: /sitemap-main.xml
+Allow: /sitemap.xml
 
 # Explicitly BLOCK useless commercial scrapers
 User-agent: PetalBot
@@ -165,7 +165,7 @@ Allow: /llms.txt
 Allow: /llms-full.txt
 Allow: /sitemap-main.xml
 
-Sitemap: https://${canonicalHost}/sitemap-main.xml
+Sitemap: https://${canonicalHost}/sitemap.xml
 `.trim();
 
       return new Response(robotsTxt, {
