@@ -1,6 +1,7 @@
 import { handleMCPRequest } from './mcp.js';
 import { handleAgentSkillsRequest } from './agent-skills.js';
 import { handleMCPServerCardRequest } from './mcp-server-card.js';
+import { handleFaviconRequest } from './favicon.js';
 
 // --- THE EXECUTIONER CLASS ---
 class ElementSlasher {
@@ -67,7 +68,7 @@ export default {
       return new Response(sitemap, {
         status: 200,
         headers: {
-          "Content-Type": "text/xml; charset=UTF-8",
+          "Content-Type": "application/xml; charset=UTF-8",
           "Cache-Control": "public, max-age=86400"
         }
       });
@@ -277,6 +278,12 @@ Sitemap: https://${canonicalHost}/sitemap.xml
       return Response.redirect(`https://${canonicalHost}/llms.txt`, 301);
     }
 
+	// --- 3.3 FAVICON & MANIFEST ROUTING ---
+    const faviconResponse = await handleFaviconRequest(url);
+    if (faviconResponse) {
+        return faviconResponse;
+    }
+
     if (url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") {
       const object = await env.MY_ASSETS.get("llms.txt");
       if (object === null) {
@@ -383,10 +390,17 @@ Sitemap: https://${canonicalHost}/sitemap.xml
     // Tells the browser to fetch it early in parallel with the HTML stream.
 		  const customHeaderContent = `
 		  <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
-		  <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">
-		  <link rel="preload" href="/.webmcp/bridge.js" as="script" fetchpriority="high">
+		  <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">  
 		  ${agpGstaticReady === "ready" ? '<link rel="preload" as="style" href="/assets/css/gstatic-cache.css">' : ''}
-
+		  <link rel="preload" href="/.webmcp/bridge.js" as="script" fetchpriority="high">
+		 
+		  <!-- FAVICON & WEB MANIFEST -->
+		  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+		  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+		  <link rel="shortcut icon" href="/favicon.ico">
+		  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		  <link rel="manifest" href="/site.webmanifest">
+		  
 		  <style id="edge-anti-flash">
 			html { background-color: #060522 !important; }
 			:root {
