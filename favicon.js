@@ -10,7 +10,8 @@ export async function handleFaviconRequest(url) {
   ];
 
   if (faviconFiles.includes(url.pathname)) {
-    const r2FaviconUrl = `https://cdn.eryc.my.id${url.pathname}`;
+    // 👇 UBAH BARIS INI: Ganti '/favicon' menjadi '/image'
+    const r2FaviconUrl = `https://cdn.eryc.my.id/image${url.pathname}`;
     const favResponse = await fetch(r2FaviconUrl);
 
     if (!favResponse.ok) {
