@@ -1,3 +1,4 @@
+import { handleSitemapRequest } from './sitemap.js';
 import { handleMCPRequest } from './mcp.js';
 import { handleAgentSkillsRequest } from './agent-skills.js';
 import { handleMCPServerCardRequest } from './mcp-server-card.js';
@@ -52,29 +53,10 @@ export default {
       });
     }
     
-   // --- 0. DIRECT XML RETURN ---
-    if (url.pathname === "/sitemap.xml" || url.pathname === "/sitemap.xml/") {
-      const canonicalHost = "www.eryc.my.id";
-      const lastmod = "2026-04-10T00:00:00+07:00";
-      const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/soundbrothers", "/case-studies/edge-seo"];
-      
-      // Hapus \n dan rakit string menjadi satu baris panjang untuk menghindari error spasi tersembunyi
-      let sitemap = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">';
-      
-      pages.forEach(path => {
-        const priority = path === "/" ? "1.0" : "0.7";
-        sitemap += `<url><loc>https://${canonicalHost}${path}</loc><lastmod>${lastmod}</lastmod><changefreq>weekly</changefreq><priority>${priority}</priority></url>`;
-      });
-      
-      sitemap += '</urlset>';
-
-      return new Response(sitemap, {
-        status: 200,
-        headers: {
-          "Content-Type": "application/xml; charset=UTF-8",
-          "Cache-Control": "public, max-age=86400"
-        }
-      });
+    // --- 0. SITEMAP ROUTING ---
+    const sitemapResponse = handleSitemapRequest(url);
+    if (sitemapResponse) {
+        return sitemapResponse;
     }
 
     // --- 1. FORCE NAKED TO WWW & KILL "/home" ---
