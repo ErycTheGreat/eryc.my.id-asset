@@ -58,13 +58,14 @@ export default {
       const lastmod = "2026-04-10T00:00:00+07:00";
       const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/soundbrothers", "/case-studies/edge-seo"];
       
-      let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
-      sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n';
+      // Hapus \n dan rakit string menjadi satu baris panjang untuk menghindari error spasi tersembunyi
+      let sitemap = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">';
+      
       pages.forEach(path => {
-        sitemap += `  <url>\n    <loc>https://${canonicalHost}${path}</loc>\n`;
-        sitemap += `    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n`;
-        sitemap += `    <priority>${path === "/"? "1.0" : "0.7"}</priority>\n  </url>\n`;
+        const priority = path === "/" ? "1.0" : "0.7";
+        sitemap += `<url><loc>https://${canonicalHost}${path}</loc><lastmod>${lastmod}</lastmod><changefreq>weekly</changefreq><priority>${priority}</priority></url>`;
       });
+      
       sitemap += '</urlset>';
 
       return new Response(sitemap, {
