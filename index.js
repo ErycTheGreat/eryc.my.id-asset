@@ -268,12 +268,9 @@ export default {
 		  <meta name="twitter:image:alt" content="Eryc Tri Juni S – Edge SEO & GEO Specialist Malang">
 		  <meta name="twitter:creator" content="@eryctrijunis">
 
-		${jsonLdSchema}
+			${jsonLdSchema}
   
-	    <script type="text/edge-delayed-script" data-original-type="text/javascript">
-		`;
-		
-        <script type="text/edge-delayed-script" data-original-type="text/javascript">
+	        <script type="text/edge-delayed-script" data-original-type="text/javascript">
             (function(c,l,a,r,i,t,y){
                 c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                 t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
