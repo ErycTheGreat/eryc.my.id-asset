@@ -10,7 +10,7 @@ export async function handleFaviconRequest(url) {
   ];
 
   if (faviconFiles.includes(url.pathname)) {
-    const r2FaviconUrl = `https://cdn.eryc.my.id/favicon${url.pathname}`;
+    const r2FaviconUrl = `https://cdn.eryc.my.id${url.pathname}`;
     const favResponse = await fetch(r2FaviconUrl);
 
     if (!favResponse.ok) {
