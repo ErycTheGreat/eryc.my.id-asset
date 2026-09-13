@@ -53,7 +53,7 @@ export default {
     }
     
    // --- 0. DIRECT XML RETURN ---
-    if (url.pathname === "/sitemap-main.xml" || url.pathname === "/sitemap-main.xml/") {
+    if (url.pathname === "/sitemap.xml" || url.pathname === "/sitemap.xml/") {
       const canonicalHost = "www.eryc.my.id";
       const lastmod = "2026-04-10T00:00:00+07:00";
       const pages = ["/", "/about", "/glossary", "/case-studies/seo", "/case-studies/seo/soundbrothers", "/case-studies/edge-seo"];
@@ -248,7 +248,7 @@ export default {
 		  <meta name="yandex-verification" content="275f3c061328554a">
 
 		  <link rel="canonical" href="${canonicalUrl}">
-		  <link rel="sitemap" type="application/xml" href="https://www.eryc.my.id/sitemap-main.xml">
+		  <link rel="sitemap" type="application/xml" href="https://www.eryc.my.id/sitemap.xml">
 		  <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llms.txt" title="LLMs.txt">
 		  <link rel="alternate" type="text/plain" href="https://www.eryc.my.id/llms-full.txt" title="LLMs-Full.txt">
 		  <link rel="author" href="${domain}/about">
