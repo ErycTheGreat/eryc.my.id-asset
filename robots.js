@@ -163,9 +163,12 @@ User-agent: *
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Allow: /sitemap-main.xml
+Allow: /sitemap.xml
+Allow: /sitemap.txt
 
 Sitemap: https://${canonicalHost}/sitemap.xml
+Sitemap: https://${canonicalHost}/sitemap.txt
+Sitemap: https://a333927.sitemaphosting7.com/4691303/sitemap_4691303.xml
 `.trim();
 
       return new Response(robotsTxt, {
