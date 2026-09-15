@@ -7,7 +7,7 @@
   <img src="https://img.shields.io/badge/license-MIT-4386c3" alt="License: MIT">
 </p>
 
-**By Eryc Tri Juni S — Edge SEO Specialist**
+**By Eryc Tri Juni S — Edge SEO & GEO Specialist**
 
 > **Google:** "A simple, locked-down drag-and-drop builder."
 > **User:** "Hold my Cloudflare edge router."
@@ -34,22 +34,22 @@ This README covers **what's in the repo and how to run it.** For the *why* and t
 
 ```text
 eryc.my.id-asset/
-├── index.js              # PRIMARY WORKER — the AGP router (see below)
+├── index.js               # PRIMARY WORKER — the AGP router (see below)
 ├── wrangler.toml          # Deploy config for the primary router
-├── cloudflare-worker/      # SECONDARY WORKER — the AI Scanner (cron job, see below)
+├── cloudflare-worker/     # SECONDARY WORKER — the AI Scanner (cron job, see below)
 ├── home-page/             # Embedded HTML/CSS/JS for the Google Sites home page
 ├── about-page/            # Embedded code for the cyberpunk terminal About page
 ├── glossary-page/         # Embedded code for the searchable glossary
-├── seo-page/               # Embedded code for the RPG-dialog SEO explainer page
-├── footer-page/            # Shared footer embed
+├── seo-page/              # Embedded code for the RPG-dialog SEO explainer page
+├── footer-page/           # Shared footer embed
 ├── font/                  # Self-hosted font files served via the R2 asset proxy
 ├── image/                 # Static images referenced in this README
 ├── llms.txt               # Machine-readable entity summary, served from R2
-├── llms-full.txt           # Full machine-readable entity graph, served from R2
-├── sitemap-v2.xml          # Static sitemap reference (the live /sitemap.xml is generated dynamically — see below)
-├── color-mood-board.txt    # Design reference
-├── free-hosting-guide.txt  # Notes from the CDN migration (Drive → Dropbox → GitHub Raw → InfinityFree → R2)
-└── .github/workflows/      # CI
+├── llms-full.txt          # Full machine-readable entity graph, served from R2
+├── sitemap-v2.xml         # Static sitemap reference (the live /sitemap.xml is generated dynamically — see below)
+├── color-mood-board.txt   # Design reference
+├── free-hosting-guide.txt # Notes from the CDN migration (Drive → Dropbox → GitHub Raw → InfinityFree → R2)
+└── .github/workflows/     # CI
 ```
 
 > [!IMPORTANT]
