@@ -138,7 +138,11 @@ export default {
 			  cf: { image: { width: parseInt(targetWidth, 10), format: "auto" } }
 		  });
 	  } else {
-		  assetResponse = await fetch(r2DomainUrl);
+		  // Forwarding request headers ensures Accept-Encoding is passed 
+          // so Cloudflare applies Brotli/Gzip compression.
+		  assetResponse = await fetch(r2DomainUrl, {
+              headers: request.headers 
+          });
 	  }
 
 	  if (!assetResponse.ok) {
