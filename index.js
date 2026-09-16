@@ -212,8 +212,7 @@ export default {
 		  <link rel="preload" as="image" href="/assets/image/hero.avif" fetchpriority="high">
 		  <link rel="preload" as="image" href="/assets/image/homepage-BG-split.avif" fetchpriority="high">  
 		  ${agpGstaticReady === "ready" ? '<link rel="preload" as="style" href="/assets/css/gstatic-cache.css">' : ''}
-		  <link rel="preload" href="/.webmcp/bridge.js" as="script" fetchpriority="high">
-		 
+		  		 
 		  <!-- FAVICON & WEB MANIFEST -->
 		  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
 		  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
