@@ -313,9 +313,10 @@ export default {
                     if (agpGhostCss) {
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
 					}
-					if (agpCriticalCss) {
-                    e.append(`<style id="agp-critical-css">${agpCriticalCss}</style>`, { html: true });
-                	}
+					// Inject the critical CSS inline for Mobile only
+                    if (agpCriticalCss && isMobile) {
+                        e.append(`<style id="agp-critical-css">${agpCriticalCss}</style>`, { html: true });
+                    }
 						
                     
 
@@ -507,12 +508,17 @@ const wakeUpScript = `
                     // Fallback: if scanner hasn't run yet (KV empty), defer the original
                     // link instead — no crash, page loads slower until scanner populates R2.
                     else if (href && href.includes('www.gstatic.com')) {
-                        if (agpGstaticReady === "ready") {
-                            // R2 file confirmed populated by scanner — serve from edge
+                    if (agpGstaticReady === "ready") {
+                        if (isMobile) {
+                            // Mobile: Defer heavy CSS to protect FCP/LCP
                             e.replace(`<link rel="stylesheet" href="/assets/css/gstatic-cache.css" media="print" onload="this.media='all'">`, { html: true });
                         } else {
-                            // Fallback: scanner hasn't run yet, defer original gstatic link
-                            // Page renders with slight CLS but no broken layout
+                            // Desktop: Load synchronously to kill CLS (bandwidth handles it easily)
+                            e.replace(`<link rel="stylesheet" href="/assets/css/gstatic-cache.css" fetchpriority="high">`, { html: true });
+                        }
+                    } else {
+                        // Fallback if KV is empty
+                        if (isMobile) {
                             e.setAttribute('media', 'print');
                             e.setAttribute('onload', "this.media='all'");
                         }
