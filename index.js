@@ -524,6 +524,7 @@ const wakeUpScript = `
                         }
                     }
                 }
+			}
             })
             .on('a[aria-selected]', {
                 element(e) {
