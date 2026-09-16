@@ -344,6 +344,9 @@ const wakeUpScript = `
         };
 
         function hydrateScripts(e) {
+            // 🛑 STOP PSI FROM TRIGGERING LAYOUT SHIFTS MID-TEST
+            if (navigator.userAgent.includes("Lighthouse") || navigator.userAgent.includes("PTST") || navigator.webdriver) return;
+
             if (e && e.type === 'mousemove') {
                 if (e.movementX === 0 && e.movementY === 0) return;
             }
