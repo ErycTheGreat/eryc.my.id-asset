@@ -184,16 +184,19 @@ export default {
     let agpLcpUrl = "";
     let agpGhostCss = "";
     let agpGstaticReady = "";
+	let agpCriticalCss = "";
     try {
         if (env && env.AGP_STATE) {
             const [fetchedLcp, fetchedCss, fetchedGstatic] = await Promise.all([
                 env.AGP_STATE.get("LCP_IMAGE_URL"),
                 env.AGP_STATE.get("GHOST_CSS"),
                 env.AGP_STATE.get("GSTATIC_CSS")
+				env.AGP_STATE.get("CRITICAL_CSS")
             ]);
             agpLcpUrl = fetchedLcp || "";
             agpGhostCss = fetchedCss || "";
             agpGstaticReady = fetchedGstatic || "";
+			agpCriticalCss = fetchedCritical || "";
         }
     } catch (e) {
         console.error("AGP_STATE KV Fetch Error:", e);
@@ -309,7 +312,12 @@ export default {
 					
                     if (agpGhostCss) {
                         e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
-                    }
+					}
+					if (agpCriticalCss) {
+                    e.append(`<style id="agp-critical-css">${agpCriticalCss}</style>`, { html: true });
+                	}
+						
+                    
 
 const wakeUpScript = `
 <script data-edge-ignore="true">
@@ -501,7 +509,7 @@ const wakeUpScript = `
                     else if (href && href.includes('www.gstatic.com')) {
                         if (agpGstaticReady === "ready") {
                             // R2 file confirmed populated by scanner — serve from edge
-                            e.replace(`<link rel="stylesheet" href="/assets/css/gstatic-cache.css" fetchpriority="high">`, { html: true });
+                            e.replace(`<link rel="stylesheet" href="/assets/css/gstatic-cache.css" media="print" onload="this.media='all'">`, { html: true });
                         } else {
                             // Fallback: scanner hasn't run yet, defer original gstatic link
                             // Page renders with slight CLS but no broken layout
