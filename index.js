@@ -190,7 +190,7 @@ export default {
             const [fetchedLcp, fetchedCss, fetchedGstatic] = await Promise.all([
                 env.AGP_STATE.get("LCP_IMAGE_URL"),
                 env.AGP_STATE.get("GHOST_CSS"),
-                env.AGP_STATE.get("GSTATIC_CSS")
+                env.AGP_STATE.get("GSTATIC_CSS"),
 				env.AGP_STATE.get("CRITICAL_CSS")
             ]);
             agpLcpUrl = fetchedLcp || "";
