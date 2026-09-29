@@ -2486,14 +2486,14 @@ An interactive node diagram showing the complete AGP request lifecycle through t
 
 The AGP architecture described in this diagram produces the following live performance results, injected at runtime from GSC_PSI_EDGE_SEO KV (key: global_gsc_stats):
 Edge domain (www.eryc.my.id) — Desktop PSI
-Perf: 97/100 | Access: 100/100 | BP: 100/100 | SEO: 100/100 | FCP: 0.9s | SI: 1.2s | LCP: 0.9s | TTI: 0.9s | TBT: 0ms | CLS: 0.002 (As of 2026-06-07)
+Perf: 99/100 | Access: 100/100 | BP: 100/100 | SEO: 100/100 | Agentic: 4/4 | FCP: 0.8s | SI: 0.9s | LCP: 0.9s | TTI: 0.9s | TBT: 0ms | CLS: 0 (As of 2026-09-30)
 Origin (sites.google.com/view/eryc-tri-juni-s-notes/home) — Desktop PSI
-Perf: 90/100 | Access: 95/100 | BP: 100/100 | SEO: 92/100 | FCP: 0.8s | SI: 1.5s | LCP: 1.2s | TTI: 2.3s | TBT: 170ms | CLS: 0 (As of 2026-06-07)
+Perf: 54/100 | Access: 95/100 | BP: 100/100 | SEO: 92/100 | FCP: 0.9s | SI: 1.4s | LCP: 3.9s | TTI: 3.9s | TBT: 560ms | CLS: 0.051 (As of 2026-09-30)
 Edge domain — Mobile PSI
-Perf: 77/100 | Access: 100/100 | BP: 100/100 | SEO: 100/100 | FCP: 4.1s | SI: 4.1s | LCP: 4.1s | TTI: 4.1s | TBT: 0ms | CLS: 0.005 (As of 2026-06-07)
+Perf: 99/100 | Access: 100/100 | BP: 100/100 | SEO: 100/100 | Agentic: 4/4 | FCP: 1.1s | SI: 1.5s | LCP: 2.0s | TTI: 1.5s | TBT: 20ms | CLS: 0.045 (As of 2026-09-30)
 Origin — Mobile PSI
-Perf: 52/100 | Access: 100/100 | BP: 100/100 | SEO: 92/100 | FCP: 9.1s | SI: 9.1s | LCP: 30.6s | TTI: 9.7s | TBT: 360ms | CLS: 0 (As of 2026-06-07)
-Google Search Console — last 30 days (As of 2026-06-07)
+Perf: 48/100 | Access: 100/100 | BP: 100/100 | SEO: 92/100 | FCP: 9.1s | SI: 9.7s | LCP: 30.6s | TTI: 9.7s | TBT: 360ms | CLS: 0 (As of 2026-09-30)
+Google Search Console — last 30 days (As of 2026-09-30)
 Clicks: 23 | Impressions: 1898 | CTR: 1.21% | Avg Position: 23.09
 Top Queries: edge seo indonesia, eryc tri juni s, seo malang, www.eryc.my.id
 
@@ -2591,6 +2591,58 @@ This case study documents what that produced, not what it cost. But the absurdit
 
 Operating on a .my.id domain is a deliberate choice. In the SEO world, this TLD starts with zero inherent trust and is frequently disregarded as low-authority or noise by search algorithms. By establishing visibility and indexation here, I eliminate "domain authority" as a variable in the success equation. This proves that the results are 100% engineered. If this site ranks or parses correctly, it isn't because of a high-trust domain or legacy "juice"—it is a direct consequence of raw architectural power. It is the ultimate proof that the code, not the domain, is the authority.
 
+## What the industry experts said.
+**STATUS: VERIFIED DISCOURSE** — [View original thread on LinkedIn](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/)
+
+### [John Mueller](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506713257798266880%2Curn%3Ali%3AugcPost%3A7506650082914705408%29)
+*Senior Search Analyst / Search Relations team lead, Google*
+> "Impressive work & fancy write-up. That looks like a lot of tokens :-). You're probably going beyond what's reasonable for a site, but for practicing, that's sometimes ok. It's a lot of moving parts."
+
+**[Author Reply (Eryc Tri Juni S)](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506713257798266880%2Curn%3Ali%3AugcPost%3A7506650082914705408%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287506721705847934977%2Curn%3Ali%3AugcPost%3A7506650082914705408%29):** "Spot on John Mueller! It's definitely 'overkill' for a normal site. ha-ha. Since I was building on top of a rigid platform like Google Sites, pushing all those moving parts to the Edge was the only way to intercept the render and serve clean data to AI agents. Definitely not a daily production setup, but a really fun experiment to see how AI crawlers interact with stripped-down DOMs. Thanks for the nod on the write-up! It means a lot coming from you. 🔥"
+
+### [Etienne COURSIMAULT](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506979630482894848%2Curn%3Ali%3AugcPost%3A7506650082914705408%29)
+*Chief Digital Experience Officer @ Michelin*
+> "Interesting approach. It also seems to confirm the rise of Cloudflare Workers (or similar) as a new programmable edge envelope, where an increasing number of processes—especially those meant for agents—can live independently of the underlying application. Potentially even surfacing legacy systems and progressively wrapping and replacing their capabilities..."
+
+**[Author Reply](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506979630482894848%2Curn%3Ali%3AugcPost%3A7506650082914705408%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287507044284882178048%2Curn%3Ali%3AugcPost%3A7506650082914705408%29):** "100% aligned Curtis Krygier! Since there's no global standard yet for how LLMs ingest content, the safest bet is feeding them what they crave: pure text and semantic structure. Your MCP setup and my edge payloads do exactly that, serving clean, deterministic data instead of bloated DOMs. Definitely the perfect time to reserve those parking spaces!"
+
+### [Simone De Palma](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287507014308673888256%2Curn%3Ali%3AugcPost%3A7506650082914705408%29)
+*Technical SEO Manager | Data Analyst | BrightonSEO Speaker*
+> "Cool, that's how I'm going to ship schema markup at scale on my website"
+
+**[Author Reply](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287507014308673888256%2Curn%3Ali%3AugcPost%3A7506650082914705408%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287507016108403560448%2Curn%3Ali%3AugcPost%3A7506650082914705408%29):** "Exactly Simone De Palma. Bypassing the core application to ship structured data at the edge is a massive time-saver. Since you can parse the DOM on the fly, auto-generating exact schemas becomes effortless. Would love to hear how you plan to structure your payloads!"
+
+### [Jan Caerels](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506782567757508608%2Curn%3Ali%3AugcPost%3A7506650082914705408%29)
+*SEO conf. speaker | SEO Specialist at TUI / Freelance SEO Specialist*
+> "Very impressive tbh!"
+
+**[Author Reply](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506782567757508608%2Curn%3Ali%3AugcPost%3A7506650082914705408%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287506784031720488961%2Curn%3Ali%3AugcPost%3A7506650082914705408%29):** "Thanks Jan Caerels! Coming from someone dealing with massive enterprise SEO at TUI, that means a lot. Have you guys started exploring edge-level rendering specifically for AI bots on your end yet? 🙌"
+
+*Jan Caerels replied: "Eryc Tri Juni S We do plenty of things on the edge yes, but with Akamai :-)"*
+
+**[Author Reply](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506782567757508608%2Curn%3Ali%3AugcPost%3A7506650082914705408%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287506786939535052800%2Curn%3Ali%3AugcPost%3A7506650082914705408%29):** "Jan Caerels Ah, Akamai! That’s proper enterprise-grade edge computing right there, makes total sense for giant like TUI. I went with Cloudflare Workers primarily because their HTMLRewriter API is incredibly agile for guerrilla DOM manipulation on a locked-down platform like Google Sites. And to be completely honest, it's also 100% free for my scale, which is arguably the best feature for a personal experiment! ha-ha. Do you guys utilize Akamai’s EdgeWorkers for actual DOM stripping for bots, or is it heavily focused on dynamic routing and caching?"
+
+### [Ravinder Chauhan](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506765962667302912%2Curn%3Ali%3AugcPost%3A7506650082914705408%29)
+*Google Platinum in Search & Assistant | AVP - Digital Marketing*
+> "Eryc Tri Juni S , you've done good work. You have completed the tiring work, and at the same time, you have set clear goals so that going forward, through this, we can achieve ...."
+
+**[Author Reply](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506765962667302912%2Curn%3Ali%3AugcPost%3A7506650082914705408%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287506770700909629441%2Curn%3Ali%3AugcPost%3A7506650082914705408%29):** "Thanks Ravinder Chauhan! To be honest, executing this on a locked-down platform like Google Sites sometimes feels like strapping a jet engine to a bicycle. ha-ha. But the entire experiment was driven by a bigger architectural question: Can the intelligence layer live entirely outside the CMS? We are facing a fundamental dichotomy right now. Humans need heavy visual effects, rich UI, and engaging experiences. AI bots, on the other hand, strictly need a clean, stripped-down structure that instantly converts to text/markdown. By moving the semantic routing and DOM manipulation to the Edge, we don't have to compromise. We let the CMS handle the frontend presentation, while the Edge serves as the intelligence layer for AI agents. Really appreciate your support and insights on this! 🙏"
+
+---
+
+### Experiment Log (EXP_LOG)
+Deploying AGP on Google Sites is strictly a stress test, not a best practice.
+This earned a *"John Mueller blessing"* on LinkedIn for its extreme complexity. Yes, it has too many moving parts. That was exactly the point.
+
+#### Post Statistics (POST_STATS)
+- **Reactions:** 96
+- **Comments:** 31
+- **Reposts:** 1
+- **Impressions:** 16,948
+
+[READ_FULL_THREAD()](https://lnkd.in/p/gSCSeHVN)
+
+
 ## The Engineering Log: Solving for Absolute Constraints
 
 I treat Google Sites as a precision case study in constraint-based optimization. My focus is on augmenting its native stability with a high-velocity delivery layer at the Edge. Navigating this environment has provided the architectural discipline needed to address the unique complexities of any modern CMS stack with surgical precision.
@@ -2603,14 +2655,14 @@ Visualizes the complete AGP architecture: what gets fixed, how much, and how the
 
 The following metrics are injected live by the Cloudflare Worker at request time, sourced from the GSC_PSI_EDGE_SEO KV namespace (key: global_gsc_stats). Updated weekly via Cron + PSI API + GSC API.
 Desktop PSI — Origin
-Perf: 90/100 | Access: 95/100 | BP: 100/100 | SEO: 92/100 | FCP: 0.8s | LCP: 1.2s | TBT: 170ms
+Perf: 54/100 | Access: 95/100 | BP: 100/100 | SEO: 92/100 | FCP: 0.9s | LCP: 3.9s | TBT: 560ms
 Desktop PSI — Edge
-Perf: 97/100 | Access: 100/100 | BP: 100/100 | SEO: 100/100 | FCP: 0.9s | LCP: 0.9s | TBT: 0ms
+Perf: 99/100 | Access: 100/100 | BP: 100/100 | SEO: 100/100 | Agentic: 4/4 | FCP: 0.8s | LCP: 0.9s | TBT: 0ms
 Mobile PSI — Origin
-Perf: 52/100 | SEO: 92/100 | LCP: 30.6s | TBT: 360ms
+Perf: 48/100 | SEO: 92/100 | LCP: 30.6s | TBT: 360ms
 Mobile PSI — Edge
-Perf: 77/100 | SEO: 100/100 | LCP: 4.1s | TBT: 0ms
-Google Search Console — last 30 days (As of 2026-06-07)
+Perf: 99/100 | SEO: 100/100 | Agentic: 4/4 | LCP: 2.0s | TBT: 20ms
+Google Search Console — last 30 days (As of 2026-09-30)
 Clicks: 23 | Impressions: 1898 | CTR: 1.21% | Avg Position: 23.09
 Top Queries: edge seo indonesia, eryc tri juni s, seo malang, www.eryc.my.id
 
@@ -3264,11 +3316,11 @@ A side-by-side comparison showing Google Search Console rendering results before
 
 ### What "Instant Render (Zero-Bloat)" Means
 Instant Render
-The edge-optimized page achieves First Contentful Paint (FCP) in under 1 second on desktop (0.9s) and under 4 seconds on mobile (3.8s). The LCP image is preloaded via HTTP
+The edge-optimized page achieves First Contentful Paint (FCP) in under 1 second on desktop (0.8s) and under 2 seconds on mobile (1.1s). The LCP image is preloaded via HTTP
 header injected at the TCP/TLS layer. The browser receives rendering instructions before the body payload arrives. There is no white flash, no loading spinner, no layout reflow.
 Zero-Bloat
-Total Blocking Time (TBT) is 0ms on both mobile and desktop. All native platform scripts are mutated to
-mid-flight by the Worker. They only rehydrate on physical human interaction (touch/click). The main thread is completely empty during the PSI lab test window. 194 KiB of CSS residual remains — the accepted trade-off for eliminating render-blocking (see Row 6 of the Transform Matrix).
+Total Blocking Time (TBT) is 20ms on mobile and 0ms on desktop. All native platform scripts are mutated to
+mid-flight by the Worker. They only rehydrate on physical human interaction (touch/click). The main thread is nearly empty during the PSI lab test window. 194 KiB of CSS residual remains — the accepted trade-off for eliminating render-blocking (see Row 6 of the Transform Matrix).
 
 ### Technical Mechanism — How the Render Difference Is Produced
 Native path (Before Edge)
@@ -3340,8 +3392,8 @@ Score color coding (both): ● green = 90-100 · ■ orange = 50-89 · ▲ red =
 #### Analyzing the Score Change: Overcoming Platform Bottlenecks
 
 The live data explicitly demonstrates the architectural advantage of Edge routing over standard hosted CMS environments. The origin platform (sites.google.com/view/...) enforces rigid response headers and unoptimized JavaScript payloads, causing severe main-thread execution delays on mobile devices. By deploying the AGP architecture to intercept and unbox the DOM before it reaches the client, we trigger the following telemetry shifts:
-- Render-Blocking Mitigation (LCP): The most critical bottleneck on the origin platform was a Largest Contentful Paint (LCP) of 30.6 seconds on mobile data. Edge-level payload optimization and aggressive resource prioritization slashed this to 3.8 seconds on the edge-routed domain (www.eryc.my.id)—an 88% reduction in critical render time.
-- Main-Thread Offloading (Performance Index): By shifting the rendering burden away from the client's mobile browser and processing it via the serverless edge network, the overall Mobile Performance Index surged from a failing 48 to a robust 83.
+- Render-Blocking Mitigation (LCP): The most critical bottleneck on the origin platform was a Largest Contentful Paint (LCP) of 30.6 seconds on mobile data. Edge-level payload optimization and aggressive resource prioritization slashed this to 2.0 seconds on the edge-routed domain (www.eryc.my.id)—a 93% reduction in critical render time.
+- Main-Thread Offloading (Performance Index): By shifting the rendering burden away from the client's mobile browser and processing it via the serverless edge network, the overall Mobile Performance Index surged from a failing 48 to a near-perfect 99.
 - Technical SEO Perfection: Standard site builders restrict raw header manipulation, capping the origin's SEO score at 92. The Edge proxy restores full control over response headers and semantic footprinting, mathematically locking the live SEO and Accessibility metrics at a perfect 100/100.
 
 This proof of concept (PoC) reveals a fundamental law of the modern, AI-driven web. The underlying CMS you build on matters far less than the network layer that serves it. Crawlers and autonomous LLM engines only index what they are permitted to parse. Ultimately, whoever controls the doorways—the Edge—controls the entire semantic reality.
