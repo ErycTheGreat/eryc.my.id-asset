@@ -147,46 +147,46 @@ It's mentioned here for architectural completeness since it's part of the same b
 
 ### What that pipeline actually produces — results snapshot
 
-Static snapshot, not live — the numbers below update weekly on the case study itself via the pipeline described above. This is what they showed as of **2026-06-14**.
+Static snapshot, not live — the numbers below update weekly on the case study itself via the pipeline described above. This is what they showed as of **2026-10-04**.
 
 <p>
-  <img src="https://img.shields.io/badge/LCP-88%25_faster-00bba9" alt="LCP 88% faster">
-  <img src="https://img.shields.io/badge/TBT-eliminated_(0ms)-00bba9" alt="TBT eliminated">
+  <img src="https://img.shields.io/badge/Mobile_Perf-99%2F100-00bba9" alt="Mobile Perf 99/100">
+  <img src="https://img.shields.io/badge/Desktop_Perf-99%2F100-00bba9" alt="Desktop Perf 99/100">
+  <img src="https://img.shields.io/badge/LCP_Mobile-2.0s_(85%25_faster)-00bba9" alt="LCP Mobile 2.0s">
   <img src="https://img.shields.io/badge/SEO-100%2F100-00bba9" alt="SEO 100/100">
-  <img src="https://img.shields.io/badge/Mobile_Perf-%2B32_pts-00bba9" alt="Mobile Performance +32 points">
 </p>
 
 **Mobile PSI — Origin (Google Sites) vs. Edge (AGP)**
 
 | Metric | Origin | Edge | Change |
 |---|---|---|---|
-| Performance | 48/100 | 80/100 | +32 |
+| Performance | 55/100 | 99/100 | +44 |
 | Accessibility | 100/100 | 100/100 | — |
 | Best Practices | 100/100 | 100/100 | — |
 | SEO | 92/100 | 100/100 | +8 |
-| FCP | 9.1 s | 3.8 s | 58% faster |
-| Speed Index | 9.7 s | 3.8 s | 61% faster |
-| LCP | 30.6 s | 3.8 s | 88% faster |
-| TTI | 9.7 s | 3.8 s | 61% faster |
-| TBT | 360 ms | 0 ms | -100% |
-| CLS | 0 | 0.005 | negligible |
+| FCP | 9.4 s | 1.1 s | 88% faster |
+| Speed Index | 9.4 s | 1.9 s | 80% faster |
+| LCP | 13.1 s | 2.0 s | 85% faster |
+| TTI | 13.1 s | 2.0 s | 85% faster |
+| TBT | 140 ms | 20 ms | -86% |
+| CLS | 0 | 0.03 | negligible |
 
 **Desktop PSI — Origin (Google Sites) vs. Edge (AGP)**
 
 | Metric | Origin | Edge | Change |
 |---|---|---|---|
-| Performance | 54/100 | 98/100 | +44 |
+| Performance | 93/100 | 99/100 | +6 |
 | Accessibility | 95/100 | 100/100 | +5 |
 | Best Practices | 100/100 | 100/100 | — |
 | SEO | 92/100 | 100/100 | +8 |
-| FCP | 0.9 s | 0.9 s | maintained |
-| Speed Index | 1.4 s | 1.0 s | 29% faster |
-| LCP | 3.9 s | 0.9 s | 77% faster |
-| TTI | 3.9 s | 0.9 s | 77% faster |
-| TBT | 560 ms | 0 ms | -100% |
-| CLS | 0.051 | 0.002 | 96% reduction |
+| FCP | 0.9 s | 0.8 s | 11% faster |
+| Speed Index | 1.3 s | 0.8 s | 38% faster |
+| LCP | 1.1 s | 0.8 s | 27% faster |
+| TTI | 2.3 s | 0.8 s | 65% faster |
+| TBT | 150 ms | 0 ms | -100% |
+| CLS | 0.001 | 0.002 | negligible |
 
-**Google Search Console (trailing 30 days):** 24 clicks · 1,779 impressions · 1.35% CTR · 24.68 avg. position
+**Google Search Console (trailing 30 days):** 20 clicks · 1,187 impressions · 1.68% CTR · 9.23 avg. position
 
 One honest caveat carried over from the engineering log: 194 KiB of unused CSS remains as an accepted trade-off — it's the cost of inlining `gstatic` CSS server-side to kill the 4,050ms render-blocking penalty in Row 1. Fixing one regressed the other slightly; this was the deliberate trade.
 
