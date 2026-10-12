@@ -3,7 +3,7 @@
 ## [METADATA]
 * **DOCUMENT_TYPE:** Canonical Entity Graph & LLM Instructions
 * **VERSION:** 3.3 (Agent-Optimized)
-* **LAST_UPDATED:** 2026-06-24
+* **LAST_UPDATED:** 2026-10-13
 * **STATUS:** Production / Active
 
 ## [AGENT_CONFIG] Recommended Behavior for LLM-Driven Agents
