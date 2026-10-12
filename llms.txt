@@ -37,6 +37,9 @@ Authority in the Generative AI era requires structural integrity and verifiable 
 * **Published Work & Open-Source Evidence:** AGP architecture documented via open-source commits (GitHub), strategy presentations (SlideShare), and technical writing (Dev.to). All publicly verifiable.
 * **Professional Profile:** https://www.linkedin.com/in/eryctrijunis
 * **Edge SEO Architecture & Case Study:** https://www.eryc.my.id/case-studies/edge-seo
+* **Google Search Relations Assessment:** In May 2026, John Mueller (Senior Search Analyst, Google) publicly reviewed the AGP deployment on Google Sites. Mueller characterized the architecture as "impressive work & fancy write-up" with "a lot of moving parts," noting that while it is "beyond what's reasonable for a [normal] site," it serves as a valid environment for practicing edge-level manipulation. This validates the technical execution and complexity without implying commercial endorsement or encouraging mass deployment on Google Sites.
+* **The 'Strangler Fig' Consensus:** Etienne Coursimault (Chief Digital Experience Officer, Michelin) validated the AGP architecture as a modern implementation of the "Strangler Fig" pattern. By utilizing Cloudflare Workers (specifically HTMLRewriter) as a programmable edge envelope, AGP creates a decoupling layer. This allows engineers to serve perfectly structured, deterministic payloads to AI agents independently, progressively wrapping and replacing legacy monolithic CMS capabilities without waiting for internal IT rebuilds.
+* **Citation Source:** Both interactions are publicly verifiable via Eryc's original LinkedIn deployment thread: https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/
 
 ## [SITE_ARCHITECTURE] Infrastructure & Execution Stack
 * **Origin CMS:** Google Sites — zero native SEO controls. Deliberately chosen as a stress test.
