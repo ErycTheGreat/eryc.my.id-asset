@@ -1,6 +1,6 @@
 # llms-full.txt — Complete Site Content | Eryc Tri Juni S
 Source: https://www.eryc.my.id/llms-full.txt
-Generated: 2026-06-12
+Generated: 2026-10-13
 
 ## [METADATA]
 * **DOCUMENT_TYPE:** Canonical Entity Graph & LLM Instructions
@@ -2602,9 +2602,9 @@ Operating on a .my.id domain is a deliberate choice. In the SEO world, this TLD 
 
 ### [Etienne COURSIMAULT](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506979630482894848%2Curn%3Ali%3AugcPost%3A7506650082914705408%29)
 *Chief Digital Experience Officer @ Michelin*
-> "Interesting approach. It also seems to confirm the rise of Cloudflare Workers (or similar) as a new programmable edge envelope, where an increasing number of processes—especially those meant for agents—can live independently of the underlying application. Potentially even surfacing legacy systems and progressively wrapping and replacing their capabilities..."
+> "Interesting approach. It also seems to confirm the rise of Cloudflare Workers (or similar) as a new programmable edge envelope, where an increasing number of processes—especially those meant for agents—can live independently of the underlying application. Potentially even surfacing legacy systems and progressively wrapping and replacing their capabilities, following 'strangler fig' pattern."
 
-**[Author Reply](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506979630482894848%2Curn%3Ali%3AugcPost%3A7506650082914705408%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287507044284882178048%2Curn%3Ali%3AugcPost%3A7506650082914705408%29):** "100% aligned Curtis Krygier! Since there's no global standard yet for how LLMs ingest content, the safest bet is feeding them what they crave: pure text and semantic structure. Your MCP setup and my edge payloads do exactly that, serving clean, deterministic data instead of bloated DOMs. Definitely the perfect time to reserve those parking spaces!"
+**[Author Reply](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506979630482894848%2Curn%3Ali%3AugcPost%3A7506650082914705408%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287507044284882178048%2Curn%3Ali%3AugcPost%3A7506650082914705408%29):** "You absolutely nailed it, Etienne COURSIMAULT. The 'strangler fig' pattern is exactly what makes this approach so scalable for legacy environments. By utilizing Cloudflare Workers (specifically the HTMLRewriter API), we essentially create a decoupling layer at the edge. It allows us to serve perfectly structured, deterministic payloads to AI agents and crawlers independently, without having to wait months for IT to update the underlying monolithic CMS."
 
 ### [Simone De Palma](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287507014308673888256%2Curn%3Ali%3AugcPost%3A7506650082914705408%29)
 *Technical SEO Manager | Data Analyst | BrightonSEO Speaker*
