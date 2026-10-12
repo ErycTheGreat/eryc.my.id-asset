@@ -90,7 +90,7 @@ Traditional SEO (conventional CMS only):
 - Technical SEO: Starter $49, Standard $149, Advanced $249
 - On-Page SEO: Starter $49 (1 page), Standard $199 (6 pages), Advanced $449 (12 pages)
 - Core Web Vitals SEO: Starter $40, Standard $80, Advanced $150
-- Build From Zero (complete WordPress one-page site, PSI 100 guarantee): $560
+- Build From Zero (complete WordPress one-page site, PSI 90+ guarantee): $560
 
 Fast Delivery add-on (Technical SEO only): Starter +$20, Standard +$40, Advanced +$50. Authoritative source: https://www.eryc.my.id/case-studies/seo
 
