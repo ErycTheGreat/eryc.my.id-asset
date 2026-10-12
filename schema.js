@@ -292,7 +292,7 @@ export function getJsonLdSchema() {
 				  "priceCurrency": "USD",
 				  "priceValidUntil": "2027-12-31",
 				  "availability": "https://schema.org/InStock",
-				  "itemOffered": { "@type": "Service", "name": "Complete one-page WordPress site — PSI 100 guaranteed, RankMath, LiteSpeed Cache, QUIC.cloud CDN, Google Business Profile, review schema, social media integration. 2 weeks delivery." },
+				  "itemOffered": { "@type": "Service", "name": "Complete one-page WordPress site — PSI 90+ guaranteed, RankMath, LiteSpeed Cache, QUIC.cloud CDN, Google Business Profile, review schema, social media integration. 2 weeks delivery." },
 				  "url": "https://www.eryc.my.id/case-studies/seo"
 				}
 			  ]
