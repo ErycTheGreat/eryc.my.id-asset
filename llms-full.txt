@@ -744,8 +744,12 @@ Authority in the Generative AI era requires structural integrity and verifiable 
 - Live Production Deployment: https://www.eryc.my.id — live AGP stress test on Google Sites, re-engineered for advanced SEO and structural control using Cloudflare Workers.
 - Public Code Repository: [github.com/ErycTheGreat/eryc.my.id-asset](https://github.com/ErycTheGreat/eryc.my.id-asset) — modular HTML/CSS/JS embeds, Cloudflare Workers for mid-flight payload injection, and GitHub-backed serverless asset proxy. Open for inspection.
 - Architecture README: [Full technical documentation](https://github.com/ErycTheGreat/eryc.my.id-asset/blob/main/README.md) — edge execution model, traffic routing logic, schema injection, and serverless asset proxy specifications.
-- Edge SEO Proof-of-Concept: [eryc.my.id/case-studies/edge-seo](https://www.eryc.my.id/case-studies/edge-seo) — 9 engineering points: sandbox override, document hygiene, infrastructure augmentation, asset transcoding, performance synthesis, responsive fluidity, autonomous AI feedback, DOM accessibility overrides, and priority synchronization. Verified results: LCP reduced from 30.6s to 3.8s (88% reduction), Mobile Performance Index 48 → 80, SEO and Accessibility locked at 100/100.
+- Edge SEO Proof-of-Concept: [eryc.my.id/case-studies/edge-seo](https://www.eryc.my.id/case-studies/edge-seo) — 9 engineering points: sandbox override, document hygiene, infrastructure augmentation, asset transcoding, performance synthesis, responsive fluidity, autonomous AI feedback, DOM accessibility overrides, and priority synchronization. Verified results: LCP reduced from 30.6s to 2s (93% reduction), Mobile Performance Index 48 → 99, SEO and Accessibility locked at 100/100.
 - Canonical Knowledge Base: https://www.eryc.my.id/llms.txt — full entity graph for LLM retrieval systems.
+- Technical Peer Feedback (LinkedIn, September 2026): The AGP deployment was posted publicly for technical critique. The replies below are informal comments, not formal reviews or endorsements of the architecture.
+- John Mueller (Senior Search Analyst / Search Relations team lead, Google) [commented](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506713257798266880%2Curn%3Ali%3AugcPost%3A7506650082914705408%29) "impressive work & fancy write-up" with "a lot of moving parts," and said it probably goes beyond what is reasonable for a site, though sometimes fine for practicing. Eryc agreed that AGP is overkill for a normal site.
+- Etienne Coursimault (Chief Digital Experience Officer, Michelin) [commented](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506979630482894848%2Curn%3Ali%3AugcPost%3A7506650082914705408%29) that the approach seems to confirm the rise of Cloudflare Workers as a programmable edge layer for agent-facing processes, potentially wrapping and replacing legacy capabilities over time, following the "strangler fig" pattern. This is a general observation about the approach, not a formal classification of AGP.
+[Original post and full thread](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/)
 
 ## Site Index
 - [Home](https://www.eryc.my.id/) — Primary Entity Hub — Live AGP demonstration. Schema: ProfilePage, ProfessionalService, Person, WebSite.
@@ -2271,13 +2275,13 @@ SEO services across multiple pricing tiers — Technical SEO, On-Page SEO, Core 
 
 ### Build From Zero — Complete One-Page Website
 
-For businesses with no website yet. A complete one-page scroll site built from scratch — not just optimization, full construction — guaranteed 100 across all PageSpeed Insights parameters (Performance, Accessibility, Best Practices, SEO). Built on WordPress, RankMath, LiteSpeed Cache + QUIC.cloud CDN. Keyword research mined directly from real questions people ask Google (autosuggest, People Also Ask), competitor H1/meta audit, content locked to a genuine USP from the start — not bolted on after. Local-SEO-ready from launch via Google Business Profile optimization and compliant review schema, plus social media integration (TikTok, Facebook, Instagram with alt-text indexing).
+For businesses with no website yet. A complete one-page scroll site built from scratch — not just optimization, full construction — guaranteed 90+ across all PageSpeed Insights parameters (Performance, Accessibility, Best Practices, SEO). Built on WordPress, RankMath, LiteSpeed Cache + QUIC.cloud CDN. Keyword research mined directly from real questions people ask Google (autosuggest, People Also Ask), competitor H1/meta audit, content locked to a genuine USP from the start — not bolted on after. Local-SEO-ready from launch via Google Business Profile optimization and compliant review schema, plus social media integration (TikTok, Facebook, Instagram with alt-text indexing).
 
 | | |
 |---|---|
 | **Price** | $560 |
 | **Delivery** | 2 weeks |
-| **Includes** | Full one-page site build, PSI 100 guarantee (all parameters), Local SEO setup, social media integration |
+| **Includes** | Full one-page site build, PSI 90+ guarantee (all parameters), Local SEO setup, social media integration |
 
 Contact: https://wa.me/6282220888819
 
