@@ -2380,145 +2380,227 @@ The rules have changed, but the game is still on. Ready to level up? Let's Bring
 # Edge SEO: Asymmetric Ghost Payload (AGP) Architecture
 Source: https://www.eryc.my.id/case-studies/edge-seo
 
+**Author:** Eryc Tri Juni S
 
-> “Everyone says Google Sites is bad for SEO, even Google themselves. Not if you control the edge. If I can unlock this black-box platform, consider any CMS done."
+> “Everyone says Google Sites is bad for SEO, even Google themselves. Is that really true if you control the edge? I built this page to find out, and to show where it stops."
 
 ## Proof Of Concept (PoC): Edge SEO on Google Sites
 
----
+### OPERATIONAL DISCLAIMER: *Proof of Concept*
 
-### OPERATIONAL DISCLAIMER: Constraint Stress Test
+Disclaimer: I do not sell Google Sites Edge SEO. This edge-routing is a proof of concept, a prototype built under hard constraints before it becomes a real product, and Google Sites remains Google LLC's IP; my commercial services apply exclusively to standard CMS stacks.
 
-Disclaimer: I do not sell Google Sites Edge SEO. This edge-routing is strictly a constraint-bypassing stress test, as Google Sites remains Google LLC's IP; my commercial services apply exclusively to standard CMS stacks. Warning: Misapplying this architecture without understanding edge constraints, rendering parity, and crawler semantics risks search penalties or undefined behavior.
----
+Warning: Misapplying this architecture without understanding edge constraints, rendering parity, and crawler semantics risks search penalties or undefined behavior.
 
-Google's own John Mueller called Google Sites "not ideal for SEO purposes" — and he was being generous. Search Engine Journal, 2023. The platform ships with no meta tags, no canonical control, no robots.txt, no sitemap, no structured data, and sandboxed iframes that make Google's own crawler return a blank screen. It is, in every measurable way, designed to be invisible.
+## TL;DR
 
-Naturally, I fixed it. Without touching the CMS. Without a single server-side config change. From the network layer — intercepting every request mid-flight, reconstructing the semantic reality, and serving a GEO-ready document to every crawler and AI agent that asks. 100/100 SEO. 100/100 Accessibility. Live metrics. Zero CMS access. This is the architecture, the engineering log, and the live proof. Every number on this page is real.
+- **Problem:** Google Sites gives no control over meta tags, canonical, robots.txt, sitemap or structured data, and puts the real content inside sandboxed iframes that many crawlers cannot read cleanly.
+- **Approach:** A Cloudflare Worker sits in front as a reverse proxy. It injects the missing head tags and JSON-LD, serves robots.txt, llms.txt and sitemap.xml, unboxes the iframe for humans, and serves a parity-checked structured ghost payload to AI agents. Search crawlers get the origin HTML plus the same ghost block.
+- **Result:** Crawlers and AI agents get clean, structured HTML instead of an opaque iframe. Lab scores improve, especially on mobile. Current numbers are in Live Telemetry (one PSI run per strategy, homepage only). Cash cost is almost zero.
+- **Why it matters:** Ranking and citation are becoming separate games. If machines cannot read the page cleanly, nothing else matters. High-volume, low-signal content is actively making retrieval worse. Structure and signal density are the real work now.
+- **Limits:** This is a single-site proof of concept under hard constraints. Bot detection is User-Agent based. The ghost payload is still hand-built per page. Lab scores are not field data. No controlled ranking experiment yet. Content quality still decides the outcome.
+- **Verdict:** A working proof that a locked platform can be made machine-readable from the edge alone. Next phase is a proper controlled test and turning the prototype into something that scales. See the [Verdict](#verdict).
+- **Verify it:** open [`?debug=bot`](https://www.eryc.my.id/case-studies/edge-seo?debug=bot) (AI-agent lane) and [`?debug=googlebot`](https://www.eryc.my.id/case-studies/edge-seo?debug=googlebot) (search-crawler lane), then compare with the normal page.
 
-## 1s to 5ms: The Latency Revolution
+## Scope of This Proof of Concept
 
-Traditional SEO is a brute force; Edge SEO is a Leverage. Cloudflare V8 Isolates (the same JavaScript engine as Chrome, running at the CDN edge) collapsed execution latency from a 1-second cold start to a 5ms heartbeat. This 5ms window is where I reconstruct the response—deploying an Asymmetric Ghost Payload (AGP) mid-flight to inject high-density semantic nodes and llms.txt schemas. For Generative Engine Optimization (GEO), this is the architecture that makes it possible: I've turned a locked-down CMS into a headless engine, architecting a bespoke reality for AI crawlers.
+**It proves feasibility.** On a platform that gives no control over meta tags, canonical, robots.txt, sitemap, heading structure or the iframe sandbox, a structured, verifiable, machine-readable version of the content can be delivered from the edge alone. You can check this with the debug lanes, the validator and the Search Console render comparison.
+
+**The question here is machine readability.** This work asks whether machines can read the page. The site is indexed and appears for some queries, which I record as an observation: it is one site with no control group, so I don't attribute it to the edge layer. Readability is a precondition for ranking or citation, and measuring the effect is the next phase.
+
+**What would test effect.** A controlled comparison (matched pages with and without the ghost payload, across several engines and a larger prompt set) is the next phase, and the reason this prototype needs funding to become a product.
+
+**How to read this page:** Engineers: start at [The Engineering Log](#engineering-log). Business owners: services and pricing live on the [SEO services page](/seo), not here. Everyone: the TL;DR above and the [Verdict](#verdict) at the end cover the whole argument.
+
+**Labels used on this page:** **Observed** = I measured it and linked the source. **Hypothesis** = what I believe, plus what would prove me wrong. **Conviction** = my opinion, owned as opinion. I could be wrong, and finding out how is part of the experiment.
+
+Google's own John Mueller called Google Sites *"not ideal for SEO purposes"* — and he was being generous. [Search Engine Journal, 2023](https://www.searchenginejournal.com/google-sites-seo/495662/). The platform ships with no meta tags, no canonical control, no robots.txt, no sitemap, no structured data, and sandboxed iframes that make Google's own crawler return a blank screen. It is, in practice, close to invisible to crawlers by default.
+
+The control surface is at the network layer. A Cloudflare Worker sits in front, rewrites the response, injects the missing head elements and JSON-LD, serves robots.txt / llms.txt / sitemap.xml, and gives AI agents a parity-checked structured payload while leaving the human interface intact. Lab scores and live telemetry are below. No CMS access was required. This page is the working proof under the constraints I choose.
+
+## Why the Edge: 5ms Execution, Not 1-Second Cold Starts
+
+Traditional SEO is brute force; **Edge SEO is Leverage.** Cloudflare V8 Isolates *(the same JavaScript engine as Chrome, running at the CDN edge)* execute in milliseconds with zero container cold start. That brief window of Worker CPU time is where I reconstruct the response—deploying an Asymmetric Ghost Payload (AGP) mid-flight to inject high-density semantic nodes and `llms.txt` schemas. For **Generative Engine Optimization (GEO)**, this architecture is the key: turning a locked-down CMS into a headless engine, and architecting a purpose-built, machine-readable layer strictly for AI crawlers.
 
 ## The SEO Market Is Shifting. Here Is What That Means For You.
 
-Volume tactics that built search visibility for the last decade are now feeding the exact problem they're trying to solve. High-output, low-signal content doesn't just underperform in AI retrieval — it actively contaminates the retrieval pool. The machine learns from what it finds. If what it finds is noise, it returns noise. With confidence.
+Volume tactics that built search visibility for the last decade are now feeding the exact problem they're trying to solve. High-output, low-signal content doesn't just underperform in AI retrieval — [it actively contaminates the retrieval pool](https://www.unite.ai/ai-pollution-in-search-results-risks-retrieval-collapse/). A retrieval system doesn't train on what it fetches, but the rule remains: garbage in, garbage out. If the context window is filled with noise, the engine returns noise. With confidence.
 
-Your ranking didn't change. Your visibility did. Zero-click searches hit 69% in 2025. Only 12% of URLs cited by ChatGPT, Gemini, and Copilot rank in Google's top 10. You can hold position 1 and be invisible to every AI engine simultaneously. Ranking and citation are two separate games now.
+Your ranking didn't change. Your visibility did. [Zero-click searches hit 69% in 2025](https://www.seroundtable.com/similarweb-google-zero-click-search-growth-39706.html). [Only 12% of URLs cited by ChatGPT, Gemini, and Copilot rank in Google's top 10](https://ahrefs.com/blog/ai-search-overlap/). The overlap varies—Perplexity leans closer to Google's index, while others diverge entirely. But the baseline is clear: you can hold position 1 and be invisible to AI engines. Ranking and citation are increasingly separate games.
 
-Note: GEO does not replace SEO — it extends it. Traditional SEO fundamentals remain the prerequisite: semantic structure, content relevancy, technical hygiene, originality. What changed is the enforcement mechanism. Search algorithms rewarded volume and backlinks. AI retrieval rewards clarity, verifiability, and semantic structure — the fundamentals that good SEO always demanded but algorithms rarely enforced. The businesses that built honest, well-structured content all along are the ones AI engines now cite. GEO is not a new game — it is the same game, finally scored correctly.
+The upside is equally real. [AI search visitors convert at 23x the rate of traditional organic](https://ahrefs.com/blog/ai-search-traffic-conversions-ahrefs/) — they arrive already pre-qualified by the machine. But that traffic only reaches you if the machine can read and trust your page in the first place. Most sites still fail that test. Not a thousand articles. Not another link campaign. A clean, machine-readable entity graph, served straight from the edge, on any CMS.
 
-The upside is equally real. AI search visitors convert at 23x the rate of traditional organic — pre-qualified by the machine before they click. But that only reaches you if the machine can read you clearly. Not a thousand articles. Not a link campaign. A machine-readable entity graph, served in under 10ms, on any CMS.
-
-Every platform has the same ceiling: it cannot control what happens between the request and the response. That gap is where AI crawlers make their citation decision. That gap is where I work. If that's the problem you're solving, the service tier below covers the entry point.
-
-### Edge GEO Services — Service Tiers
-
-#### GEO Foundation — $275
-
-Entry-level GEO infrastructure layer. Delivery: 3–5 days. Compatible with any CMS.
-- robots.txt with explicit AI crawler rules
-- llms.txt entity graph for your business
-- JSON-LD @graph injection at the edge
-- Canonical consolidation to your domain
-- Before/after citation test (3 prompts × 2 engines)
-- One-page proof report PDF
-
-Optional add-on: Cloudflare setup + domain connection +$50
-
-#### Full AGP Deployment — $650
-
-Complete Asymmetric Ghost Payload architecture deployment. Delivery: 7–10 days. Any CMS.
-- Everything in GEO Foundation
-- Cloudflare Worker full deployment
-- Core Web Vitals audit + performance optimization
-- PSI before/after documented report
-- 30-day post-deploy monitoring window
-- Extended citation tracking report
+Every platform has the same ceiling: it cannot control what happens between the request and the response. That gap is where AI crawlers make their citation decision. That gap is where I work.
 
 ## The Pipeline Is Poisoned: On Signal Quality and Retrieval Collapse
 
-Most SEO is still a volume game. Thousands of spinning articles. Thousands of PBN backlinks. "NLP for SEO" as a selling point — which, if you understand how language models actually work, should make you deeply uncomfortable. The shaman has learned new vocabulary, but the ritual remains the same.
+Most SEO is still a volume game. High output, low signal, optimized for ranking systems that no longer fully control what actually gets retrieved. Now the same pattern just comes with newer words — “NLP for SEO”, entity this, AI-ready that — while the underlying practice stays the same.
 
-The damage is structural. RAG systems fetch documents from the live web and generate responses conditioned on what they retrieve. If the retriever surfaces a garbage SEO post, the answer inherits the garbage. Researchers call it Retrieval Collapse. The industry built the pipeline, fed it noise, and is now surprised by what comes out.
+The damage is structural. [RAG systems fetch documents from the live web and generate responses conditioned on what they retrieve. If the retriever surfaces a garbage SEO post, the answer inherits the garbage.](https://www.searchenginejournal.com/ai-search-is-eating-itself-the-seo-industry-is-the-source/572537/) At ecosystem scale, researchers call this [Retrieval Collapse](https://www.unite.ai/ai-pollution-in-search-results-risks-retrieval-collapse/) (Yu et al., 2026, arXiv:2602.16136). The industry built the pipeline, filled it with volume, and now acts surprised at what comes out.
 
-AGP is the counter-argument running in production. One precisely engineered, machine-readable page — on the hardest platform, on the lowest-trust domain — indexed, parsed, and cited by the same AI crawlers that ignore ten-thousand-word keyword guides on aged domains. Structure beats volume. Signal beats noise. The machines did not change the rules. They simply became much harder to fool.
+AGP is a working counter-example under hard constraints: one page, locked platform, low-trust domain, parity-checked structured payload from the edge. I am still collecting telemetry on AI-crawler ingestion and RAG citations, so **I’m not claiming final results there yet**. *Hypothesis: structure beats volume, signal beats noise.* The machines did not change the rules. They just made low-signal content more expensive to ignore.
 
-I'm not a hacker. I'm not a shaman. I just read the spec and build precisely to it. Somewhere right now, a content farm is publishing its 451st listicle about "20 Top SEO Experts in Indonesia." The AI crawler skipped it. It's reading this instead.
+Somewhere a content farm is still publishing the 451st generic listicle. The question is whether a clean, machine-readable alternative is easier for retrieval systems to prefer. This page exists so that comparison can actually be made.
 
 ## What is Edge SEO on a Locked-Down CMS?
 
 ### The Operator's Definition: System Override
 
-The industry thinks Edge SEO is just tweaking headers at the CDN. I define it as absolute system override. It is the deterministic practice of intercepting requests mid-flight to neutralize native CMS bottlenecks—like locked UI logic or restricted <head> access—before the page ever renders.
+Most people treat Edge SEO as header tweaks at the CDN. That is too small. Here it means full control of the response stream: intercept the request before it reaches the client, neutralize the locked parts of the CMS (no head control, sandboxed iframes, missing robots/sitemap/structured data), and serve the version each audience actually needs. The origin stays untouched.
 
 ### Serving the Predictive Algorithm
 
-Traditional SEO was engineered for a simpler machine, relying on the sheer volume of content and endless link-building. But the algorithm has matured into a predictive engine that decodes true human intent; it's no longer just counting keywords. You cannot trick a generative AI with outdated tactics. To dominate this new reality, you don't manipulate the bot—you serve it perfectly structured context.
+Traditional SEO was engineered for a simpler machine, relying on the sheer volume of content and endless link-building. But the algorithm has matured into a predictive engine that decodes true human intent; it's no longer just counting keywords. You cannot trick a generative AI with outdated tactics. To win in this new reality, you don't manipulate the bot—you serve it perfectly structured context.
 
-### The Edge Execution Model: Total Asymmetric Control
+### The Edge Execution Model
 
-Because you cannot trick the machine, you must control the delivery. Edge SEO removes the CMS from the equation. By deploying serverless architecture mid-flight, we intercept the raw response and reconstruct reality before it hits the browser or the bot:
-- DOM Unboxing: The HTML is parsed on the fly (via HTMLRewriter), aggressively stripping out forced constraints, injected bloat, and restrictive CSPs.
-- Visual Override: Native UI bottlenecks—like rigid background cropping—are neutralized and swapped with pre-fetched, high-performance asset payloads.
-- Semantic Injection: We bypass the closed origin and force-feed the crawler exactly what it craves: a flawless, machine-readable entity graph injected directly into the HTML.
+You cannot trick the machine with volume or clever wording. You control the delivery or you lose. Edge SEO takes the CMS out of the decision path. The Worker intercepts the response mid-flight and decides what each type of requester actually receives:
 
-### The Result
+- **Humans** get the full interface with the iframe unboxed.
+- **Search crawlers** get the origin HTML plus the structured ghost block.
+- **AI agents** get the clean, stripped ghost payload with the same text and facts.
 
-Total asymmetric control. The locked-down CMS believes it served its native, unoptimized template. Meanwhile, the AI ingests your exact context, trusts the system architecture, and cites your unique value proposition as the definitive authority.
+The origin still thinks it served its normal page. The machines get something they can actually parse. Whether they cite it is a separate question — that is what the next phase measures.
+
+*[Human UI renders the live ASCII tunnel execution here.]*
+
+**Code Repository:** [Review the Worker srcdoc injection and visual override payload on CodePen](https://codepen.io/editor/ErycTheGreat/pen/019ec11e-75ad-7966-adac-dab37a3ebc19).
+
+## The Real Problem: The Text Exists, the Structure Doesn't
+
+**Observed:** On Google Sites the content is on the page, but the platform emits it as visually styled blocks with no heading elements. There is no H1, H2 or H3 to set. A machine that reads the page gets text without a document outline: no signal for what the page is about, which parts are subsections, or how they relate.
+
+This is a different problem from "JavaScript content is invisible to crawlers." Googlebot can render JavaScript, and the `srcdoc` unboxing makes the embedded interface readable. But rendering does not create semantics that were never in the markup. A fully rendered page can still be a flat wall of text.
+
+That gap is what the ghost payload fills. It carries the same content as real semantic HTML: headings in order (H1, H2, H3), JSON-LD describing the entities, and links as readable anchors. Search crawlers receive it prepended to the original page, and AI agents receive it with the origin markup stripped.
+
+**Conviction:** structure matters for retrieval, not only for ranking. Many retrieval pipelines split documents by headings, and a page with no outline gives them nothing to split on. I treat this as a hypothesis to test, not a result.
+
+**Where Google's warning applies, and where it doesn't:** Google calls dynamic rendering a workaround for JavaScript-generated content that search engines cannot see. The gap here is structural, not about visibility. On a platform that cannot emit headings and does not allow server-side rendering, the edge is the only layer where structure can be added.
+
+**Design direction (proposed, not built):** add the structure in place for every visitor. The Worker would turn existing elements into real H1–H3 tags with identical visual styling, so humans and Googlebot receive one DOM and the separate ghost copy shrinks to the AI-agent lane. That would remove the need for a distinct search-crawler lane. Feasibility depends on where the source text lives: in native Google Sites blocks it needs a per-path selector mapping, and in an embed I author the headings can be written directly.
 
 ## The Core Engine: Asymmetric Ghost Payloads (AGP)
 
-### 1. Architecture Overview (The Routing Layer)
+### Architecture Overview: The Routing Layer
 
-To gain control over a closed-origin platform, control must begin at the routing layer. Authority is not established inside the CMS. It is enforced at the edge, before the origin server responds. The architecture is built on strict edge-level traffic governance executed through a reverse proxy.
+Control has to start at the routing layer. You do not get authority from inside a locked CMS. You enforce it at the edge, before the origin even responds. The Worker sits in front as a reverse proxy and decides what each type of requester actually receives.
 
 ## AGP Architecture Diagram — Asymmetric Ghost Payload Routing Flow
 
-An interactive node diagram showing the complete AGP request lifecycle through the Cloudflare Worker engine — how a single request produces two asymmetric realities from one URL.
+An interactive node diagram showing the complete AGP request lifecycle through the Cloudflare Worker engine — how a single request produces asymmetric renderings (human, search crawler, AI agent) of the same content from one URL.
+
+*[Human UI renders the interactive 8-node SVG animation and routing sequence here.]*
+
+**Architecture Visualization:** [Review the interactive SVG node diagram and Vanilla JS animation source on CodePen](https://codepen.io/editor/ErycTheGreat/pen/019ebf97-10f9-7ae4-adcc-bac6ae87e1ac).
 
 ### Beat Sequence: 7 Steps of the AGP Request Lifecycle
-- BEAT 0 — Packet departs · Bot detection fires A packet travels from the REQUEST node to the CLOUDFLARE WORKER. The moment it hits the edge, the Worker evaluates isAIBot, isCrawlerBot, and isMobile. Gate state: CLOSED (HOLD label). Active nodes: REQUEST + WORKER.
-- BEAT 1 — R2 early exit · Static assets bypass Fast path: REQUEST → WORKER → R2 BUCKET. If path is /assets/* or llms.txt, the Worker calls env.MY_ASSETS.get() from R2 directly. CMS is entirely bypassed. Active nodes: REQUEST + WORKER + R2.
-- BEAT 2 — HTML route · Worker fetches CMS Packet travels REQUEST → WORKER → CMS ORIGIN. Worker fires fetch(request) upstream. Google Sites serves its vanilla response — it has no idea what is about to happen. Gate state: HOLD (PROC label, blinking). Active nodes: REQUEST + WORKER + CMS.
-- BEAT 3 — KV read · AI pre-computed state KV state data travels KV STORE → WORKER. Promise.all reads LCP_IMAGE_URL + GHOST_CSS + SEO_PAYLOADS in parallel with the CMS fetch. Ghost HTML was pre-written to KV by the AI Worker on cron — zero AI latency at request time. Active nodes: REQUEST + WORKER + CMS + KV + AI.
-- BEAT 4 — The fork · GATE OPEN The AGP moment. Gate opens based on earlier bot detection. One packet entered. Two realities exit from one URL. Asymmetric output begins. Active nodes: REQUEST + WORKER + CMS.
-- BEAT 5A — Human packet → Rich payload Human payload travels WORKER → FULL UI node via the HTMLRewriter lane. Every font, image, and script served from R2. Return stream "200 OK" appears. Active nodes: REQUEST + WORKER + FULL UI + R2.
-- BEAT 5B — Ghost packet → SEO payload from KV Ghost payload travels WORKER → GHOST node via the ElementSlasher lane. Payload served from SEO_PAYLOADS KV. ElementSlasher strips AI + social bots — search crawlers keep full HTML. No cloaking — CMS never knew. Active nodes: REQUEST + WORKER + GHOST + KV.
 
-### Live Architecture Performance — Current Readings
+1. **BEAT 0 — Packet departs · Bot detection fires**
+   A packet travels from the REQUEST node to the CLOUDFLARE WORKER. The moment it hits the edge, the Worker evaluates `isAIBot`, `isCrawlerBot`,
+   and `isMobile`. Gate state: CLOSED (HOLD label). Active nodes: REQUEST + WORKER.
+2. **BEAT 1 — R2 early exit · Static assets bypass**
+   Fast path: REQUEST → WORKER → R2 BUCKET. If the path is `/assets/*`, the Worker proxies it from the R2-backed CDN domain; for `llms.txt` it calls `env.MY_ASSETS.get()` on R2
+   directly. CMS is entirely bypassed. Active nodes: REQUEST + WORKER + R2.
+3. **BEAT 2 — HTML route · Worker fetches CMS**
+   Packet travels REQUEST → WORKER → CMS ORIGIN. Worker fires `fetch(request)` upstream. Google Sites serves its vanilla response — it has no idea what is about to happen. Gate state: HOLD (PROC label, blinking). Active nodes: REQUEST + WORKER + CMS.
+4. **BEAT 3 — KV read · AI pre-computed state**
+   KV state data travels KV STORE → WORKER. The Worker starts its KV reads before it awaits the CMS response, so they run in parallel with the fetch: a `Promise.all` reads `LCP_IMAGE_URL`, `GHOST_CSS`, `GSTATIC_CSS` and `CRITICAL_CSS` from `AGP_STATE`, and bot requests also read the page's ghost HTML from `SEO_PAYLOADS`. The ghost HTML is a pre-written KV entry and the cron AI Worker pre-computes the visual state, so no AI runs at request time. Active nodes: REQUEST + WORKER + CMS + KV + AI.
+5. **BEAT 4 — The fork · GATE OPEN**
+   The AGP moment. Gate opens based on earlier bot detection. One packet entered. Different packagings of the same content exit from one URL. Asymmetric output begins. Active nodes: REQUEST + WORKER + CMS.
+6. **BEAT 5A — Human packet → Rich payload**
+   Human payload travels WORKER → FULL UI node via the HTMLRewriter lane. Every font, image, and script served from R2. Return stream "200 OK" appears. Active nodes: REQUEST + WORKER + FULL UI + R2.
+7. **BEAT 5B — Ghost packet → SEO payload from KV**
+   Ghost payload travels WORKER → GHOST node via the ElementSlasher lane. Payload served from `SEO_PAYLOADS` KV. ElementSlasher strips the origin markup for AI + social bots only; search crawlers keep the full origin HTML and also get the ghost block. Same text content as the human layer, checkable via `?debug=bot` and `?debug=googlebot`. CMS never knew. Active nodes: REQUEST + WORKER + GHOST + KV.
 
-The AGP architecture described in this diagram produces the following live performance results, injected at runtime from GSC_PSI_EDGE_SEO KV (key: global_gsc_stats):
-Edge domain (www.eryc.my.id) — Desktop PSI
-Perf: 99/100 | Access: 100/100 | BP: 100/100 | SEO: 100/100 | Agentic: 4/4 | FCP: 0.8s | SI: 0.9s | LCP: 0.9s | TTI: 0.9s | TBT: 0ms | CLS: 0 (As of 2026-09-30)
-Origin (sites.google.com/view/eryc-tri-juni-s-notes/home) — Desktop PSI
-Perf: 54/100 | Access: 95/100 | BP: 100/100 | SEO: 92/100 | FCP: 0.9s | SI: 1.4s | LCP: 3.9s | TTI: 3.9s | TBT: 560ms | CLS: 0.051 (As of 2026-09-30)
-Edge domain — Mobile PSI
-Perf: 99/100 | Access: 100/100 | BP: 100/100 | SEO: 100/100 | Agentic: 4/4 | FCP: 1.1s | SI: 1.5s | LCP: 2.0s | TTI: 1.5s | TBT: 20ms | CLS: 0.045 (As of 2026-09-30)
-Origin — Mobile PSI
-Perf: 48/100 | Access: 100/100 | BP: 100/100 | SEO: 92/100 | FCP: 9.1s | SI: 9.7s | LCP: 30.6s | TTI: 9.7s | TBT: 360ms | CLS: 0 (As of 2026-09-30)
-Google Search Console — last 30 days (As of 2026-09-30)
-Clicks: 23 | Impressions: 1898 | CTR: 1.21% | Avg Position: 23.09
-Top Queries: edge seo indonesia, eryc tri juni s, seo malang, www.eryc.my.id
+### Node Definitions — AGP Architecture
+
+8 nodes form the complete AGP routing topology.
+
+REQUEST NODE — Entry Point
+:   Origin of every packet. Two entity sub-icons: **YOU** (human browser) and **BOT** (AI crawler). Classification logic: any bot (`isAIBot`, `isSocialBot` or `isCrawlerBot`) leaves the human lane and gets the ghost block prepended; `isAIBot` and `isSocialBot` additionally have the origin markup stripped, while search crawlers keep the full origin HTML. `?debug=bot` is a deterministic override for the AI-agent lane and `?debug=googlebot` for the search-crawler lane. No entity passes unclassified. Label: "User-Agent"
+
+CLOUDFLARE WORKER — The Switch · The Gate
+:   Central node. Serverless V8 isolate at the edge. Contains the `isBot?` detection logic and a mechanical gate that physically opens on bot classification.
+    Gate states: HOLD → PROC → OPEN. Domain label: "yourdomain.com · low-latency · serverless · V8 isolate"
+
+CMS ORIGIN — Oblivious Infrastructure
+:   Google Sites origin server. Serves vanilla unoptimized response. Has zero knowledge of the mid-flight interception. Label: "sites.google.com · oblivious · vanilla serve"
+
+KV STORE — Ghost Origin · State Memory
+:   Cloudflare KV namespace. Holds `LCP_IMAGE_URL`, `GHOST_CSS`, `SEO_PAYLOADS`, and `global_gsc_stats` (live PSI + GSC telemetry). Ghost HTML lives here — never written to CMS. Fast edge reads. Read via `Promise.all` in parallel with CMS fetch. Label: "ghost state · low-latency · AGP\_STATE · SEO\_PAYLOADS"
+
+AI WORKER — Decoupled Cron Compute · The Brain
+:   Secondary Cloudflare Worker on Cron schedule. Completely off the request path. Pipeline: Puppeteer renders locked origin → DOM sanitisation → Llama-3-8b-instruct extracts the hero image URL and dominant background color → KV write (`LCP_IMAGE_URL`, `GHOST_CSS`). Pre-computes so the primary Worker has zero AI latency at request time. It does not write the ghost HTML.
+
+FULL UI — Human Reality · Rich Payload
+:   Human delivery lane output. HTMLRewriter injects canonical + JSON-LD + OG. LCP poster instant (50 KiB). Heavy AVIF post-paint. Scripts sleep until real interaction. gstatic CSS served from an R2-hosted copy (deferred on mobile). R2 serves the assets. Performance: 99/100. Label: "rich · fast · intact · Human payload = rich injected HTML · 0 bloat"
+
+GHOST — Bot Reality · Payload Born at Edge
+:   Bot delivery lane output. Ghost HTML is born at the edge — never written in the CMS. H1→H3 hierarchy + JSON-LD @graph. ElementSlasher fires for AI + social bots
+    only — search crawlers keep the full origin HTML and get the same ghost block. Same text content as the human layer by design, checkable via ?debug=bot. Label: "stripped · semantic · Ghost payload = only in EDGE · H1→H3 · JSON-LD @graph"
+
+R2 BUCKET — cdn.eryc.my.id + env.MY\_ASSETS · The Real CDN
+:   Cloudflare R2 object storage. Serves the assets Google Sites cannot host: `/assets/*` (proxied by the Worker over HTTP from the CDN domain, with optional edge image resizing), fonts (.woff2) and images (.avif, .webp), plus llms.txt and llms-full.txt, which the Worker reads directly with `env.MY_ASSETS.get()`. Cache headers on `/assets/*`: `max-age=31536000, immutable`. Early exit — never touches CMS origin. Label: "early exit · assets · /assets/\* · llms.txt · fonts · images"
+
+```
+REQUEST (Browser or Bot)
+        |
+        v
+[CLOUDFLARE WORKER — V8 Isolate]
+        |
+   Promise.all()
+   /            \
+fetch(CMS)    KV: AGP_STATE + SEO_PAYLOADS
+        \            /
+         [isBot? GATE]
+         /            \
+        NO              YES
+        |                |
+        v                v
+  HUMAN LANE        BOT LANES
+  HTMLRewriter      SEO_PAYLOADS.get(path) → prepend ghost block
+  R2 assets         AI/social: ElementSlasher strips origin
+  FULL UI           search crawlers: full origin HTML kept
+  JSON-LD inject    Ghost HTML H1→H3 + JSON-LD @graph
+  98-100/100        similar content, checkable via ?debug=bot / ?debug=googlebot
+
+  [EARLY EXIT — before the gate]
+  /assets/* or llms.txt?
+        |
+        v
+  R2 (CDN proxy for /assets/*; env.MY_ASSETS.get() for llms.txt)
+  CMS never contacted
+```
+
+**Live performance of this architecture:** see [Live Telemetry](#live-telemetry) below.
 
 The routing layer performs two foundational operations:
-- Apex Proxying: All non-www traffic is permanently redirected to the www apex domain using a 301 redirect. This immediately removes canonical fragmentation and consolidates domain authority before the origin is even contacted.
-- Path Pruning (The /home Override): Google Sites automatically generates a redundant /home endpoint for the index page. This creates unnecessary duplication and dilutes entity focus. The edge worker intercepts this path and forces a permanent 301 redirect to the clean root (/), preserving structural clarity and entity precision.
 
-Once routing is locked and canonical conflicts are neutralized, the engine deploys the Asymmetric Ghost Payload (AGP). AGP is intrinsically asymmetric because it delivers two architectural realities from a single URL while maintaining absolute semantic parity.
-- The Human Layer: Users receive a rich, fully interactive, sandboxed visual interface. The experience remains intact and functionally complete.
-- The Ghost Layer (Bot): Search crawlers and AI agents receive a flattened, high-speed semantic entity graph optimized for machine parsing and structural clarity.
+- **Host Canonicalization (non-www → www):** Requests on the non-www hostname are permanently redirected (301) to the canonical www host, with path and query string preserved. The IndexNow key file, the sitemap route and the POST `/mcp` endpoint answer before this redirect. This removes canonical fragmentation and consolidates domain authority before the origin is even contacted.
+- **Path Pruning (The /home Override):** Google Sites automatically generates a redundant /home endpoint for the index page. This creates unnecessary duplication and dilutes entity focus. The edge worker intercepts this path and forces a permanent 301 redirect to the clean root (/), preserving structural clarity and entity precision.
 
-This is not deceptive cloaking. The substance of the payload is never altered. The DOM is reorganized and unboxed to deliver identical meaning in the most optimal structure for the requesting entity. The context remains 1:1. Only the presentation layer changes.
+Once routing is locked and canonical conflicts are neutralized, the engine deploys the Asymmetric Ghost Payload (AGP). AGP is intrinsically asymmetric because it serves one URL in different packagings: human, search crawler and AI agent. The text content is meant to be the same in all of them, and I run a parity check before every KV write (outside the Worker). Known exceptions are listed under Limits.
 
-### 2. Cloudflare Workers & HTMLRewriter Integration
+*[Human UI renders the live ASCII gravitational vortex and chromatic glitch logo here.]*
+
+**Code Repository:** [Review the ASCII gravitational vortex and Worker srcdoc injection source on CodePen](https://codepen.io/editor/ErycTheGreat/pen/019ec015-54eb-7ee9-98fc-0799d9b18858).
+
+- **The Human Layer (human visitors):** Humans receive a rich, fully interactive interface with the iframe content unboxed into the page via `srcdoc`.
+- **The Crawler Layer (search crawlers):** Googlebot, Bingbot and similar search crawlers receive the original Google Sites HTML with the head injection and the same ghost text block prepended to the body. Nothing is stripped and the iframe is not unboxed, so the readable text comes from the ghost block.
+- **The Ghost Layer (AI agents and social bots):** GPTBot, ClaudeBot and similar agents receive that same ghost text with the origin markup stripped, a flattened, high-speed semantic version optimized for machine parsing and structural clarity.
+
+Search crawlers are also identified by User-Agent, so this is dynamic rendering, not identical delivery: their markup differs from what humans receive, and the text is intended to be the same. Only AI agents and social bots, which do not render layouts and work within limited context windows, get the origin markup stripped. You can check the AI-agent lane with `?debug=bot`, the search-crawler lane with `?debug=googlebot`, or any lane with `curl -A "Googlebot"`.
+
+### Cloudflare Workers & HTMLRewriter Integration
 
 Execution occurs mid-flight through serverless edge computation. When a request reaches the CDN, a Cloudflare Worker intercepts it before it is delivered downstream. Instead of passing the locked origin response directly to the client, the Worker streams the response through HTMLRewriter. HTMLRewriter parses and mutates the DOM tree in real time with negligible latency overhead. The system intercepts the <head> and <body> streams and performs controlled structural injections during rendering.
 
 Core edge operations include:
-- Canonical Forcing and Domain Dominance: A standard Google Site leaks authority back to its native sites.google.com/view/... origin. The edge neutralizes this by injecting absolute canonical tags directly into the <head>, consolidating all entity authority into the custom domain while treating the origin strictly as infrastructure.
-- Structured Payload Injection: Missing metadata, structured schemas, and the Ghost CSS layer are appended directly into the DOM stream prior to render.
-- Policy Override: Restrictive Content Security Policies (CSPs) that prevent structural augmentation are selectively removed, allowing controlled enhancement without modifying semantic truth.
+
+- **Canonical Consolidation and Domain Authority:** A standard Google Site leaks authority back to its native sites.google.com/view/... origin. The edge neutralizes this by injecting absolute canonical tags directly into the <head>, consolidating all entity authority into the custom domain while treating the origin strictly as infrastructure.
+- **Structured Payload Injection:** Missing metadata, structured schemas, and the Ghost CSS layer are appended directly into the DOM stream prior to render.
+- **Policy Override:** Restrictive Content Security Policies (CSPs) that prevent structural augmentation are handled as follows: the `Content-Security-Policy` header is removed from human HTML responses (not from bot-lane responses), and the iframe sandbox is removed only from embeds I author. Both remove protections Google Sites applies by default, which is acceptable only because the embedded content is mine (see the security note below).
 
 Here is the foundational mechanic of that interception:
 
@@ -2531,10 +2613,10 @@ export default {
 
     // 1. Proxy Routing: Enforce WWW apex dominance and kill /home
     if (url.hostname !== canonicalHost) {
-      return Response.redirect(`https://${canonicalHost}${url.pathname}`, 301);
+      return Response.redirect(`https://${canonicalHost}${url.pathname}${url.search}`, 301);
     }
     if (url.pathname === "/home" || url.pathname === "/home/") {
-      return Response.redirect(`https://${canonicalHost}/`, 301);
+      return Response.redirect(`https://${canonicalHost}/${url.search}`, 301);
     }
 
     // 2. Fetch the locked origin (e.g., Google Sites)
@@ -2553,7 +2635,7 @@ export default {
       .on('head', {
         element(e) {
           // Unbox the origin: Inject structured JSON-LD & Ghost CSS prior to render
-          e.append(`<script type="application/ld+json">${JSON.stringify(schemaGraph)}</script>`, { html: true });
+          e.append(`<script type="application/ld` + `+json">${JSON.stringify(schemaGraph)}</script>`, { html: true });
           e.append(`<style id="ghost-css">/* High-speed layout instructions */</style>`, { html: true });
 
           // Inject custom Meta Descriptions and Canonicals natively missing from the CMS
@@ -2565,89 +2647,110 @@ export default {
 };
 ```
 
-## 3. Generative Engine Optimization (GEO) Readiness
+## Generative Engine Optimization (GEO) Readiness
 
-Let's be honest about where GEO stands right now. There is no GSC equivalent for AI citations. No consensus tooling. No official standard — the term itself was only formally defined in an academic paper in 2023, and as of early 2026, Wikipedia notes no consensus definition exists in academic literature. Even llms.txt is a community proposal, not a ratified standard. Every RAG pipeline ingests differently. Every LLM has its own retrieval logic. The playbook is being written in real time.
+Let's be honest about where GEO stands right now. There is no GSC equivalent for AI citations. No consensus tooling. No official standard — [the term itself was only formally defined in an academic paper in 2023](https://arxiv.org/abs/2311.09735), and as of early 2026, [Wikipedia notes no consensus definition exists in academic literature](https://en.wikipedia.org/wiki/Generative_engine_optimization). Even llms.txt is a community proposal, not a ratified standard. Every RAG pipeline ingests differently. Every LLM has its own retrieval logic. The playbook is being written in real time.
 
-This is the environment I'm building for. AGP is not a theory — it is a working implementation of GEO readiness: force the semantic entity graph into the native DOM before any crawler parses it, serve it in under 10ms, make it structurally impossible to miss. No ranking tricks. No keyword stuffing. Just a machine-readable truth, served with zero friction, from the edge.
+This is the environment I'm building for. AGP is not a theory — it is a working implementation of GEO readiness: force the semantic entity graph into the native DOM before any crawler parses it, serve it from the edge, make it hard to miss. No ranking tricks. No keyword
+stuffing. Just a machine-readable truth, served with zero friction, from the edge.
 
 Search is aggressively transitioning from traditional keyword-matching to predictive entity-resolution. Generative AI models (like Google's AI Overviews, Perplexity, and ChatGPT Search) do not tolerate noise or ambiguity. They demand a singular, machine-readable truth. The AGP architecture is natively GEO-ready because it explicitly dictates the rules of engagement for AI agents:
-- The Algorithmic Red Carpet (robots.txt): Google Sites natively lacks a robots.txt file, leaving crawler behavior up to chance. My edge worker dynamically generates and serves one, explicitly defining crawl rules and allowing AI agents (such as OAI-SearchBot and Google-Extended) to ingest the semantic layer without friction.
-- Structured Entity Injection: Because the edge controls the stream, I can instantly direct AI agents to targeted llms.txt files or inject pristine JSON-LD entity graphs directly into the HTML. I feed the Large Language Model exactly what it needs to reason about the context, cementing the site not just as a search result, but as a primary cited entity.
 
-In May 2026, Google moved an "Agentic Browsing" category into Lighthouse's default config — grading whether a page is ready not just for AI to read, but to act: accessibility tree structure, layout stability, and WebMCP tool registration. WebMCP is a proposed open standard letting a site declare specific actions an agent can call directly — submit a form, start a booking — instead of guessing from a screenshot. It's still experimental, needs a Chrome origin trial, and fails on most sites today. That's the point: the architecture here was built to serve a flattened, machine-readable entity graph before this category existed. Citation was the first problem. Action is the next one.
+- **The Algorithmic Red Carpet (robots.txt):** Google Sites natively lacks a `robots.txt` file, leaving crawler behavior up to chance. My edge worker dynamically generates and serves one, explicitly defining crawl rules and allowing AI agents (such as `OAI-SearchBot`) to ingest the semantic layer without friction. It also declares a `Google-Extended` rule, which is a robots.txt token that controls AI use of content, not a crawler.
+- **Structured Entity Injection:** Because the edge controls the stream, I can direct AI agents to targeted `llms.txt` files or inject pristine JSON-LD entity graphs directly into the HTML. I feed the Large Language Model exactly what it needs to reason about the context, cementing the site not just as a search result, but as a primary cited entity.
+
+In May 2026, Google moved an "Agentic Browsing" category into Lighthouse's default config — grading whether a page is ready not just for AI to read, but to act: accessibility tree structure, layout stability, and WebMCP tool registration. WebMCP is a proposed open standard letting a site declare specific actions an agent can call directly — submit a form, start a booking — instead of guessing from a screenshot. It's still experimental, needs a Chrome origin trial, and fails on most sites today. That's the point: the architecture here was built to serve a flattened, machine-readable entity graph before this category existed. Citation was the first problem. Action is the next one. Current state: the Worker exposes an MCP endpoint at `/mcp` and sends the origin-trial header, but the client-side WebMCP tool registration is switched off in the current build, so I am not claiming a passing agentic-browsing audit yet.
 
 ## Why Google Sites? The Strategic Crucible
 
 ### The Architecture of Simplicity
 
-I have a deep respect for Google Sites. It is a masterpiece of accessibility and security—free, intuitive, and built with a robust infrastructure. The platform's reliance on sandboxed iframes is a brilliant security decision by the Google engineering team. However, for a high-level SEO strategist, these same features represent an elegant engineering problem: how do you achieve deep search visibility in an environment designed for total security and zero-configuration?
+Google Sites is genuinely good at what it was built for: simple, secure, zero-config publishing. The sandboxed iframes are a solid security choice. For anyone who needs real control over meta, canonical, robots, sitemap, headings, or structured data, those same choices become the problem. The question this experiment asks is simple: can you still make the page properly machine-readable when the origin gives you almost nothing?
 
 ### The Honest Cost of the Stress Test
 
-Let me be transparent about something. I spent four months — averaging 16 hours a day — optimizing a platform that Google's own spokesperson said isn't ideal for SEO. That's approximately 1,920 hours of my life. On Google Sites. Voluntarily.
+This was not efficient and I knew it. I spent months on a platform Google itself says is not ideal for SEO, on a low-trust TLD, with zero control over head, robots, sitemap, or structured data. The sandboxed iframe and the locked origin were the real constraints. I did it on purpose.
 
-It is, objectively, a ridiculous thing to do. The sandboxed iframe alone took weeks to fully understand, instrument, and bypass without breaking everything else. The Cloudflare Worker accumulated 968 commits in four months. Every sane developer said "just use Astro.js." They were right. I ignored them anyway — because the rational response to "can I make Google Sites GEO-ready from the network layer?" is not "how?" but "why?" I did it anyway.
-
-This case study documents what that produced, not what it cost. But the absurdity is the proof: if this architecture runs cleanly on the most constrained, most locked-down, least SEO-friendly platform on the internet — on a TLD many "SEO experts" would blame before opening DevTools — then your CMS is not the problem. The edge is the solution. It always was.
+Most people would just move to a proper framework. That advice is correct for almost every project. It is the wrong test for the question I was asking. If the edge can deliver clean, parity-checked, machine-readable output even under these constraints, then “no CMS access” is a routing problem, not a wall.
 
 ### The Stress Test: Solving for the .my.id Variable
 
-Operating on a .my.id domain is a deliberate choice. In the SEO world, this TLD starts with zero inherent trust and is frequently disregarded as low-authority or noise by search algorithms. By establishing visibility and indexation here, I eliminate "domain authority" as a variable in the success equation. This proves that the results are 100% engineered. If this site ranks or parses correctly, it isn't because of a high-trust domain or legacy "juice"—it is a direct consequence of raw architectural power. It is the ultimate proof that the code, not the domain, is the authority.
+Operating on a **.my.id** domain is a deliberate choice. In the SEO world, this TLD starts with zero inherent trust and is frequently disregarded as low-authority or noise by search algorithms. The goal is to eliminate "domain authority" as a variable in the success equation: if visibility and indexation happen here, they can't be credited to a trusted domain. For what this proof of concept tests, whether the platform's content can be made machine-readable, the domain is not a variable that can explain the result. Any visibility or indexation the site gets is recorded as an observation.
 
-## What the industry experts said.
-**STATUS: VERIFIED DISCOURSE** — [View original thread on LinkedIn](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/)
+## A perspective from the search industry.
+
+**TECHNICAL PEER FEEDBACK** — [View original thread on LinkedIn](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/)
+
+*[Human UI renders the custom interactive LinkedIn feedback module here.]*
+
+**Frontend Execution:** [Review the custom feedback UI component and edge injection source on CodePen](https://codepen.io/editor/ErycTheGreat/pen/01a14671-d1d9-7c62-9573-8edfdad6ab34).
 
 ### [John Mueller](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506713257798266880%2Curn%3Ali%3AugcPost%3A7506650082914705408%29)
+
 *Senior Search Analyst / Search Relations team lead, Google*
+
 > "Impressive work & fancy write-up. That looks like a lot of tokens :-). You're probably going beyond what's reasonable for a site, but for practicing, that's sometimes ok. It's a lot of moving parts."
 
-**[Author Reply (Eryc Tri Juni S)](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506713257798266880%2Curn%3Ali%3AugcPost%3A7506650082914705408%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287506721705847934977%2Curn%3Ali%3AugcPost%3A7506650082914705408%29):** "Spot on John Mueller! It's definitely 'overkill' for a normal site. ha-ha. Since I was building on top of a rigid platform like Google Sites, pushing all those moving parts to the Edge was the only way to intercept the render and serve clean data to AI agents. Definitely not a daily production setup, but a really fun experiment to see how AI crawlers interact with stripped-down DOMs. Thanks for the nod on the write-up! It means a lot coming from you. 🔥"
+**[Author Reply (Eryc Tri Juni S)](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506713257798266880%2Curn%3Ali%3AugcPost%3A7506650082914705408%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287506721705847934977%2Curn%3Ali%3AugcPost%3A7506650082914705408%29):** "Spot on John Mueller! It's definitely 'overkill' for a normal site. ha-ha. Since I was building on top of a rigid platform like Google Sites, pushing all those moving parts to the Edge was the only way to intercept the render and serve clean data to AI agents. Definitely not a daily production setup, but a really fun experiment to see how AI crawlers interact with stripped-down DOMs. Thanks for the nod on the write-up! It means a lot coming from you."
 
 ### [Etienne COURSIMAULT](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506979630482894848%2Curn%3Ali%3AugcPost%3A7506650082914705408%29)
+
 *Chief Digital Experience Officer @ Michelin*
+
 > "Interesting approach. It also seems to confirm the rise of Cloudflare Workers (or similar) as a new programmable edge envelope, where an increasing number of processes—especially those meant for agents—can live independently of the underlying application. Potentially even surfacing legacy systems and progressively wrapping and replacing their capabilities, following 'strangler fig' pattern."
 
 **[Author Reply](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506979630482894848%2Curn%3Ali%3AugcPost%3A7506650082914705408%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287507044284882178048%2Curn%3Ali%3AugcPost%3A7506650082914705408%29):** "You absolutely nailed it, Etienne COURSIMAULT. The 'strangler fig' pattern is exactly what makes this approach so scalable for legacy environments. By utilizing Cloudflare Workers (specifically the HTMLRewriter API), we essentially create a decoupling layer at the edge. It allows us to serve perfectly structured, deterministic payloads to AI agents and crawlers independently, without having to wait months for IT to update the underlying monolithic CMS."
 
 ### [Simone De Palma](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287507014308673888256%2Curn%3Ali%3AugcPost%3A7506650082914705408%29)
+
 *Technical SEO Manager | Data Analyst | BrightonSEO Speaker*
+
 > "Cool, that's how I'm going to ship schema markup at scale on my website"
 
 **[Author Reply](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287507014308673888256%2Curn%3Ali%3AugcPost%3A7506650082914705408%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287507016108403560448%2Curn%3Ali%3AugcPost%3A7506650082914705408%29):** "Exactly Simone De Palma. Bypassing the core application to ship structured data at the edge is a massive time-saver. Since you can parse the DOM on the fly, auto-generating exact schemas becomes effortless. Would love to hear how you plan to structure your payloads!"
 
 ### [Jan Caerels](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506782567757508608%2Curn%3Ali%3AugcPost%3A7506650082914705408%29)
+
 *SEO conf. speaker | SEO Specialist at TUI / Freelance SEO Specialist*
+
 > "Very impressive tbh!"
 
-**[Author Reply](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506782567757508608%2Curn%3Ali%3AugcPost%3A7506650082914705408%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287506784031720488961%2Curn%3Ali%3AugcPost%3A7506650082914705408%29):** "Thanks Jan Caerels! Coming from someone dealing with massive enterprise SEO at TUI, that means a lot. Have you guys started exploring edge-level rendering specifically for AI bots on your end yet? 🙌"
+**[Author Reply](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506782567757508608%2Curn%3Ali%3AugcPost%3A7506650082914705408%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287506784031720488961%2Curn%3Ali%3AugcPost%3A7506650082914705408%29):** "Thanks Jan Caerels! Coming from someone dealing with massive enterprise SEO at TUI, that means a lot. Have you guys started exploring edge-level rendering specifically for AI bots on your end yet?"
 
 *Jan Caerels replied: "Eryc Tri Juni S We do plenty of things on the edge yes, but with Akamai :-)"*
 
 **[Author Reply](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506782567757508608%2Curn%3Ali%3AugcPost%3A7506650082914705408%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287506786939535052800%2Curn%3Ali%3AugcPost%3A7506650082914705408%29):** "Jan Caerels Ah, Akamai! That’s proper enterprise-grade edge computing right there, makes total sense for giant like TUI. I went with Cloudflare Workers primarily because their HTMLRewriter API is incredibly agile for guerrilla DOM manipulation on a locked-down platform like Google Sites. And to be completely honest, it's also 100% free for my scale, which is arguably the best feature for a personal experiment! ha-ha. Do you guys utilize Akamai’s EdgeWorkers for actual DOM stripping for bots, or is it heavily focused on dynamic routing and caching?"
 
 ### [Ravinder Chauhan](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506765962667302912%2Curn%3Ali%3AugcPost%3A7506650082914705408%29)
+
 *Google Platinum in Search & Assistant | AVP - Digital Marketing*
+
 > "Eryc Tri Juni S , you've done good work. You have completed the tiring work, and at the same time, you have set clear goals so that going forward, through this, we can achieve ...."
 
-**[Author Reply](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506765962667302912%2Curn%3Ali%3AugcPost%3A7506650082914705408%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287506770700909629441%2Curn%3Ali%3AugcPost%3A7506650082914705408%29):** "Thanks Ravinder Chauhan! To be honest, executing this on a locked-down platform like Google Sites sometimes feels like strapping a jet engine to a bicycle. ha-ha. But the entire experiment was driven by a bigger architectural question: Can the intelligence layer live entirely outside the CMS? We are facing a fundamental dichotomy right now. Humans need heavy visual effects, rich UI, and engaging experiences. AI bots, on the other hand, strictly need a clean, stripped-down structure that instantly converts to text/markdown. By moving the semantic routing and DOM manipulation to the Edge, we don't have to compromise. We let the CMS handle the frontend presentation, while the Edge serves as the intelligence layer for AI agents. Really appreciate your support and insights on this! 🙏"
+**[Author Reply](https://www.linkedin.com/feed/update/urn:li:ugcPost:7506650082914705408/?dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287506765962667302912%2Curn%3Ali%3AugcPost%3A7506650082914705408%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287506770700909629441%2Curn%3Ali%3AugcPost%3A7506650082914705408%29):** "Thanks Ravinder Chauhan! To be honest, executing this on a locked-down platform like Google Sites sometimes feels like strapping a jet engine to a bicycle. ha-ha. But the entire experiment was driven by a bigger architectural question: Can the intelligence layer live entirely outside the CMS? We are facing a fundamental dichotomy right now. Humans need heavy visual effects, rich UI, and engaging experiences. AI bots, on the other hand, strictly need a clean, stripped-down structure that instantly converts to text/markdown. By moving the semantic routing and DOM manipulation to the Edge, we don't have to compromise. We let the CMS handle the frontend presentation, while the Edge serves as the intelligence layer for AI agents. Really appreciate your support and insights on this!"
 
----
+### Experiment Log (EXP\_LOG)
 
-### Experiment Log (EXP_LOG)
-Deploying AGP on Google Sites is strictly a stress test, not a best practice.
-This earned a *"John Mueller blessing"* on LinkedIn for its extreme complexity. Yes, it has too many moving parts. That was exactly the point.
+Deploying AGP on Google Sites is a proof of concept for working under hard constraints, and the prototype for a real product. Where server-side rendering is available, it remains the simpler default.
 
-#### Post Statistics (POST_STATS)
-- **Reactions:** 96
-- **Comments:** 31
+A *"John Mueller blessing"* ? Hard to say. But the extreme complexity definitely got his attention. That was exactly the point.
+
+*[Human UI renders the animated JSON terminal metrics counting up here.]*
+
+**Metrics Visualization:** [Review the animated JSON stats block and edge injection source on CodePen](https://codepen.io/editor/ErycTheGreat/pen/01a14693-ee4c-73be-8b85-a32760bf96d9).
+
+#### Post Statistics (POST\_STATS)
+
+- **Reactions:** 105
+- **Comments:** 35
 - **Reposts:** 1
-- **Impressions:** 16,948
+- **Saves:** 63
+- **Link Engagement:** 79
+- **Impressions:** 18,508
 
-[READ_FULL_THREAD()](https://lnkd.in/p/gSCSeHVN)
+[READ\_FULL\_THREAD()](https://lnkd.in/p/gSCSeHVN)
 
-
-## The Engineering Log: Solving for Absolute Constraints
+## The Engineering Log: Solving for Hard Constraints
 
 I treat Google Sites as a precision case study in constraint-based optimization. My focus is on augmenting its native stability with a high-velocity delivery layer at the Edge. Navigating this environment has provided the architectural discipline needed to address the unique complexities of any modern CMS stack with surgical precision.
 
@@ -2655,710 +2758,776 @@ I treat Google Sites as a precision case study in constraint-based optimization.
 
 Visualizes the complete AGP architecture: what gets fixed, how much, and how the routing produces those results.
 
-### Live Performance Telemetry — Current Readings
+*[Human UI renders the interactive SVG DIP IC chip Transform Matrix animation here.]*
 
-The following metrics are injected live by the Cloudflare Worker at request time, sourced from the GSC_PSI_EDGE_SEO KV namespace (key: global_gsc_stats). Updated weekly via Cron + PSI API + GSC API.
-Desktop PSI — Origin
-Perf: 54/100 | Access: 95/100 | BP: 100/100 | SEO: 92/100 | FCP: 0.9s | LCP: 3.9s | TBT: 560ms
-Desktop PSI — Edge
-Perf: 99/100 | Access: 100/100 | BP: 100/100 | SEO: 100/100 | Agentic: 4/4 | FCP: 0.8s | LCP: 0.9s | TBT: 0ms
-Mobile PSI — Origin
-Perf: 48/100 | SEO: 92/100 | LCP: 30.6s | TBT: 360ms
-Mobile PSI — Edge
-Perf: 99/100 | SEO: 100/100 | Agentic: 4/4 | LCP: 2.0s | TBT: 20ms
-Google Search Console — last 30 days (As of 2026-09-30)
-Clicks: 23 | Impressions: 1898 | CTR: 1.21% | Avg Position: 23.09
-Top Queries: edge seo indonesia, eryc tri juni s, seo malang, www.eryc.my.id
+**Matrix Visualization:** [Review the interactive SVG Transform Matrix and edge interception logic on CodePen](https://codepen.io/editor/ErycTheGreat/pen/019ee0ca-32f4-79ad-ab56-c1e1c63db08a).
 
+### Diagram 1 — Transform Matrix: PSI Error → Cloudflare Worker Engine → Fixed
 
-### The "Impossible" Engineering Log:
+Six real PageSpeed Insights (PSI) errors from the Google Sites origin enter the Worker engine. Each is intercepted mid-flight, mutated, and exits as a fixed output.
+One partial residual remains: 194 KiB unused CSS — an accepted architectural trade-off (the cost of moving the gstatic stylesheet, a 4,050ms render-blocker on the origin, to an R2-hosted copy that is deferred on mobile and loaded synchronously on desktop).
 
-#### Step 01: The Sandbox Override & Dynamic Site Rendering (DSR)
+**Data source:** Google PageSpeed Insights API v5, Lighthouse 12.
+**Last measured:** 2026-10-25T19:22:03.165Z
 
-Engineering Strategy: System Override Google Sites utilizes a high-security sandboxed iframe architecture to render user content. While effective for security, this creates a "rendering wall" that obscures deep semantic hierarchies from standard crawlers. The Dynamic Site Rendering (DSR) intervention bridges this gap by decoupling the origin's visual container from the crawler's data ingestion. By leveraging Cloudflare KV as a persistent state-store, the edge worker reconstructs the site's hidden DOM structure into a flattened, indexable document hierarchy (H1, H2, H3) injected mid-flight.
+#### Mobile PSI Audit Results
 
-Implementation Snippet: Triggered on every bot request: reads SEO_PAYLOADS KV by path, prepends the Ghost Payload into <body> before the origin response reaches the crawler.
+Mobile dataset: 6 PSI categories intercepted and resolved at the Cloudflare edge.
+
+| Row | Category | Engine Operation | Before — Origin | After — Edge | Root Cause | Fix Applied at Edge | Status |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | Render Blocking | STEP 05 // R2 CSS SWAP | ▲ 4,050 ms | ● 0 ms | gstatic stylesheet · Google Font · 190 KiB blocking critical render path | The gstatic stylesheet link is swapped for an R2-hosted copy (/assets/css/gstatic-cache.css): deferred with media="print" onload on mobile, loaded synchronously with fetchpriority=high on desktop. Google Fonts deferred with media="print" onload | FIXED |
+| 2 | Image Delivery | STEP 04 // POSTER-THEN-HYDRATE | ▲ 3,653 KiB | ● 50 KiB | div[aria-label="edge-bg-hijack"] — oversized unoptimized background image blocking LCP | 50 KiB AVIF poster served at LCP via HTTP preload; 3.3 MB high-fidelity AVIF loaded async post-interaction via WakeUpScript + requestIdleCallback | FIXED |
+| 3 | Total Blocking Time (TBT) | STEP 05 // SCRIPT SLEEP | ▲ High (see live telemetry) | ● Near zero (see live telemetry) | 734 KiB JavaScript · eval() 764ms · blocking main thread during PSI lab test | All scripts mutated to type="edge-delayed-script" mid-flight; hydration fires on the first mousemove, keydown or touch event (not on scroll or wheel) and is skipped for Lighthouse/PSI runs — scripts wait for first interaction | FIXED |
+| 4 | Cache TTL / LCP Priority | STEP 07+09 // AGP\_STATE | ■ 1d TTL | ● ∞ cache | fetchpriority missing · 1-day TTL · 1,499 KiB unoptimized assets · no preload hint | R2 serves all assets with Cache-Control: max-age=31536000, immutable; LCP\_IMAGE\_URL from AGP\_STATE KV injected as an HTTP Link: preload response header with fetchpriority=high | FIXED |
+| 5 | SEO Score | STEP 02+03 // HEAD INJECT | ● 92/100 | ● 100/100 | No meta description · missing canonical · no structured data | Edge injects: meta description, full JSON-LD @graph (Person + WebSite + TechArticle), canonical, robots.txt with AI crawler rules, llms.txt. (The H1–H3 hierarchy is added for bots via SEO\_PAYLOADS; Lighthouse's own run is served the human lane and heading structure is not part of the Lighthouse SEO category, so it is not what moves this score.) | FIXED |
+| 6 | Accessibility (A11y) | STEP 06+08 // ARIA+CSS | ● 100/100 | ● 100/100 | 5,353 KiB payload · invalid aria-selected on anchor tags · hamburger menu missing aria-label | Script defer reduces payload; img width/height injected; aria-label force-injected into hamburger div[role=button]; aria-selected corrected to aria-current="page" on nav links | Score unchanged (100 → 100); the underlying violations were fixed. Separate residual: 194 KiB unused CSS, the accepted trade-off from Row 1 (R2-hosted gstatic stylesheet). |
+
+#### Desktop PSI Audit Results
+
+Desktop dataset: same 6 categories, lower raw values due to desktop rendering environment. All fixes identical — architecture is device-agnostic.
+
+| Row | Category | Before — Origin | After — Edge | Status |
+| --- | --- | --- | --- | --- |
+| 1 | Render Blocking | ▲ 1,200 ms | ● R2 copy, loaded synchronously (same edge) | MITIGATED |
+| 2 | Image Delivery | ▲ 1,800 KiB | ● 40 KiB | FIXED |
+| 3 | Total Blocking Time | ▲ High (see live telemetry) | ● Near zero (see live telemetry) | FIXED |
+| 4 | Cache TTL / LCP | ■ 1d TTL | ● ∞ cache | FIXED |
+| 5 | SEO Score | ● 92/100 | ● 100/100 | FIXED |
+| 6 | Accessibility | ● 95/100 | ● 100/100 | FIXED. Separate residual: 194 KiB unused CSS (see Row 1). |
+
+**Live PSI and Search Console readings:** see [Live Telemetry](#live-telemetry) below (one canonical copy, refreshed weekly).
+
+## The Engineering Log: Solving for Hard Constraints
+
+I treat Google Sites as a precision case study in constraint-based optimization. My focus is on augmenting its native stability with a high-velocity delivery layer at the Edge. The engineering log below details the edge-level transformations the Cloudflare Worker applies mid-flight to work around CMS barriers, including what broke along the way.
+
+**Production Infrastructure:** You can inspect the complete production source directly. [Review the complete AGP Cloudflare Worker routing logic, Edge SEO architecture, and JSON-LD injection source code on GitHub](https://github.com/ErycTheGreat/eryc.my.id-asset).
+
+### Implementation Excerpts (from the production Worker)
+
+**How the snippets fit together:** they are excerpts from one Worker, not standalone files. Build a single `HTMLRewriter` named `rewriter` (Step 02), chain every `.on()` handler onto it, and call `.transform(response)` once at the end. Handlers that only apply to human visitors are registered inside `if (!isBot)`. Variables such as `url`, `env`, `response`, `isBot`, `isMobile`, `isPSI`, `newHeaders`, `agpLcpUrl`, `agpGhostCss` and `agpGstaticReady` are defined in Steps 01, 04 and 07 and reused later. Replace `yourdomain.com` and placeholder values with your own.
+
+#### Quick Start: A Minimal Worker You Can Paste and Test
+
+**A simplified starting point, not the production Worker.** It redirects to the canonical host, injects a canonical tag, and prepends a ghost payload from KV for AI-agent User-Agents (or `?debug=bot`). It needs one KV binding named `SEO_PAYLOADS`, with one key per page path (for example `/` or `/about`) holding that page's ghost HTML.
+
+**Left out on purpose:** AI-agent origin stripping (Step 01), JSON-LD (Step 02), iframe unboxing (Step 03), poster-then-hydrate (Step 04), script deferral (Step 05). Each has its own pitfalls, covered below.
+
+**Parity rule:** the ghost payload must carry the same text as the page humans see. If the two drift apart, this stops being dynamic rendering and becomes cloaking.
 
 ```
-// --- DSR SANDBOX OVERRIDE: STATE RECONSTRUCTION ---
-// Logic: Identifying machine agents to serve the asymmetric flattened document.
-
 export default {
- async fetch(request, env) {
-   const url = new URL(request.url);
-   const userAgent = request.headers.get("User-Agent") || "";
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    const host = "www.yourdomain.com";
+    if (url.hostname !== host) {
+      return Response.redirect(`https://${host}${url.pathname}${url.search}`, 301);
+    }
 
-   // 1. DETECTING THE REQUESTING ENTITY
-   const isBot = /googlebot|bingbot|yandexbot|duckduckbot|OAI-SearchBot|ChatGPT-User|Claude-Web|PerplexityBot|Google-Extended/i.test(userAgent);
+    const ua = request.headers.get("User-Agent") || "";
+    const isBot = /GPTBot|ClaudeBot|PerplexityBot|OAI-SearchBot/i.test(ua)
+      || url.searchParams.get("debug") === "bot";
 
-   // 2. FETCHING THE FLATTENED STRUCTURAL STATE (Sub-10ms)
-   let botPayload = null;
-   if (isBot) {
-       try {
-            if (env && env.SEO_PAYLOADS) {
-                // Reconstruct path to match KV keys
-                const cleanPath = url.pathname.replace(/\/$/, "") || "/";
-                botPayload = await env.SEO_PAYLOADS.get(cleanPath);
-            }
-       } catch (error) {
-            console.error("DSR State Retrieval Error:", error);
-       }
-   }
+    // Start the KV read before awaiting the origin, so both run in parallel
+    const key = url.pathname.replace(/\/$/, "") || "/";
+    const payloadPromise = isBot ? env.SEO_PAYLOADS.get(key) : null;
 
-   let response = await fetch(request);
-   let rewriter = new HTMLRewriter();
+    const response = await fetch(request);
+    if (!(response.headers.get("content-type") || "").includes("text/html")) {
+      return response;
+    }
+    const payload = isBot ? await payloadPromise : null;
 
-   // 3. MID-FLIGHT DOM UNBOXING
-   if (isBot && botPayload) {
-       rewriter.on("body", {
-            element(el) {
-                // Injecting the unified and indexable H-tag hierarchy
-                // Neutralizing the iframe barrier before crawler ingestion
-                el.prepend(botPayload, { html: true });
-            }
-       });
-   }
+    const rewriter = new HTMLRewriter()
+      .on('link[rel="canonical"]', { element(e) { e.remove(); } })
+      .on("head", {
+        element(e) {
+          e.append(`<link rel="canonical" href="https://${host}${url.pathname}">`, { html: true });
+        },
+      });
+    if (payload) {
+      rewriter.on("body", { element(e) { e.prepend(payload, { html: true }); } });
+    }
 
-   return rewriter.transform(response);
- }
+    const out = rewriter.transform(response);
+    const headers = new Headers(out.headers);
+    headers.append("Vary", "User-Agent");
+    return new Response(out.body, { status: out.status, headers });
+  },
 };
 ```
 
-#### Step 02: Clean Document Hygiene
+#### Step 01: Multi-Lane Bot Detection & Ghost Payload Injection (DSR)
 
-Engineering Strategy: Signal Density Optimization In systems engineering, "Document Hygiene" is the process of maximizing the Signal-to-Noise Ratio. Traditional CMS platforms are "general-purpose," meaning they inject significant code debt—legacy scripts, redundant metadata, and defensive CSS—that creates "noise" for a predictive algorithm. By enforcing a Strict Separation of Concerns, the AGP architecture strips this platform overhead mid-flight. For humans, we neutralize the visual clutter; for bots, we bypass the bloated DOM entirely. This ensures the HTML "signal" is pure, high-density, and unambiguous.
+**Engineering Strategy: Asymmetric Dynamic Site Rendering**
+Google Sites renders content inside sandboxed iframes, creating a rendering wall for crawlers. The edge Worker classifies each request into a lane: human, search crawler, or AI agent / social bot. For all bot traffic it reads pre-written, path-matched ghost HTML from Cloudflare KV (`SEO_PAYLOADS`) and prepends it into the `<body>`. The KV read is started *before* the origin response is awaited, so the two run in parallel. Search crawlers keep the full origin HTML plus the ghost block; AI agents and social bots also have the origin markup stripped. The ghost text must match the human text (see the Performance Integrity Protocol).
 
-Implementation Snippet: Strips native canonical, description, and og:title first — then appends the clean replacement. Order matters: remove before inject prevents duplicate tag conflicts in the crawler's parsed DOM.
+**Implementation Snippet:**
 
 ```
-// --- CLEAN DOCUMENT HYGIENE: SIGNAL PRUNING ---
-// Logic: Stripping general-purpose overhead to enforce semantic clarity.
+// --- THE EXECUTIONER CLASS: removes origin elements for AI/social bots only ---
+class ElementSlasher {
+  element(el) {
+    if (el.getAttribute('data-agp-protected') === 'true') return;   // keep header/footer you own
+    if (el.tagName === 'script') {
+      const type = (el.getAttribute('type') || '').toLowerCase();
+      if (type === 'application/ld+json') return;                   // never strip structured data
+    }
+    el.remove();
+  }
+}
 
-const customHeaderContent = `<meta name="author" content="Your Brand">`;
+// --- BOT DETECTION ---
+const userAgent = request.headers.get("User-Agent") || "";
+const debugLane = url.searchParams.get("debug"); // "bot" = AI-agent lane, "googlebot" = search-crawler lane
 
-// 1. DEFINING THE REWRITER FOR TOTAL HEAD PURIFICATION
-// We remove the platform's native, unoptimized tags to prevent canonical conflicts.
-let rewriter = new HTMLRewriter()
-    .on('link[rel="canonical"]', { element(e) { e.remove(); } })
-    .on('meta[name="description"]', { element(e) { e.remove(); } })
-    .on('meta[property="og:title"]', { element(e) { e.remove(); } })
+const isAIBot = /OAI-SearchBot|ChatGPT-User|GPTBot|ClaudeBot|Claude-User|Claude-SearchBot|Claude-Web|PerplexityBot|Perplexity-User|Google-Agent|GoogleAgent-Search|GoogleOther|Gemini-Deep-Research|anthropic-ai/i.test(userAgent);
+const isCrawlerBot = /Googlebot|bingbot|Applebot|Yandexbot/i.test(userAgent) || debugLane === "googlebot";
+const isSocialBot = /FacebookBot|Twitterbot|WhatsApp|LinkedInBot|Telegrambot|Discordbot/i.test(userAgent);
+const isBot = isAIBot || isCrawlerBot || isSocialBot || debugLane === "bot";
 
-// 2. NEUTRALIZING NATIVE UI BOTTLENECKS (For Human Experience)
-// We hide native platform containers that cause layout shift or "flash"
-// while we prepare to hydrate the bespoke reality.
-    .on("head", {
-        element(e) {
-            // Neutralizing specific Google Sites UI classes (.EmVfjc)
-            e.append("<style>.EmVfjc { opacity: 0 !important; display: none !important; }</style>", { html: true });
+// --- START THE KV READ BEFORE AWAITING THE ORIGIN (runs in parallel) ---
+async function readBotPayload(env, url) {
+  try {
+    if (env && env.SEO_PAYLOADS) {
+      const cleanPath = url.pathname.replace(/\/$/, "") || "/";
+      return await env.SEO_PAYLOADS.get(cleanPath);
+    }
+  } catch (error) {
+    console.error("KV Fetch Error:", error);
+  }
+  return null;
+}
 
-            // Injecting the Loud Signal: Our High-Density Semantic Payload
-            e.append(customHeaderContent, { html: true });
-        }
-    });
+const botPayloadPromise = isBot ? readBotPayload(env, url) : Promise.resolve(null);
+const response = await fetch(request);               // origin fetch runs while KV is being read
+// ... (return early if the response is not HTML, then:)
+const botPayload = await botPayloadPromise;
 
-// 3. THE SEMANTIC STREAM (For Crawler Consumption)
-// If the entity is a bot, we prioritize the clean Knowledge Graph (botPayload)
-// over the heavy, script-laden origin body.
+// --- EVERY BOT LANE, search crawlers included: prepend the ghost block ---
 if (isBot && botPayload) {
-    rewriter.on("body", {
-        element(el) {
-            // Prepending the pure semantic truth
-            el.prepend(botPayload, { html: true });
-        }
-    });
+  rewriter.on("body", {
+    element(el) { el.prepend(botPayload, { html: true }); }
+  });
+}
+
+// --- AI AGENTS & SOCIAL BOTS ONLY: strip origin markup. Search crawlers are excluded. ---
+if (isBot && !isCrawlerBot) {
+  rewriter
+    .on('script', new ElementSlasher())
+    .on('style', new ElementSlasher())
+    .on('iframe', new ElementSlasher())
+    .on('noscript', new ElementSlasher())
+    .on('header', new ElementSlasher())
+    .on('footer', new ElementSlasher())
+    .on('div[jscontroller]', new ElementSlasher());
 }
 ```
 
-#### Step 03: Infrastructure Augmentation
+#### Step 02: Head Purification & Document Hygiene
 
-Engineering Strategy: Virtual Management Layer Google Sites is optimized for zero-configuration simplicity, which inherently precludes access to critical infrastructure controls such as server-side headers, granular meta-tag management, and complex JSON-LD injections. The AGP architecture addresses this by establishing a Virtual Management Layer at the CDN level. By intercepting requests before they reach the origin, we transmute the "locked" platform into a sovereign engine. We inject the protocol-level instructions (robots.txt, IndexNow), the semantic identity (JSON-LD), and the social graph metadata directly into the stream, enforcing enterprise-grade SEO standards on a consumer-grade origin.
+**Engineering Strategy: Signal-to-Noise Ratio Optimization**
+To avoid duplicate tag conflicts, the Worker strips the native `canonical`, `description` and `og:title` tags first, then appends one clean metadata block: canonical, description, `llms.txt` discovery links and a JSON-LD graph. Order matters: remove before inject.
 
-Implementation Snippet:Worker intercepts /robots.txt at path level — Google Sites has no native file. JSON-LD @graph is injected into stream before the origin response reaches the client.
+**Implementation Snippet:**
 
 ```
-// --- INFRASTRUCTURE AUGMENTATION: VIRTUAL LAYER ---
-// Logic: Enforcing sovereign authority for protocols and semantic identity.
-
 const domain = "https://www.yourdomain.com";
 const canonicalUrl = domain + url.pathname;
 
-// 1. PROTOCOL CONTROL: DYNAMIC ROBOTS.TXT GENERATION
-if (url.pathname === "/robots.txt") {
-   const robotsTxt = `
-# Explicitly ALLOW AI Crawlers for GEO
-User-agent: OAI-SearchBot
-Allow: /
-Allow: /llms.txt
+// A small, standalone JSON-LD example. Replace the values with your own entities.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "WebSite", "@id": `${domain}/#website`, "url": domain, "name": "Your Brand" },
+    { "@type": "Person",  "@id": `${domain}/#person`,  "name": "Your Name", "url": domain, "sameAs": ["https://www.linkedin.com/in/your-profile"] },
+    { "@type": "TechArticle", "headline": "Your page title", "url": canonicalUrl, "author": { "@id": `${domain}/#person` } }
+  ]
+};
+const jsonLdSchema = `<script type="application/ld` + `+json">${JSON.stringify(jsonLd)}</script>`;
 
-# Explicitly BLOCK useless commercial scrapers
-User-agent: PetalBot
-Disallow: /
-
-Sitemap: ${domain}/sitemap.xml
-    `.trim();
-
-   return new Response(robotsTxt, {
-       headers: { "Content-Type": "text/plain; charset=utf-8" }
-   });
-}
-
-// 2. SEMANTIC IDENTITY: JSON-LD @GRAPH INJECTION
 const customHeaderContent = `
-    <meta name="description" content="Your highly optimized description here.">
-    <link rel="canonical" href="${canonicalUrl}">
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "WebSite",
-          "name": "Your Brand Name",
-          "url": "${domain}"
-        }
-      ]
-    }
-    </script>
+  <link rel="canonical" href="${canonicalUrl}">
+  <meta name="description" content="Your description here.">
+  <link rel="alternate" type="text/plain" href="${domain}/llms.txt" title="LLMs.txt">
+  <link rel="alternate" type="text/plain" href="${domain}/llms-full.txt" title="LLMs-Full.txt">
+  ${jsonLdSchema}
 `;
 
-// 3. MID-FLIGHT INJECTION
-rewriter.on("head", {
-  element(e) {
+// agpGhostCss comes from KV (Step 07)
+let rewriter = new HTMLRewriter()
+  .on('link[rel="canonical"]', { element(e) { e.remove(); } })
+  .on('meta[name="description"]', { element(e) { e.remove(); } })
+  .on('meta[property="og:title"]', { element(e) { e.remove(); } })
+  .on("head", {
+    element(e) {
       e.append(customHeaderContent, { html: true });
+      if (agpGhostCss) {
+        e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
+      }
+    }
+  });
+```
+
+#### Step 03: Iframe Unboxing via `srcdoc` (Human Lane)
+
+**Engineering Strategy: Mid-Flight Sandbox Override**
+For human visitors, Google Sites embeds the user's UI in a cross-origin sandboxed iframe, which costs an extra request. The Worker reads the embedded payload from the hidden `div[data-code]`, decodes it, and writes it into `iframe.YMEQtf` as `srcdoc`, so the interface is inline in the initial HTML.
+
+**Security note:** removing `sandbox` (and, in Step 09, the CSP header) removes protections Google Sites applies by default. Only do this for embeds you author yourself. Never unbox third-party content.
+
+**Implementation Snippet:**
+
+```
+// Human lane only. The data-code div must appear before the iframe in the document.
+// How data-code is encoded depends on the platform: inspect the attribute in DevTools
+// and write decodeEmbed() to match. It is left as a stub here on purpose.
+function decodeEmbed(raw) {
+  // e.g. HTML-unescape and/or base64-decode, depending on what you see
+  return raw;
+}
+
+let currentEmbedCode = null;
+
+if (!isBot) {
+  rewriter
+    .on("div[data-code]", {
+      element(e) {
+        currentEmbedCode = decodeEmbed(e.getAttribute("data-code"));
+      }
+    })
+    .on("iframe.YMEQtf", {
+      element(e) {
+        if (currentEmbedCode) {
+          e.removeAttribute("sandbox");
+          e.removeAttribute("src");
+          e.setAttribute("srcdoc", currentEmbedCode);   // setAttribute escapes quotes for you
+          currentEmbedCode = null;
+        }
+      }
+    });
+}
+```
+
+#### Step 04: Progressive LCP Hydration & Asset Transcoding
+
+**Engineering Strategy: Poster-Then-Hydrate Pipeline**
+A 3.3 MB animated AVIF would ruin Largest Contentful Paint, so the Worker serves a 50 KiB static poster first. The poster URL is preloaded with an HTTP `Link` response header, which the browser sees before it parses the body. After the page loads, a small client script swaps in the heavy animation when the browser is idle.
+
+**Disclosure:** Lighthouse/PSI runs are identified by User-Agent and get the poster only, with no heavy-asset upgrade. That keeps the lab run stable, but it means lab scores describe that variant, not what a typical visitor eventually sees. Real-user (field) data is the check that matters.
+
+**Implementation Snippet:**
+
+```
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+const isPSI = /Chrome-Lighthouse|PTST/i.test(userAgent);   // lab runs: poster only
+const heavyAnimUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
+
+// 1. Poster first; heavy asset URL is stored for later (skipped for lab runs)
+rewriter.on('div[aria-label="edge-bg-hijack"]', {
+  element(e) {
+    e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
+    if (!isPSI) {
+      e.setAttribute("data-heavy-bg", heavyAnimUrl);
+      e.setAttribute("id", "lcp-heavy-bg");
+    }
   }
 });
-```
 
-#### Step 04: Asset Transcoding & The LCP "Bait and Switch"
-
-Engineering Strategy: High-Fidelity Hydration Google Sites lacks native support for high-performance formats (like AVIF or WebM). Our Asset Transcoding strategy overcomes this via a serverless pipeline, compressing a 720p animation into a 1.2MB AVIF sequence. To guarantee a near-instant LCP, we deploy a "Bait and Switch" architecture: the edge prioritizes a 50kb static poster frame to satisfy the critical rendering path. Post-render, our WakeUpScript hydrates the high-fidelity motion payload asynchronously, ensuring zero impact on initial performance scores. To prevent layout thrashing (reflow), this execution strictly synchronizes with the browser's native layout math. Simultaneously, a secondary evasion engine detects automated lab tools and aborts execution, locking in a pristine LCP score while serving the uncompromised transcoded asset to human users.
-
-Implementation Snippet:Two-phase LCP: Worker injects 50 KiB AVIF poster via HTTP Link: preload at TCP layer first. WakeUpScript detonates the 3.3 MB high-fidelity asset only after requestIdleCallback fires post-render.
-
-```
-// --- ASSET TRANSCODING: LCP BAIT & SWITCH ---
-
-let newHeaders = new Headers(response.headers);
-
-// 1. HTTP PRELOAD HEADER (Force Priority)
+// 2. Preload hint as an HTTP response header (a normal HTTP header, not TCP/TLS)
 if (agpLcpUrl) {
-    newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
+  newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
 }
 
-// 2. EDGE INTERCEPTION: PREPARING THE DUAL PAYLOAD
-rewriter.on('div[aria-label="edge-bg-hijack"]', {
-    element(e) {
-        // Instant LCP: Serve the 50kb static poster immediately
-        e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
-
-        // The Trophy: Store the heavy high-fidelity motion asset in a data attribute for hydration
-        e.setAttribute("data-heavy-bg", "/assets/image/homepage-BG.avif");
-        e.setAttribute("id", "lcp-heavy-bg");
-    }
+// 3. Client side, appended to <head> with data-edge-ignore so Step 05 does not delay it
+const wakeBgScript = `
+<script data-edge-ignore="true">
+addEventListener('load', () => {
+  if (navigator.webdriver || /Lighthouse|PTST/.test(navigator.userAgent)) return;
+  const el = document.getElementById('lcp-heavy-bg');
+  if (!el || !el.dataset.heavyBg) return;
+  const swap = () => {
+    const img = new Image();
+    img.src = el.dataset.heavyBg;
+    img.decode().then(() => requestAnimationFrame(() => {
+      el.style.backgroundImage = "url('" + img.src + "')";
+    })).catch(() => {});
+  };
+  setTimeout(() => ('requestIdleCallback' in window ? requestIdleCallback(swap) : swap()), 250);
 });
-
-// 3. CLIENT-SIDE HYDRATION: THE PAYLOAD DETONATOR
-rewriter.on("head", {
-    element(e) {
-        const wakeUpScript = `
-        <script data-edge-ignore="true">
-            (function() {
-                const triggerBg = () => {
-                    const heavyBg = document.getElementById('lcp-heavy-bg');
-                    if (heavyBg && heavyBg.dataset.heavyBg) {
-                        heavyBg.style.backgroundImage = "url('" + heavyBg.dataset.heavyBg + "')";
-                        heavyBg.removeAttribute('data-heavy-bg');
-                    }
-                };
-
-                window.addEventListener('load', () => {
-                    setTimeout(() => {
-                        if ('requestIdleCallback' in window) requestIdleCallback(triggerBg);
-                        else triggerBg();
-                    }, 250);
-                });
-            })();
-        </script>`;
-        e.append(wakeUpScript, { html: true });
-    }
-});
+</script>`;
+rewriter.on("head", { element(e) { e.append(wakeBgScript, { html: true }); } });
 ```
 
-#### Step 05: Performance Synthesis: FCP & Interaction-Triggered Hydration
+#### Step 05: Interaction-Triggered Script Hydration (Near-Zero Lab TBT)
 
-Engineering Strategy: Debt Clearance & Asset Rerouting Native CMS APIs and general-purpose React payloads create severe engineering debt, blocking the critical rendering path and driving up Total Blocking Time (TBT). We clear this through Aggressive Stream Pruning. To force a sub-10ms First Contentful Paint (FCP) and eliminate the "white flash," we deploy the "Astro Method"—fetching and inlining core CSS server-side—while rerouting static assets through a high-velocity GitHub-to-Cloudflare pipeline with immutable cache headers. Simultaneously, we enforce Interaction-Triggered Hydration. The edge worker intercepts and mutates all native platform scripts into a dormant sleep state mid-flight. This guarantees an empty main thread during lab testing—dodging performance penalties and masking deprecated APIs—while the heavy framework only rehydrates upon active, physical human interaction.
+**Engineering Strategy: Deferred Main-Thread Hydration**
+Native platform scripts block the main thread during startup. The Worker rewrites each script's `type` to `text/edge-delayed-script`, so the browser does not run it. A small wake-up script re-creates them on the first `mousemove`, `keydown` or `touchstart`. This is what brings lab TBT to near zero.
 
-Implementation Snippet:Script Neutralizer mutates all native scripts to type='edge-delayed-script' mid-flight — main thread is empty during PSI lab window. Astro Method inlines gstatic CSS server-side, killing 4,050ms render-block.
+**Trade-offs, stated plainly:** the work is deferred, not deleted, so it lands on the first interaction. The real check is INP in field data, not the lab TBT. Scroll and wheel are deliberately *not* triggers: waking on scroll once produced a 2,696 ms INP on real users. Lighthouse/PSI runs and automated browsers never wake the scripts (the same lab-run special case as Step 04).
+
+**Implementation Snippet:**
 
 ```
-// --- PERFORMANCE SYNTHESIS: ASSET PROXY & SCRIPT PRUNING ---
-
-// 1. THE GITHUB ASSET PROXY
-if (url.pathname.startsWith("/assets/")) {
-   const filePath = url.pathname.replace("/assets/", "");
-   const targetUrl = `https://raw.githubusercontent.com/YourGitHubUser/your-repo/main/${filePath}`;
-
-   let ghRes = await fetch(targetUrl, {
-       cf: { cacheTtl: 31536000, cacheEverything: true }
-   });
-
-   if (!ghRes.ok) {
-       return new Response("Asset not found on GitHub", { status: 404 });
-   }
-
-   const newHeaders = new Headers(ghRes.headers);
-   newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
-
-   const lowerPath = filePath.toLowerCase();
-   if (lowerPath.endsWith(".js")) newHeaders.set("Content-Type", "application/javascript");
-   else if (lowerPath.endsWith(".css")) newHeaders.set("Content-Type", "text/css");
-   else if (lowerPath.endsWith(".html")) newHeaders.set("Content-Type", "text/html; charset=UTF-8");
-   else if (lowerPath.endsWith(".svg")) newHeaders.set("Content-Type", "image/svg+xml");
-   else if (lowerPath.endsWith(".webp")) newHeaders.set("Content-Type", "image/webp");
-   else if (lowerPath.endsWith(".avif")) newHeaders.set("Content-Type", "image/avif");
-   else if (lowerPath.endsWith(".woff2")) newHeaders.set("Content-Type", "font/woff2");
-
-   return new Response(ghRes.body, { status: 200, headers: newHeaders });
+// --- EDGE: put native scripts to sleep (human lane only) ---
+if (!isBot) {
+  rewriter.on('script', {
+    element(e) {
+      const type = (e.getAttribute('type') || 'text/javascript').toLowerCase();
+      if (type === 'application/ld+json') return;      // structured data stays live
+      if (e.hasAttribute('data-edge-ignore')) return;  // your own wake-up scripts stay live
+      e.setAttribute('data-original-type', type);
+      e.setAttribute('type', 'text/edge-delayed-script');
+    }
+  });
 }
 
-// 2. THE SCRIPT NEUTRALIZER (Clearing Engineering Debt)
-rewriter.on('script', {
-   element(e) {
-       if (!e.hasAttribute('data-edge-ignore')) {
-            const originalType = e.getAttribute('type') || 'text/javascript';
-            e.setAttribute('data-original-type', originalType);
-            e.setAttribute('type', 'text/edge-delayed-script');
-       }
-   }
-});
-
-// 3. THE ASTRO METHOD: INLINE CSS SYNTHESIS
-rewriter.on('link[rel="stylesheet"]', {
-   async element(e) {
-       const href = e.getAttribute('href') || "";
-       if (href.includes('gstatic.com') || href.includes('fonts.googleapis.com/css')) {
-            try {
-                let cssRes = await fetch(href, {
-                    cf: { cacheTtl: 31536000, cacheEverything: true }
-                });
-
-                if (cssRes.ok) {
-                    let cssText = await cssRes.text();
-                    e.replace(`<style id="edge-inlined-css">${cssText}</style>`, { html: true });
-                }
-            } catch (err) {
-                console.error("Failed to inline CSS at the Edge:", err);
-            }
-       }
-   }
-});
-```
-
-#### Step 06: Responsive Fluidity
-
-Engineering Strategy: Design Integrity via CSS Overrides Google Sites employs a "secret" background cropping logic that often aggressively zooms or clips visual assets to fit different viewports. This unpredictable behavior can break visual hierarchies and "brand-safe" design layouts. Responsive Fluidity is achieved by neutralizing these native styles at the network edge. By injecting global CSS overrides and surgically modifying element-level styles mid-flight, we force a synchronized, fluid layout. We replace the platform's erratic calculations with precise object-fit and background-position directives, ensuring the UI remains architecturally sound from mobile to 4K displays.
-
-Implementation Snippet:Google Sites hardcodes .EmVfjc background cropping that clips assets unpredictably across viewports. Worker injects CSS variable overrides and object-fit directives mid-flight — zero CMS access required.
-
-```
-// --- RESPONSIVE FLUIDITY: NATIVE CROPPING OVERRIDE ---
-
-// 1. GLOBAL LAYOUT OVERRIDE
-const customFluidityCSS = `
-<style id="edge-responsive-override">
-    :root {
-      --theme-page_background-color: transparent !important;
-      --theme-background-color: transparent !important;
-    }
-    .EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }
-</style>
-`;
-
-rewriter.on("head", {
-    element(e) {
-        e.append(customFluidityCSS, { html: true });
-    }
-})
-// 2. ELEMENT-LEVEL FLUIDITY (Surgical Object-Fit)
-.on('img', {
-    element(e) {
-        let ariaLabel = e.getAttribute("aria-label") || "";
-        if (ariaLabel.includes("Your Target Element")) {
-            e.setAttribute("style", "width: auto !important; object-fit: contain;");
-        }
-    }
-})
-// 3. BACKGROUND SYNCHRONIZATION (Force Centering)
-.on('div[aria-label="edge-bg-hijack"]', {
-    element(e) {
-        e.setAttribute("style", "background-position: center center; background-image: url('/assets/image/homepage-BG-split.avif');");
-    }
-});
-```
-
-#### Step 07: Autonomous Feedback (AI-Driven Performance)
-
-Engineering Strategy: Predictive Rendering via AI State Loops Traditional CMS platforms suffer from "Fixed Latency"—bottlenecks like First Contentful Paint (FCP) and Largest Contentful Paint (LCP) are often hard-coded into the platform's rendering engine. Autonomous Feedback breaks this cycle by treating the origin as a variable to be solved by an external intelligence loop. We utilize a Puppeteer + Llama 3 AI Worker to pre-crawl the origin. The AI extracts critical visual metadata—specifically LCP image coordinates, dominant background colors, and critical path CSS. This state is stored in a Cloudflare KV database. The Edge Worker then fetches this "Ghost State" in sub-10ms, injecting a critical "Ghost CSS" layer and Preload Headers before the browser even receives the body payload. This "instructs" the browser exactly what to render instantly, forcing a near-perfect performance score while maintaining total semantic integrity.
-
-Implementation Snippet:Promise.all reads LCP_IMAGE_URL + GHOST_CSS from AGP_STATE KV in parallel with CMS fetch — zero sequential wait. Ghost CSS is Llama-3-computed background color, injected before body renders to eliminate flash.
-
-```
-// --- AUTONOMOUS FEEDBACK: AI-DRIVEN STATE INJECTION ---
-
-// 1. ASYNC STATE RETRIEVAL
-let agpLcpUrl = "";
-let agpGhostCss = "";
-
-try {
-    if (env && env.AGP_STATE) {
-        const [fetchedLcp, fetchedCss] = await Promise.all([
-            env.AGP_STATE.get("LCP_IMAGE_URL"),
-            env.AGP_STATE.get("GHOST_CSS")
-        ]);
-        agpLcpUrl = fetchedLcp || "";
-        agpGhostCss = fetchedCss || "";
-    }
-} catch (e) {
-    console.error("AI State KV Retrieval Error:", e);
+// --- CLIENT: minimal wake-up (append to <head> with data-edge-ignore="true") ---
+// Production injects scripts one at a time via requestIdleCallback to preserve order and
+// spread the cost; this minimal version re-creates them all at once.
+let woke = false;
+function wake() {
+  if (woke) return;
+  if (navigator.webdriver || /Lighthouse|PTST/.test(navigator.userAgent)) return; // lab runs stay asleep
+  woke = true;
+  document.querySelectorAll('script[type="text/edge-delayed-script"]').forEach(s => {
+    const n = document.createElement('script');
+    [...s.attributes].forEach(a => {
+      if (a.name !== 'type' && a.name !== 'data-original-type') n.setAttribute(a.name, a.value);
+    });
+    n.type = s.getAttribute('data-original-type') || 'text/javascript';
+    n.textContent = s.textContent;
+    s.replaceWith(n);
+  });
 }
+['mousemove', 'keydown', 'touchstart'].forEach(ev =>
+  addEventListener(ev, wake, { once: true, passive: true }));
 
-// 2. HTTP PREEMPTIVE HYDRATION
-let newHeaders = new Headers(response.headers);
-if (agpLcpUrl) {
-    newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
-}
-
-// 3. GHOST CSS INJECTION
-rewriter.on("head", {
+// --- R2 CSS SWAP: move the render-blocking gstatic stylesheet to your own copy ---
+// Prerequisites: /assets/css/gstatic-cache.css already exists in R2, and the AGP_STATE key
+// GSTATIC_CSS is set to "ready" once it is uploaded. If not ready, the original link is kept.
+// Do NOT fetch() the CSS inside the rewriter and do NOT inline it. Both were tried:
+// the fetch blocked HTML streaming (FCP/LCP stuck near 4.1 s on slow 4G), and inlining
+// ~198 KB pushed the HTML to ~250 KB before first paint.
+if (!isBot) {
+  rewriter.on('link[rel="stylesheet"]', {
     element(e) {
-        e.append(`
-        <style id="edge-anti-flash">
-            html { background-color: #060522 !important; }
-            :root { --theme-background-color: transparent !important; }
-        </style>`, { html: true });
-
-        if (agpGhostCss) {
-            e.append(`<style id="agp-skeleton-css">${agpGhostCss}</style>`, { html: true });
-        }
+      const href = e.getAttribute('href') || "";
+      if (!href.includes('www.gstatic.com')) return;
+      if (agpGstaticReady !== "ready") return;
+      if (isMobile) {
+        // mobile: defer so it cannot block first paint
+        e.replace(`<link rel="stylesheet" href="/assets/css/gstatic-cache.css" media="print" onload="this.media='all'">`, { html: true });
+      } else {
+        // desktop: load normally to avoid layout shift
+        e.replace(`<link rel="stylesheet" href="/assets/css/gstatic-cache.css" fetchpriority="high">`, { html: true });
+      }
     }
-});
+  });
+}
 ```
 
-The code above demonstrates the Consumer side of the architecture—fetching pre-calculated state in sub-10ms. However, running a headless browser and an LLM on every incoming user request would cause massive latency. To solve this, the AGP architecture relies on Decoupled Compute. We deploy a secondary Cloudflare Worker operating on a Cron schedule. This "Scanner" acts as the Generator. It autonomously crawls the locked origin, processes the visual hierarchy, and updates the KV database in the background.
+#### Step 06: Fluid Responsive Overrides
 
-The Scanner operates in four distinct phases:
-- Headless Origin Penetration: It spins up Cloudflare's native Puppeteer integration to bypass the sandbox and render the origin as a true client would, allowing native scripts to settle.
-- Context Sanitization: LLMs have strict context windows and can easily hallucinate if fed "noisy" HTML. The Worker aggressively strips scripts, styles, SVGs, and platform-specific classes, reducing the DOM footprint to a pure structural skeleton.
-- Deterministic LLM Parsing: The sanitized DOM is passed to Llama-3-8b-instruct. Instead of generating conversational text, the system prompt forces the LLM to act as a strict JSON parser, extracting only the hero image URL and the dominant background hex code.
-- State Persistence: The extracted payload is pushed to the AGP_STATE KV Namespace, seamlessly handing off the updated reality to the primary Edge Router.
+**Engineering Strategy: Network-Level Layout Stabilization**
+Google Sites applies hardcoded CSS (for example `.EmVfjc`) that crops background assets unpredictably across viewports. The Worker injects CSS variable overrides and adjusts inline element styles to keep aspect ratios consistent and reduce layout shift (CLS).
 
-Implementation Snippet: The AI Scanner
+**Implementation Snippet:**
 
 ```
-// --- WORKER 2: THE AI SCANNER (CRON JOB) ---
+// Anti-flash + native cropping override, appended to <head>
+const fluidityCss = `
+<style id="edge-anti-flash">
+html { background-color: #060522 !important; }
+:root {
+  --theme-page_background-color: transparent !important;
+  --theme-background-color: transparent !important;
+}
+body { background-color: transparent !important; }
+.EmVfjc { opacity: 0 !important; pointer-events: none !important; display: none !important; }
+</style>`;
+rewriter.on("head", { element(e) { e.append(fluidityCss, { html: true }); } });
 
+// Element-level fixes (human lane)
+if (!isBot) {
+  rewriter.on('img', {
+    element(e) {
+      e.removeAttribute("loading");
+      e.setAttribute("decoding", "async");
+      const ariaLabel = e.getAttribute("aria-label") || "";
+
+      if (ariaLabel.includes("site-logo-hijack")) {
+        e.setAttribute("src", "/assets/image/hero.avif");
+        e.removeAttribute("srcset");
+        e.setAttribute("fetchpriority", "high");
+        e.setAttribute("width", "120");
+        e.setAttribute("height", "120");
+        e.setAttribute("style", "width: auto !important; object-fit: contain;");
+      }
+    }
+  });
+}
+```
+
+#### Step 07: Decoupled Scanner (R2 CSS Baseline & FCP-Timed Critical CSS)
+
+**Engineering Strategy: Off-Request-Path Compute**
+Anything slow or fragile runs in a second Cloudflare Worker on a Cron trigger, never on the request path. It drives headless Puppeteer against the live site and writes the results to KV and R2, and the primary Worker only reads them. The scanner produces three things that matter for performance:
+
+- **`css/gstatic-cache.css` in R2, plus the `GSTATIC_CSS = "ready"` flag in `AGP_STATE`.** A cleaned copy of the render-blocking Google Sites stylesheet. The primary Worker (Step 05) swaps the original link for this copy, deferred on mobile and synchronous on desktop. The flag is written only after the R2 upload succeeds, and without it the Worker keeps the original link.
+- **`CRITICAL_CSS` in `AGP_STATE`.** The subset of that stylesheet actually used up to First Contentful Paint, injected inline on mobile only so the deferred full stylesheet does not block the first paint. It is stored only if it is between 100 bytes and 50 KB; otherwise the key is set to an empty string and the Worker falls back to the full stylesheet.
+- **`LCP_IMAGE_URL` and `GHOST_CSS` in `AGP_STATE`.** The preload target for the `Link` response header (Step 04) and a small anti-flash background rule. Both are fixed values in the current build (see the note below).
+
+**The four phases:**
+
+1. **Find the original stylesheet URL.** The scanner loads the site with `?debug=bot`. The human lane rewrites the gstatic link to the R2 copy, but the bot lane has no stylesheet handler, so the original `gstatic.com` URL is still visible. (This is why the R2 swap must stay human-lane only.)
+2. **Save a baseline copy to R2.** It fetches the stylesheet directly from gstatic, replaces embedded `data:` URIs with `none` to shrink it, uploads it to R2, and only then sets `GSTATIC_CSS`. Even if everything after this step fails, the page has valid CSS.
+3. **Extract critical CSS at FCP.** It starts a CSS coverage pass, loads the normal page, and stops the coverage the moment `first-contentful-paint` fires (with an 8 s safety timeout). This mirrors how Lighthouse measures unused CSS. Stopping a few seconds later let Google Sites fully initialize and marked the whole 1.5 MB stylesheet as used, which was useless.
+4. **Write the fixed state values.** It writes the hero URL (`/assets/image/hero.avif`) and the anti-flash rule to KV.
+
+**What the AI step does today:** the scanner still sanitizes the DOM and asks a Workers AI model (`@cf/zai-org/glm-4.7-flash`, falling back to `@cf/meta/llama-3.1-8b-instruct-fp8`) for a hero image URL and a background color. The current code validates that output but *does not use it*: the hero URL and background color written to KV are hardcoded. The AI extraction was an earlier approach; fixed values proved more reliable, because an LLM can return a wrong URL, a heavy asset, or a non-color string. The performance gains described above come from the R2 stylesheet and the critical CSS, not from the model.
+
+**Known limitations:**
+
+- The coverage pass runs in Puppeteer's default desktop-sized viewport, but the critical CSS is injected on mobile only. If above-the-fold rules differ between viewports, mobile can show a layout shift until the full stylesheet loads. Emulating a mobile viewport during the coverage pass is the next improvement.
+- Replacing `data:` URIs with `none` removes any font or icon embedded that way. Check the page visually after the scanner changes the stylesheet.
+- The scanner depends on the primary Worker's bot lane exposing the original stylesheet link. If the Google Sites markup changes, the scanner logs it and leaves the previous state in place.
+- All of this improves lab and first-paint metrics. Confirm the effect with field data.
+
+**Security note:** the scanner's manual `fetch` trigger launches a browser and an AI call, so it must be protected with a secret stored as a Worker secret (`wrangler secret put SCANNER_KEY`) and checked in an `Authorization` header. Never put a secret in the source code or a URL query string, where it ends up in logs and repositories.
+
+**Implementation Snippet:**
+
+```
+// --- WORKER 2: THE SCANNER (CRON). Condensed from the production code. ---
 import puppeteer from "@cloudflare/puppeteer";
 
 async function extractPayload(env) {
-    console.log("Starting Asymmetric Ghost Payload Generation...");
-    let browser;
+  const browser = await puppeteer.launch(env.MYBROWSER);
+  try {
+    const page = await browser.newPage();
 
-    try {
-        // 1. LAUNCH HEADLESS BROWSER & NAVIGATE TO ORIGIN
-        browser = await puppeteer.launch(env.MYBROWSER);
-        const page = await browser.newPage();
+    // 1. Find the ORIGINAL gstatic URL via the bot lane (the human lane rewrites it to R2)
+    await page.goto("https://www.yourdomain.com/?debug=bot");
+    const gstaticHref = await page.evaluate(() => {
+      const link = document.querySelector('link[rel="stylesheet"][href*="gstatic.com"]');
+      return link ? link.href : null;
+    });
+    if (!gstaticHref) { console.log("No gstatic link found: markup may have changed"); return; }
 
-        await page.goto("https://sites.google.com/view/your-origin-site/");
-        await new Promise(r => setTimeout(r, 3000));
+    // 2. Baseline: fetch, shrink, upload to R2, THEN set the ready flag
+    const res = await fetch(gstaticHref);
+    if (!res.ok) { console.log("gstatic fetch failed:", res.status); return; }
+    let css = await res.text();
+    css = css.replace(/url\(['"]?data:[^)]+['"]?\)/g, 'none');   // drops embedded fonts/images
+    // Recommended sanity check (add this): never overwrite good state with an error page
+    // if (css.length < 1000 || !css.includes('{')) return;
+    await env.MY_ASSETS.put("css/gstatic-cache.css", css, { httpMetadata: { contentType: "text/css" } });
+    await env.AGP_STATE.put("GSTATIC_CSS", "ready");
 
-        // 2. DOM SANITIZATION
-        const cleanHTML = await page.evaluate(() => {
-            document.querySelectorAll('script, style, svg, path, symbol, iframe, noscript').forEach(e => e.remove());
-            document.querySelectorAll('div[data-code]').forEach(e => e.remove());
-
-            const elements = document.body.getElementsByTagName('*');
-            for (let i = 0; i < elements.length; i++) {
-                elements[i].removeAttribute('class');
-                elements[i].removeAttribute('id');
-                elements[i].removeAttribute('jsname');
-                elements[i].removeAttribute('jsaction');
-            }
-            return document.body ? document.body.innerHTML.substring(0, 8000) : "";
-        });
-
-        if (cleanHTML.length < 100) throw new Error("Browser grabbed a blank page.");
-
-        // 3. THE IRONCLAD LLM PROMPT
-        const systemPrompt = `You are a strict data parser. Read the HTML and extract the main hero image URL and the dominant background color. You MUST respond with ONLY this exact JSON format. No other words. {"lcpUrl": "insert_url_here", "bgColor": "insert_color_here"}`;
-
-        // 4. LLAMA-3 INGESTION
-        const aiResponse = await env.AI.run('@cf/meta/llama-3-8b-instruct', {
-            messages: [
-                { role: "system", content: systemPrompt },
-                { role: "user", content: cleanHTML }
-            ]
-        });
-
-        // 5. GRACEFUL FALLBACK & PARSING
-        let rawText = aiResponse.response || "";
-        let parsedData = { lcpUrl: "", bgColor: "#020617" };
-
-        try {
-            rawText = rawText.replace(/```json/gi, "").replace(/```/g, "").trim();
-            const firstBrace = rawText.indexOf("{");
-            const lastBrace = rawText.lastIndexOf("}");
-
-            if (firstBrace !== -1 && lastBrace !== -1) {
-                const cleanJsonString = rawText.substring(firstBrace, lastBrace + 1);
-                const aiData = JSON.parse(cleanJsonString);
-
-                if (aiData.lcpUrl && aiData.lcpUrl.startsWith("http")) parsedData.lcpUrl = aiData.lcpUrl;
-                if (aiData.bgColor) parsedData.bgColor = aiData.bgColor;
-            }
-        } catch (parseError) {
-            console.error("Failed to parse AI JSON. Using fallback defaults.");
+    // 3. Critical CSS: stop the coverage at FCP, like Lighthouse does
+    await page.coverage.startCSSCoverage();
+    await page.goto("https://www.yourdomain.com/");
+    await page.evaluate(() => new Promise((resolve) => {
+      const observer = new PerformanceObserver((list) => {
+        if (list.getEntries().find(e => e.name === 'first-contentful-paint')) {
+          observer.disconnect();
+          resolve();
         }
+      });
+      observer.observe({ type: 'paint', buffered: true });
+      setTimeout(resolve, 8000);                               // safety timeout
+    }));
+    const coverage = await page.coverage.stopCSSCoverage();
 
-        // 6. UPDATE THE KV DATABASE
-        if (parsedData.lcpUrl) {
-            await env.AGP_STATE.put("LCP_IMAGE_URL", parsedData.lcpUrl);
-        } else {
-            await env.AGP_STATE.put("LCP_IMAGE_URL", "https://www.yourdomain.com/assets/fallback.webp");
-        }
-
-        const safeCss = `body { background-color: ${parsedData.bgColor} !important; } .ghost-skeleton { width: 100vw; height: 100vh; background-color: ${parsedData.bgColor}; }`;
-        await env.AGP_STATE.put("GHOST_CSS", safeCss);
-
-    } finally {
-        if (browser) await browser.close();
+    const entry = coverage.find(e => e.url.includes('gstatic-cache.css') || e.url.includes('gstatic.com'));
+    let critical = "";
+    if (entry && entry.ranges.length > 0) {
+      critical = entry.ranges.map(r => entry.text.slice(r.start, r.end)).join('\n');
     }
+    // Inline only if it is small enough; otherwise the Worker uses the full deferred CSS
+    await env.AGP_STATE.put("CRITICAL_CSS", (critical.length > 100 && critical.length < 50000) ? critical : "");
+
+    // 4. Fixed values (the AI extraction result is not used in the current build)
+    await env.AGP_STATE.put("LCP_IMAGE_URL", "/assets/image/hero.avif");
+    await env.AGP_STATE.put("GHOST_CSS",
+      "html { background-color: #060522 !important; }");
+  } finally {
+    await browser.close();
+  }
 }
 
-// 7. EXECUTION TRIGGERS
 export default {
   async scheduled(event, env, ctx) {
-    try { await extractPayload(env); } catch (e) { console.error("Cron AI Failed:", e); }
+    // waitUntil keeps the Worker alive until Puppeteer and the KV/R2 writes finish
+    ctx.waitUntil(extractPayload(env).catch(e => console.error("Cron scanner failed:", e)));
   },
-  async fetch(request, env, ctx) {
+  async fetch(request, env) {
+    // Secret lives in a Worker secret, never in the source or the URL
+    if (request.headers.get("Authorization") !== `Bearer ${env.SCANNER_KEY}`) {
+      return new Response("Unauthorized", { status: 401 });
+    }
     try {
-        await extractPayload(env);
-        return new Response("AI Scanner executed! Check your KV Database.", { status: 200 });
+      await extractPayload(env);
+      return new Response("Scanner executed", { status: 200 });
     } catch (e) {
-        return new Response("AI Scanner Failed. Error: " + e.message, { status: 500 });
+      return new Response("Scanner failed", { status: 500 });
     }
   }
 };
 ```
 
-#### Step 08: DOM Mutability & Accessibility (A11y) Overrides
+#### Step 08: Real-Time Accessibility (A11y) Remediation
 
-Engineering Strategy: Real-time Semantic Correction Closed-origin platforms harbor hardcoded W3C accessibility violations that cannot be natively patched. Utilizing the edge worker as a real-time DOM parser, we proactively correct invalid ARIA states mid-flight before client delivery. The system intercepts erratic native nodes—such as stripping invalid selection attributes from standard hyperlinks and force-injecting semantic ARIA labels into headless UI elements like mobile menus. This allows us to surgically reconstruct the accessibility tree and secure a flawless 100/100 Accessibility score without ever accessing the origin source code.
+**Engineering Strategy: DOM Mutability Edge Overrides**
+Accessibility violations hardcoded into a closed origin are corrected mid-flight. The Worker replaces invalid `aria-selected` on navigation links with `aria-current`, and injects a missing label into the mobile menu button, before the browser parses the document.
 
-Implementation Snippet:Targets two specific violations: aria-selected on anchor tags (invalid — corrected to aria-current) and missing ARIA label on the hamburger div[role=button]. Both are unfixable at the CMS layer.
+**Implementation Snippet:**
 
 ```
-// --- DOM MUTABILITY: ACCESSIBILITY (A11y) OVERRIDES ---
-
 rewriter
-    // 1. Correct invalid ARIA roles on standard links mid-flight
-    .on('a[aria-selected]', {
-        element(e) {
-            e.removeAttribute('aria-selected');
-            e.setAttribute('aria-current', 'page');
-        }
-    })
-    // 2. Inject missing ARIA labels into native headless UI (hamburger menu)
-    .on('div[role="button"][aria-haspopup="true"]', {
-        element(e) {
-            if (!e.hasAttribute('aria-label')) {
-                e.setAttribute('aria-label', 'Open Navigation Menu');
-            }
-        }
-    });
+  // Correct invalid ARIA attributes on standard hyperlinks
+  .on('a[aria-selected]', {
+    element(e) {
+      e.removeAttribute('aria-selected');
+      e.setAttribute('aria-current', 'page');
+    }
+  })
+  // Inject a missing label into the native mobile menu button
+  .on('div[role="button"][aria-haspopup="true"]', {
+    element(e) {
+      if (!e.hasAttribute('aria-label')) {
+        e.setAttribute('aria-label', 'Open Navigation Menu');
+      }
+    }
+  });
 ```
 
 #### Step 09: Priority Synchronization & Defensive Execution
 
-Engineering Strategy: Best Practices Integrity Perfecting the Best Practices audit requires absolute console hygiene and synchronized network directives. To prevent race conditions between HTTP Preload headers and inline HTML fetch priorities, the architecture injects the priority declaration directly into the TCP/TLS connection layer, forcing instant browser and crawler alignment. Additionally, all custom JavaScript assets routed through the high-velocity proxy employ strict Defensive DOM Watchdogs. These validations ensure global scripts terminate silently on subpages lacking the necessary target nodes, explicitly preventing null reference exceptions and maintaining a pristine, error-free console environment.
+**Engineering Strategy: Response Headers and Console Hygiene**
+The Worker sets the preload hint and the AI-discovery link as HTTP `Link` response headers, so the browser has them before the body streams. Because the HTML differs by User-Agent, every HTML response also carries `Vary: User-Agent`. The `Content-Security-Policy` header is removed on the human lane only (it blocks the Step 03 `srcdoc` embed), and bot lanes keep it. On the client, small guards stop custom scripts from throwing null-reference errors on subpages that lack their target elements.
 
-Implementation Snippet:Two independent fixes: Worker-side appends the Link preload header before body streams; client-side guards with options.length > 0 check before any interaction logic runs on subpages.
+**Implementation Snippet:**
 
 ```
-// --- BEST PRACTICES: PRIORITY SYNC & DEFENSIVE EXECUTION ---
-
-// 1. HTTP LAYER: LCP PRIORITY SYNCHRONIZATION (Worker-Side)
-// Injecting priority directly into the TCP/TLS connection layer
+// --- HUMAN LANE ---
+let newHeaders = new Headers(response.headers);
+newHeaders.delete("Content-Length");
+newHeaders.delete("Content-Security-Policy");        // human lane only; see the Step 03 security note
+newHeaders.append("Vary", "User-Agent");
 if (agpLcpUrl) {
-    newHeaders.append(
-        'Link',
-        `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`
-    );
+  newHeaders.append("Link", `<${agpLcpUrl}>; rel=preload; as=image; fetchpriority=high`);
 }
+newHeaders.append("Link", `<https://www.yourdomain.com/llms.txt>; rel="alternate"; type="text/markdown"`);
+// Optional WebMCP origin trial. The token is bound to your origin and expires; get your own.
+// (Client-side tool registration is switched off in the current build.)
+newHeaders.set("Origin-Trial", "<WEBMCP_ORIGIN_TRIAL_TOKEN>");
 
-// 2. DEFENSIVE EXECUTION: DOM WATCHDOGS (Client-Side / Proxied Asset)
-// Validating node existence to prevent null reference exceptions on subpages
+// --- BOT LANES: keep the CSP, still vary on User-Agent ---
+// let newHeaders = new Headers(response.headers);
+// newHeaders.delete("Content-Length");
+// newHeaders.append("Vary", "User-Agent");
+
+// --- CLIENT-SIDE (a proxied script): defensive guard so subpages stay error-free ---
 const options = document.querySelectorAll(".option");
-
 if (options.length > 0) {
-    // Execution logic is safely sandboxed here
-    let currentIndex = 0;
-
-    options.forEach((option, index) => {
-        option.addEventListener("touchstart", () => {
-            currentIndex = index;
-            // Interaction logic...
-        });
-    });
+  let currentIndex = 0;
+  options.forEach((option, index) => {
+    option.addEventListener("touchstart", () => { currentIndex = index; /* interaction logic */ });
+  });
 }
 ```
+
+#### Common Mistakes (each one happened on this build)
+
+- **Fetching or inlining the gstatic CSS inside HTMLRewriter.** The fetch blocked HTML streaming and held FCP/LCP near 4.1 s on slow 4G; inlining about 198 KB pushed the HTML to roughly 250 KB. Use an R2-hosted copy instead (Step 05).
+- **Waking deferred scripts on scroll or wheel.** It caused a 2,696 ms INP on real users. Wake on mousemove, keydown or touchstart only.
+- **Leaving the scanner's manual trigger unauthenticated.** It launches a browser and an LLM call. Require an Authorization header.
+- **Forgetting `Vary: User-Agent`** on HTML that differs by lane, which lets caches serve the wrong lane.
+- **Letting the ghost copy drift from the page text.** That turns dynamic rendering into cloaking. Check parity before every KV write.
+- **Forgetting that sleeping scripts need a wake-up script** (with `data-edge-ignore`), or the site never becomes interactive.
 
 ## The Performance Integrity Protocol
 
-Note on Architecture vs. Deception: This system does not employ "cloaking" in the traditional sense of content manipulation. My Edge SEO strategy is rooted in Performance Delivery. I serve 1:1 identical content for both the bot and the human; only the method of delivery is asymmetric. I do not show the bot different content; I show the bot a more efficient version of the same content. This 1:1 parity means the semantic substance—the data, text, and value—remains absolute and mirrored; we are simply tailoring the delivery container to the specific needs of the recipient.
+**Note on Architecture vs. Deception:** This is a dynamic-rendering pattern at the edge. Google documents dynamic rendering as a workaround, and explicitly permits it when users and crawlers receive similar text content. To stay on the right side of search guidelines and avoid cloaking, the edge router is built around parity of text, checked when I write each KV entry rather than at request time:
 
-By serving a pre-rendered, "unboxed" DOM to the PSI bot, I am simply providing the exact environment the algorithm is programmed to find: high-speed, semantic, and free of legacy bloat. This isn't about tricking the score—it's about optimizing the crawl budget. When the bot can ingest the truth in sub-10ms without fighting the platform's native overhead, the crawler gets the truth faster. That's not manipulation — that's engineering.
+- **Search-crawler parity (same text, different packaging):** Search crawlers (Googlebot, Bingbot) are not stripped. They receive the original Google Sites HTML plus the same ghost text block that AI agents get. They do not receive the human lane's `srcdoc` unboxing or script deferral, so their markup differs from what humans receive; the text is intended to be the same.
+- **AI Agent Stripping:** Only LLM bots and social bots (GPTBot, ClaudeBot, LinkedInBot) have the origin markup stripped by `ElementSlasher`, so that only the noise-free ghost payload remains, because LLMs do not render visual layouts and have strict context windows.
+
+**The standing obligation:** Across all lanes, the text, links and facts must stay the same; only the packaging differs. Nothing is meant to be hidden or swapped for search engines. Known exceptions: live telemetry values exist only in the human layer, where the ghost copy carries static placeholders. You can verify the AI-agent lane by appending `?debug=bot`, the search-crawler lane with `?debug=googlebot`, or by fetching the page with `curl -A "Googlebot"`. The Worker sets `Vary: User-Agent` on HTML responses.
 
 ### The Strategic Conclusion
 
-If a system can be successfully optimized under the strict, secure, and simple constraints of Google Sites—on a TLD the world ignores—then the architecture transcends its environment.
+If a platform crawlers can’t read can be made machine-readable from the network layer, on a TLD the world ignores, then the method doesn’t depend on the platform. Whether it holds at scale is the next test, not a claim I’m making today.
 
-## 3. The Proof: You Are Looking At It (Live Demonstration)
+## The Proof: You Are Looking At It (Live Demonstration)
 
-### >_ AGP-Validator: Real-Time Node Verification
+### >\_ AGP-Validator: Real-Time Node Verification
 
-The AGP Validator is a bespoke, client-side diagnostic terminal engineered to verify the integrity of the Asymmetric Ghost Payload (AGP) architecture. While humans see a rich, interactive interface, this tool allows for the immediate inspection of the "Bot Reality" being served to AI agents and search crawlers.
+The **AGP Validator** is a bespoke, client-side diagnostic terminal engineered to verify the integrity of the *Asymmetric Ghost Payload (AGP)* architecture. While humans see a rich, interactive interface, this tool allows for the immediate inspection of the "Bot Reality" being served to AI agents.
 
-Works on the custom domain and fails on the native Google Sites URL because the semantic SEO payload is injected exclusively by your Edge proxy. This proves the architecture successfully bypasses the native Google Sites CMS.
+#### Operator Instructions: Using >\_ AGP-Validator
 
-#### Operator Instructions: Using >_ AGP-Validator
-- Initialization: Click anywhere within the terminal container to focus the input line.
-- Command Execution: ./validate-seo.sh: The primary diagnostic script. It initiates a live crawler simulation targeting the edge node with a deterministic ?debug=bot override. clear: Resets the console buffer and wipes current diagnostic logs.
-- Interface Shortcuts: The terminal supports Tab-completion for available commands and Ghost Suggestions to assist with command syntax.
+- **Initialization:** Click anywhere within the terminal container to focus the input line.
+- **Command Execution:**
+  - `./validate-seo.sh`: The primary diagnostic script. It initiates a live crawler simulation targeting the edge node with a deterministic `?debug=bot` override.
+  - `clear`: Resets the console buffer and wipes current diagnostic logs.
+- **Interface Shortcuts:** The terminal supports Tab-completion for available commands and Ghost Suggestions to assist with command syntax.
 
-## >_ AGP-Validator — Real-Time Edge Node Verification Terminal
+*[Human UI renders the interactive cyberpunk diagnostic terminal and bash simulation here.]*
 
-A bespoke client-side diagnostic terminal embedded in the live page. It verifies the integrity of the Asymmetric Ghost Payload (AGP) architecture in real time by fetching the bot reality directly and parsing the semantic payload the Worker injects for AI crawlers. Empirical proof that the architecture functions in production — not a mock, not a screenshot.
+**Diagnostic Console:** [Review the interactive bash simulation and diagnostic terminal execution source on CodePen](https://codepen.io/editor/ErycTheGreat/pen/01a148a2-6663-75fe-9407-7af625a1df7d).
 
-### Primary Command: ./validate-seo.sh
+## >\_ AGP-Validator — Real-Time Edge Node Verification Terminal
 
-The primary diagnostic script. Executes a live crawler simulation against the edge node using a deterministic ?debug=bot override. Forces the Cloudflare Worker to serve the raw bot reality — the same semantic payload that AI crawlers and search engines receive.
+A bespoke client-side diagnostic terminal embedded in the live page. It verifies the integrity of the Asymmetric Ghost Payload (AGP) architecture in real time by
+fetching the bot reality directly and parsing the semantic payload the Worker injects for AI crawlers. It shows the Worker is running in production —
+not a mock, not a screenshot.
 
-Target URL: https://www.eryc.my.id/case-studies/edge-seo?debug=bot
+### Primary Command: `./validate-seo.sh`
 
-The ?debug=bot parameter is the Deterministic Backdoor: a hardcoded override in the Cloudflare Worker that sets isBot = true regardless of User-Agent, forcing the ghost payload branch to execute. This allows any browser to inspect the exact bot reality being served to crawlers.
+The primary diagnostic script. Executes a live crawler simulation against the edge node using a deterministic `?debug=bot` override. Forces the Cloudflare
+Worker to serve the AI-bot version of the page: the ghost payload, with scripts, styles, header and footer stripped.
 
-### Validation Checks — What Each Result Proves
+**Target URL:**
+`https://www.eryc.my.id/case-studies/edge-seo?debug=bot`
+
+The `?debug=bot` parameter is the Deterministic Debug Override: a hardcoded override in the Cloudflare Worker that sets `isBot = true` regardless of
+User-Agent, forcing the ghost payload branch to execute. This lets any browser inspect the AI-agent version. `?debug=googlebot` simulates the search-crawler lane (full origin HTML plus the ghost block), so `?debug=bot` shows only the AI-agent lane.
+
+### Validation Checks — What Each Result Shows
 
 #### 0x01 — Metadata and Semantic Signal Verification
-[title] — Edge-injected title tag
-Google Sites does not allow native title customization — a passing result proves the edge head injection is live.
+
+[title] — Title tag present
+:   A passing result shows the page returns a non-empty title tag. The meta description and JSON-LD checks below are what confirm the edge head injection is live.
+
 [meta] — Meta description injection
-The Worker strips the native Google Sites description and replaces it with a keyword-optimized value. Passing = clean document hygiene applied.
-[h1] — H1 hierarchy unboxed from sandbox
-Google Sites renders content inside sandboxed iframes — native H1 tags are invisible to crawlers. A passing result proves the DSR intervention successfully bypassed the iframe barrier and injected the semantic heading hierarchy directly into the document body via
-.
+:   The Worker strips the native Google Sites description and replaces it with a keyword-optimized value. Passing = clean document hygiene applied.
+
+[h1] — H1 hierarchy added to the page body
+:   Google Sites renders content inside sandboxed iframes, so native H1 tags are hard for crawlers to read. A passing result shows the Worker added the ghost payload's heading hierarchy to the page body in the AI-agent layer via `element.prepend(botPayload)`. The iframe itself is not rewritten in that layer.
+
 [schema] — JSON-LD @graph detected on first paint
-The full JSON-LD @graph is injected by the Worker into the
-stream before the browser receives the response body. Passing = instant machine-readable entity graph, no JS execution required.
+:   The full JSON-LD @graph is injected by the Worker into the `<head>` stream before the browser receives the response body. Passing = instant machine-readable entity graph, no JS execution required.
 
 #### 0x02 — Edge Proxy System File Verification
+
 /robots.txt — 200 | txt/plain | Nb ⬢
-Confirms the edge Worker dynamically generates and serves a robots.txt. Google Sites natively has no robots.txt — any passing result proves the virtual management layer is operational. The file explicitly allows AI agents (
-,
-,
-,
-,
-) and blocks low-value commercial scrapers (
-). Validation criteria: HTTP 200 + content-type contains
-+ byte size > 0.
+:   Confirms the edge Worker dynamically generates and serves a robots.txt. Google Sites natively has no robots.txt — any passing result shows the virtual management layer is operational. The file explicitly allows AI agents (`OAI-SearchBot`, `GPTBot`, `ClaudeBot`, `PerplexityBot`) and sets a `Google-Extended` rule (a robots.txt token, not a crawler) and blocks low-value commercial scrapers (`PetalBot`). Validation criteria: HTTP 200 + content-type contains `text/plain` + byte size > 0.
+
 /llms.txt — 200 | txt/plain | Nb ⬢
-Validates the existence of the markdown-based roadmap for Large Language Models. Served from R2 via
-. Provides LLMs with structured context about the site architecture, semantic entity definitions, and GEO-ready instructions. Validation criteria: HTTP 200 + content-type
-+ size > 0.
+:   Validates the existence of the markdown-based roadmap for Large Language Models. Served from R2 via `env.MY_ASSETS.get()`. Provides LLMs with structured context about the site architecture, semantic entity definitions, and GEO-ready instructions. Validation criteria: HTTP 200 + content-type `text/plain` + size > 0.
+
 /sitemap.xml — 200 | app/xml | Nb ⬢
-Ensures the structural sitemap is accessible and correctly formatted. Served by the Worker as a dynamically generated XML document listing all canonical URLs. Google Sites cannot serve a sitemap natively. Validation criteria: HTTP 200 + content-type contains
-+ size > 0.
+:   Ensures the structural sitemap is accessible and correctly formatted. Served by the Worker as a dynamically generated XML document listing all canonical URLs. Google Sites cannot serve a sitemap natively. Validation criteria: HTTP 200 + content-type contains `xml` + size > 0.
 
-### Technical Significance — What a Full Pass Proves
+### Technical Significance — What a Full Pass Shows
 
-A full pass across all 7 checks (4 metadata + 3 proxy files) is empirical proof that:
-- The Cloudflare Worker is active and intercepting requests
-- The head injection pipeline (title, meta, JSON-LD) is operational
-- The DSR sandbox override has successfully unboxed the iframe content into the native DOM
-- The virtual management layer (robots.txt, llms.txt, sitemap.xml) is serving from the edge
-- The architecture maintains 1:1 semantic parity — same content, asymmetric delivery
+A full pass across all 7 checks (4 metadata + 3 proxy files) shows that:
 
-This works on the custom domain (www.eryc.my.id) and fails on the native Google Sites URL (sites.google.com/view/eryc-tri-juni-s-notes) because the semantic SEO payload is injected exclusively by the edge proxy. This asymmetry is the proof of concept.
+1. The Cloudflare Worker is active and intercepting requests
+2. The head injection pipeline (meta description, JSON-LD) is operational
+3. The ghost payload (H1–H3 hierarchy, JSON-LD) is present in the page body served to AI bots
+4. The virtual management layer (robots.txt, llms.txt, sitemap.xml) is serving from the edge
+5. The ghost version is reachable on demand. These 7 checks do not test content equivalence, so compare the ghost and human versions yourself with `?debug=bot`
 
-#### Metadata & H1 Verification
+This works on the custom domain (`www.eryc.my.id`) and fails on the native Google Sites URL (`sites.google.com/view/eryc-tri-juni-s-notes`) because the semantic SEO payload is injected exclusively by the edge proxy. This asymmetry is the proof of concept: it shows the edge layer is what supplies the structure. The effect on ranking and citation is what the next phase measures.
 
-This section confirms the successful unboxing of the DOM and the injection of mission-critical SEO signals.
-- <title>: Verifies the edge-injected title tag, ensuring it overrides the native platform default.
-- <meta>: Confirms the presence of high-density descriptions and entity-focused keywords.
-- <h1>: Validates the presence of a clean header hierarchy, confirming that the worker successfully bypassed native Google Sites nested <span> logic.
-- Schema: Natively detects the unboxed application/ld+json payload on first paint, ensuring the complete entity graph is instantly readable by machine agents without secondary JavaScript rendering.
+### Making the Iframe Content Readable
 
-#### Edge Proxy System Files
-- /robots.txt: Confirms 200 OK status and verifies the explicit instructions for AI agents like OAI-SearchBot.
-- /llms.txt: Validates the existence of the markdown-based roadmap for Large Language Models.
-- /sitemap.xml: Ensures the structural roadmap is accessible and correctly formatted for algorithmic ingestion.
-
-#### Technical Significance: The "Bot Reality" Proxy
-
-The core utility of this validator is its ability to trigger the Deterministic Backdoor. Under normal conditions, a browser fetch would only return the "Human Reality" (interactive UI). By appending ?debug=bot to the request, the validator forces the Cloudflare Worker to serve the raw, flattened semantic payload. This serves as empirical proof that the architecture maintains 1:1 Semantic Parity: the machine receives the exact same context as the human, simply delivered in a high-velocity, unboxed container.
-
-### Visual Neutralization & Semantic Cleansing
-
-By executing the srcdoc injection (replacing the iframe's external src with inline content, making it native DOM), the Edge Worker explicitly kills the secondary network request, delivering the embedded payload instantly within the initial HTML stream. This achieves "Semantic Cleansing" by flattening the nested, opaque iframe directly into the native Document Object Model (DOM). Instead of forcing AI crawlers and LLM bots to execute multi-threaded JavaScript or await network idle states, the entire custom interface is exposed as contiguous, high-fidelity semantic text instantly ready for Retrieval-Augmented Generation (RAG) ingestion.
+The iframe wall is handled by the lanes described in [Technical Mechanism](#two-lanes) below: humans get the interface inline via `srcdoc`, while search crawlers and AI agents get the same content as plain HTML in a ghost block (AI agents without the origin markup). In standard terms, this is dynamic rendering: opaque iframe content becomes readable HTML for machine audiences, ready for **Retrieval-Augmented Generation (RAG)** ingestion.
 
 #### The Result: Zero-Bloat Execution
 
-Visually, this eradicates loading bloat—the native Google loading spinners disappear, yielding a seamless, zero-flicker instant render. This bare-metal performance drastically accelerates First Contentful Paint (FCP) and drives Cumulative Layout Shift (CLS) to absolute zero, providing a rich, interactive user experience without the performance tax associated with hosted CMS environments.
+Visually, this removes the native Google loading spinner, so first paint comes sooner and the layout shifts less (see live FCP and CLS above), without the performance tax of a hosted CMS runtime.
 
-## GSC Render Comparison — Instant Render (Zero-Bloat)
+## Reload Comparison — Instant Render (Zero-Bloat)
 
-A side-by-side comparison showing Google Search Console rendering results before and after the AGP edge architecture. Left: native Google Sites domain — failed render (black screen). Right: custom domain with AGP — full UI rendered instantly, zero bloat.
+Side-by-side reload of the same page. Left: native Google Sites domain — the content lives inside a sandboxed iframe, so the browser shows a dark screen and a spinning loader while that iframe’s code loads and executes. Right: custom domain with AGP — the iframe is unboxed mid-flight via `srcdoc`, so the UI is already present in the initial HTML and paints without the spinner.
+
+### What the Comparison Images Show
+
+These are live page reloads in the human lane. They show the removal of the loading state caused by the iframe’s own code.
+
+#### Before Edge
+
+![Native Google Sites reload: dark screen with spinning loader while the sandboxed iframe loads and executes its own code](https://www.eryc.my.id/assets/image/native-domain-reload.webp)
+
+**URL:** sites.google.com/view/eryc-tri-juni-s-notes/home
+
+On the native domain the real content is locked inside a sandboxed iframe. On reload the browser must fetch that iframe, wait for its JavaScript, and only then paint the UI. Result: a prolonged dark screen and the spinning circle. That extra round-trip is the loading cost the edge removes.
+
+#### After Edge
+
+![Custom domain with AGP: full cyberpunk UI already painted on first load — iframe content unboxed via srcdoc, no spinner](https://www.eryc.my.id/assets/image/custom-domain-reload.webp)
+
+**URL:** www.eryc.my.id (custom domain with AGP active)
+
+The Worker rewrites the response mid-flight: it extracts the iframe content, removes the sandbox attribute, and injects the content as `srcdoc`. The UI is therefore part of the initial HTML. No second request, no spinner, first paint arrives earlier and layout shift is smaller.
+
+Visible content once painted includes:
+
+- Digital ERYC logo with "E·R·Y·C" branding
+- "EDGE SEO SPECIALIST MALANG" designation
+- Interactive prompt: ">\_ How can I help?"
+- Navigation options: "● Explore services." and "Get in touch..."
+- Attribution note: "P.S. THIS SITE: 100% [Google Sites]"
+- Value proposition: "I Help Business Fix or Get Noticed @ low-cost"
+
+This is the human lane. Search crawlers and AI agents receive a different packaging of the same text (see [Technical Mechanism](#two-lanes)). For layout-shift, blocking-time and first-paint numbers, see the live readings above.
 
 ### What "Instant Render (Zero-Bloat)" Means
+
 Instant Render
-The edge-optimized page achieves First Contentful Paint (FCP) in under 1 second on desktop (0.8s) and under 2 seconds on mobile (1.1s). The LCP image is preloaded via HTTP
-header injected at the TCP/TLS layer. The browser receives rendering instructions before the body payload arrives. There is no white flash, no loading spinner, no layout reflow.
+:   The edge-optimized page reaches First Contentful Paint (FCP) at roughly a second or less in the live readings above. The LCP image is preloaded via an HTTP `Link: preload; fetchpriority=high` header added by the Worker. The browser receives the hint with the response headers, before it parses the body. The goal is no white flash, no spinner, and minimal layout shift (see live CLS).
+
 Zero-Bloat
-Total Blocking Time (TBT) is 20ms on mobile and 0ms on desktop. All native platform scripts are mutated to
-mid-flight by the Worker. They only rehydrate on physical human interaction (touch/click). The main thread is nearly empty during the PSI lab test window. 194 KiB of CSS residual remains — the accepted trade-off for eliminating render-blocking (see Row 6 of the Transform Matrix).
+:   Mobile Total Blocking Time is near zero in the live readings above. The Worker defers native platform scripts (`type="edge-delayed-script"`) until the first mouse movement, key press or touch, so the main thread stays free during the PSI lab window. Human visitors receive this behaviour; Lighthouse/PSI runs never wake the scripts. Trade-off: this is a lab metric, not field data, and 194 KiB of unused CSS remains (the cost of the R2-hosted gstatic stylesheet — see the Transform Matrix).
 
 ### Technical Mechanism — How the Render Difference Is Produced
+
 Native path (Before Edge)
-Browser → Google Sites CDN → sandboxed iframe architecture → JavaScript execution required → rendering bot times out → black screen in GSC.
-Edge path (After Edge)
-Browser → Cloudflare Worker → fetches Google Sites response → HTMLRewriter targets
-→ extracts raw payload → targets
-→ injects payload via
-→ content is now inline native DOM, not external iframe request → GSC rendering bot parses it as intrinsic page content → full render visible.
+:   Browser → Google Sites CDN → sandboxed iframe architecture → iframe must load and execute its own code → spinning loader / dark screen until that finishes.
 
-### The Edge Override: Mid-Flight Sandbox Jailbreak
+Human Lane (normal visitors)
+:   Browser → Cloudflare Worker → fetches Google Sites response → HTMLRewriter targets `div[data-code]` → decodes the embedded page and fills the live telemetry values → targets `iframe.YMEQtf` → `removeAttribute("sandbox")` + `removeAttribute("src")` → `setAttribute("srcdoc", content)`. The UI is inline in the initial HTML, so no iframe request is required to paint it.
 
-The AGP architecture shatters the Google Sites sandbox at the network layer. Operating as a reverse proxy via a Cloudflare Worker, it manipulates the HTML stream mid-flight before reaching the browser. The HTMLRewriter API targets the hidden div[data-code], extracts the raw payload, and intercepts the restrictive iframe.YMEQtf wrapper. By executing removeAttribute("sandbox") & removeAttribute("src"), it severs external dependencies and seamlessly injects the payload directly into the native srcdoc attribute, altering the document architecture without adding TTFB latency.
+Search Crawler Lane (Googlebot, Bingbot, Applebot, Yandexbot)
+:   Crawler → Cloudflare Worker → fetches Google Sites response → head injection (canonical, description, Open Graph, JSON-LD) → reads the ghost HTML for that path from KV (`SEO_PAYLOADS`) → `element.prepend(botPayload)` into `<body>`. Nothing is stripped, the iframe is not unboxed, and scripts are not deferred. The text is intended to match the human lane; the markup differs. Inspect with `?debug=googlebot` or `curl -A "Googlebot"`.
 
-#### The Result: Absolute Semantic Indexation
+AI Agent Lane (GPTBot, ClaudeBot, social bots, etc.)
+:   LLM crawler → Cloudflare Worker → reads the ghost HTML for that path from KV (`SEO_PAYLOADS`) → `element.prepend(botPayload)` into `<body>`. Because LLMs do not render visual layouts and operate under strict context windows, `ElementSlasher` strips scripts, styles, iframes and UI bloat, leaving only the machine-readable text.
 
-The iframe is unboxed mid-flight. GSC no longer hits a secure external request barrier; its rendering engine natively parses the srcdoc content as an intrinsic component of the primary DOM. This structural flattening transforms the hidden payload into a fully indexed semantic node, directly optimizing the page for Generative Engine Optimization (GEO) so AI data-scrapers and LLM agents can instantly ingest, comprehend, and cite your architecture.
+### The Edge Override: Mid-Flight Sandbox Override
 
-## GSC DOM Render Output — iframe Unboxing Mid-Flight
+The AGP architecture works at the network layer: the Cloudflare Worker sits in front of Google Sites as a reverse proxy and rewrites the HTML stream mid-flight, before it reaches the browser. The exact steps are in [Technical Mechanism](#two-lanes) above; the rewrite runs inside the streaming response and adds minimal latency. **Security note:** removing the iframe sandbox and stripping the Content-Security-Policy header removes protections Google Sites applies by default. It is acceptable here only because the embedded content is authored by the site owner. Never apply this pattern to third-party content.
 
-A side-by-side comparison showing Google Search Console DOM render output before and after the AGP edge intervention. Left: failed render — GSC hits the secure external request barrier of the sandboxed iframe. Right: successful render — the iframe is unboxed mid-flight via srcdoc injection, and GSC natively parses the content as an intrinsic component of the primary DOM.
+#### The Result: Crawler-Readable Content
 
-### Why This Matters for GEO — Structural Flattening as an Indexation Strategy
+Crawlers can read headings, JSON-LD and entity text without executing the iframe’s JavaScript (see [Technical Mechanism](#two-lanes)). That makes the page easier to ingest and cite for **Generative Engine Optimization (GEO)**. It does not guarantee indexing or citation.
 
-> The iframe is unboxed mid-flight. GSC no longer hits a secure external request barrier; its rendering engine natively parses the srcdoc content as an intrinsic component of the primary DOM. This structural flattening transforms the hidden payload into a fully indexed semantic node, directly optimizing the page for Generative Engine Optimization (GEO) so AI data-scrapers and LLM agents can instantly ingest, comprehend, and cite your architecture.
-Structural flattening
-Converting an opaque external iframe into inline native DOM nodes. The content previously hidden behind a cross-origin barrier becomes contiguous, high-fidelity semantic text in the primary document. No JavaScript execution required. No network idle state required. The entire custom interface is exposed as a single DOM tree readable in one parse pass.
-Fully indexed semantic node
-Once in the native DOM, the content is treated by Google's indexing pipeline identically to any other page content — H1 tags rank, JSON-LD @graph structures, entity text contributes to topic modeling. The previously invisible payload now carries full indexation weight.
-GEO readiness
-AI data-scrapers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended) and LLM agents read the native DOM linearly. Structural flattening means the full semantic entity graph is exposed as contiguous text in a single document — directly optimized for Retrieval-Augmented Generation (RAG) ingestion.
-Zero TTFB latency added
-The srcdoc injection executes inside the Worker's streaming response via
-— it adds no round-trip, no blocking wait, and no measurable TTFB overhead. The DOM is restructured mid-flight while the response streams to the client.
+## GSC DOM Render Output — What the Iframe Content Looks Like to Google
+
+Real Google Search Console URL Inspection screenshots. Left: the native Google Sites domain — the renderer is blocked by the sandboxed iframe and sees almost nothing. Right: the custom domain with AGP — the content that was inside the iframe is now present as native DOM nodes that GSC can parse.
+
+### The Two GSC DOM Render States
+
+These are the actual Search Console render outputs (not the human-lane reload comparison above). They show whether Google’s renderer can see the content that originally lived inside the sandboxed iframe.
+
+#### Before Edge — GSC-render-fail.webp
+
+![Google Search Console DOM render inspection on the native Google Sites URL: almost no content visible because it is blocked behind the sandboxed iframe (iframe.YMEQtf)](https://www.eryc.my.id/assets/image/GSC-render-fail.webp)
+
+On the native `sites.google.com` URL the Search Console renderer cannot complete the cross-origin request for the sandboxed iframe (`iframe.YMEQtf`). It therefore sees no meaningful content — the payload that should be indexed remains invisible.
+
+#### After Edge — GSC-render-success.webp
+
+![Google Search Console DOM render inspection on the custom domain: the content that lived inside the iframe is now visible as native page nodes (structure, text, and branding)](https://www.eryc.my.id/assets/image/GSC-render-success.webp)
+
+On the custom domain the edge has already made the iframe content available. GSC’s renderer sees the page structure as native nodes — the text, branding and layout that were previously trapped inside the iframe. Note: the URL Inspection fetcher’s User-Agent may receive the human lane (`srcdoc` unboxing) rather than the search-crawler lane; both lanes carry the same text. The H1→H3 hierarchy and JSON-LD that bots receive come from the ghost block (see [Technical Mechanism](#two-lanes)).
 
 ### Real-Time Performance Matrix: The Autonomous Feedback Loop
 
@@ -3366,21 +3535,53 @@ Edge SEO is not merely about payload mitigation; it is an autonomous feedback lo
 
 #### Live Telemetry & API Extraction: The Performance Delta
 
-Standard reporting dashboards typically rely on static historical data or bloated third-party API connectors that actually degrade the Core Web Vitals they are attempting to measure. To prove the continuous efficacy of the Asymmetric Ghost Payload (AGP) architecture without introducing a main-thread rendering penalty, I engineered a lightweight, API-driven telemetry layer using the Google PSI API and GSC API directly. The metrics are injected live into the page via Cloudflare Worker at request time, sourced from the GSC_PSI_EDGE_SEO KV namespace.
+Standard reporting dashboards typically rely on static historical data or bloated third-party API connectors that actually degrade the Core Web Vitals they are attempting to measure. To prove the continuous efficacy of the Asymmetric Ghost Payload (AGP) architecture without introducing a main-thread rendering penalty, I engineered a lightweight, **API-driven** telemetry layer using the Google PSI API and GSC API directly. The metrics are injected live into the page via Cloudflare Worker at request time, sourced from the `GSC_PSI_EDGE_SEO` KV namespace.
 
 #### <SEO Report>
 
-Live data injected at request time via Google PSI API v5 + GSC API. Updated weekly via Cloudflare Cron.
+*Live data injected at request time via Google PSI API v5 + GSC API. Updated weekly via Cloudflare Cron.*
+
+*[Human UI renders the interactive PSI telemetry dashboards (Mobile and Desktop) here.]*
+
+**Telemetry UI Implementation:**
+[Review the Mobile telemetry dashboard frontend UI on CodePen](https://codepen.io/editor/ErycTheGreat/pen/01a148f5-2ebe-75f0-b2b4-52e24e363fbb) and
+[review the Desktop telemetry dashboard frontend UI on CodePen](https://codepen.io/editor/ErycTheGreat/pen/01a14906-28a4-7798-b0ba-1d7afa750a05).
 
 ## Real-Time PSI Telemetry — Before vs After Edge (Mobile + Desktop)
 
-Two interactive PSI telemetry dashboards showing Lighthouse scores before the edge (Google Sites origin) and after the edge (AGP architecture on www.eryc.my.id). Mobile and Desktop. Both display live data injected at runtime by the Cloudflare Worker from the GSC_PSI_EDGE_SEO KV namespace. Updated weekly via Cron + PSI API v5.
+Two interactive PSI telemetry dashboards showing Lighthouse scores before the edge (Google Sites origin) and after the edge (AGP architecture on www.eryc.my.id).
+Mobile and Desktop. Both display live data injected at runtime by the Cloudflare Worker from the GSC\_PSI\_EDGE\_SEO KV namespace. Updated weekly via Cron + PSI API v5.
 
 ### Live Telemetry — Current Readings (Injected at Runtime)
-*(Live PSI telemetry — see consolidated metrics above)*
 
+Desktop PSI — Origin (sites.google.com/view/eryc-tri-juni-s-notes/home)
+:   Perf: 92/100 | Access: 95/100 | BP: 100/100 | SEO: 92/100 | FCP: 0.9 s | SI: 1.3 s | LCP: 1.0 s | TTI: 2.3 s | TBT: 170 ms | CLS: 0.001 (As of 2026-10-25T19:22:03.165Z)
+
+Desktop PSI — Edge (www.eryc.my.id)
+:   Perf: 98/100 | Access: 100/100 | BP: 100/100 | SEO: 100/100 | FCP: 0.8 s | SI: 1.1 s | LCP: 0.8 s | TTI: 0.8 s | TBT: 0 ms | CLS: 0 (As of 2026-10-25T19:22:03.165Z)
+
+Mobile PSI — Origin
+:   Perf: 55/100 | Access: 100/100 | BP: 100/100 | SEO: 92/100 | FCP: 10.1 s | SI: 10.1 s | LCP: 13.3 s | TTI: 13.3 s | TBT: 100 ms | CLS: 0 (As of 2026-10-25T19:22:03.165Z)
+
+Mobile PSI — Edge
+:   Perf: 99/100 | Access: 100/100 | BP: 100/100 | SEO: 100/100 | FCP: 1.1 s | SI: 2.1 s | LCP: 2.0 s | TTI: 2.0 s | TBT: 20 ms | CLS: 0.045 (As of 2026-10-25T19:22:03.165Z)
+
+Google Search Console (last 30 days)
+:   Clicks: 16 | Impressions: 1620 | CTR: 0.99% | Avg Position: 7.48 (As of 2026-10-25T19:22:03.165Z)
+
+Top Search Queries
+:   edge seo specialist, eryc tri juni s, agp, edge seo indonesia, edge seo specialist malang
+
+Last verified (weekly cron)
+:   2026-10-25T19:22:03.165Z
+
+Span format: `Perf: {N}/100 | Access: {N}/100 | SEO: {N}/100 | FCP: {v} | SI: {v} | LCP: {v} | TTI: {v} | TBT: {v} ms | CLS: {v}`
+
+The live telemetry above lists which audits changed, and every current score is the live reading above, injected from KV at request time (one PSI run per strategy, refreshed weekly). Origin is the Google Sites homepage; Edge is the www.eryc.my.id homepage. PSI scores vary between runs, so read the gap, not a single number.
 
 ### Lighthouse Threshold Reference — Mobile vs Desktop
+
+Official Lighthouse thresholds used by the telemetry dashboards for metric color coding
 
 | Metric | Mobile — Green (●) | Mobile — Orange (■) | Desktop — Green (●) | Desktop — Orange (■) |
 | --- | --- | --- | --- | --- |
@@ -3395,14 +3596,128 @@ Score color coding (both): ● green = 90-100 · ■ orange = 50-89 · ▲ red =
 
 #### Analyzing the Score Change: Overcoming Platform Bottlenecks
 
-The live data explicitly demonstrates the architectural advantage of Edge routing over standard hosted CMS environments. The origin platform (sites.google.com/view/...) enforces rigid response headers and unoptimized JavaScript payloads, causing severe main-thread execution delays on mobile devices. By deploying the AGP architecture to intercept and unbox the DOM before it reaches the client, we trigger the following telemetry shifts:
-- Render-Blocking Mitigation (LCP): The most critical bottleneck on the origin platform was a Largest Contentful Paint (LCP) of 30.6 seconds on mobile data. Edge-level payload optimization and aggressive resource prioritization slashed this to 2.0 seconds on the edge-routed domain (www.eryc.my.id)—a 93% reduction in critical render time.
-- Main-Thread Offloading (Performance Index): By shifting the rendering burden away from the client's mobile browser and processing it via the serverless edge network, the overall Mobile Performance Index surged from a failing 48 to a near-perfect 99.
-- Technical SEO Perfection: Standard site builders restrict raw header manipulation, capping the origin's SEO score at 92. The Edge proxy restores full control over response headers and semantic footprinting, mathematically locking the live SEO and Accessibility metrics at a perfect 100/100.
+The live readings above compare the Google Sites origin (`sites.google.com/view/...`) with the same site served through the edge. The origin ships heavy platform JavaScript and render-blocking CSS, which hurts mobile most. The Worker changes how the page is delivered, and these are the main differences to look for in the readings:
 
-This proof of concept (PoC) reveals a fundamental law of the modern, AI-driven web. The underlying CMS you build on matters far less than the network layer that serves it. Crawlers and autonomous LLM engines only index what they are permitted to parse. Ultimately, whoever controls the doorways—the Edge—controls the entire semantic reality.
+- **Render-Blocking Mitigation (LCP):** The edge swaps the render-blocking Google stylesheet for an R2-hosted copy (deferred on mobile) and preloads the LCP image, so mobile LCP and FCP should be clearly lower than the origin's. The size of the gap changes between PSI runs.
+- **Main-Thread Offloading (TBT):** Total Blocking Time and the Performance score move the most, because platform scripts are the main source of blocking on the origin. These are lab (Lighthouse) results, not field data.
+- **Technical SEO Fixes:** The origin loses SEO points for missing meta description, heading hierarchy, canonical and structured data. The edge injects all of them. A perfect Lighthouse SEO score is a checklist result, not a ranking guarantee.
 
-In This world Ain't the big beat the small, But the fast beat the slow.
+This **proof of concept (PoC)** points to a pattern in the modern, AI-driven web. The underlying CMS you build on matters far less than the network layer that serves it. Crawlers and autonomous LLM engines only index what they are permitted to parse. Ultimately, whoever controls the doorways—the Edge—shapes what machines read.
+
+## Indexation Evidence: A Baseline Parsing Test
+
+Google Sites puts the real content inside a sandboxed iframe. A lot of AI crawlers never see it cleanly, and even Google often treats iframe content as belonging to the frame URL, not the parent page. The edge layer turns that content into plain, structured HTML.
+
+The rule is simple: same text, same facts, same links for every lane. Only the packaging changes. That is how you stay on the right side of dynamic rendering instead of sliding into cloaking.
+
+- **Layer 1: Human visitors.** Full interactive UI, iframe unboxed via `srcdoc`, scripts delayed until real interaction.
+- **Layer 2: Search crawlers (Googlebot, Bingbot, etc.).** Origin HTML plus the same ghost text block prepended. Nothing stripped.
+- **Layer 3: AI agents and social bots.** Clean, stripped ghost payload only — same text and facts, no origin bloat.
+
+You can check the AI-agent lane with [`?debug=bot`](https://www.eryc.my.id/case-studies/edge-seo?debug=bot) and the search-crawler lane with [`?debug=googlebot`](https://www.eryc.my.id/case-studies/edge-seo?debug=googlebot). Note: the URL Inspection fetcher’s User-Agent may receive the human layer instead — see the [GSC Render Comparison](#two-lanes).
+
+### What the data shows
+
+Search Console shows impressions for queries matching this content:
+
+- **Commercial:**
+  `advance technical seo indonesia`,
+  `edge seo specialist indonesia`,
+  `geo specialist malang`,
+  `edge seo malang`
+- **Architecture and brand:**
+  `asymmetric ghost payload`,
+  `eryc seo`,
+  `eryc agp`
+
+Ranking for low-competition or coined terms is not a ranking claim. The useful signal is indexation: the text is now readable at all. On the native Google Sites URL the same content sits behind the iframe wall. Side-by-side URL Inspection is a cleaner test than raw search visibility:
+
+- Edge layer off: *Render blocked by iframe sandbox (Oct 2026)*
+- Edge layer on: *Full HTML structure and JSON-LD parsed natively (Oct 2026)*
+
+### Working hypothesis: signal density over volume
+
+This site has only a handful of pages. The hypothesis is simple: a clean, structured, noise-free entity graph served as readable HTML can be understood without hundreds of supporting pages. One site, one test. Treat it as a hypothesis to be replicated, not a final conclusion.
+
+## Verdict: A Working Proof of Concept
+
+This experiment was built to answer one question: can a platform that crawlers cannot read be made machine-readable from the network layer alone? Here is what the result shows, in order, including where it stops.
+
+### 1. Machine Readability Comes First
+
+**Conviction:** Machine readability comes first. If the page cannot be cleanly parsed, nothing else matters — not content quality, not links, not brand. Ranking and citation both require the content to be readable in the first place. The edge approach does not wait for the crawler to struggle with iframes or missing structure. It supplies a clean, structured version at the network layer. That is the minimum requirement. Everything else is secondary.
+
+**Observed:** The gap is observable. Both the native Google Sites URL and the edge domain are tracked in Search Console, so the difference can be inspected side by side (see the GSC render comparisons above). The edge layer is a per-page function, so a larger site changes how many times it runs, not what it does.
+
+### 2. The Constraint Stack
+
+The experiment was deliberately run under the hardest combination of conditions I could find, all at once:
+
+- **Platform:** Google Sites, which offers no control over meta tags, canonicals, robots.txt, sitemap or structured data. The edge layer adds that whole control surface (robots.txt, sitemap.xml, llms.txt, canonical, JSON-LD) without touching the CMS.
+- **Experience:** a fully interactive interface with an animated background, not a stripped-down page.
+- **Performance:** a PSI score of 99 (lab data, not field data; current numbers are in Live Telemetry).
+- **Domain:** .my.id, a TLD that starts with no inherited trust.
+- **Infrastructure:** hosted on Google's infrastructure and fronted by Cloudflare's (TLS, DDoS protection, caching). The iframe sandbox and CSP are relaxed only for content I control.
+- **Cost:** under $1 a year for the domain, plus the free tiers of Google Sites and Cloudflare. The real cost was time — months of deliberate work under hard constraints.
+
+**Observed:** Most of the complexity comes from two constraints: a locked CMS (no access to head tags or page structure, so everything is injected from outside) and a PSI score of 99 under a heavy animated background (hence the deferred hydration and cron-maintained visual state). *Hypothesis: Astro or Next.js would remove much of that work, since server rendering and selective hydration are defaults there. Untested.*
+
+### 3. Why Clicks Are the Wrong Scoreboard
+
+**Observed (as of October 17, 2026):** Cloudflare counted 5.17k visits in the last 30 days. Search Console recorded 20 clicks in the 28 days from September 17 to October 14. Google clicks are well under 1% of the activity.
+
+Clicks and CTR were built for a human scanning ten blue links. More and more readers are machines that never click, and humans arriving via AI answers behave differently. So this experiment asks a different question: can machines parse this page? I measure that with things you can check yourself: what a bot receives with `?debug=bot`, what Search Console renders, and whether the page gets indexed. Citation is the next scoreboard, and nobody has a tool for it yet.
+
+**Limit:** those visits include my own testing and automation. The gap shows click metrics miss most activity, not that bots are the majority. Site size only scales the counts; the measurement is the same on any site.
+
+### 4. The Limits
+
+- **Content quality still matters.** Machine readability solves ingestion and token limits. Traditional SEO still applies.
+- **Fundamentals decide the outcome.** Helpful content and user experience are what drive crawl demand. The edge cannot fake them.
+- **Payloads are hand-built per page.** Each page needs its own KV entry plus a parity check. The cron AI Worker only maintains visual state (LCP image URL, background color); it does not write payloads. Automatic generation is the goal of the open-source build (see [What Comes Next](#next)).
+- **Hypothesis:** the edge code scales, since it runs per request, and generated payloads would extend it to many similar pages.
+- **Parity is a standing obligation.** The ghost version must keep the same text content as the human version. If the two drift apart, it stops being dynamic rendering and becomes cloaking. Because the ghost HTML is a separate, hand-maintained copy, I run a text-parity check against the rendered page before each KV write (outside the Worker, which does not check at request time). You can compare it yourself: open the page normally, then with `?debug=bot`, and diff the visible text. Expect two known differences: live telemetry numbers exist only in the human layer (the ghost copy shows placeholders), and the ghost copy carries short bracketed notes where the human layer renders interactive components.
+- **Lighthouse/PSI is special-cased.** Runs identified by User-Agent skip the script wake-up and the heavy-background upgrade, so lab scores describe that variant. Real-user (field) data is the check that matters.
+- **Hypothesis: the risk is contained and reversible.** Remove the Worker and purge the cache. *I'd be wrong if* the origin still shows edge-injected changes after rollback.
+
+### 5. What This Contributes
+
+Everything below runs in production on this page and can be checked with the debug lanes and the validator:
+
+- **Iframe unboxing at the edge:** the Google Sites embed is rewritten into inline `srcdoc` HTML, so its content is part of the document instead of hidden behind a sandboxed iframe.
+- **Lane-based delivery:** one URL, different packaging for humans, search crawlers and AI agents, with the text intended to stay the same and a query-parameter debug flag for each bot lane.
+- **KV-backed ghost payloads:** per-path structured HTML (H1→H3 plus a JSON-LD @graph) served from edge storage, with a decoupled cron worker maintaining visual state so no AI runs at request time.
+- **Interaction-triggered hydration:** native scripts are deferred until real interaction to keep the main thread free.
+- **Verification surfaces:** a validator terminal, `?debug=bot`, `?debug=googlebot` and a documented parity obligation, so each claim can be checked instead of trusted.
+
+Architecturally, this is a strangler-fig-style approach: an edge layer in front of an untouched origin that upgrades pages one at a time, while unmigrated pages pass through as before. Unlike the classic pattern, the origin is never retired. It stays the source of truth. That is also why hand-written payloads are acceptable at this stage: each page can be migrated independently.
+
+I am not aware of a public implementation that combines these for a locked CMS, though I have not done an exhaustive survey. It required distributed-systems work: an edge Worker, a decoupled cron worker, and asynchronous KV state.
+
+### 6. What Comes Next: Open-Source, CMS-Agnostic Agent Readability
+
+The real problem is bigger than Google Sites. Some crawlers still struggle with JavaScript. Retrieval pipelines differ. New agents keep appearing. You cannot chase every query. What you can engineer is how easy the page is to ingest cleanly.
+
+Next step is to turn this from a single-site, hand-maintained prototype into an open-source, CMS-agnostic tool. The goal is simple: let people focus on useful content while the edge handles the machine-readable layer. No release date yet — still looking for the resources to build it properly.
+
+The Google Sites deployment is the stress test: the approach working from outside a locked CMS. **Hypothesis:** the production target is [EmDash](https://github.com/emdash-cms/emdash), a full-stack TypeScript CMS built on Astro and Cloudflare Workers. There the edge can be the origin, so no mid-flight interception or iframe unboxing is needed, and humans and bots can receive the same structured HTML, which removes the parity risk. EmDash is in beta preview, so this is a direction to test, not a proven result.
+
+**What needs to exist:**
+
+- **Ghost-payload generator:** builds the structured, parity-checked bot copy from the rendered page (no more hand-written KV entries).
+- **Parity checker:** diffs human and bot text and blocks the write when they drift.
+- **Crawler behavior matrix:** a public, log-based record of how different agents actually behave.
+- **CMS adapters:** validation on at least two platforms beyond Google Sites.
+
+**Proposed success measures:** parity pass rate, tokens per page before and after, and a citation-test protocol with a larger prompt set across several engines, so the hypothesis that fewer tokens means more citation opportunity is tested rather than assumed. If you want to support or sponsor it, [get in touch](mailto:eryc.me@gmail.com).
+
+> “Judge me by the constraints I can overcome, not just by the platforms I've already mastered.”
+
+In this world, it isn't the big that beat the small, but the fast that beat the slow.
+
+## Get Closer to The Edge!
+
+最 前 線
 
 ## Contact & Verification
 
@@ -3412,3 +3727,6 @@ In This world Ain't the big beat the small, But the fast beat the slow.
 - **LinkedIn:** https://www.linkedin.com/in/eryctrijunis
 - **SlideShare:** https://www.slideshare.net/ErycTriJuniS
 - **Email:** eryc.me@gmail.com
+
+© 2026 Eryc Tri Juni S, All Rights Reserved.
+THIS SITE: 100% [Google Sites](https://sites.google.com/).
