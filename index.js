@@ -623,7 +623,7 @@ const wakeUpScript = `
   }
 };
 
-// Bot telemetry wrapper: observes only, reuses the AGP_STATE KV namespace.
-export default withAgp(worker, { kvBinding: 'AGP_STATE' });
+// Bot telemetry wrapper: observes only, writes to its own AGP_TELEMETRY KV namespace.
+export default withAgp(worker, { kvBinding: 'AGP_TELEMETRY' });
 
 // FORCING A CLEAN SYNC TO CLOUDFLARE
