@@ -49,6 +49,12 @@ id = "9a9985fe64c34f6ea7eb41de408ccbcd"
 binding = "AGP_TELEMETRY"
 id = "a7094e5e30cf4cea916e3c4ac3243bed"
 
+# Flight recorder: snapshots of what bots were served + one record per visit.
+# Stays OFF until the AGP_RECORD_PATHS variable is set (see README of agp-core).
+[[r2_buckets]]
+binding = "AGP_R2"
+bucket_name = "agp-telemetry"
+
 # --- AI BOT TRACKING LOGS ---
 [observability]
 [observability.logs]
