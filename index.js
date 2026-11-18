@@ -2,6 +2,7 @@ import { handleSitemapRequest } from './sitemap.js';
 import { handleMCPRequest } from './mcp.js';
 import { handleAgentSkillsRequest } from './agent-skills.js';
 import { handleMCPServerCardRequest } from './mcp-server-card.js';
+import { handleARDRequest } from './ard.js';
 import { handleRobotsTxtRequest } from './robots.js';
 import { getJsonLdSchema } from './schema.js';
 import { handleFaviconRequest } from './favicon.js';
@@ -84,6 +85,11 @@ export default {
         if (url.pathname === "/.well-known/mcp/server-card.json") {
             return handleMCPServerCardRequest();
     }
+
+	// --- 3.1b ARD MANIFEST ---
+		if (url.pathname === "/.well-known/ard.json") {
+    		return handleARDRequest();
+	}
 	  
     // --- 3.2 LLMS.TXT ROUTING ---
     if (url.pathname === "/llm.txt") {
@@ -283,7 +289,9 @@ export default {
         newHeaders.delete("Content-Security-Policy");
 
 		// --- ORIGIN WEBMCP TRIAL TOKEN HERE ---
-        newHeaders.set("Origin-Trial", "AtzSJ4g48wlbM4k3Rcm44Q5uSUYhaw/3CiuyfUlfR9mcWWo6/drv2U+ctBZyTC/HhO1aZSLniZHV29lj/sjRSQEAAABOeyJvcmlnaW4iOiJodHRwczovL3d3dy5lcnljLm15LmlkOjQ0MyIsImZlYXR1cmUiOiJXZWJNQ1AiLCJleHBpcnkiOjE3OTQ4NzM2MDB9");
+		if (env.WEBMCP_OT_TOKEN) {
+        newHeaders.set("Origin-Trial", env.WEBMCP_OT_TOKEN);
+        }
 		
         const heavyAnimUrl = isMobile ? "/assets/image/homepage-BG-mobile.avif" : "/assets/image/homepage-BG.avif";
 
@@ -293,6 +301,7 @@ export default {
 
 		// 🔗 ADD AI DISCOVERY HEADER TO HUMAN LANE
         newHeaders.append("Link", '<https://www.eryc.my.id/llms.txt>; rel="alternate"; type="text/markdown"');
+		newHeaders.append("Link", '</.well-known/ard.json>; rel="ard"');
 		
         let currentEmbedCode = null;
 
@@ -590,14 +599,17 @@ const wakeUpScript = `
     newHeaders.delete("Content-Length");
 
 	// --- ORIGIN WEBMCP TRIAL TOKEN HERE ---
-    newHeaders.set("Origin-Trial", "AtzSJ4g48wlbM4k3Rcm44Q5uSUYhaw/3CiuyfUlfR9mcWWo6/drv2U+ctBZyTC/HhO1aZSLniZHV29lj/sjRSQEAAABOeyJvcmlnaW4iOiJodHRwczovL3d3dy5lcnljLm15LmlkOjQ0MyIsImZlYXR1cmUiOiJXZWJNQ1AiLCJleHBpcnkiOjE3OTQ4NzM2MDB9");
-    
+   if (env.WEBMCP_OT_TOKEN) {
+    newHeaders.set("Origin-Trial", env.WEBMCP_OT_TOKEN);
+   }
+	  
     if (agpLcpUrl) {
         newHeaders.append('Link', `<${agpLcpUrl}>; rel=preload; as=image`);
     }
 
 	// Inject the AI Link Header here
     newHeaders.append("Link", '<https://www.eryc.my.id/llms.txt>; rel="alternate"; type="text/markdown"');
+	newHeaders.append("Link", '</.well-known/ard.json>; rel="ard"');
 	  
     return new Response(rewriter.transform(response).body, {
       status: response.status,
