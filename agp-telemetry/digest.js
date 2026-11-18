@@ -30,6 +30,24 @@ async function loadDay(kv, day) {
   return entries;
 }
 
+async function loadRefDay(kv, day) {
+  const entries = [];
+  let cursor;
+  do {
+    const page = await kv.list({ prefix: `ref:${day}:`, cursor });
+    for (const { name } of page.keys) {
+      try {
+        const value = JSON.parse((await kv.get(name)) || 'null');
+        if (value) entries.push(value);
+      } catch {
+        // skip a corrupt entry
+      }
+    }
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+  return entries;
+}
+
 async function loadPeriod(kv, days) {
   const all = [];
   for (const day of days) all.push(...(await loadDay(kv, day)));
@@ -42,8 +60,9 @@ const sumErrors = (entry) =>
 function byBot(entries) {
   const map = new Map();
   for (const e of entries) {
-    const row = map.get(e.bot) || { bot: e.bot, kind: e.kind, count: 0, errors: 0 };
+    const row = map.get(e.bot) || { bot: e.bot, kind: e.kind, count: 0, errors: 0, cappedDays: 0 };
     row.count += e.count;
+    if (e.capped) row.cappedDays += 1;
     row.errors += sumErrors(e);
     map.set(e.bot, row);
   }
@@ -55,6 +74,25 @@ export async function buildDigest(kv, { days = 7, now = new Date() } = {}) {
   const previousDays = dayList(now, days, days);
   const current = await loadPeriod(kv, currentDays);
   const previous = await loadPeriod(kv, previousDays);
+
+  const refMap = new Map();
+  for (const day of currentDays) {
+    for (const r of await loadRefDay(kv, day)) {
+      const row = refMap.get(r.source) || { source: r.source, count: 0, cappedDays: 0, paths: {} };
+      row.count += r.count;
+      if (r.capped) row.cappedDays += 1;
+      for (const [path, c] of Object.entries(r.paths || {})) row.paths[path] = (row.paths[path] || 0) + c;
+      refMap.set(r.source, row);
+    }
+  }
+  const referrals = [...refMap.values()]
+    .map((r) => ({
+      source: r.source,
+      count: r.count,
+      cappedDays: r.cappedDays,
+      topPath: Object.entries(r.paths).sort((a, b) => b[1] - a[1])[0]?.[0] || null,
+    }))
+    .sort((a, b) => b.count - a.count);
 
   const currentByBot = byBot(current);
   const previousByBot = byBot(previous);
@@ -93,6 +131,7 @@ export async function buildDigest(kv, { days = 7, now = new Date() } = {}) {
     bots,
     gone,
     topPaths,
+    referrals,
   };
 }
 
@@ -112,7 +151,8 @@ export function renderMarkdown(d) {
     lines.push('| Bot | Kind | Hits | vs previous period | Errors |');
     lines.push('| --- | --- | --- | --- | --- |');
     for (const b of d.bots) {
-      lines.push(`| ${b.bot} | ${b.kind} | ${b.count} | ${arrow(b.change)} | ${b.errors} |`);
+      const flag = b.cappedDays > 0 ? ` (hit daily cap on ${b.cappedDays} day${b.cappedDays > 1 ? 's' : ''}, real count is higher)` : '';
+      lines.push(`| ${b.bot} | ${b.kind} | ${b.count}${flag} | ${arrow(b.change)} | ${b.errors} |`);
     }
   }
   if (d.gone.length > 0) {
@@ -120,6 +160,15 @@ export function renderMarkdown(d) {
     lines.push('## No longer visiting');
     lines.push('');
     for (const g of d.gone) lines.push(`- ${g.bot} (${g.kind}) made ${g.prev} hits the period before and none this period.`);
+  }
+  if (d.referrals && d.referrals.length > 0) {
+    lines.push('');
+    lines.push('## Visits that came from AI answers');
+    lines.push('');
+    for (const r of d.referrals) {
+      const cap = r.cappedDays > 0 ? ' (daily cap reached on some days)' : '';
+      lines.push(`- ${r.source}: ${r.count}${cap}${r.topPath ? `, most often to ${r.topPath}` : ''}`);
+    }
   }
   if (d.topPaths.length > 0) {
     lines.push('');
