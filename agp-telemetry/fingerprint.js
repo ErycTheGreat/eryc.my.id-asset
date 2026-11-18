@@ -20,14 +20,26 @@ export async function sha256Hex(buffer) {
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
+const NAMED = {
+  amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', mdash: '-', ndash: '-', middot: '.', bull: '.',
+  hellip: '...', lsquo: "'", rsquo: "'", ldquo: '"', rdquo: '"', laquo: '"', raquo: '"', copy: '(c)', reg: '(r)',
+  trade: '(tm)', times: 'x', rarr: '->', larr: '<-', euro: 'EUR',
+};
+
+// Decodes named and numeric entities. Unknown named entities become a space so
+// they never show up as fake "words" such as "mdash".
 const decodeEntities = (s) =>
-  s
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;|&apos;/g, "'")
-    .replace(/&nbsp;/g, ' ');
+  s.replace(/&(#x[0-9a-f]+|#\d+|[a-z][a-z0-9]*);/gi, (_, e) => {
+    if (e[0] === '#') {
+      const code = e[1].toLowerCase() === 'x' ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10);
+      try {
+        return code > 0 && code < 0x110000 ? String.fromCodePoint(code) : ' ';
+      } catch {
+        return ' ';
+      }
+    }
+    return NAMED[e.toLowerCase()] ?? ' ';
+  });
 
 const clean = (s, max = 200) => decodeEntities(s.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim().slice(0, max);
 
