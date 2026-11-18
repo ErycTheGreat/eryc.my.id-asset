@@ -6,6 +6,7 @@ import { handleARDRequest } from './ard.js';
 import { handleRobotsTxtRequest } from './robots.js';
 import { getJsonLdSchema } from './schema.js';
 import { handleFaviconRequest } from './favicon.js';
+import { withAgp } from './agp-telemetry/index.js';
 
 // --- THE EXECUTIONER CLASS ---
 class ElementSlasher {
@@ -19,7 +20,7 @@ class ElementSlasher {
   }
 }
 
-export default {
+const worker = {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
@@ -621,4 +622,8 @@ const wakeUpScript = `
     console.log(`Cron triggered at ${event.scheduledTime}`);
   }
 };
+
+// Bot telemetry wrapper: observes only, writes to its own AGP_TELEMETRY KV namespace.
+export default withAgp(worker, { kvBinding: 'AGP_TELEMETRY' });
+
 // FORCING A CLEAN SYNC TO CLOUDFLARE
