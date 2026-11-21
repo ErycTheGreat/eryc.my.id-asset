@@ -551,14 +551,21 @@ const wakeUpScript = `
                 }
             })
 
-			.on('a[href^="https://www.google.com/url?q="]', {
-	                element(e) {
-	                    try {
-	                        const q = new URL(e.getAttribute('href')).searchParams.get('q');
-	                        if (q && new URL(q).hostname.endsWith('eryc.my.id')) e.setAttribute('href', q);
-	                    } catch (_) {}
-	                }
-	            });
+			    .on('a[href^="https://www.google.com/url?q="], a[data-url^="https://www.google.com/url?q="]', {
+                element(e) {
+                    for (const attr of ['href', 'data-url']) {
+                        const v = e.getAttribute(attr);
+                        if (!v) continue;
+                        try {
+                            const u = new URL(v);
+                            if (u.hostname === 'www.google.com' && u.pathname === '/url') {
+                                const q = u.searchParams.get('q');
+                                if (q && new URL(q).hostname.endsWith('eryc.my.id')) e.setAttribute(attr, q);
+                            }
+                        } catch (_) {}
+                    }
+                }
+            });
         
         return new Response(humanRewriter.transform(response).body, {
             status: response.status,
