@@ -549,7 +549,16 @@ const wakeUpScript = `
                     e.removeAttribute('aria-selected');
                     e.setAttribute('aria-current', 'page');
                 }
-            });
+            })
+
+			.on('a[href^="https://www.google.com/url?q="]', {
+	                element(e) {
+	                    try {
+	                        const q = new URL(e.getAttribute('href')).searchParams.get('q');
+	                        if (q && new URL(q).hostname.endsWith('eryc.my.id')) e.setAttribute('href', q);
+	                    } catch (_) {}
+	                }
+	            });
         
         return new Response(humanRewriter.transform(response).body, {
             status: response.status,
