@@ -23,4 +23,7 @@ jobs:
             --endpoint-url https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com \
             --exclude ".git/*" \
             --exclude ".github/*" \
+            --exclude "css/gstatic-*" \
             --delete
+          # css/gstatic-* is written by the AGP scanners, not this repo.
+          # Excluded paths are also skipped by --delete, so pushes no longer wipe it.
