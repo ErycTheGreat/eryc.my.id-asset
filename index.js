@@ -56,7 +56,7 @@ const worker = {
     }
     
     // --- 0. SITEMAP ROUTING ---
-    const sitemapResponse = handleSitemapRequest(url);
+    const sitemapResponse = await handleSitemapRequest(url, env);
     if (sitemapResponse) {
         return sitemapResponse;
     }

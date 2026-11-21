@@ -15,6 +15,12 @@ routes = [
 binding = "EDGE_SEO_WORKER"
 service = "edge-seo"
 
+# --- BLOG WORKER (EmDash) ---
+# lets sitemap.xml pull the blog's post URLs automatically
+[[services]]
+binding = "BLOG_WORKER"
+service = "eryc-blog"
+
 # --- KV BINDING ---
 # for WEBMCP GSC PSI LIVE TELEMETRY
 [[kv_namespaces]]
