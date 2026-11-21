@@ -6,7 +6,8 @@ compatibility_date = "2024-03-27"
 routes = [
   { pattern = "www.eryc.my.id/*", zone_name = "eryc.my.id" },
   { pattern = "eryc.my.id/*", zone_name = "eryc.my.id" },
-  { pattern = "www.eryc.my.id/assets/*", zone_name = "eryc.my.id" }
+  { pattern = "www.eryc.my.id/assets/*", zone_name = "eryc.my.id" },
+  { pattern = "sitemap.eryc.my.id/*", zone_name = "eryc.my.id" }
 ]
 
 # --- SERVICE BINDING ---

@@ -61,6 +61,16 @@ const worker = {
         return sitemapResponse;
     }
 
+    // --- 0.5 SITEMAP-ONLY SUBDOMAIN (sitemap.eryc.my.id) ---
+    // Separate host that is NOT mapped to Google Sites. Only robots.txt is
+    // answered here; /sitemap.xml is handled above, everything else redirects to www.
+    if (url.hostname === "sitemap.eryc.my.id" && (url.pathname === "/robots.txt" || url.pathname === "/robots.txt/")) {
+      return new Response("User-agent: *\nAllow: /\n\nSitemap: https://sitemap.eryc.my.id/sitemap.xml\n", {
+        status: 200,
+        headers: { "Content-Type": "text/plain; charset=UTF-8", "Cache-Control": "public, max-age=86400" }
+      });
+    }
+
     // --- 1. FORCE NAKED TO WWW & KILL "/home" ---
     const host = url.hostname;
     const canonicalHost = "www.eryc.my.id";
