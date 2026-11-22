@@ -560,7 +560,7 @@ const wakeUpScript = `
                             const u = new URL(v);
                             if (u.hostname === 'www.google.com' && u.pathname === '/url') {
                                 const q = u.searchParams.get('q');
-                                if (q && new URL(q).hostname.endsWith('eryc.my.id')) e.setAttribute(attr, q);
+                                if (q) { const h = new URL(q).hostname; if (h === 'eryc.my.id' || h.endsWith('.eryc.my.id')) e.setAttribute(attr, q); }
                             }
                         } catch (_) {}
                     }
