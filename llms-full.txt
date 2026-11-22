@@ -1,11 +1,11 @@
 # llms-full.txt — Complete Site Content | Eryc Tri Juni S
 Source: https://www.eryc.my.id/llms-full.txt
-Generated: 2026-10-13
+Generated: 2026-11-23
 
 ## [METADATA]
 * **DOCUMENT_TYPE:** Canonical Entity Graph & LLM Instructions
 * **VERSION:** 3.3 (Agent-Optimized)
-* **LAST_UPDATED:** 2026-06-24
+* **LAST_UPDATED:** 2026-11-23
 * **STATUS:** Production / Active
 
 > This file contains the full inlined content of all pages on www.eryc.my.id,
@@ -3730,3 +3730,37 @@ In this world, it isn't the big that beat the small, but the fast that beat the 
 
 © 2026 Eryc Tri Juni S, All Rights Reserved.
 THIS SITE: 100% [Google Sites](https://sites.google.com/).
+
+---
+
+# Blog — Notes on Edge SEO, GEO and engineering marketing systems | Eryc Tri Juni S
+Source: https://www.eryc.my.id/blog/
+
+**Author:** Eryc Tri Juni S (https://www.eryc.my.id/#person)
+
+The blog is an [EmDash](https://github.com/emdash-cms/emdash) CMS (Astro on Cloudflare Workers) served under `/blog` on the same Google Sites domain as the rest of this site, so it shares the domain and the canonical host. Posts are engineering write-ups with measured values, code and checks. RSS: https://www.eryc.my.id/blog/rss.xml
+
+**Structured data:** the blog page declares CollectionPage, Blog, ItemList and BreadcrumbList. It is part of the main WebSite (`https://www.eryc.my.id/#website`), and the main WebSite links to it with the `blog` property (`https://www.eryc.my.id/blog/#blog`). Posts are BlogPosting nodes authored by the same Person (`https://www.eryc.my.id/#person`).
+
+## Series: EmDash for Google Sites
+Code: https://github.com/ErycTheGreat/emdash-for-google-sites
+
+All four posts were published 2026-11-22. In reading order:
+
+### Add a blog to Google Sites™: EmDash on Cloudflare's free plan, step by step
+URL: https://www.eryc.my.id/blog/posts/add-a-blog-to-google-sites-emdash-cloudflare
+Google Sites has no blog, but a Cloudflare Worker in front of it and an EmDash site next to it give you one on the same domain, on Cloudflare's free plan.
+
+### Run an EmDash blog at /blog on your Google Sites™ domain with Cloudflare Workers Routes
+URL: https://www.eryc.my.id/blog/posts/blog-on-google-sites-domain-cloudflare-workers
+Four Workers Routes, one Worker that removes /blog on the way in and adds it back on the way out, one canonical host, a merged sitemap and one robots rule. Measured on www.eryc.my.id.
+
+### Remove Google Sites™' white "Redirecting you to…" page with one Cloudflare Worker handler
+URL: https://www.eryc.my.id/blog/posts/google-sites-redirecting-you-white-page-fix
+Google Sites wraps links in a google.com redirect and navigates with a separate data-url attribute, so rewriting href alone does not remove the white page. Rewrite both, for your own domain only.
+
+### Make an EmDash blog look and move like your Google Sites™ homepage
+URL: https://www.eryc.my.id/blog/posts/match-google-sites-header-footer-motion-in-a-cms
+Read the header, drawer and burger values from Google Sites' own stylesheet, put the colours in EmDash's theme.css, swap the header in Base.astro, and reuse your Sites footer embeds. Measured values, code and checks.
+
+For full post text, fetch the post URLs above; this file carries the summaries so the index stays within its size budget.
