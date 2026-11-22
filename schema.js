@@ -13,6 +13,7 @@ export function getJsonLdSchema() {
 			  "alternateName": "Eryc Edge SEO Malang",
 			  "publisher": { "@id": "https://www.eryc.my.id/#person" },
 			  "inLanguage": "en",
+			  "blog": { "@id": "https://www.eryc.my.id/blog/#blog" },
 			  "potentialAction": {
 				"@type": "SearchAction",
 				"target": {
