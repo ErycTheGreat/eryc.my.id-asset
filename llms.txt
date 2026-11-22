@@ -162,7 +162,7 @@ A: Yes — actively, not casually. Seeking remote full-time or contract roles in
 - [Technical Specs — Edge SEO & AGP Architecture](https://www.eryc.my.id/case-studies/edge-seo) — Official engineering log, 9-step implementation, live PSI telemetry, open-source code.
   - Schema: TechArticle
 
-- [Blog — Notes on Edge SEO, GEO and engineering marketing systems](https://www.eryc.my.id/blog/) — Engineering write-ups by Eryc Tri Juni S, published as an EmDash CMS (Astro on Cloudflare Workers) served under /blog on this same Google Sites domain. RSS feed: https://www.eryc.my.id/blog/rss.xml
+- [Blog — Beings read. Things retrieve.](https://www.eryc.my.id/blog/) — Notes on Edge SEO, GEO and the Cloudflare Workers behind this site. Stance: "Beings believe. Things predict. Neither knows the truth. I can't open the black box, so I make the source readable and keep it close to the truth." Engineering write-ups by Eryc Tri Juni S, published as an EmDash CMS (Astro on Cloudflare Workers) served under /blog on this same Google Sites domain. RSS feed: https://www.eryc.my.id/blog/rss.xml
   - Schema: CollectionPage, Blog, ItemList, BreadcrumbList. Part of the main WebSite (`https://www.eryc.my.id/#website`) and authored by the same Person (`https://www.eryc.my.id/#person`); the main WebSite links to it as `blog`.
   - Series "EmDash for Google Sites" (4 posts, all 2026-11-22):
     - [Add a blog to Google Sites™: EmDash on Cloudflare's free plan, step by step](https://www.eryc.my.id/blog/posts/add-a-blog-to-google-sites-emdash-cloudflare) — Google Sites has no blog; a Cloudflare Worker in front of it plus an EmDash site next to it gives one on the same domain, on the free plan.

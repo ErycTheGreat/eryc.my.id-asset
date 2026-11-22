@@ -3733,10 +3733,12 @@ THIS SITE: 100% [Google Sites](https://sites.google.com/).
 
 ---
 
-# Blog — Notes on Edge SEO, GEO and engineering marketing systems | Eryc Tri Juni S
+# Blog — Beings read. Things retrieve. | Eryc Tri Juni S
 Source: https://www.eryc.my.id/blog/
 
 **Author:** Eryc Tri Juni S (https://www.eryc.my.id/#person)
+
+**Stance:** Notes on Edge SEO, GEO and the Cloudflare Workers behind this site. Beings believe. Things predict. Neither knows the truth. I can't open the black box, so I make the source readable and keep it close to the truth.
 
 The blog is an [EmDash](https://github.com/emdash-cms/emdash) CMS (Astro on Cloudflare Workers) served under `/blog` on the same Google Sites domain as the rest of this site, so it shares the domain and the canonical host. Posts are engineering write-ups with measured values, code and checks. RSS: https://www.eryc.my.id/blog/rss.xml
 
