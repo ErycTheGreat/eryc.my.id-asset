@@ -298,7 +298,7 @@ const worker = {
           gtag('config', 'G-460EZRLTB6');
         </script>
 
-		<script>
+		        <script>
         if (location.search.indexOf('dbg') > -1) addEventListener('DOMContentLoaded', function () {
           var box = document.createElement('pre');
           box.style.cssText = 'position:fixed;left:0;bottom:0;z-index:99999;margin:0;padding:6px;font:10px monospace;background:#000d;color:#0f0;white-space:pre-wrap;max-width:100%';
@@ -307,13 +307,15 @@ const worker = {
           function snap(why) {
             var m = document.querySelector('.LB7kq.KEFykf .mYVXT');
             var f = document.querySelector('iframe.YMEQtf');
+            var sec = document.querySelector('.LB7kq.KEFykf');
+            var nav = performance.getEntriesByType('navigation')[0] || {};
             log.push(Math.round(performance.now() - t0) + 'ms ' + why +
-              ' sy=' + scrollY +
-              ' ih=' + innerHeight +
-              ' vv=' + Math.round(visualViewport.height) +
-              ' doc=' + document.documentElement.scrollHeight +
               ' top=' + (f ? Math.round(f.getBoundingClientRect().top) : '-') +
-              ' tf=' + (m ? getComputedStyle(m).transform.slice(-8) : '-'));
+              ' sec=' + (sec ? Math.round(sec.getBoundingClientRect().top) + '/' + Math.round(sec.getBoundingClientRect().height) + '/p' + getComputedStyle(sec).paddingTop : '-') +
+              ' cell=' + (m ? Math.round(m.getBoundingClientRect().top) + '/' + Math.round(m.getBoundingClientRect().height) + '/p' + getComputedStyle(m).paddingTop : '-') +
+              ' pre=' + (document.prerendering ? 1 : 0) +
+              ' act=' + Math.round(nav.activationStart || 0) +
+              ' nt=' + (nav.type || '-'));
             box.textContent = log.slice(-9).join(String.fromCharCode(10));
           }
           snap('dcl');
