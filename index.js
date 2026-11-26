@@ -243,7 +243,7 @@ const worker = {
 			/* Homepage on phones: no scrolling + group centred */
 			@media only screen and (max-width: 479px) {
 			  html:has([style*="homepage-BG"]) {
-			    touch-action: none;
+			    overflow: hidden;
 			    overscroll-behavior: none;
 			  }
 			  html:has([style*="homepage-BG"]) .LB7kq.KEFykf .mYVXT {
