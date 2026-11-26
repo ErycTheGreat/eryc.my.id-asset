@@ -235,10 +235,10 @@ const worker = {
 			}
 			body { background-color: transparent !important; }
 
-						/* Mobile: full-screen sections = the visible screen */
-			@supports (height: 100dvh) {
+			/* Mobile: full-screen sections = the visible screen */
+			/*@supports (height: 100dvh) {
 			  .LB7kq.KEFykf { height: 100dvh !important; }
-			}
+			}*/
 
 			/* Homepage on phones: no scrolling + group centred */
 			@media only screen and (max-width: 479px) {
