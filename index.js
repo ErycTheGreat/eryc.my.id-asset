@@ -246,6 +246,9 @@ const worker = {
 			    overflow: hidden;
 			    overscroll-behavior: none;
 			  }
+			  html:has([style*="homepage-BG"]) .LB7kq.KEFykf .mYVXT {
+			    transform: translateY(-6.5vh);
+			  }
 			}
 		  </style>
 
