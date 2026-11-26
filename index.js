@@ -234,6 +234,15 @@ const worker = {
 			  --theme-background-color: transparent !important;
 			}
 			body { background-color: transparent !important; }
+
+			/* Mobile: full-screen sections = the visible screen, so the homepage doesn't scroll */
+			@supports (height: 100dvh) {
+			  .LB7kq.KEFykf { height: 100dvh !important; }
+			  @media only screen and (max-width: 479px) {
+			    .DdtOdf .LB7kq.KEFykf { height: calc(100dvh - 48px) !important; }
+			    .DdtOdf.WZv7J .LB7kq.KEFykf { height: calc(100dvh - 96px) !important; }
+			  }
+			}
 		  </style>
 
 		  <meta name="description" content="Eryc Tri Juni S: Edge SEO & GEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
