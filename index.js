@@ -299,24 +299,30 @@ const worker = {
         </script>
 
 		<script>
-if (location.search.includes('dbg')) addEventListener('DOMContentLoaded', () => {
-  const box = document.createElement('pre');
-  box.style.cssText = 'position:fixed;left:0;bottom:0;z-index:99999;margin:0;padding:6px;font:10px monospace;background:#000d;color:#0f0;white-space:pre-wrap;max-width:100%';
-  document.body.append(box);
-  const t0 = performance.now(), log = [];
-  const snap = (why) => {
-    const m = document.querySelector('.LB7kq.KEFykf .mYVXT');
-    const f = document.querySelector('iframe.YMEQtf');
-    log.push(`${Math.round(performance.now()-t0)}ms ${why} sy=${scrollY} ih=${innerHeight} vv=${Math.round(visualViewport.height)} doc=${document.documentElement.scrollHeight} top=${f ? Math.round(f.getBoundingClientRect().top) : '-'} tf=${m ? getComputedStyle(m).transform.slice(-8) : '-'}`);
-    box.textContent = log.slice(-9).join('\n');
-  };
-  snap('dcl');
-  addEventListener('load', () => snap('load'));
-  addEventListener('scroll', () => snap('scroll'), true);
-  addEventListener('resize', () => snap('resize'));
-  [300, 1000, 2000, 4000].forEach(ms => setTimeout(() => snap(ms + 'ms'), ms));
-});
-</script>
+        if (location.search.indexOf('dbg') > -1) addEventListener('DOMContentLoaded', function () {
+          var box = document.createElement('pre');
+          box.style.cssText = 'position:fixed;left:0;bottom:0;z-index:99999;margin:0;padding:6px;font:10px monospace;background:#000d;color:#0f0;white-space:pre-wrap;max-width:100%';
+          document.body.appendChild(box);
+          var t0 = performance.now(), log = [];
+          function snap(why) {
+            var m = document.querySelector('.LB7kq.KEFykf .mYVXT');
+            var f = document.querySelector('iframe.YMEQtf');
+            log.push(Math.round(performance.now() - t0) + 'ms ' + why +
+              ' sy=' + scrollY +
+              ' ih=' + innerHeight +
+              ' vv=' + Math.round(visualViewport.height) +
+              ' doc=' + document.documentElement.scrollHeight +
+              ' top=' + (f ? Math.round(f.getBoundingClientRect().top) : '-') +
+              ' tf=' + (m ? getComputedStyle(m).transform.slice(-8) : '-'));
+            box.textContent = log.slice(-9).join('\n');
+          }
+          snap('dcl');
+          addEventListener('load', function () { snap('load'); });
+          addEventListener('scroll', function () { snap('scroll'); }, true);
+          addEventListener('resize', function () { snap('resize'); });
+          [300, 1000, 2000, 4000].forEach(function (ms) { setTimeout(function () { snap(ms + 'ms'); }, ms); });
+        });
+        </script>
         `;
       
     // 🏎️ THE HUMAN FAST-LANE BYPASS
