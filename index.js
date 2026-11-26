@@ -297,6 +297,26 @@ const worker = {
           gtag('js', new Date());
           gtag('config', 'G-460EZRLTB6');
         </script>
+
+		<script>
+if (location.search.includes('dbg')) addEventListener('DOMContentLoaded', () => {
+  const box = document.createElement('pre');
+  box.style.cssText = 'position:fixed;left:0;bottom:0;z-index:99999;margin:0;padding:6px;font:10px monospace;background:#000d;color:#0f0;white-space:pre-wrap;max-width:100%';
+  document.body.append(box);
+  const t0 = performance.now(), log = [];
+  const snap = (why) => {
+    const m = document.querySelector('.LB7kq.KEFykf .mYVXT');
+    const f = document.querySelector('iframe.YMEQtf');
+    log.push(`${Math.round(performance.now()-t0)}ms ${why} sy=${scrollY} ih=${innerHeight} vv=${Math.round(visualViewport.height)} doc=${document.documentElement.scrollHeight} top=${f ? Math.round(f.getBoundingClientRect().top) : '-'} tf=${m ? getComputedStyle(m).transform.slice(-8) : '-'}`);
+    box.textContent = log.slice(-9).join('\n');
+  };
+  snap('dcl');
+  addEventListener('load', () => snap('load'));
+  addEventListener('scroll', () => snap('scroll'), true);
+  addEventListener('resize', () => snap('resize'));
+  [300, 1000, 2000, 4000].forEach(ms => setTimeout(() => snap(ms + 'ms'), ms));
+});
+</script>
         `;
       
     // 🏎️ THE HUMAN FAST-LANE BYPASS
