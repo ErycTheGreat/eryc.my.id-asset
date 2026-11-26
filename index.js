@@ -253,21 +253,13 @@ const worker = {
 		  </style>
 
 <script>
-/* TEMP phone diagnostic: only runs on ?dbg. Remove after use. */
+/* Homepage on phones: never restore an old scroll position on refresh. The hero is 100vh (864) but the visible screen is 808, so a restored scroll shifts the group by up to 56px. */
 (function(){
-if(location.search.indexOf('dbg')<0)return;
-var NL=String.fromCharCode(10),log=[],t0=Date.now();
-function s(q){return document.querySelector(q)}
-function snap(tag){
-var g=s('.LB7kq.KEFykf .mYVXT'),h=s('.LB7kq.KEFykf'),vv=window.visualViewport,
-gr=g?g.getBoundingClientRect():null,hr=h?h.getBoundingClientRect():null,
-d=document.createElement('div');d.style.cssText='position:fixed;left:-9999px;height:100dvh;width:1px';document.body.appendChild(d);var dvh=d.offsetHeight;d.style.height='100vh';var vh=d.offsetHeight;d.remove();
-log.push(tag+' t='+(Date.now()-t0)+' ih='+innerHeight+' vv='+(vv?Math.round(vv.height):'-')+' vvTop='+(vv?Math.round(vv.offsetTop):'-')+' vh='+vh+' dvh='+dvh+' sy='+Math.round(scrollY)+' ds='+document.documentElement.scrollTop+' bs='+document.body.scrollTop+' secTop='+(hr?Math.round(hr.top):'-')+' secH='+(hr?Math.round(hr.height):'-')+' grpTop='+(gr?Math.round(gr.top):'-')+' grpH='+(gr?Math.round(gr.height):'-'));
-var o=document.getElementById('dbgbox');
-if(!o){o=document.createElement('pre');o.id='dbgbox';o.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:2147483647;margin:0;padding:4px;background:rgba(0,0,0,.85);color:#0f0;font:9px/1.25 monospace;white-space:pre-wrap;pointer-events:none;max-height:45vh;overflow:hidden';document.body.appendChild(o)}
-o.textContent=log.slice(-8).join(NL)}
-function go(){snap('load');[300,1000,2500,5000].forEach(function(ms){setTimeout(function(){snap('+'+ms)},ms)});addEventListener('resize',function(){snap('resize')});if(window.visualViewport)visualViewport.addEventListener('resize',function(){snap('vvresize')});addEventListener('scroll',function(){snap('scroll')},true)}
-if(document.body)go();else addEventListener('DOMContentLoaded',go)
+if(location.pathname!=='/'&&location.pathname!=='')return;
+try{if('scrollRestoration' in history)history.scrollRestoration='manual'}catch(e){}
+function top(){if(matchMedia('(max-width: 479px)').matches&&(window.scrollY||document.documentElement.scrollTop))scrollTo(0,0)}
+addEventListener('DOMContentLoaded',top);addEventListener('load',top);addEventListener('pageshow',top);
+[100,400,1200].forEach(function(ms){setTimeout(top,ms)})
 })();
 </script>
 
