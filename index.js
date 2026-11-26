@@ -238,9 +238,13 @@ const worker = {
 			/* Mobile: full-screen sections = the visible screen, so the homepage doesn't scroll */
 			@supports (height: 100dvh) {
 			  .LB7kq.KEFykf { height: 100dvh !important; }
-			  @media only screen and (max-width: 479px) {
-			    .DdtOdf .LB7kq.KEFykf { height: calc(100dvh - 48px) !important; }
-			    .DdtOdf.WZv7J .LB7kq.KEFykf { height: calc(100dvh - 96px) !important; }
+			/* Homepage on phones: no scrolling at all (only the homepage has homepage-BG) */
+			@media only screen and (max-width: 479px) {
+			  html:has([style*="homepage-BG"]),
+			  html:has([style*="homepage-BG"]) body {
+			    height: 100%;
+			    overflow: hidden;
+			    overscroll-behavior: none;
 			  }
 			}
 		  </style>
