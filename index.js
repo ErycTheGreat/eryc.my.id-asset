@@ -314,7 +314,7 @@ const worker = {
               ' doc=' + document.documentElement.scrollHeight +
               ' top=' + (f ? Math.round(f.getBoundingClientRect().top) : '-') +
               ' tf=' + (m ? getComputedStyle(m).transform.slice(-8) : '-'));
-            box.textContent = log.slice(-9).join('\n');
+            box.textContent = log.slice(-9).join(String.fromCharCode(10));
           }
           snap('dcl');
           addEventListener('load', function () { snap('load'); });
