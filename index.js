@@ -235,21 +235,27 @@ const worker = {
 			}
 			body { background-color: transparent !important; }
 
-			/* Mobile: full-screen sections = the visible screen, so the homepage doesn't scroll */
+						/* Mobile: full-screen sections = the visible screen */
 			@supports (height: 100dvh) {
 			  .LB7kq.KEFykf { height: 100dvh !important; }
-			/* Homepage on phones: no scrolling at all (only the homepage has homepage-BG) */
+			}
+
+			/* Homepage on phones: no scrolling + group centred */
 			@media only screen and (max-width: 479px) {
-			  html:has([style*="homepage-BG"]),
-			  html:has([style*="homepage-BG"]) body {
+			  html:has([style*="homepage-BG"]) {
 			    height: 100%;
 			    overflow: hidden;
 			    overscroll-behavior: none;
 			  }
+			  html:has([style*="homepage-BG"]) body {
+			    height: 100%;
+			    overflow: clip;
+			    overflow-anchor: none;
+			  }
 			  html:has([style*="homepage-BG"]) .LB7kq.KEFykf .mYVXT {
 			    transform: translateY(-4.75vh);
 			  }
-			}
+		    }
 		  </style>
 
 		  <meta name="description" content="Eryc Tri Juni S: Edge SEO & GEO Specialist in Malang, Indonesia. I fix SEO at the system layer, not just content—to capture search intent that buys.">
