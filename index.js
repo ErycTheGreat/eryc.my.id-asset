@@ -241,7 +241,7 @@ const worker = {
 			}*/
 
 			/* Homepage on phones: no scrolling + group centred */
-			@media only screen and (max-width: 479px) {
+			/*@media only screen and (max-width: 479px) {
 			  html:has([style*="homepage-BG"]) {
 			    height: 100%;
 			    overflow: hidden;
@@ -254,7 +254,7 @@ const worker = {
 			  }
 			  html:has([style*="homepage-BG"]) .LB7kq.KEFykf .mYVXT {
 			    transform: translateY(-4.75vh);
-			  }
+			  }*/
 		    }
 		  </style>
 
