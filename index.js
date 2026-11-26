@@ -240,8 +240,12 @@ const worker = {
 			  .LB7kq.KEFykf { height: 100dvh !important; }
 			}*/
 
-			/* Homepage on phones: group centred (lock still OFF for testing) */
+			/* Homepage on phones: no scrolling + group centred */
 			@media only screen and (max-width: 479px) {
+			  html:has([style*="homepage-BG"]) {
+			    touch-action: none;
+			    overscroll-behavior: none;
+			  }
 			  html:has([style*="homepage-BG"]) .LB7kq.KEFykf .mYVXT {
 			    transform: translateY(-4.75vh);
 			  }
