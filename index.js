@@ -247,7 +247,7 @@ const worker = {
 			    overscroll-behavior: none;
 			  }
 			  html:has([style*="homepage-BG"]) .LB7kq.KEFykf .mYVXT {
-			    transform: translateY(-7vh);
+			    transform: translateY(-7.25vh);
 			  }
 			}
 		  </style>
